@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "162331110924",
+    "project_id": "farkha-b326e",
+    "storage_bucket": "farkha-b326e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162331110924:android:efe2c150269eba85120829",
+        "android_client_info": {
+          "package_name": "com.example.farkha_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162331110924-mhros4fk9he1ivqe4oo9m2ttat7s4902.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.farkha_app",
+            "certificate_hash": "beb1055eaee24bed0f2437c2fbd9e71c41fc9ab1"
+          }
+        },
+        {
+          "client_id": "162331110924-69osfo77vuiqvpi1d1vi8iiejnsucs4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAutzXl7UrBuuEIBk1Ossdt3ifqQUpCmG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "162331110924-69osfo77vuiqvpi1d1vi8iiejnsucs4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

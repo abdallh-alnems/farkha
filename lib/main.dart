@@ -1,4 +1,5 @@
-import 'package:farkha_app/view/screen/onboarding.dart';
+import 'package:farkha_app/routes/routes.dart';
+import 'package:farkha_app/view/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +18,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const OnBoarding());
+        
+        home: HomeScreen(),
+        getPages: AppRoutes.routes,
+        );
   }
 }

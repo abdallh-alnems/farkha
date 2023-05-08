@@ -7,16 +7,15 @@ class CustomButton extends GetView<OnboardingControllerImp> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      margin: const EdgeInsets.only(bottom: 30),
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 100),
+    return SizedBox(
+      width: 60,
+      height: 60,
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(shape: CircleBorder()),
         onPressed: () {
-          controller.next(); 
+          controller.next();
         },
-        child: const Text("continue"),
+        child: Icon(Icons.nat),
       ),
     );
   }
