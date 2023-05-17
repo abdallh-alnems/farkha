@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/screen/home_screen.dart';
 import 'package:farkha_app/data/static.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class OnboardingControllerImp extends OnboardingController {
   next() {
     currentPage++;
     if (currentPage > onboardingList.length - 1) {
-      Get.to(HomeScreen());
+      Get.offNamed(Routes.HomeScreen);
     } else {
       pageController.animateToPage(currentPage,
           duration: const Duration(milliseconds: 900), curve: Curves.easeInOut);
