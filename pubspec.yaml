@@ -28,13 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  charts_flutter_new: ^0.12.0
   cloud_firestore: ^4.6.0
   cupertino_icons: ^1.0.2
   firebase_core: ^2.11.0
   flutter:
     sdk: flutter
   get: ^4.6.5
+  intl: ^0.18.1
   introduction_screen: ^3.1.8
 
 dev_dependencies:
@@ -64,12 +64,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Cairo
-      fonts:
-        - asset: assets\fonts\Cairo\Cairo-Regular.ttf
-        - asset: assets\fonts\Cairo\Cairo-ExtraBold.ttf
-          weight: 700
+  # fonts:
+  #   - family: Cairo
+  #     fonts:
+  #       - asset: assets\fonts\Cairo\Cairo-Regular.ttf
+  #       - asset: assets\fonts\Cairo\Cairo-ExtraBold.ttf
+  #         weight: 700
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

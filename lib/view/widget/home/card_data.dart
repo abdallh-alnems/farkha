@@ -2,13 +2,19 @@
 
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class CardItem extends StatelessWidget {
+// ignore: must_be_immutable
+class CardData extends StatelessWidget {
   final String type;
-
-  const CardItem({super.key, required this.type});
-
-
+  var date1 = DateFormat('MM/dd').format(DateTime.now());
+  var date2 = DateFormat('MM/dd')
+      .format(DateTime.now().subtract(const Duration(days: 1)));
+  var date3 = DateFormat('MM/dd')
+      .format(DateTime.now().subtract(const Duration(days: 2)));
+  var date4 = DateFormat('MM/dd')
+      .format(DateTime.now().subtract(const Duration(days: 3)));
+  CardData({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +40,11 @@ class CardItem extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('7/5'),
-                Text('8/5'),
-                Text('9/5'),
-                Text('10/5'),
+              children: [
+                Text(date4),
+                Text(date3),
+                Text(date2),
+                Text(date1),
                 TextUtils(
                     text: ':  تحديث يوم',
                     fontSize: 16,

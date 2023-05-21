@@ -14,7 +14,7 @@ class AppRoutes {
     ),
     GetPage(
       name: Routes.HomeScreen,
-      page: () => const HomeScreen(),
+      page: () =>  HomeScreen(),
     )
   ];
 }
