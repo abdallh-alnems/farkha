@@ -10,6 +10,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: CardList());
+    return Scaffold(
+      drawer: Drawer(),
+       
+      appBar: AppBar(),
+      body: CardList(),
+      );
   }
 }

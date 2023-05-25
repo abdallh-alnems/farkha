@@ -2,16 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farkha_app/model/data_model.dart';
 
 class FirestoreDB {
+  final String collection;
+  final String doc;
+
+  FirestoreDB({
+    required this.collection,
+    required this.doc,
+  });
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Stream<List<DataModel>> getAllData() {
     return _firebaseFirestore
-        .collection("frakh")
-        .doc('sasso')
+        .collection(collection)
+        .doc(doc)
         .snapshots()
         .map((snapshot) => [DataModel.fromSnapshot(snapshot)]);
   }
 }
+
+//   Stream<List<DataModel>> getAllData() {
+//     return _firebaseFirestore
+//         .collection(collection)
+//         .doc(doc)
+//         .snapshots()
+//         .map((snapshot) => [DataModel.fromSnapshot(snapshot)]);
+//   }
+// }
 
 // class FirestoreDB {
  

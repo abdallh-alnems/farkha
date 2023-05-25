@@ -5,67 +5,99 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
-class CardData extends StatelessWidget {
+class CardViewData extends StatelessWidget {
   final String type;
-  var date1 = DateFormat('MM/dd').format(DateTime.now());
-  var date2 = DateFormat('MM/dd')
+  final String price1;
+  final String price2;
+  final String price3;
+  final String price4;
+  String date1 = DateFormat('MM/dd').format(DateTime.now());
+  String date2 = DateFormat('MM/dd')
       .format(DateTime.now().subtract(const Duration(days: 1)));
-  var date3 = DateFormat('MM/dd')
+  String date3 = DateFormat('MM/dd')
       .format(DateTime.now().subtract(const Duration(days: 2)));
-  var date4 = DateFormat('MM/dd')
+  String date4 = DateFormat('MM/dd')
       .format(DateTime.now().subtract(const Duration(days: 3)));
-  CardData({super.key, required this.type});
+  CardViewData(
+      {super.key,
+      required this.type,
+      required this.price1,
+      required this.price2,
+      required this.price3,
+      required this.price4});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(23),
           color: Colors.red,
         ),
         width: double.infinity,
-        height: 150,
-        padding: const EdgeInsets.all(11),
+        height: 160,
+        padding: const EdgeInsets.only(bottom: 5, right: 10, left: 15, top: 8),
         child: Column(
           children: [
             TextUtils(
               text: type,
-              fontSize: 23,
+              fontSize: 27,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(date4),
-                Text(date3),
-                Text(date2),
-                Text(date1),
-                TextUtils(
+                Text(
+                  date4,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  date3,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  date2,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  date1,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const TextUtils(
                     text: ':  تحديث يوم',
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black)
               ],
             ),
             const Divider(
               color: Colors.black,
-              height: 20,
+              height: 25,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('100'),
-                Text('100'),
-                Text('100'),
-                Text('100'),
-                TextUtils(
-                  text: "        :  التنفيذ",
-                  fontSize: 17,
+              children: [
+                Text(
+                  price4,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  price3,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  price2,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                Text(
+                  price1,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const TextUtils(
+                  text: "       :  التنفيذ",
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 )
