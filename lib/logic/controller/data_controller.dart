@@ -5,83 +5,168 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DataController extends GetxController {
-  RxBool  isLoading = true.obs;
-  //frakh
-  RxList<DataModel> frakhAbid = <DataModel>[].obs;
-  RxList<DataModel> frakhBaladi = <DataModel>[].obs;
-  RxList<DataModel> frakhSasso = <DataModel>[].obs;
-  RxList<DataModel> frakhAmihatAbid = <DataModel>[].obs;
-  //bat
-  RxList<DataModel> batMolar = <DataModel>[].obs;
-  RxList<DataModel> batFiransawi = <DataModel>[].obs;
-  RxList<DataModel> batMaskufi = <DataModel>[].obs;
-  //katakit
-  RxList<DataModel> katakitAbid = <DataModel>[].obs;
-  RxList<DataModel> katakitBaladi = <DataModel>[].obs;
-  RxList<DataModel> katakitSasso = <DataModel>[].obs;
-  //byd
-  RxList<DataModel> bydAbid = <DataModel>[].obs;
-  RxList<DataModel> bydAihmar = <DataModel>[].obs;
-  RxList<DataModel> bydBaladi = <DataModel>[].obs;
+  
+RxBool isLoading = true.obs;
 
-  List<RxList<DataModel>> totalItems   = [];
+  //frakh
+  List<DataModel> frakhAbid = <DataModel>[];
+  List<DataModel> frakhBaladi = <DataModel>[];
+  List<DataModel> frakhSasso = <DataModel>[];
+  List<DataModel> frakhAmihatAbid = <DataModel>[];
+  //bat
+  List<DataModel> batMolar = <DataModel>[];
+  List<DataModel> batFiransawi = <DataModel>[];
+  List<DataModel> batMaskufi = <DataModel>[];
+  //katakit
+  List<DataModel> katakitAbid = <DataModel>[];
+  List<DataModel> katakitBaladi = <DataModel>[];
+  List<DataModel> katakitSasso = <DataModel>[];
+  //byd
+  List<DataModel> bydAbid = <DataModel>[];
+  List<DataModel> bydAihmar = <DataModel>[];
+  List<DataModel> bydBaladi = <DataModel>[];
+
+  
 
 // onInit
   @override
   void onInit() {
-    //frakh
-    frakhAbid
-        .bindStream(FirestoreDB(collection: 'frakh', doc: 'abid').getAllData());
-    frakhBaladi.bindStream(
-        FirestoreDB(collection: 'frakh', doc: 'baladi').getAllData());
-    frakhSasso.bindStream(
-        FirestoreDB(collection: 'frakh', doc: 'sasso').getAllData());
 
-    frakhAmihatAbid.bindStream(
-        FirestoreDB(collection: 'frakh', doc: 'amihat abid').getAllData());
+     isLoading.value = true;
+   
+    dataFrakhAbid();
+    dataFrakhBaladi();
+    dataFrakhSasso();
+    dataFrakhAmihatAbid();
+      dataBatMolar();
+      dataBatFiransawi();
+      dataBatMaskufi();
+      dataKatakitAbid();
+      dataKatakitBaladi();
+      dataKatakitSasso();
+      dataBydAbid();
+      dataBydAihmar();
+      dataBydBaladi();
 
-    //bat
-    batMolar
-        .bindStream(FirestoreDB(collection: 'bat', doc: 'Molar').getAllData());
-    batFiransawi.bindStream(
-        FirestoreDB(collection: 'bat', doc: 'firansawi').getAllData());
-    batMaskufi.bindStream(
-        FirestoreDB(collection: 'bat', doc: 'maskufi').getAllData());
+       
 
-    //katakit
-    katakitAbid.bindStream(
-        FirestoreDB(collection: 'katakit', doc: 'abid').getAllData());
-    katakitBaladi.bindStream(
-        FirestoreDB(collection: 'katakit', doc: 'baladi').getAllData());
-    katakitSasso.bindStream(
-        FirestoreDB(collection: 'katakit', doc: 'sasso').getAllData());
+  
 
-    //byd
-    bydAbid
-        .bindStream(FirestoreDB(collection: 'byd', doc: 'abid').getAllData());
-    bydAihmar
-        .bindStream(FirestoreDB(collection: 'byd', doc: 'aihmar').getAllData());
-    bydBaladi
-        .bindStream(FirestoreDB(collection: 'byd', doc: 'baladi').getAllData());
-
-
-        totalItems.addAll([
-  frakhSasso,
-  frakhBaladi,
-  frakhAmihatAbid,
-  katakitAbid,
-  katakitSasso,
-  katakitBaladi,
-  bydAbid,
-  bydAihmar,
-  bydBaladi,
-  batMaskufi,
-  batMolar,
-  batFiransawi,
-]);
-
-    isLoading = false.obs;
+   
 
     super.onInit();
+  }
+
+//frakh
+
+  void dataFrakhAbid() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'frakh', doc: 'abid');
+    frakhAbid = await firestoreDB.getAllData();
+        isLoading.value = false;
+
+    update();
+  }
+
+  void dataFrakhBaladi() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'frakh', doc: 'baladi');
+    frakhBaladi = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataFrakhSasso() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'frakh', doc: 'sasso');
+    frakhSasso = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataFrakhAmihatAbid() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'frakh', doc: 'amihat abid');
+    frakhAmihatAbid = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  //bat
+
+  void dataBatMolar() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'bat', doc: 'Molar');
+    batMolar = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataBatFiransawi() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'bat', doc: 'firansawi');
+    batFiransawi = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataBatMaskufi() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'bat', doc: 'maskufi');
+    batMaskufi = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  //katakit
+
+  void dataKatakitAbid() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'katakit', doc: 'abid');
+    katakitAbid = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataKatakitBaladi() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'katakit', doc: 'baladi');
+    katakitBaladi = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataKatakitSasso() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'katakit', doc: 'sasso');
+    katakitSasso = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  //byd
+
+  void dataBydAbid() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'byd', doc: 'abid');
+    bydAbid = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataBydAihmar() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'byd', doc: 'aihmar');
+    bydAihmar = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
+  }
+
+  void dataBydBaladi() async {
+    final DataFirestore firestoreDB =
+        DataFirestore(collection: 'byd', doc: 'baladi');
+    bydBaladi = await firestoreDB.getAllData();
+    isLoading.value = false;
+    update();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:farkha_app/logic/controller/data_controller.dart';
-import 'package:farkha_app/logic/controller/ll.dart';
 import 'package:farkha_app/model/data_model.dart';
-import 'package:farkha_app/view/widget/home/card_data.dart';
+import 'package:farkha_app/view/widget/home/card_home/card_data.dart';
+import 'package:farkha_app/view/widget/home/circle_master/master_list.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,21 +13,30 @@ class CardList extends StatelessWidget {
   Widget build(BuildContext context) {
     final DataController controller = Get.put(DataController());
 
-    return Obx(() {
+    return GetBuilder<DataController>(builder: (_) {
       if (controller.isLoading.value) {
         return const Center(
           child: CircularProgressIndicator(color: Colors.blue),
         );
       } else {
-        return ListView.builder(        
-itemCount: controller.totalItems.fold<int>(
-    0,
-    (previousValue, list) => previousValue + list.length,
-  ),
+        return ListView.builder(
+          itemCount: controller.frakhAbid.length +
+              controller.frakhBaladi.length +
+              controller.bydBaladi.length +
+              controller.frakhSasso.length +
+              controller.frakhAmihatAbid.length +
+              controller.batMolar.length +
+              controller.batFiransawi.length +
+              controller.batMaskufi.length +
+              controller.katakitAbid.length +
+              controller.katakitBaladi.length +
+              controller.katakitSasso.length +
+              controller.bydAbid.length +
+              controller.bydAihmar.length,
           itemBuilder: (BuildContext context, int index) {
             return ViewListCard(
-              index: index,
               controller: controller,
+              index: index,
             );
           },
         );
@@ -51,7 +60,16 @@ class ViewListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        //  frakh
+        // MasterList(),
+
+        // frakh
+
+        const TextUtils(
+          text: 'اسعار الدواجن',
+          fontSize: 30,
+          fontWeight: FontWeight.w800,
+          color: Colors.black,
+        ),
 
         CardViewData(
           type: 'ابيض',
@@ -84,6 +102,18 @@ class ViewListCard extends StatelessWidget {
 
         //katakit
 
+        Divider(
+          color: Colors.black,
+          height: 60,
+        ),
+
+        const TextUtils(
+          text: 'اسعار الكتاكيت',
+          fontSize: 30,
+          fontWeight: FontWeight.w800,
+          color: Colors.black,
+        ),
+
         CardViewData(
           price1: controller.katakitAbid[index].todayPrice,
           price2: controller.katakitAbid[index].yesterdayPrice,
@@ -108,6 +138,18 @@ class ViewListCard extends StatelessWidget {
 
         //byd
 
+        Divider(
+          color: Colors.black,
+          height: 60,
+        ),
+
+        const TextUtils(
+          text: 'اسعار البيض',
+          fontSize: 30,
+          fontWeight: FontWeight.w800,
+          color: Colors.black,
+        ),
+
         CardViewData(
           price1: controller.bydAbid[index].todayPrice,
           price2: controller.bydAbid[index].yesterdayPrice,
@@ -131,6 +173,18 @@ class ViewListCard extends StatelessWidget {
         ),
 
         //bat
+
+        Divider(
+          color: Colors.black,
+          height: 60,
+        ),
+
+        const TextUtils(
+          text: 'اسعار البط',
+          fontSize: 30,
+          fontWeight: FontWeight.w800,
+          color: Colors.black,
+        ),
 
         CardViewData(
           price1: controller.batMaskufi[index].todayPrice,

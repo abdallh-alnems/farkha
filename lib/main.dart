@@ -1,5 +1,4 @@
 import 'package:farkha_app/logic/controller/data_controller.dart';
-import 'package:farkha_app/logic/controller/ll.dart';
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/screen/home_screen.dart';
 import 'package:farkha_app/view/screen/onboarding.dart';

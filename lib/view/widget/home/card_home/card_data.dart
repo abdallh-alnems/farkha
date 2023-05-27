@@ -29,7 +29,7 @@ class CardViewData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(23),
           color: Colors.red,
@@ -45,7 +45,6 @@ class CardViewData extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
-            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
