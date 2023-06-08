@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ControllerDetails extends StatelessWidget {
-  const ControllerDetails({super.key});
+class TExtTypeDrawer extends StatelessWidget {
+  const TExtTypeDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {

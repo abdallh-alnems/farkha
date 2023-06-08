@@ -1,5 +1,7 @@
+import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/widget/home/circle_master/circle_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MasterList extends StatelessWidget {
   const MasterList({super.key});
@@ -13,40 +15,62 @@ class MasterList extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 10,
+              width: 15,
             ),
             InkWell(
-              onTap: ,
-              child: CricleAvatarHome(
+              onTap: () {
+                Get.toNamed(Routes.FrakhType);
+              },
+              child: CircleAvatarHome(
                 type: 'فراخ',
               ),
             ),
             SizedBox(
-              width: 20,
+              width: 25,
             ),
-            CricleAvatarHome(
-              type: 'كتاكيت',
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            CricleAvatarHome(
-              type: 'اعلاف',
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            CricleAvatarHome(
-              type: 'بيض',
+            InkWell(
+              onTap: () {
+                Get.toNamed(Routes.KatkitType);
+              },
+              child: CircleAvatarHome(
+                type: 'كتاكيت',
+              ),
             ),
             SizedBox(
-              width: 20,
+              width: 25,
             ),
-            CricleAvatarHome(
-              type: 'بط',
+            InkWell(
+              onTap: () {
+                Get.toNamed(Routes.A3lafType);
+              },
+              child: CircleAvatarHome(
+                type: 'اعلاف',
+              ),
             ),
             SizedBox(
-              width: 10,
+              width: 25,
+            ),
+            InkWell(
+              onTap: () {
+                Get.toNamed(Routes.BydType);
+              },
+              child: CircleAvatarHome(
+                type: 'بيض',
+              ),
+            ),
+            SizedBox(
+              width: 25,
+            ),
+            InkWell(
+              onTap: () {
+                Get.toNamed(Routes.BatType);
+              },
+              child: CircleAvatarHome(
+                type: 'بط',
+              ),
+            ),
+            SizedBox(
+              width: 15,
             ),
           ],
         ),

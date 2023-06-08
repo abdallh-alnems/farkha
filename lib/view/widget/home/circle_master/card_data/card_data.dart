@@ -11,6 +11,8 @@ class CardViewData extends StatelessWidget {
   final String price2;
   final String price3;
   final String price4;
+  final String price5;
+
   String date1 = DateFormat('MM/dd').format(DateTime.now());
   String date2 = DateFormat('MM/dd')
       .format(DateTime.now().subtract(const Duration(days: 1)));
@@ -18,21 +20,24 @@ class CardViewData extends StatelessWidget {
       .format(DateTime.now().subtract(const Duration(days: 2)));
   String date4 = DateFormat('MM/dd')
       .format(DateTime.now().subtract(const Duration(days: 3)));
+  String date5 = DateFormat('MM/dd')
+      .format(DateTime.now().subtract(const Duration(days: 4)));
   CardViewData(
       {super.key,
       required this.type,
       required this.price1,
       required this.price2,
       required this.price3,
-      required this.price4});
+      required this.price4,
+      required this.price5});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(23),
-          color: Colors.red,
+          color: Colors.cyan,
         ),
         width: double.infinity,
         height: 160,
@@ -41,62 +46,70 @@ class CardViewData extends StatelessWidget {
           children: [
             TextUtils(
               text: type,
-              fontSize: 27,
-              fontWeight: FontWeight.bold,
+              fontSize: 28,
+              fontWeight: FontWeight.w300,
               color: Colors.black,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
+                  date5,
+                  style: const TextStyle(fontSize: 15),
+                ),
+                Text(
                   date4,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 Text(
                   date3,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 Text(
                   date2,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 Text(
                   date1,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 const TextUtils(
-                    text: ':  تحديث يوم',
-                    fontSize: 20,
+                    text: ':  التاريخ',
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black)
               ],
             ),
             const Divider(
               color: Colors.black,
-              height: 25,
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
+                  price5,
+                  style: const TextStyle(fontSize: 15),
+                ),
+                Text(
                   price4,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 Text(
                   price3,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 Text(
                   price2,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 Text(
                   price1,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 15),
                 ),
                 const TextUtils(
-                  text: "       :  التنفيذ",
-                  fontSize: 20,
+                  text: ":  التنفيذ",
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 )

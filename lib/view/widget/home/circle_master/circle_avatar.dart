@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CricleAvatarHome extends StatelessWidget {
+class CircleAvatarHome extends StatelessWidget {
   String type;
-  CricleAvatarHome({
+  CircleAvatarHome({
     super.key,
     required this.type,
   });

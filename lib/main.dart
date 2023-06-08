@@ -1,7 +1,8 @@
-import 'package:farkha_app/logic/controller/data_controller.dart';
+import 'package:farkha_app/logic/binding/data_binding/frakh_binding.dart';
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/screen/home_screen.dart';
 import 'package:farkha_app/view/screen/onboarding.dart';
+import 'package:farkha_app/view/widget/home/test.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,8 +27,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: Test(),
       getPages: AppRoutes.routes,
+      initialBinding: FrakhBinding(),
     );
   }
 }
