@@ -1,8 +1,14 @@
+import 'package:farkha_app/routes/routes.dart';
+import 'package:farkha_app/utils/theme.dart';
+import 'package:farkha_app/utils/theme.dart';
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/home/circle_master/card_data/card_data.dart';
 import 'package:farkha_app/view/widget/home/circle_master/master_list.dart';
 import 'package:farkha_app/view/widget/home/container_price/container_price.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../utils/theme.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -46,13 +52,77 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(Routes.Alida);
+                  },
+                  title: Text(
+                    'الاضاءه',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.wb_incandescent,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    Get.toNamed(Routes.DartgetAl7rara);
+                  },
                   title: Text(
                     'درجات الحرارة',
                     style: TextStyle(fontSize: 20),
                   ),
                   leading: Icon(
                     Icons.thermostat,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
+                    'الرطوبه',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.water_drop,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
+                    'الصيف',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.wb_sunny,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
+                    'الشتاء',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.ac_unit,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
+                    'التجانس',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.layers,
                     size: 25,
                     color: Colors.blue,
                   ),
@@ -72,6 +142,18 @@ class HomeScreen extends StatelessWidget {
                 ListTile(
                   onTap: () {},
                   title: Text(
+                    'استهلاك',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.cable,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
                     'سلالات',
                     style: TextStyle(fontSize: 20),
                   ),
@@ -84,11 +166,35 @@ class HomeScreen extends StatelessWidget {
                 ListTile(
                   onTap: () {},
                   title: Text(
-                    'امراض',
+                    'الارضية',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.crop_square,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
+                    'فيروسات',
                     style: TextStyle(fontSize: 20),
                   ),
                   leading: Icon(
                     Icons.bug_report,
+                    size: 25,
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {},
+                  title: Text(
+                    'امراض',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: Icon(
+                    Icons.warning,
                     size: 25,
                     color: Colors.blue,
                   ),
@@ -230,7 +336,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 ListTile(
                   onTap: () {
-                      Get.snackbar(
+                    Get.snackbar(
                       '',
                       '',
                       titleText: Text(
@@ -271,7 +377,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        appBar: AppBar(),
+        appBar: AppBar(
+         
+        ),
         body: Column(
           children: [MasterList(), ContainerPrice()],
         )

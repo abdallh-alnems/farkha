@@ -7,6 +7,8 @@ import 'package:farkha_app/view/screen/choose_type/bat_type.dart';
 import 'package:farkha_app/view/screen/choose_type/byd_type.dart';
 import 'package:farkha_app/view/screen/choose_type/frakh_type.dart';
 import 'package:farkha_app/view/screen/choose_type/katkit_type.dart';
+import 'package:farkha_app/view/screen/drawer/alida.dart';
+import 'package:farkha_app/view/screen/drawer/dargt_al7rara.dart';
 import 'package:farkha_app/view/screen/home_screen.dart';
 import 'package:farkha_app/view/screen/onboarding.dart';
 import 'package:get/get.dart';
@@ -49,6 +51,14 @@ class AppRoutes {
       name: Routes.BatType,
       page: () => BatType(),
       binding: BatBinding(),
+    ),
+    GetPage(
+      name: Routes.DartgetAl7rara,
+      page: () => DartgetAl7rara(),
+    ),
+    GetPage(
+      name: Routes.Alida,
+      page: () => Alida(),
     )
   ];
 }
@@ -67,5 +77,7 @@ class Routes {
   static const BydType = "/bydType";
 
   static const BatType = "/batType";
+  static const DartgetAl7rara = "/dartgetAl7rara";
+  static const Alida = "/alida";
 
 }

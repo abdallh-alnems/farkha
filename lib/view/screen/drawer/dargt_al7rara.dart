@@ -1,0 +1,170 @@
+import 'package:farkha_app/constant/m.dart';
+import 'package:farkha_app/view/widget/text_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class DartgetAl7rara extends StatelessWidget {
+  const DartgetAl7rara({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    List<TableRow> rows = [];
+    List<String> variable = [
+      '',
+      '35',
+      '33',
+      '33',
+      '32',
+      '31',
+      '30',
+      '30',
+      '30',
+      '29',
+      '29',
+      '29',
+      '28',
+      '28',
+      '27',
+      '27',
+      '27',
+      '26',
+      '26',
+      '25',
+      '25',
+      '25',
+      '24',
+      '24',
+      '24',
+      '23',
+      '23',
+      '23',
+      '22',
+      '22',
+      '22',
+      '22',
+      '22',
+      '21',
+      '21',
+      '21',
+      '21',
+      '20',
+      '20',
+      '20',
+      '20',
+      '20',
+      '20',
+      '20',
+      '20',
+      '20',
+      '20',
+    ];
+    TableRow _tpye = const TableRow(children: <Widget>[
+      Padding(
+        padding: EdgeInsets.all(13),
+        child: Text(
+          'درجة الحراره',
+          style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.all(13),
+        child: Text(
+          'العمر',
+          style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+          textAlign: TextAlign.center,
+        ),
+      )
+    ]);
+
+    for (int i = 1; i <= 45; i++,) {
+      String temperature = variable[i];
+
+      TableRow row = TableRow(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(13),
+            child: Text(
+              temperature,
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(13),
+            child: Text(
+              '$i',
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      );
+      rows.add(row);
+    }
+
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                    margin: EdgeInsets.only(left: 3),
+                    alignment: Alignment.bottomLeft,
+                    child: IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          size: 28,
+                        ))),
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'علامات ارتفاع درجة الحرارة داخل الحظيرة',
+                        style: TextStyle(fontSize: 16),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      Text(
+                        "  تلاحظ تباعد الدجاج عن بعضه بصوره غير طبيعية مع فتح جناحيه عن جسمه وبعض الدجاج يمد رقبته للأمام على الأرض ",
+                        style: TextStyle(fontSize: 20),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Text(
+                        'علامات انخفاض درجة الحرارة داخل المزرعه',
+                        style: TextStyle(fontSize: 16),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      Text(
+                        'الشعور بالبرودة خمول وكسل الدجاج وعدم إقباله على الأكل والشرب و تجمعه في جماعات بجوار الجدران أو تحت الحضانات ليحاول تدفئة نفسه',
+                        style: TextStyle(fontSize: 20),
+                        textDirection: TextDirection.rtl,
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text('الجدول التالي يمثل درجات الحراره باليوم'),
+                Container(
+                  width: double.infinity,
+                  child: Table(
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
+                      border: TableBorder.all(),
+                      children: <TableRow>[_tpye, ...rows]),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}

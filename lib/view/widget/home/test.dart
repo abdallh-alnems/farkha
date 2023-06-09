@@ -11,6 +11,57 @@ class Test extends StatelessWidget {
         onPressed: () {
           Get.toNamed(Routes.HomeScreen);
         },
-        child: Text('Home'));
+        child:
+            // Table(
+            //   border: TableBorder.all(),
+            //   children: [
+            //     TableRow(
+            //       children: [
+            //         TableCell(
+            //           child: Text(
+            //             'Cell 1',
+            //             style: TextStyle(fontSize: 20),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //         ),
+            //         TableCell(
+            //           child: Text(
+            //             'Cell 1',
+            //             style: TextStyle(fontSize: 20),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //         ),
+            //         TableCell(
+            //           child: Text('Cell 2'),
+            //         ),
+            //         TableCell(
+            //           child: Text('Cell 3'),
+            //         ),
+            //       ],
+            //     ),
+            //     TableRow(
+            //       children: [
+            //         TableCell(
+            //           child: Text('Cell 4'),
+            //         ),
+            //         TableCell(
+            //           child: Text('Cell 5'),
+            //         ),
+            //         TableCell(
+            //           child: Text('Cell 6'),
+            //         ),
+            //         TableCell(
+            //           child: Text(
+            //             'Cell 1',
+            //             style: TextStyle(fontSize: 20),
+            //             textAlign: TextAlign.center,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ],
+            // ),
+
+            Text('Home'));
   }
 }
