@@ -1,5 +1,7 @@
 import 'package:farkha_app/logic/controller/data_controller/data_frakh_controller.dart';
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/home/circle_master/card_data/card_data.dart';
+import 'package:farkha_app/view/widget/home/drawer/my_drawer.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +29,7 @@ class FrakhType extends StatelessWidget {
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back,
-                  color: Colors.black,
+                  color: Colors.cyan,
                   size: 40,
                 ),
                 onPressed: () {
@@ -54,7 +56,6 @@ class FrakhType extends StatelessWidget {
                           price3: controller.frakhAbid[0].firstYesterdayPrice,
                           price4: controller.frakhAbid[0].fourDaysAgoPrice,
                           price5: controller.frakhAbid[0].five,
-                          
                         ),
                         CardViewData(
                           price1: controller.frakhSasso[0].todayPrice,
@@ -79,7 +80,7 @@ class FrakhType extends StatelessWidget {
                               controller.frakhAmihatAbid[0].firstYesterdayPrice,
                           price4:
                               controller.frakhAmihatAbid[0].fourDaysAgoPrice,
-                              price5: controller.frakhAmihatAbid[0].five,
+                          price5: controller.frakhAmihatAbid[0].five,
                           type: 'امهات ابيض',
                         ),
 

@@ -1,3 +1,4 @@
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +13,8 @@ class ContinarType extends StatelessWidget {
       margin: const EdgeInsets.all(15),
       width: double.infinity,
       height: 150,
-      decoration: BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.circular(50)),
+      decoration:
+          BoxDecoration(color: cyan, borderRadius: BorderRadius.circular(50)),
       child: TextUtils(
         color: Colors.white,
         fontSize: 50,

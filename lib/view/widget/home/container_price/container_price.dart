@@ -1,4 +1,5 @@
 import 'package:farkha_app/logic/controller/data_controller/data_frakh_controller.dart';
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,7 @@ class ContainerPrice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.deepPurple,
+      color: scaColor,
       height: 100,
       width: double.infinity,
       child: Row(
@@ -28,7 +29,7 @@ class ContainerPrice extends StatelessWidget {
       alignment: Alignment.center,
       height: 40,
       width: 90,
-      color: Colors.amber,
+      color: Colors.white,
       child: GetBuilder<DataFrakhController>(
         builder: (controller) {
           if (controller.frakhAbid.isNotEmpty) {
@@ -54,9 +55,9 @@ class ContainerPrice extends StatelessWidget {
   Widget _buildWhiteMeatPrice() {
     return TextUtils(
       text: 'سعر كيلو اللحم الابيض',
-      fontSize: 25,
+      fontSize: 22,
       fontWeight: FontWeight.w500,
-      color: Colors.deepOrange,
+      color: Colors.white,
     );
   }
 }

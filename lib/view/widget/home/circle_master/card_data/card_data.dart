@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -58,24 +59,24 @@ class CardViewData extends StatelessWidget {
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  date4,
+                  ' | $date4',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  date3,
+                  ' | $date3',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  date2,
+                  ' | $date2',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  date1,
+                  ' | $date1',
                   style: const TextStyle(fontSize: 15),
                 ),
                 const TextUtils(
                     text: ':  التاريخ',
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.black)
               ],
@@ -92,24 +93,24 @@ class CardViewData extends StatelessWidget {
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  price4,
+                  ' | $price4',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  price3,
+                  ' | $price3',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  price2,
+                  ' | $price2',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  price1,
+                  ' | $price1',
                   style: const TextStyle(fontSize: 15),
                 ),
                 const TextUtils(
                   text: ":  التنفيذ",
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 )

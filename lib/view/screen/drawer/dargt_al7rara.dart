@@ -1,4 +1,5 @@
 import 'package:farkha_app/constant/m.dart';
+import 'package:farkha_app/view/widget/home/drawer/text_drawer/type_drawer.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -129,23 +130,18 @@ class DartgetAl7rara extends StatelessWidget {
                         style: TextStyle(fontSize: 16),
                         textDirection: TextDirection.rtl,
                       ),
-                      Text(
-                        "  تلاحظ تباعد الدجاج عن بعضه بصوره غير طبيعية مع فتح جناحيه عن جسمه وبعض الدجاج يمد رقبته للأمام على الأرض ",
-                        style: TextStyle(fontSize: 20),
-                        textDirection: TextDirection.rtl,
-                      ),
-                      SizedBox(
-                        height: 25,
+                      TypeDrawer(
+                        type:
+                            "  تلاحظ تباعد الدجاج عن بعضه بصوره غير طبيعية مع فتح جناحيه عن جسمه وبعض الدجاج يمد رقبته للأمام على الأرض ",
                       ),
                       Text(
                         'علامات انخفاض درجة الحرارة داخل المزرعه',
                         style: TextStyle(fontSize: 16),
                         textDirection: TextDirection.rtl,
                       ),
-                      Text(
-                        'الشعور بالبرودة خمول وكسل الدجاج وعدم إقباله على الأكل والشرب و تجمعه في جماعات بجوار الجدران أو تحت الحضانات ليحاول تدفئة نفسه',
-                        style: TextStyle(fontSize: 20),
-                        textDirection: TextDirection.rtl,
+                      TypeDrawer(
+                        type:
+                            'الشعور بالبرودة خمول وكسل الدجاج وعدم إقباله على الأكل والشرب و تجمعه في جماعات بجوار الجدران أو تحت الحضانات ليحاول تدفئة نفسه',
                       )
                     ],
                   ),
