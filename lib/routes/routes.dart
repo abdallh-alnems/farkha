@@ -2,11 +2,11 @@ import 'package:farkha_app/logic/binding/data_binding/bat_binding.dart';
 import 'package:farkha_app/logic/binding/data_binding/byd_binding.dart';
 import 'package:farkha_app/logic/binding/data_binding/frakh_binding.dart';
 import 'package:farkha_app/logic/binding/data_binding/katkit_binding.dart';
-import 'package:farkha_app/view/screen/choose_type/a3laf_type.dart';
-import 'package:farkha_app/view/screen/choose_type/bat_type.dart';
-import 'package:farkha_app/view/screen/choose_type/byd_type.dart';
-import 'package:farkha_app/view/screen/choose_type/frakh_type.dart';
-import 'package:farkha_app/view/screen/choose_type/katkit_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/a3laf_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/bat_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/katkit_type.dart';
 import 'package:farkha_app/view/screen/drawer/alardya.dart';
 import 'package:farkha_app/view/screen/drawer/alferosat.dart';
 import 'package:farkha_app/view/screen/drawer/alida.dart';
@@ -19,8 +19,8 @@ import 'package:farkha_app/view/screen/drawer/awzan.dart';
 import 'package:farkha_app/view/screen/drawer/dargt_al7rara.dart';
 import 'package:farkha_app/view/screen/drawer/solalat.dart';
 
-import 'package:farkha_app/view/screen/home_screen.dart';
-import 'package:farkha_app/view/screen/onboarding.dart';
+import 'package:farkha_app/view/screen/home/home_screen.dart';
+import 'package:farkha_app/view/screen/onboarding/onboarding.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {

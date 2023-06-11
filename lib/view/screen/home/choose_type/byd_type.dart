@@ -1,4 +1,5 @@
 import 'package:farkha_app/logic/controller/data_controller/data_byd_controller.dart';
+import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/card_data/card_data.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
@@ -14,27 +15,7 @@ class BydType extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              centerTitle: true,
-              title: TextUtils(
-                text: 'اسعار البيض',
-                fontSize: 28,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-              ),
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                  size: 40,
-                ),
-                onPressed: () {
-                  Get.back();
-                },
-              ),
-            ),
+            appBar: MyAppBar(text: 'اسعار البيض'  ,),
             body: SingleChildScrollView(
               child: GetBuilder<DataBydController>(
                 builder: (_) {

@@ -1,5 +1,6 @@
-import 'package:farkha_app/view/widget/home/drawer/text_drawer/title_drawer.dart';
-import 'package:farkha_app/view/widget/home/drawer/text_drawer/type_drawer.dart';
+import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
+import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';
+import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,17 +14,7 @@ class Alardya extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                  margin: EdgeInsets.only(left: 3),
-                  alignment: Alignment.bottomLeft,
-                  child: IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 28,
-                      ))),
+             ArrowBack(),
               Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(20),

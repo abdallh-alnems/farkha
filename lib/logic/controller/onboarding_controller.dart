@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:farkha_app/routes/routes.dart';
-import 'package:farkha_app/view/screen/home_screen.dart';
+import 'package:farkha_app/view/screen/home/home_screen.dart';
 import 'package:farkha_app/data/static.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,5 +1,5 @@
-import 'package:farkha_app/view/widget/home/drawer/text_drawer/title_drawer.dart';
-import 'package:farkha_app/view/widget/home/drawer/text_drawer/type_drawer.dart';
+import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';
+import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

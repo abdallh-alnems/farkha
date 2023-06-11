@@ -1,6 +1,6 @@
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/utils/theme.dart';
-import 'package:farkha_app/view/widget/home/drawer/list_title_drawer.dart';
+import 'package:farkha_app/view/widget/drawer/list_title_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

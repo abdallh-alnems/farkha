@@ -1,7 +1,8 @@
 import 'package:farkha_app/logic/controller/data_controller/data_frakh_controller.dart';
 import 'package:farkha_app/utils/theme.dart';
+import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/card_data/card_data.dart';
-import 'package:farkha_app/view/widget/home/drawer/my_drawer.dart';
+import 'package:farkha_app/view/widget/drawer/my_drawer.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,27 +17,8 @@ class FrakhType extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              centerTitle: true,
-              title: TextUtils(
-                text: 'اسعار الفراخ',
-                fontSize: 28,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
-              ),
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.cyan,
-                  size: 40,
-                ),
-                onPressed: () {
-                  Get.back();
-                },
-              ),
-            ),
+            // ignore: prefer_const_constructors
+            appBar: MyAppBar(text: 'اسعار الفراخ',),
             body: SingleChildScrollView(
               child: GetBuilder<DataFrakhController>(
                 builder: (_) {
