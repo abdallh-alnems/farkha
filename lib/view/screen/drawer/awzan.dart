@@ -61,7 +61,7 @@ class Awzan extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'الوزن',
+          'الوزن بالجرام',
           style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -69,7 +69,7 @@ class Awzan extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'العمر',
+          'العمر باليوم',
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -143,6 +143,10 @@ class Awzan extends StatelessWidget {
                   ),
                 ),
                 Text('الجدول التالي يمثل  اوزان الفراخ بالجرام عند عمر كل يوم'),
+                Text(
+                  'ملحوظه : يجب وزن عشره فرخات ثم القسمه علي عشره ليكون المتوسط كالتالي',
+                  style: TextStyle(color: Colors.red),
+                ),
                 Container(
                   width: double.infinity,
                   child: Table(

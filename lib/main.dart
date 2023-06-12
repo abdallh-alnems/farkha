@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Test(),
+      home: HomeScreen(),
       getPages: AppRoutes.routes,
       initialBinding: FrakhBinding(),
     );

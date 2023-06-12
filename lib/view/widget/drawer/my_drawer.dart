@@ -122,76 +122,108 @@ class MyDrawer extends StatelessWidget {
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Alferosat);
+                Get.toNamed(Routes.Amard);
               },
-              title: 'فيروسات',
-              icon: Icons.bug_report,
-              color: Colors.cyan,
-            ),
-            ListTitleDrawer(
-              onTap: () {},
               title: 'امراض',
               icon: Icons.warning,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.A3ard);
+              },
               title: 'اعراض',
               icon: Icons.delete_forever,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
-              title: 'ادويه',
+              onTap: () {
+                Get.toNamed(Routes.AL3lag);
+              },
+              title: 'علاج',
               icon: Icons.local_pharmacy,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.Nasa7a);
+              },
               title: 'نصائح',
               icon: Icons.receipt,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.Akhtaq);
+              },
               title: 'اخطاء',
               icon: Icons.error,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.snackbar(
+                  '',
+                  '',
+                  titleText: Text(
+                    '',
+                    style: TextStyle(fontSize: 0),
+                    textAlign: TextAlign.center,
+                  ),
+                  messageText: Text(
+                    'هذا الميزة لم تفعل بعد',
+                    style: TextStyle(fontSize: 23),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+              title: 'مستلزمات',
+              icon: Icons.radar,
+              color: Colors.cyan,
+            ),
+            ListTitleDrawer(
+              onTap: () {
+                Get.snackbar(
+                  '',
+                  '',
+                  titleText: Text(
+                    '',
+                    style: TextStyle(fontSize: 0),
+                    textAlign: TextAlign.center,
+                  ),
+                  messageText: Text(
+                    'هذا الميزة لم تفعل بعد',
+                    style: TextStyle(fontSize: 23),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
               title: 'المزرعة',
               icon: Icons.home,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.Tather);
+              },
               title: 'تطهير',
               icon: Icons.cleaning_services,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.Astaqbal);
+              },
               title: 'استقبال',
               icon: Icons.check_box,
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.toNamed(Routes.Ta7sen);
+              },
               title: 'تحصينات',
               icon: Icons.security,
-              color: Colors.cyan,
-            ),
-            ListTitleDrawer(
-              onTap: () {},
-              title: 'تاكيل',
-              icon: Icons.grain,
-              color: Colors.cyan,
-            ),
-            ListTitleDrawer(
-              onTap: () {},
-              title: 'خلطات',
-              icon: Icons.compare_arrows,
               color: Colors.cyan,
             ),
             ListTitleDrawer(

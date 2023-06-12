@@ -184,7 +184,7 @@ class Alida extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'العمر',
+          'العمر باليوم',
           style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -241,7 +241,7 @@ class Alida extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-               ArrowBack(),
+                ArrowBack(),
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Column(

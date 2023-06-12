@@ -54,7 +54,7 @@ class ContainerPrice extends StatelessWidget {
 
   Widget _buildWhiteMeatPrice() {
     return TextUtils(
-      text: 'سعر كيلو اللحم الابيض',
+      text: 'سعر كيلو الفراخ البيضاء',
       fontSize: 22,
       fontWeight: FontWeight.w500,
       color: Colors.white,

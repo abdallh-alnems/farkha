@@ -64,7 +64,7 @@ class DartgetAl7rara extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'درجة الحراره',
+          'درجة الحرارة مئويه',
           style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -72,7 +72,7 @@ class DartgetAl7rara extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'العمر',
+          'العمر باليوم',
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -111,7 +111,7 @@ class DartgetAl7rara extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                 ArrowBack(),
+                ArrowBack(),
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Column(

@@ -1,4 +1,5 @@
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
+import 'package:farkha_app/view/widget/drawer/divider_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class Alardya extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-             ArrowBack(),
+              ArrowBack(),
               Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(20),
@@ -28,30 +29,41 @@ class Alardya extends StatelessWidget {
                       type:
                           'توجد عدة خيارات للأرضية المناسبة لتربية الفراخ البيضاء  وتشمل القش الشنارة والأرضيات البلاستيكية. ويجب اختيار الأرضية المناسبة التي تتوافق مع سلالة الفراخ وظروف البيئة المحيطة. ويفضل استخدام الأرضيات البلاستيكية لأنها مقاومة للبكتيريا والفطريات وتساعد في تنظيف الأرضية بشكل أسهل وأكثر فعالية.',
                     ),
+                   DividerDrawer(),
                     TitleDrawer(title: 'النظافة'),
                     TypeDrawer(
                       type:
                           'يجب الحرص على نظافة الأرضية بشكل دوري ومنتظم، حيث يمكن تكوين بكتيريا وفطريات على الأرضية والتي يمكن أن تؤثر بشكل سلبي على صحة الدجاج. ويجب تنظيف الأرضية بالماء والصابون وتطهيرها باستخدام المواد المعقمة.',
                     ),
+                   DividerDrawer(),
                     TitleDrawer(title: 'الحجم'),
                     TypeDrawer(
                       type:
                           'يجب اختيار الأرضية المناسبة حسب عدد الفراخ وحجمها، حيث يجب توفير مساحة كافية للفراخ للحركة والتنقل والنمو. ويجب تجنب تجميع الفراخ في مساحات صغيرة جداً، حيث يؤدي ذلك إلى ارتفاع مستوى التوتر والإجهاد لديهم وتأثير سلبي على صحتهم وإنتاجيتهم.',
                     ),
+                 DividerDrawer(),
                     TitleDrawer(title: 'الراحة'),
                     TypeDrawer(
                       type:
                           'يجب الحرص على توفير الراحة للفراخ عند اختيار الأرضية، حيث يجب أن تكون الأرضية ناعمة وخالية من العوائق والأشياء الحادة التي يمكن أن تؤذي الدجاج. ويمكن استخدام الرمل أو القش لزيادة الراحة وتقليل الاحتكاك بين الأرضية والأرجل.',
                     ),
+                    DividerDrawer(),
                     TitleDrawer(title: 'الحماية'),
                     TypeDrawer(
                       type:
                           'يجب توفير الحماية للفراخ على الأرضية، حيث يمكن تعرضها للهجوم من الحيوانات المفترسة ويمكن استخدام الشبك الحديدي أو الأسلاك الشائكة لتأمين المكان وحماية الفراخ',
                     ),
+                 DividerDrawer(),
                     TitleDrawer(title: 'التكلفة'),
                     TypeDrawer(
                       type:
                           'يجب اختيار الأرضية التي تتوافق مع الميزانية المتاحة لتربية الفراخ، حيث يمكن أن يكون تكلفة بعض الأرضيات مرتفعة جداً وغير متاحة للجميع. ويجب الاستفادة من الخيارات المتاحة والمناسبة لتوفير الأرضية الملائمة لتربية الفراخ بأفضل صورة ممكنة.',
+                    ),
+                  DividerDrawer(),
+                    TitleDrawer(title: 'النشاره'),
+                    TypeDrawer(
+                      type:
+                          'فرش الارضيه بالنشاره فى الصيف بسمك 5 سم وفى الشتاء 10 سم.',
                     ),
                   ]))
             ],

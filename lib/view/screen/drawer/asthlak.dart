@@ -61,7 +61,7 @@ class Asthlak extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'الاستهلاك',
+          ' الاستهلاك بالجرام',
           style: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -69,7 +69,7 @@ class Asthlak extends StatelessWidget {
       Padding(
         padding: EdgeInsets.all(13),
         child: Text(
-          'العمر',
+          'العمر باليوم',
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
           textAlign: TextAlign.center,
         ),
@@ -144,6 +144,10 @@ class Asthlak extends StatelessWidget {
                 ),
                 Text(
                     'الجدول التالي يمثل  استهلاك الفراخ البيضاء للعلف بالجرام عند عمر كل يوم'),
+                Text(
+                  'ملحوظه : الفرخ الابيض  ياكل متوسط 3.5 كيلو علف طول الدورة',
+                  style: TextStyle(color: Colors.red),
+                ),
                 Container(
                   width: double.infinity,
                   child: Table(
