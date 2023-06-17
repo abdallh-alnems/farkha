@@ -41,7 +41,20 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.A3lafType);
+                 Get.snackbar(
+                  '',
+                  '',
+                  titleText: Text(
+                    '',
+                    style: TextStyle(fontSize: 0),
+                    textAlign: TextAlign.center,
+                  ),
+                  messageText: Text(
+                  'سيتم التفعيل قريبا',
+                    style: TextStyle(fontSize: 23),
+                    textAlign: TextAlign.center,
+                  ),
+                );
               },
               child: CircleAvatarHome(
                 type: 'اعلاف',

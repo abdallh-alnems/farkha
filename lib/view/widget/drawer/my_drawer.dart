@@ -227,7 +227,22 @@ class MyDrawer extends StatelessWidget {
               color: Colors.cyan,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                Get.snackbar(
+                  '',
+                  '',
+                  titleText: Text(
+                    '',
+                    style: TextStyle(fontSize: 0),
+                    textAlign: TextAlign.center,
+                  ),
+                  messageText: Text(
+                    'هذا الميزة لم تفعل بعد',
+                    style: TextStyle(fontSize: 23),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
               title: 'دورة',
               icon: Icons.cached,
               color: Colors.cyan,
@@ -276,4 +291,3 @@ class MyDrawer extends StatelessWidget {
 }
 
 
-// ListTitleDrawer(onTap:(){} ,title:'' ,icon: ,color: ,),

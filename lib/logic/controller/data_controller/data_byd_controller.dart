@@ -5,19 +5,15 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DataBydController extends GetxController {
-  
-RxBool isLoading = true.obs;
+  RxBool isLoading = true.obs;
 
   //byd
   List<DataModel> bydAbid = <DataModel>[];
   List<DataModel> bydAihmar = <DataModel>[];
   List<DataModel> bydBaladi = <DataModel>[];
 
-
-  
-
 // onInit
- @override
+  @override
   void onInit() {
     isLoading.value = true;
 
@@ -26,39 +22,31 @@ RxBool isLoading = true.obs;
     dataBydBaladi();
 
     super.onInit();
-  }  
+  }
 
 //bat
 
- void dataBydAbid() async {
+  void dataBydAbid() async {
     final DataFirestore firestoreDB =
-        DataFirestore(collection: 'frakh', doc: 'baladi');
+        DataFirestore(collection: 'byd', doc: 'abid');
     bydAbid = await firestoreDB.getAllData();
     isLoading.value = false;
     update();
   }
 
-   void dataBydAihmar() async {
+  void dataBydAihmar() async {
     final DataFirestore firestoreDB =
-        DataFirestore(collection: 'frakh', doc: 'baladi');
+        DataFirestore(collection: 'byd', doc: 'aihmar');
     bydAihmar = await firestoreDB.getAllData();
     isLoading.value = false;
     update();
   }
 
-
   void dataBydBaladi() async {
     final DataFirestore firestoreDB =
-        DataFirestore(collection: 'frakh', doc: 'sasso');
+        DataFirestore(collection: 'byd', doc: 'baladi');
     bydBaladi = await firestoreDB.getAllData();
     isLoading.value = false;
     update();
   }
-
-  
-
-
-  
-
-
 }

@@ -7,10 +7,10 @@ import 'package:farkha_app/view/screen/drawer/a3rad.dart';
 import 'package:farkha_app/view/screen/drawer/akhtaq.dart';
 import 'package:farkha_app/view/screen/drawer/amrad.dart';
 import 'package:farkha_app/view/screen/drawer/astaqbal.dart';
+import 'package:farkha_app/view/screen/drawer/mn_n7n.dart';
 import 'package:farkha_app/view/screen/drawer/nasa7a.dart';
 import 'package:farkha_app/view/screen/drawer/ta7sen.dart';
 import 'package:farkha_app/view/screen/drawer/tather.dart';
-import 'package:farkha_app/view/screen/home/choose_type/a3laf_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
@@ -54,11 +54,7 @@ class AppRoutes {
       page: () => KatkitType(),
       binding: KatakitBinding(),
     ),
-    GetPage(
-      name: Routes.A3lafType,
-      page: () => A3lafType(),
-      binding: FrakhBinding(),
-    ),
+    
     GetPage(
       name: Routes.BydType,
       page: () => BydType(),
@@ -136,6 +132,9 @@ class AppRoutes {
      GetPage(
       name: Routes.Ta7sen,
       page: () => Ta7sen(),
+    ), GetPage(
+      name: Routes.MnN7n,
+      page: () => MnN7n(),
     ),
   ];
 }
@@ -149,7 +148,6 @@ class Routes {
   static const FrakhType = "/frakhType";
   static const KatkitType = "/katkitType";
 
-  static const A3lafType = "/a3lafType";
 
   static const BydType = "/bydType";
 
@@ -172,5 +170,7 @@ class Routes {
         static const Akhtaq = "/akhtaq";
          static const Tather = "/tather";
           static const Ta7sen = "/ta7sen";
+          static const MnN7n = "/mnN7n";
+          
 
 }
