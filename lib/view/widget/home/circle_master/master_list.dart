@@ -1,5 +1,6 @@
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/widget/home/circle_master/circle_avatar.dart';
+import 'package:farkha_app/view/widget/home/circle_master/show_dialog/my_dialogWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +20,6 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.FrakhType);
               },
               child: CircleAvatarHome(
                 type: 'فراخ',
@@ -30,7 +30,6 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.KatkitType);
               },
               child: CircleAvatarHome(
                 type: 'كتاكيت',
@@ -41,7 +40,7 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                 Get.snackbar(
+                Get.snackbar(
                   '',
                   '',
                   titleText: Text(
@@ -50,7 +49,7 @@ class MasterList extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   messageText: Text(
-                  'سيتم التفعيل قريبا',
+                    'سيتم التفعيل قريبا',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
                   ),
@@ -65,7 +64,6 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.BydType);
               },
               child: CircleAvatarHome(
                 type: 'بيض',
@@ -76,7 +74,21 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.BatType);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return MyDialogWidget(
+                      onPressed1: () {
+                        Get.toNamed(Routes.BatMolar);
+                      },
+                      text1: 'بط مولار',
+                      onPressed2: () {},
+                      text2: 'بط فرنساوي',
+                      onPressed3: () {},
+                      text3: ' بط مسكوفي',
+                    );
+                  },
+                );
               },
               child: CircleAvatarHome(
                 type: 'بط',

@@ -7,11 +7,10 @@ import 'package:farkha_app/view/screen/drawer/a3rad.dart';
 import 'package:farkha_app/view/screen/drawer/akhtaq.dart';
 import 'package:farkha_app/view/screen/drawer/amrad.dart';
 import 'package:farkha_app/view/screen/drawer/astaqbal.dart';
-import 'package:farkha_app/view/screen/drawer/mn_n7n.dart';
 import 'package:farkha_app/view/screen/drawer/nasa7a.dart';
 import 'package:farkha_app/view/screen/drawer/ta7sen.dart';
 import 'package:farkha_app/view/screen/drawer/tather.dart';
-import 'package:farkha_app/view/screen/home/choose_type/bat_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/bat_molar.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit_type.dart';
@@ -44,25 +43,10 @@ class AppRoutes {
       name: Routes.HomeScreen,
       page: () => HomeScreen(),
     ),
-    GetPage(
-      name: Routes.FrakhType,
-      page: () => FrakhType(),
-      binding: FrakhBinding(),
-    ),
-    GetPage(
-      name: Routes.KatkitType,
-      page: () => KatkitType(),
-      binding: KatakitBinding(),
-    ),
     
     GetPage(
-      name: Routes.BydType,
-      page: () => BydType(),
-      binding: BydBinding(),
-    ),
-    GetPage(
-      name: Routes.BatType,
-      page: () => BatType(),
+      name: Routes.BatMolar,
+      page: () => BatMolar(),
       binding: BatBinding(),
     ),
     GetPage(
@@ -97,10 +81,7 @@ class AppRoutes {
       name: Routes.Asthlak,
       page: () => Asthlak(),
     ),
-    GetPage(
-      name: Routes.Solalat,
-      page: () => Solalat()
-    ),
+    GetPage(name: Routes.Solalat, page: () => Solalat()),
     GetPage(
       name: Routes.Alardya,
       page: () => Alardya(),
@@ -108,16 +89,20 @@ class AppRoutes {
     GetPage(
       name: Routes.Amard,
       page: () => Amard(),
-    ),GetPage(
+    ),
+    GetPage(
       name: Routes.A3ard,
       page: () => A3ard(),
-    ),GetPage(
+    ),
+    GetPage(
       name: Routes.AL3lag,
       page: () => AL3lag(),
-    ),GetPage(
+    ),
+    GetPage(
       name: Routes.Nasa7a,
       page: () => Nasa7a(),
-    ),GetPage(
+    ),
+    GetPage(
       name: Routes.Astaqbal,
       page: () => Astaqbal(),
     ),
@@ -125,16 +110,13 @@ class AppRoutes {
       name: Routes.Akhtaq,
       page: () => Akhtaq(),
     ),
-     GetPage(
+    GetPage(
       name: Routes.Tather,
       page: () => Tather(),
     ),
-     GetPage(
+    GetPage(
       name: Routes.Ta7sen,
       page: () => Ta7sen(),
-    ), GetPage(
-      name: Routes.MnN7n,
-      page: () => MnN7n(),
     ),
   ];
 }
@@ -145,13 +127,9 @@ class Routes {
   // ignore: constant_identifier_names
   static const HomeScreen = "/homeScreen";
   // ignore: constant_identifier_names
-  static const FrakhType = "/frakhType";
-  static const KatkitType = "/katkitType";
 
 
-  static const BydType = "/bydType";
-
-  static const BatType = "/batType";
+  static const BatMolar = "/batMolar";
   static const DartgetAl7rara = "/dartgetAl7rara";
   static const Alida = "/alida";
   static const Alrotoba = "/alrotoba";
@@ -165,12 +143,9 @@ class Routes {
   static const Amard = "/amard";
   static const A3ard = "/a3ard";
   static const AL3lag = "/aL3lag";
-   static const Nasa7a = "/nasa7a";
-    static const Astaqbal = "/astaqbal";
-        static const Akhtaq = "/akhtaq";
-         static const Tather = "/tather";
-          static const Ta7sen = "/ta7sen";
-          static const MnN7n = "/mnN7n";
-          
-
+  static const Nasa7a = "/nasa7a";
+  static const Astaqbal = "/astaqbal";
+  static const Akhtaq = "/akhtaq";
+  static const Tather = "/tather";
+  static const Ta7sen = "/ta7sen";
 }

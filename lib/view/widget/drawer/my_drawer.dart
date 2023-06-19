@@ -251,7 +251,23 @@ class MyDrawer extends StatelessWidget {
               color: Colors.white,
             ),
             ListTitleDrawer(
-              onTap: () {},
+              onTap: () {
+                                
+Get.snackbar(
+                  '',
+                  '',
+                  titleText: Text(
+                    '',
+                    style: TextStyle(fontSize: 0),
+                    textAlign: TextAlign.center,
+                  ),
+                  messageText: Text(
+                    'قريبا',
+                    style: TextStyle(fontSize: 23),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
               title: 'من نحن',
               icon: Icons.group,
               color: Colors.white,

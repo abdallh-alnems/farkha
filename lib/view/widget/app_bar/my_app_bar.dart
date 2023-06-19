@@ -1,6 +1,8 @@
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   final String text;
@@ -9,20 +11,28 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      actions: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Text(DateFormat('y/MM/dd').format(DateTime.now())),
+          ),
+        )
+      ],
       centerTitle: true,
       title: TextUtils(
         text: text,
         fontSize: 28,
         fontWeight: FontWeight.w400,
-        color: Colors.black,
+        color: Colors.white,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: scaColor,
       elevation: 0,
       leading: IconButton(
         icon: Icon(
           Icons.arrow_back,
-          color: Colors.cyan,
-          size: 40,
+          color: Colors.white,
+          size: 25,
         ),
         onPressed: () {
           Get.back();

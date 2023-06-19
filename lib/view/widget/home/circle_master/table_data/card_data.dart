@@ -59,19 +59,19 @@ class CardViewData extends StatelessWidget {
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $date4',
+                  ' |   $date4',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $date3',
+                  ' |   $date3',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $date2',
+                  ' |     امس   ',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $date1',
+                  ' |    اليوم  ',
                   style: const TextStyle(fontSize: 15),
                 ),
                 const TextUtils(
@@ -93,19 +93,19 @@ class CardViewData extends StatelessWidget {
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $price4',
+                  ' |   $price4',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $price3',
+                  ' |   $price3',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $price2',
+                  ' |   $price2',
                   style: const TextStyle(fontSize: 15),
                 ),
                 Text(
-                  ' | $price1',
+                  ' |   $price1',
                   style: const TextStyle(fontSize: 15),
                 ),
                 const TextUtils(

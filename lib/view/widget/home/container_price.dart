@@ -1,4 +1,4 @@
-import 'package:farkha_app/logic/controller/data_controller/data_frakh_controller.dart';
+import 'package:farkha_app/logic/controller/data_up_controller/data_up_frakh_controller.dart';
 import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +32,9 @@ class ContainerPrice extends StatelessWidget {
       color: Colors.white,
       child: GetBuilder<DataFrakhController>(
         builder: (controller) {
-          if (controller.frakhAbid.isNotEmpty) {
+          if (controller.upFrakhAbid.isNotEmpty) {
             return TextUtils(
-              text: controller.frakhAbid[0].todayPrice,
+              text: controller.upFrakhAbid[0].one,
               fontSize: 25,
               fontWeight: FontWeight.w400,
               color: Colors.black,

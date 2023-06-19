@@ -13,7 +13,7 @@ class CircleAvatarHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 50,
-      backgroundColor: cyan,
+      backgroundColor: mainColor,
       child: Text(
         type,
         style: TextStyle(
