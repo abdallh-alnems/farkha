@@ -147,6 +147,7 @@ class Asthlak extends StatelessWidget {
                 Text(
                   'ملحوظه : الفرخ الابيض  ياكل متوسط 3.5 كيلو علف طول الدورة',
                   style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
                 ),
                 Container(
                   width: double.infinity,

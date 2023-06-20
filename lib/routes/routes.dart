@@ -10,7 +10,9 @@ import 'package:farkha_app/view/screen/drawer/astaqbal.dart';
 import 'package:farkha_app/view/screen/drawer/nasa7a.dart';
 import 'package:farkha_app/view/screen/drawer/ta7sen.dart';
 import 'package:farkha_app/view/screen/drawer/tather.dart';
-import 'package:farkha_app/view/screen/home/choose_type/bat_molar.dart';
+import 'package:farkha_app/view/screen/home/choose_type/bat/bat_firansawi.dart';
+import 'package:farkha_app/view/screen/home/choose_type/bat/bat_maskufi.dart';
+import 'package:farkha_app/view/screen/home/choose_type/bat/bat_molar.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit_type.dart';
@@ -43,12 +45,24 @@ class AppRoutes {
       name: Routes.HomeScreen,
       page: () => HomeScreen(),
     ),
-    
+  //bat  
     GetPage(
       name: Routes.BatMolar,
       page: () => BatMolar(),
       binding: BatBinding(),
     ),
+     GetPage(
+      name: Routes.BatFiransawi,
+      page: () => Batfiransawi(),
+      binding: BatBinding(),
+    ),GetPage(
+      name: Routes.BatMaskufi,
+      page: () => BatMaskufi(),
+      binding: BatBinding(),
+    ),
+
+
+    
     GetPage(
       name: Routes.DartgetAl7rara,
       page: () => DartgetAl7rara(),
@@ -129,7 +143,10 @@ class Routes {
   // ignore: constant_identifier_names
 
 
-  static const BatMolar = "/batMolar";
+  static const BatMolar = "/batmolar";
+  static const BatFiransawi = "/batfiransawi";
+  static const BatMaskufi = "/batmaskufi";
+  
   static const DartgetAl7rara = "/dartgetAl7rara";
   static const Alida = "/alida";
   static const Alrotoba = "/alrotoba";

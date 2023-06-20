@@ -20,7 +20,7 @@ class ListTitleDrawer extends StatelessWidget {
       onTap: onTap,
       title: Text(
         title,
-        style: TextStyle(fontSize: 20, color: drawerTypeColor),
+        style: TextStyle(fontSize: 18, color: drawerTypeColor),
         textDirection: TextDirection.rtl,
       ),
       leading: Icon(

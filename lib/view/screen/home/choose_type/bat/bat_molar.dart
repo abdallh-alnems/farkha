@@ -2,7 +2,6 @@ import 'package:farkha_app/logic/controller/data_down_controller/data_down_bat_c
 import 'package:farkha_app/logic/controller/data_up_controller/data_up_bat_controller.dart';
 import 'package:farkha_app/logic/controller/date_time_controller.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
-import 'package:farkha_app/view/widget/home/circle_master/table_data/card_data.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/text_date.dart';
 import 'package:farkha_app/view/widget/text_utils.dart';

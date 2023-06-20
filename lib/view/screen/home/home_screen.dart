@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
             actions: [
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.only(right: 14),
                   child: Text(DateFormat('y/MM/dd').format(DateTime.now())),
                 ),
               )

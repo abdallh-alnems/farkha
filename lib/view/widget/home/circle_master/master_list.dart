@@ -82,9 +82,13 @@ class MasterList extends StatelessWidget {
                         Get.toNamed(Routes.BatMolar);
                       },
                       text1: 'بط مولار',
-                      onPressed2: () {},
+                      onPressed2: () {
+                        Get.toNamed(Routes.BatFiransawi);
+                      },
                       text2: 'بط فرنساوي',
-                      onPressed3: () {},
+                      onPressed3: () {
+                         Get.toNamed(Routes.BatMaskufi);
+                      },
                       text3: ' بط مسكوفي',
                     );
                   },

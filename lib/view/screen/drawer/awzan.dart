@@ -146,6 +146,7 @@ class Awzan extends StatelessWidget {
                 Text(
                   'ملحوظه : يجب وزن عشره فرخات ثم القسمه علي عشره ليكون المتوسط كالتالي',
                   style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
                 ),
                 Container(
                   width: double.infinity,

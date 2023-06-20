@@ -15,7 +15,7 @@ class MyDrawer extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.only(
             left: 10,
-            top: 35,
+            top: 20,
             bottom: 20,
           ),
           child: Column(children: [
@@ -30,7 +30,7 @@ class MyDrawer extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   messageText: Text(
-                    'هذا الميزة لم تفعل بعد',
+                    'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
                   ),
@@ -171,7 +171,7 @@ class MyDrawer extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   messageText: Text(
-                    'هذا الميزة لم تفعل بعد',
+                    'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
                   ),
@@ -192,7 +192,7 @@ class MyDrawer extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   messageText: Text(
-                    'هذا الميزة لم تفعل بعد',
+                    'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
                   ),
@@ -237,7 +237,7 @@ class MyDrawer extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   messageText: Text(
-                    'هذا الميزة لم تفعل بعد',
+                    'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
                   ),
@@ -252,8 +252,7 @@ class MyDrawer extends StatelessWidget {
             ),
             ListTitleDrawer(
               onTap: () {
-                                
-Get.snackbar(
+                Get.snackbar(
                   '',
                   '',
                   titleText: Text(
@@ -283,7 +282,7 @@ Get.snackbar(
                     textAlign: TextAlign.center,
                   ),
                   messageText: Text(
-                    'هذا الميزة لم تفعل بعد',
+                    'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
                   ),
@@ -305,5 +304,3 @@ Get.snackbar(
     );
   }
 }
-
-

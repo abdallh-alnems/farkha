@@ -6,7 +6,10 @@ import 'package:intl/intl.dart';
 
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   final String text;
-  const MyAppBar({super.key, required this.text});
+  const MyAppBar({
+    super.key,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
       actions: [
         Center(
           child: Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: 14),
             child: Text(DateFormat('y/MM/dd').format(DateTime.now())),
           ),
         )
@@ -22,7 +25,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
       centerTitle: true,
       title: TextUtils(
         text: text,
-        fontSize: 28,
+        fontSize: 22,
         fontWeight: FontWeight.w400,
         color: Colors.white,
       ),
