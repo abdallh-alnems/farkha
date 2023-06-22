@@ -1,6 +1,5 @@
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/utils/theme.dart';
-import 'package:farkha_app/view/widget/home/instructions/home_instructions.dart';
 
 import 'package:farkha_app/view/widget/home/circle_master/master_list.dart';
 import 'package:farkha_app/view/widget/home/container_price.dart';
@@ -44,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                 ContinarAlmost(
                   type: 'قريبا',
                 ),
-                HomeInstructions()
+               
               ],
             ),
           )),

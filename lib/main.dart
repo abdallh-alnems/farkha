@@ -2,7 +2,6 @@ import 'package:farkha_app/logic/binding/data_binding/frakh_binding.dart';
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/screen/home/home_screen.dart';
 import 'package:farkha_app/view/screen/onboarding/onboarding.dart';
-import 'package:farkha_app/view/widget/home/test.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

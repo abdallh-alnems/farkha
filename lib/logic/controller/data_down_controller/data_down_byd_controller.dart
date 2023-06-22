@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DataUpBydController extends GetxController {
+class DataDownBydController extends GetxController {
   RxBool downIsLoading = true.obs;
 
   //byd

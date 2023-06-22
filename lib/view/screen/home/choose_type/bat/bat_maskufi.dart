@@ -16,6 +16,7 @@ class BatMaskufi extends StatelessWidget {
   Widget build(BuildContext context) {
     final upController = Get.find<DataUpBatController>();
     final downController = Get.find<DataDownBatController>();
+   
 
     return SafeArea(
         child: Scaffold(

@@ -13,6 +13,9 @@ import 'package:farkha_app/view/screen/drawer/tather.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat/bat_firansawi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat/bat_maskufi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat/bat_molar.dart';
+import 'package:farkha_app/view/screen/home/choose_type/byd/byd_abid.dart';
+import 'package:farkha_app/view/screen/home/choose_type/byd/byd_aihmar.dart';
+import 'package:farkha_app/view/screen/home/choose_type/byd/byd_baladi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit_type.dart';
@@ -61,7 +64,21 @@ class AppRoutes {
       binding: BatBinding(),
     ),
 
-
+//byd  
+    GetPage(
+      name: Routes.BydAbid,
+      page: () => BydAbid(),
+      binding: BydBinding(),
+    ),
+     GetPage(
+      name: Routes.BydAihmar,
+      page: () => BydAihmar(),
+      binding: BydBinding(),
+    ),GetPage(
+      name: Routes.BydBaladi,
+      page: () => BydBaladi(),
+      binding: BydBinding(),
+    ),
     
     GetPage(
       name: Routes.DartgetAl7rara,
@@ -146,6 +163,11 @@ class Routes {
   static const BatMolar = "/batmolar";
   static const BatFiransawi = "/batfiransawi";
   static const BatMaskufi = "/batmaskufi";
+
+
+  static const BydAbid = "/bydAbid";
+  static const BydAihmar = "/bydAihmar";
+  static const BydBaladi = "/bydBaladi";
   
   static const DartgetAl7rara = "/dartgetAl7rara";
   static const Alida = "/alida";

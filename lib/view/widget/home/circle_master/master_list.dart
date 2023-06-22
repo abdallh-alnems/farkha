@@ -64,6 +64,25 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
+                  showDialog(
+                  context: context,
+                  builder: (context) {
+                    return MyDialogWidget(
+                      onPressed1: () {
+                        Get.toNamed(Routes.BydAbid);
+                      },
+                      text1: 'بيض ابيض',
+                      onPressed2: () {
+                        Get.toNamed(Routes.BydAihmar);
+                      },
+                      text2: 'بيض احمر',
+                      onPressed3: () {
+                         Get.toNamed(Routes.BydBaladi);
+                      },
+                      text3: ' بيض بلدي',
+                    );
+                  },
+                );
               },
               child: CircleAvatarHome(
                 type: 'بيض',
