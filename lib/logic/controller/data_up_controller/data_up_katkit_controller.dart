@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DataKatakitController extends GetxController {
+class DataUpKatakitController extends GetxController {
   RxBool upIsLoading = true.obs;
 
   //katakit

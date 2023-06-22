@@ -18,6 +18,9 @@ import 'package:farkha_app/view/screen/home/choose_type/byd/byd_aihmar.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd/byd_baladi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
 import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/katkit/katkit_abid.dart';
+import 'package:farkha_app/view/screen/home/choose_type/katkit/katkit_baladi.dart';
+import 'package:farkha_app/view/screen/home/choose_type/katkit/katkit_sasso.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit_type.dart';
 import 'package:farkha_app/view/screen/drawer/alardya.dart';
 import 'package:farkha_app/view/screen/drawer/alida.dart';
@@ -78,6 +81,23 @@ class AppRoutes {
       name: Routes.BydBaladi,
       page: () => BydBaladi(),
       binding: BydBinding(),
+    ),
+
+
+    //katkit  
+    GetPage(
+      name: Routes.KatKitAbid,
+      page: () => KatKitAbid(),
+      binding: KatakitBinding(),
+    ),
+     GetPage(
+      name: Routes.KatkitBaladi,
+      page: () => KatkitBaladi(),
+      binding: KatakitBinding(),
+    ),GetPage(
+      name: Routes.KatkitSasso,
+      page: () => KatkitSasso(),
+      binding: KatakitBinding(),
     ),
     
     GetPage(
@@ -159,15 +179,20 @@ class Routes {
   static const HomeScreen = "/homeScreen";
   // ignore: constant_identifier_names
 
-
+//bat
   static const BatMolar = "/batmolar";
   static const BatFiransawi = "/batfiransawi";
   static const BatMaskufi = "/batmaskufi";
 
-
+//byd
   static const BydAbid = "/bydAbid";
   static const BydAihmar = "/bydAihmar";
   static const BydBaladi = "/bydBaladi";
+
+  //katkit
+  static const KatKitAbid = "/katKitAbid";
+  static const KatkitBaladi = "/katkitBaladi";
+  static const KatkitSasso = "/katkitSasso";
   
   static const DartgetAl7rara = "/dartgetAl7rara";
   static const Alida = "/alida";

@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DataKatakitController extends GetxController {
+class DataDownKatakitController extends GetxController {
   RxBool downIsLoading = true.obs;
 
   //katakit
@@ -37,7 +37,7 @@ class DataKatakitController extends GetxController {
   void dataDownKatakitBaladi() async {
     final DataFirestore firestoreDB =
         DataFirestore(collection: 'katakit', doc: 'DownBaladi');
-    downKatakitAbid = await firestoreDB.getAllData();
+    downKatakitBaladi = await firestoreDB.getAllData();
     downIsLoading.value = false;
     update();
   }
@@ -45,7 +45,7 @@ class DataKatakitController extends GetxController {
   void dataDownKatakitSasso() async {
     final DataFirestore firestoreDB =
         DataFirestore(collection: 'katakit', doc: 'DownSasso');
-    downKatakitAbid = await firestoreDB.getAllData();
+    downKatakitSasso = await firestoreDB.getAllData();
     downIsLoading.value = false;
     update();
   }
