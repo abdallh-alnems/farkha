@@ -1,18 +1,19 @@
 
 
 import 'package:farkha_app/logic/controller/bat_controller/bat_molar_controller.dart';
-import 'package:farkha_app/logic/controller/byd_controller/byd_abid_controller.dart';
+
+import 'package:farkha_app/logic/controller/frakh_controller/frakh_amihat_abid_controller.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BydAbid extends StatelessWidget {
-  const BydAbid({Key? key}) : super(key: key);
+class FrakhAmhitAbid extends StatelessWidget {
+  const FrakhAmhitAbid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final upController = Get.find<BydAbidController>();
+    final upController = Get.find<FrakhAmhitAbidController>();
     
   
 
@@ -20,9 +21,9 @@ class BydAbid extends StatelessWidget {
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: MyAppBar(
-              text: 'بيض ابيض ',
+              text: 'فراخ ابيض امهات ',
             ),
-            body: GetBuilder<BydAbidController>(
+            body: GetBuilder<FrakhAmhitAbidController>(
               builder: (_) {
                 if (upController.upmyData != null && upController.downmyData != null
                    ) {

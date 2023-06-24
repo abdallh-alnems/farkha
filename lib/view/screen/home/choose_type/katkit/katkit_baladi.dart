@@ -1,6 +1,5 @@
 
-import 'package:farkha_app/logic/controller/data_down_controller/data_down_katkit.dart';
-import 'package:farkha_app/logic/controller/data_up_controller/data_up_katkit_controller.dart';
+import 'package:farkha_app/logic/controller/katkit_controller/katkit_baladi_controller.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +10,8 @@ class KatkitBaladi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final upController = Get.find<DataUpKatakitController>();
-    final downController = Get.find<DataDownKatakitController>();
+    final upController = Get.find<KatKitBaladiController>();
+    
   
 
     return SafeArea(
@@ -21,77 +20,77 @@ class KatkitBaladi extends StatelessWidget {
             appBar: MyAppBar(
               text: 'كتاكيت بلدي ',
             ),
-            body: GetBuilder<DataUpKatakitController>(
-              builder: (_)  {
-                if (upController.upIsLoading.value &&
-                    downController.downIsLoading.value) {
+            body: GetBuilder<KatKitBaladiController>(
+              builder: (_) {
+                if (upController.upmyData != null && upController.downmyData != null
+                   ) {
+                 
+                  return TableData(
+                    upPrice1: upController.upmyData!.one,
+                    downPrice1: upController.downmyData!.one,
+                    upPrice2: upController.upmyData!.two,
+                    downPrice2: upController.downmyData!.two,
+                    upPrice3: upController.upmyData!.three,
+                    downPrice3: upController.downmyData!.three,
+                    upPrice4: upController.upmyData!.four,
+                    downPrice4: upController.downmyData!.four,
+                    upPrice5: upController.upmyData!.five,
+                    downPrice5: upController.downmyData!.five,
+                    upPrice6: upController.upmyData!.six,
+                    downPrice6: upController.downmyData!.six,
+                    upPrice7: upController.upmyData!.seven,
+                    downPrice7: upController.downmyData!.seven,
+                    upPrice8: upController.upmyData!.eight,
+                    downPrice8: upController.downmyData!.eight,
+                    upPrice9: upController.upmyData!.nine,
+                    downPrice9: upController.downmyData!.nine,
+                    upPrice10: upController.upmyData!.ten,
+                    downPrice10: upController.downmyData!.ten,
+                    upPrice11: upController.upmyData!.eleven,
+                    downPrice11: upController.downmyData!.eleven,
+                    upPrice12: upController.upmyData!.twelve,
+                    downPrice12: upController.downmyData!.twelve,
+                    upPrice13: upController.upmyData!.thirteen,
+                    downPrice13: upController.downmyData!.thirteen,
+                    upPrice14: upController.upmyData!.fourteen,
+                    downPrice14: upController.downmyData!.fourteen,
+                    upPrice15: upController.upmyData!.fifteen,
+                    downPrice15: upController.downmyData!.fifteen,
+                    upPrice16: upController.upmyData!.sixteen,
+                    downPrice16: upController.downmyData!.sixteen,
+                    upPrice17: upController.upmyData!.seventeen,
+                    downPrice17: upController.downmyData!.seventeen,
+                    upPrice18: upController.upmyData!.eightTeen,
+                    downPrice18: upController.downmyData!.eightTeen,
+                    upPrice19: upController.upmyData!.nineteen,
+                    downPrice19: upController.downmyData!.nine,
+                    upPrice20: upController.upmyData!.twenty,
+                    downPrice20: upController.downmyData!.twenty,
+                    upPrice21: upController.upmyData!.twentyOne,
+                    downPrice21: upController.downmyData!.twentyOne,
+                    upPrice22: upController.upmyData!.twentyTwo,
+                    downPrice22: upController.downmyData!.twentyTwo,
+                    upPrice23: upController.upmyData!.twentyThree,
+                    downPrice23: upController.downmyData!.twentyThree,
+                    upPrice24: upController.upmyData!.twentyFour,
+                    downPrice24: upController.downmyData!.twentyFour,
+                    upPrice25: upController.upmyData!.twentyFive,
+                    downPrice25: upController.downmyData!.twentyFive,
+                    upPrice26: upController.upmyData!.twentySix,
+                    downPrice26: upController.downmyData!.twentySix,
+                    upPrice27: upController.upmyData!.twentySeven,
+                    downPrice27: upController.downmyData!.twentySeven,
+                    upPrice28: upController.upmyData!.twentyEight,
+                    downPrice28: upController.downmyData!.twentyEight,
+                    upPrice29: upController.upmyData!.twentyNine,
+                    downPrice29: upController.downmyData!.twentyNine,
+                    upPrice30: upController.upmyData!.thirteen,
+                    downPrice30: upController.downmyData!.thirteen,
+                  );
+                   
+                } else {
                   return const Center(
                     child: CircularProgressIndicator(color: Colors.blue),
-                  );
-                } else {
-                  return 
-                     TableData(
-                      upPrice1: upController.upKatakitBaladi[0].one,
-                      downPrice1: downController.downKatakitBaladi[0].one,
-                      upPrice2: upController.upKatakitBaladi[0].two,
-                      downPrice2: downController.downKatakitBaladi[0].two,
-                      upPrice3: upController.upKatakitBaladi[0].three,
-                      downPrice3: downController.downKatakitBaladi[0].three,
-                      upPrice4: upController.upKatakitBaladi[0].four,
-                      downPrice4: downController.downKatakitBaladi[0].four,
-                      upPrice5: upController.upKatakitBaladi[0].five,
-                      downPrice5: downController.downKatakitBaladi[0].five,
-                      upPrice6: upController.upKatakitBaladi[0].six,
-                      downPrice6: downController.downKatakitBaladi[0].six,
-                      upPrice7: upController.upKatakitBaladi[0].seven,
-                      downPrice7: downController.downKatakitBaladi[0].seven,
-                      upPrice8: upController.upKatakitBaladi[0].eight,
-                      downPrice8: downController.downKatakitBaladi[0].eight,
-                      upPrice9: upController.upKatakitBaladi[0].nine,
-                      downPrice9: downController.downKatakitBaladi[0].nine,
-                      upPrice10: upController.upKatakitBaladi[0].ten,
-                      downPrice10: downController.downKatakitBaladi[0].ten,
-                      upPrice11: upController.upKatakitBaladi[0].eleven,
-                      downPrice11: downController.downKatakitBaladi[0].eleven,
-                      upPrice12: upController.upKatakitBaladi[0].twelve,
-                      downPrice12: downController.downKatakitBaladi[0].twelve,
-                      upPrice13: upController.upKatakitBaladi[0].thirteen,
-                      downPrice13: downController.downKatakitBaladi[0].thirteen,
-                      upPrice14: upController.upKatakitBaladi[0].fourteen,
-                      downPrice14: downController.downKatakitBaladi[0].fourteen,
-                      upPrice15: upController.upKatakitBaladi[0].fifteen,
-                      downPrice15: downController.downKatakitBaladi[0].fifteen,
-                      upPrice16: upController.upKatakitBaladi[0].sixteen,
-                      downPrice16: downController.downKatakitBaladi[0].sixteen,
-                      upPrice17: upController.upKatakitBaladi[0].seventeen,
-                      downPrice17: downController.downKatakitBaladi[0].seventeen,
-                      upPrice18: upController.upKatakitBaladi[0].eightTeen,
-                      downPrice18: downController.downKatakitBaladi[0].eightTeen,
-                      upPrice19: upController.upKatakitBaladi[0].nineteen,
-                      downPrice19: downController.downKatakitBaladi[0].nine,
-                      upPrice20: upController.upKatakitBaladi[0].twenty,
-                      downPrice20: downController.downKatakitBaladi[0].twenty,
-                      upPrice21: upController.upKatakitBaladi[0].twentyOne,
-                      downPrice21: downController.downKatakitBaladi[0].twentyOne,
-                      upPrice22: upController.upKatakitBaladi[0].twentyTwo,
-                      downPrice22: downController.downKatakitBaladi[0].twentyTwo,
-                      upPrice23: upController.upKatakitBaladi[0].twentyThree,
-                      downPrice23: downController.downKatakitBaladi[0].twentyThree,
-                      upPrice24: upController.upKatakitBaladi[0].twentyFour,
-                      downPrice24: downController.downKatakitBaladi[0].twentyFour,
-                      upPrice25: upController.upKatakitBaladi[0].twentyFive,
-                      downPrice25: downController.downKatakitBaladi[0].twentyFive,
-                      upPrice26: upController.upKatakitBaladi[0].twentySix,
-                      downPrice26: downController.downKatakitBaladi[0].twentySix,
-                      upPrice27: upController.upKatakitBaladi[0].twentySeven,
-                      downPrice27: downController.downKatakitBaladi[0].twentySeven,
-                      upPrice28: upController.upKatakitBaladi[0].twentyEight,
-                      downPrice28: downController.downKatakitBaladi[0].twentyEight,
-                      upPrice29: upController.upKatakitBaladi[0].twentyNine,
-                      downPrice29: downController.downKatakitBaladi[0].twentyNine,
-                      upPrice30: upController.upKatakitBaladi[0].thirteen,
-                      downPrice30: downController.downKatakitBaladi[0].thirteen,
-                    
                   );
                 }
               },

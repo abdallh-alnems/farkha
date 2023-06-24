@@ -1,18 +1,15 @@
-
-import 'package:farkha_app/logic/controller/data_down_controller/data_down_katkit.dart';
-import 'package:farkha_app/logic/controller/data_up_controller/data_up_katkit_controller.dart';
-import 'package:farkha_app/logic/controller/text.dart';
+import 'package:farkha_app/logic/controller/frakh_controller/frakh_sasso_controller.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class A3laf extends StatelessWidget {
-  const A3laf({Key? key}) : super(key: key);
+class FrakhSasso extends StatelessWidget {
+  const FrakhSasso({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final upController = Get.find<A3lafController>();
+    final upController = Get.find<FrakhSassoController>();
     
   
 
@@ -20,9 +17,9 @@ class A3laf extends StatelessWidget {
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: MyAppBar(
-              text: 'كتاكيت ابيض ',
+              text: 'فراخ ساسو ',
             ),
-            body: GetBuilder<A3lafController>(
+            body: GetBuilder<FrakhSassoController>(
               builder: (_) {
                 if (upController.upmyData != null && upController.downmyData != null
                    ) {

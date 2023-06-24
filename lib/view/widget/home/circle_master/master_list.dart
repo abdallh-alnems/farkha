@@ -1,5 +1,6 @@
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/widget/home/circle_master/circle_avatar.dart';
+import 'package:farkha_app/view/widget/home/circle_master/show_dialog/frakh_dialog.dart';
 import 'package:farkha_app/view/widget/home/circle_master/show_dialog/my_dialogWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,29 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
+                 showDialog(
+                  context: context,
+                  builder: (context) {
+                    return FrakhDialogWidget(
+                      onPressed1: () {
+                        Get.toNamed(Routes.FrakhAbid);
+                      },
+                      text1: 'فراخ بيضاء ',
+                      onPressed2: () {
+                        Get.toNamed(Routes.FrakhSasso);
+                      },
+                      text2: 'فراخ ساسو',
+                      onPressed3: () {
+                         Get.toNamed(Routes.FrakhBaladi);
+                      },
+                      text3: ' فراخ بلدي',
+                      onPressed4: (){
+                         Get.toNamed(Routes.FrakhAmhitAbid);
+                      },
+                      text4: 'فراخ امهات ابيض',
+                    );
+                  },
+                );
               },
               child: CircleAvatarHome(
                 type: 'فراخ',
@@ -59,7 +83,7 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-               Get.toNamed(Routes.A3laf);
+              
               },
               child: CircleAvatarHome(
                 type: 'اعلاف',

@@ -2,7 +2,6 @@ import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/utils/theme.dart';
 
 import 'package:farkha_app/view/widget/home/circle_master/master_list.dart';
-import 'package:farkha_app/view/widget/home/container_price.dart';
 import 'package:farkha_app/view/widget/drawer/my_drawer.dart';
 import 'package:farkha_app/view/widget/home/continar_almost.dart';
 import 'package:flutter/material.dart';

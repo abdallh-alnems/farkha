@@ -1,8 +1,16 @@
-import 'package:farkha_app/logic/binding/data_binding/a3laf.dart';
+import 'package:farkha_app/logic/binding/bat_bindings/bat_firansawi_binding.dart';
+import 'package:farkha_app/logic/binding/bat_bindings/bat_maskufi_binding.dart';
 import 'package:farkha_app/logic/binding/bat_bindings/bat_molar_binding.dart';
-import 'package:farkha_app/logic/binding/data_binding/byd_molar_binding.dart';
-import 'package:farkha_app/logic/binding/data_binding/frakh_bindings/frakh_abid_binding.dart';
-import 'package:farkha_app/logic/binding/data_binding/katkitBindings/katkit_abid_binding.dart';
+import 'package:farkha_app/logic/binding/byd_bindings/byd_abid_binding.dart';
+import 'package:farkha_app/logic/binding/byd_bindings/byd_aihmar_binding.dart';
+import 'package:farkha_app/logic/binding/byd_bindings/byd_baladi_binding.dart';
+import 'package:farkha_app/logic/binding/frakh_bindings/frakh_abid_binding.dart';
+import 'package:farkha_app/logic/binding/frakh_bindings/frakh_amihat_abid_binding.dart';
+import 'package:farkha_app/logic/binding/frakh_bindings/frakh_baladi_binding.dart';
+import 'package:farkha_app/logic/binding/frakh_bindings/frakh_sasso_binding.dart';
+import 'package:farkha_app/logic/binding/katkitBindings/kakit_baladi_binding.dart';
+import 'package:farkha_app/logic/binding/katkitBindings/katkit_abid_binding.dart';
+import 'package:farkha_app/logic/binding/katkitBindings/katkit_sasso_binding.dart';
 import 'package:farkha_app/view/screen/drawer/3lag.dart';
 import 'package:farkha_app/view/screen/drawer/a3rad.dart';
 import 'package:farkha_app/view/screen/drawer/akhtaq.dart';
@@ -17,13 +25,13 @@ import 'package:farkha_app/view/screen/home/choose_type/bat/bat_molar.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd/byd_abid.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd/byd_aihmar.dart';
 import 'package:farkha_app/view/screen/home/choose_type/byd/byd_baladi.dart';
-import 'package:farkha_app/view/screen/home/choose_type/byd_type.dart';
-import 'package:farkha_app/view/screen/home/choose_type/frakh/a3laf.dart';
-import 'package:farkha_app/view/screen/home/choose_type/frakh_type.dart';
+import 'package:farkha_app/view/screen/home/choose_type/frakh/frakh_abid.dart';
+import 'package:farkha_app/view/screen/home/choose_type/frakh/frakh_amhit_abid.dart';
+import 'package:farkha_app/view/screen/home/choose_type/frakh/frakh_baladi.dart';
+import 'package:farkha_app/view/screen/home/choose_type/frakh/frakh_sasso.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit/katkit_abid.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit/katkit_baladi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/katkit/katkit_sasso.dart';
-import 'package:farkha_app/view/screen/home/choose_type/katkit_type.dart';
 import 'package:farkha_app/view/screen/drawer/alardya.dart';
 import 'package:farkha_app/view/screen/drawer/alida.dart';
 import 'package:farkha_app/view/screen/drawer/alrtoba.dart';
@@ -36,19 +44,15 @@ import 'package:farkha_app/view/screen/drawer/dargt_al7rara.dart';
 import 'package:farkha_app/view/screen/drawer/solalat.dart';
 
 import 'package:farkha_app/view/screen/home/home_screen.dart';
-import 'package:farkha_app/view/screen/onboarding/onboarding.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
   //initialRoutes
-  static const onboarding = Routes.Onboarding;
+  static const homeScreen = Routes.HomeScreen;
 
   //GetPage
   static final routes = [
-    GetPage(
-      name: Routes.Onboarding,
-      page: () => const OnBoarding(),
-    ),
+  
     GetPage(
       name: Routes.HomeScreen,
       page: () => HomeScreen(),
@@ -57,61 +61,80 @@ class AppRoutes {
     GetPage(
       name: Routes.BatMolar,
       page: () => BatMolar(),
-      binding: BatBinding(),
+      binding: BatMolarBinding(),
     ),
     GetPage(
       name: Routes.BatFiransawi,
       page: () => BatFiransawi(),
-      binding: BatBinding(),
+      binding: BatFiransawiBinding(),
     ),
     GetPage(
       name: Routes.BatMaskufi,
       page: () => BatMaskufi(),
-      binding: BatBinding(),
+      binding: BatMaskufiBinding(),
     ),
 
 //byd
     GetPage(
       name: Routes.BydAbid,
       page: () => BydAbid(),
-      binding: BydBinding(),
+      binding: BydAbidBinding(),
     ),
     GetPage(
       name: Routes.BydAihmar,
       page: () => BydAihmar(),
-      binding: BydBinding(),
+      binding: BydAihmarBinding(),
     ),
     GetPage(
       name: Routes.BydBaladi,
       page: () => BydBaladi(),
-      binding: BydBinding(),
+      binding: BydBaladiBinding(),
     ),
+
+
+//frakh
+    GetPage(
+      name: Routes.FrakhAbid,
+      page: () => FrakhAbid(),
+      binding: FrakhAbidBinding(),
+    ),
+    GetPage(
+      name: Routes.FrakhAmhitAbid,
+      page: () => FrakhAmhitAbid(),
+      binding: FrakhAmhitAbidBinding(),
+    ),
+    GetPage(
+      name: Routes.FrakhBaladi,
+      page: () => FrakhBaladi(),
+      binding: FrakhBaladiBinding(),
+    ),
+     GetPage(
+      name: Routes.FrakhSasso,
+      page: () => FrakhSasso(),
+      binding: FrakhSassoBinding(),
+    ),
+
 
     //katkit
     GetPage(
       name: Routes.KatKitAbid,
-      page: () => KatKitAbid(),
-      binding: KatakitBinding(),
+      page: () => KatkitAbid(),
+      binding: KatakitAbidBinding(),
     ),
     GetPage(
       name: Routes.KatkitBaladi,
       page: () => KatkitBaladi(),
-      binding: KatakitBinding(),
+      binding: KatakitBaladiBinding(),
     ),
     GetPage(
       name: Routes.KatkitSasso,
       page: () => KatkitSasso(),
-      binding: KatakitBinding(),
+      binding: KatakitSassoBinding(),
     ),
 
 
 
-      GetPage(
-      name: Routes.A3laf,
-      page: () => A3laf(),
-      binding: A3lafBinding(),
-    ),
-
+     
 
     GetPage(
       name: Routes.DartgetAl7rara,
@@ -186,8 +209,8 @@ class AppRoutes {
 }
 
 class Routes {
-  // ignore: constant_identifier_names
-  static const Onboarding = "/onboarding";
+  
+ 
   // ignore: constant_identifier_names
   static const HomeScreen = "/homeScreen";
   // ignore: constant_identifier_names
@@ -202,12 +225,19 @@ class Routes {
   static const BydAihmar = "/bydAihmar";
   static const BydBaladi = "/bydBaladi";
 
+
+  //frakh
+  static const FrakhAbid = "/frakhAbid";
+  static const FrakhSasso = "/frakhSasso";
+  static const FrakhBaladi = "/frakhBaladi";
+    static const FrakhAmhitAbid = "/frakhAmhitAbid";
+
+
   //katkit
   static const KatKitAbid = "/katKitAbid";
   static const KatkitBaladi = "/katkitBaladi";
   static const KatkitSasso = "/katkitSasso";
 
-  static const A3laf = "/a3laf";
 
   static const DartgetAl7rara = "/dartgetAl7rara";
   static const Alida = "/alida";
