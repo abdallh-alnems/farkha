@@ -1,4 +1,5 @@
-import 'package:farkha_app/logic/binding/data_binding/frakh_binding.dart';
+import 'package:farkha_app/logic/binding/data_binding/frakh_bindings/frakh_abid_binding.dart';
+import 'package:farkha_app/logic/controller/text.dart';
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/view/screen/home/home_screen.dart';
 import 'package:farkha_app/view/screen/onboarding/onboarding.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
  void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
       ),
       home: HomeScreen(),
       getPages: AppRoutes.routes,
-      initialBinding: FrakhBinding(),
+      
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 class ContainerPrice extends StatelessWidget {
   ContainerPrice({super.key});
-  final controller = Get.find<DataFrakhController>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class ContainerPrice extends StatelessWidget {
         builder: (controller) {
           if (controller.upFrakhAbid.isNotEmpty) {
             return TextUtils(
-              text: controller.upFrakhAbid[0].one,
+              text: 'k',
               fontSize: 25,
               fontWeight: FontWeight.w400,
               color: Colors.black,

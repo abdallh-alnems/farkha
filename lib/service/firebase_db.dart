@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farkha_app/model/data_model.dart';
 
 class DataFirestore {
-      List<DataModel> frakhAbid = <DataModel>[];
+      
 
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+   
 
-  final String collection;
-  final String doc;
+   String collection;
+   String doc;
 
   DataFirestore({
     required this.collection,
@@ -17,9 +17,9 @@ class DataFirestore {
  
 
   Future<List<DataModel>> getAllData() async {
+    FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
     DocumentSnapshot snapshot =
         await _firebaseFirestore.collection(collection).doc(doc).get();
-
     return [DataModel.fromSnapshot(snapshot)];
   }
 }

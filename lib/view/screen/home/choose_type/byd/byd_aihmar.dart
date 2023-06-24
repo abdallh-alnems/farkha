@@ -28,7 +28,7 @@ class BydAihmar extends StatelessWidget {
             ),
             body: GetBuilder<DataUpBydController>(
               builder: (_) {
-                if (upController.upIsLoading.value ||
+                if (upController.upIsLoading.value &&
                     downController.downIsLoading.value) {
                   return const Center(
                     child: CircularProgressIndicator(color: Colors.blue),

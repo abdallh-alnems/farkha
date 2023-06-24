@@ -23,8 +23,8 @@ class KatKitAbid extends StatelessWidget {
             ),
             body: GetBuilder<DataUpKatakitController>(
               builder: (_) {
-                if (upController.upIsLoading.value ||
-                    downController.downIsLoading.value) {
+                if (upController.upKatakitAbid.isEmpty&&
+                    downController.downKatakitAbid.isEmpty) {
                   return const Center(
                     child: CircularProgressIndicator(color: Colors.blue),
                   );

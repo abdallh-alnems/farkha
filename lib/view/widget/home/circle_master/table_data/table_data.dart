@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TableData extends StatelessWidget {
-  final String upPrice1;
+  final String upPrice1 ;
   final String downPrice1;
   final String upPrice2;
   final String downPrice2;
@@ -162,7 +162,7 @@ class TableData extends StatelessWidget {
                 double.parse(upPrice1) == double.parse(upPrice2)
                     ? ArrowNon()
                     : (double.parse(upPrice1) > double.parse(upPrice2)
-                        ? ArrowUp()
+                        ?  ArrowUp()
                         : ArrowDown()),
               ),
               DataCell(Text(downPrice1)),

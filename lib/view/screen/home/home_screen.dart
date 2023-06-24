@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 MasterList(),
-                ContainerPrice(),
+                
                 ContinarAlmost(
                   type: 'قريبا',
                 ),

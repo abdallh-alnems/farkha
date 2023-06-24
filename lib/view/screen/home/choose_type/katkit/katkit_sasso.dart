@@ -22,12 +22,12 @@ class KatkitSasso extends StatelessWidget {
             ),
             body: GetBuilder<DataUpKatakitController>(
               builder: (_) {
-                if (upController.upIsLoading.value ||
+                if (upController.upIsLoading.value &&
                     downController.downIsLoading.value) {
                   return const Center(
                     child: CircularProgressIndicator(color: Colors.blue),
                   );
-                } else {
+                } else  {
                   return TableData(
                     upPrice1: upController.upKatakitSasso[0].one,
                     downPrice1: downController.downKatakitSasso[0].one,
