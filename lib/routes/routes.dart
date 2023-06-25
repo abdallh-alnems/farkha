@@ -1,3 +1,4 @@
+import 'package:farkha_app/logic/binding/a3alf_Bindings/a3laf_binding.dart';
 import 'package:farkha_app/logic/binding/bat_bindings/bat_firansawi_binding.dart';
 import 'package:farkha_app/logic/binding/bat_bindings/bat_maskufi_binding.dart';
 import 'package:farkha_app/logic/binding/bat_bindings/bat_molar_binding.dart';
@@ -19,6 +20,7 @@ import 'package:farkha_app/view/screen/drawer/astaqbal.dart';
 import 'package:farkha_app/view/screen/drawer/nasa7a.dart';
 import 'package:farkha_app/view/screen/drawer/ta7sen.dart';
 import 'package:farkha_app/view/screen/drawer/tather.dart';
+import 'package:farkha_app/view/screen/home/choose_type/a3alf/a3laf.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat/bat_firansawi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat/bat_maskufi.dart';
 import 'package:farkha_app/view/screen/home/choose_type/bat/bat_molar.dart';
@@ -131,8 +133,12 @@ class AppRoutes {
       page: () => KatkitSasso(),
       binding: KatakitSassoBinding(),
     ),
-
-
+//a3laf
+   GetPage(
+      name: Routes.A3laf,
+      page: () => A3laf (),
+      binding: A3lafBinding(),
+    ),
 
      
 
@@ -237,6 +243,9 @@ class Routes {
   static const KatKitAbid = "/katKitAbid";
   static const KatkitBaladi = "/katkitBaladi";
   static const KatkitSasso = "/katkitSasso";
+
+//a3laf
+  static const A3laf = "/a3laf";
 
 
   static const DartgetAl7rara = "/dartgetAl7rara";

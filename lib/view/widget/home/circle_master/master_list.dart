@@ -83,7 +83,7 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-              
+              Get.toNamed(Routes.A3laf);
               },
               child: CircleAvatarHome(
                 type: 'اعلاف',
