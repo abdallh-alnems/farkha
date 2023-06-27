@@ -1,7 +1,7 @@
 import 'package:farkha_app/view/widget/home/circle_master/table_data/text_date.dart';
 import 'package:flutter/material.dart';
 
-class A3lafTableData extends StatelessWidget {
+class A3lafTableDataMaster extends StatelessWidget {
   final String upPrice1;
   final String upPrice2;
   final String upPrice3;
@@ -11,7 +11,7 @@ class A3lafTableData extends StatelessWidget {
   final String upPrice7;
   final String upPrice8;
 
-  const A3lafTableData({
+  const A3lafTableDataMaster({
     super.key,
     required this.upPrice1,
     required this.upPrice2,
@@ -30,12 +30,12 @@ class A3lafTableData extends StatelessWidget {
         children: [
           DataTable(columns: [
             DataColumn(
-              label: TextDate(
+              label: TextDateMaster(
                 text: '        السعر',
               ),
             ),
             DataColumn(
-              label: TextDate(
+              label: TextDateMaster(
                 text: '                 النوع',
               ),
             ),

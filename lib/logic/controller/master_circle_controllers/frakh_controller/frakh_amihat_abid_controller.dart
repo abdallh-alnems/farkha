@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farkha_app/model/data_model.dart';
 import 'package:get/get.dart';
 
-class FrakhAmhitAbidController extends GetxController {
-  
+class FrakhAmihatAbidController extends GetxController {
   DataModel? upmyData;
-   DataModel? downmyData;
-  
+  DataModel? downmyData;
 
   @override
   void onInit() {
@@ -21,7 +19,7 @@ class FrakhAmhitAbidController extends GetxController {
         .doc('UpAmihatAbid')
         .get();
     if (documentSnapshot.exists) {
-      upmyData = DataModel.fromSnapshot(documentSnapshot);     
+      upmyData = DataModel.fromSnapshot(documentSnapshot);
       update();
     }
   }

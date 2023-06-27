@@ -1,8 +1,6 @@
+import 'package:farkha_app/logic/controller/master_circle_controllers/bat_controller/bat_molar_controller.dart';
 
-
-import 'package:farkha_app/logic/controller/bat_controller/bat_molar_controller.dart';
-
-import 'package:farkha_app/logic/controller/frakh_controller/frakh_amihat_abid_controller.dart';
+import 'package:farkha_app/logic/controller/master_circle_controllers/frakh_controller/frakh_amihat_abid_controller.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +11,7 @@ class FrakhAmhitAbid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final upController = Get.find<FrakhAmhitAbidController>();
-    
-  
+    final upController = Get.find<FrakhAmihatAbidController>();
 
     return SafeArea(
         child: Scaffold(
@@ -23,12 +19,11 @@ class FrakhAmhitAbid extends StatelessWidget {
             appBar: MyAppBar(
               text: 'فراخ ابيض امهات ',
             ),
-            body: GetBuilder<FrakhAmhitAbidController>(
+            body: GetBuilder<FrakhAmihatAbidController>(
               builder: (_) {
-                if (upController.upmyData != null && upController.downmyData != null
-                   ) {
-                 
-                  return TableData(
+                if (upController.upmyData != null &&
+                    upController.downmyData != null) {
+                  return TableDataMasterCircle(
                     upPrice1: upController.upmyData!.one,
                     downPrice1: upController.downmyData!.one,
                     upPrice2: upController.upmyData!.two,
@@ -90,7 +85,6 @@ class FrakhAmhitAbid extends StatelessWidget {
                     upPrice30: upController.upmyData!.thirteen,
                     downPrice30: upController.downmyData!.thirteen,
                   );
-                   
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(color: Colors.blue),

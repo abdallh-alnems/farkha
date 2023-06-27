@@ -28,19 +28,19 @@ class MasterList extends StatelessWidget {
                       onPressed1: () {
                         Get.toNamed(Routes.FrakhAbid);
                       },
-                      text1: 'فراخ بيضاء ',
+                      text1: 'فرخ ابيض ',
                       onPressed2: () {
                         Get.toNamed(Routes.FrakhSasso);
                       },
-                      text2: 'فراخ ساسو',
+                      text2: 'فرخ ساسو',
                       onPressed3: () {
                          Get.toNamed(Routes.FrakhBaladi);
                       },
-                      text3: ' فراخ بلدي',
+                      text3: ' فرخ بلدي',
                       onPressed4: (){
                          Get.toNamed(Routes.FrakhAmhitAbid);
                       },
-                      text4: 'فراخ امهات ابيض',
+                      text4: 'فرخ امهات ابيض',
                     );
                   },
                 );

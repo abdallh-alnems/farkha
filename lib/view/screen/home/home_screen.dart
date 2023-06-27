@@ -4,6 +4,7 @@ import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/home/circle_master/master_list.dart';
 import 'package:farkha_app/view/widget/drawer/my_drawer.dart';
 import 'package:farkha_app/view/widget/home/continar_almost.dart';
+import 'package:farkha_app/view/widget/home/table_home/table_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -34,17 +35,15 @@ class HomeScreen extends StatelessWidget {
               )
             ],
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                MasterList(),
-                
-                ContinarAlmost(
-                  type: 'قريبا',
-                ),
+          body: Column(
+            children: [
+              MasterList(),
+              
+              ContinarAlmost(
                
-              ],
-            ),
+              ),
+             Expanded(child: TableHome())
+            ],
           )),
     );
   }

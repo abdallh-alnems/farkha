@@ -1,4 +1,4 @@
-import 'package:farkha_app/logic/controller/a3alf/a3laf_controller.dart';
+import 'package:farkha_app/logic/controller/master_circle_controllers/a3alf/a3laf_controller.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/a3laf_table.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +26,16 @@ class A3laf extends StatelessWidget {
                     upController.byad16 != null &&
                     upController.byad17 != null &&
                     upController.byad18 != null &&
-                    upController.byad19 != null
-                    ) {
-                  return A3lafTableData(
-                    upPrice1 : upController.badi!.one ,
-                   upPrice2 :upController.nami!.one ,
-                   upPrice3 :upController.nahi!.one ,
-                   upPrice4 :upController.byad14!.one ,
-                   upPrice5 :upController.byad16!.one ,
-                   upPrice6 :upController.byad17!.one ,
-                   upPrice7 :upController.byad18!.one ,
-                   upPrice8 :upController.byad19!.one ,
-
+                    upController.byad19 != null) {
+                  return A3lafTableDataMaster(
+                    upPrice1: upController.badi!.one,
+                    upPrice2: upController.nami!.one,
+                    upPrice3: upController.nahi!.one,
+                    upPrice4: upController.byad14!.one,
+                    upPrice5: upController.byad16!.one,
+                    upPrice6: upController.byad17!.one,
+                    upPrice7: upController.byad18!.one,
+                    upPrice8: upController.byad19!.one,
                   );
                 } else {
                   return const Center(

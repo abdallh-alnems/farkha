@@ -1,3 +1,4 @@
+import 'package:farkha_app/logic/binding/my_binding.dart';
 import 'package:farkha_app/routes/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      initialBinding:MyBindings() ,
+      
       initialRoute: AppRoutes.homeScreen,
       getPages: AppRoutes.routes,
       

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class TextDate extends StatelessWidget {
+class TextDateHome extends StatelessWidget {
   final String text;
-  const TextDate({super.key, required this.text});
+  const TextDateHome({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

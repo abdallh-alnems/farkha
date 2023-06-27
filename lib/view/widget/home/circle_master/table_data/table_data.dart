@@ -6,8 +6,8 @@ import 'package:farkha_app/view/widget/home/circle_master/table_data/text_date.d
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TableData extends StatelessWidget {
-  final String upPrice1 ;
+class TableDataMasterCircle extends StatelessWidget {
+  final String upPrice1;
   final String downPrice1;
   final String upPrice2;
   final String downPrice2;
@@ -68,7 +68,7 @@ class TableData extends StatelessWidget {
   final String upPrice30;
   final String downPrice30;
 
-  const TableData({
+  const TableDataMasterCircle({
     super.key,
     required this.upPrice1,
     required this.downPrice1,
@@ -141,19 +141,19 @@ class TableData extends StatelessWidget {
         children: [
           DataTable(columns: [
             DataColumn(
-                label: TextDate(
+                label: TextDateMaster(
               text: 'المؤشر',
             )),
             DataColumn(
-                label: TextDate(
+                label: TextDateMaster(
               text: 'اقل',
             )),
             DataColumn(
-                label: TextDate(
+                label: TextDateMaster(
               text: 'اعلي',
             )),
             DataColumn(
-                label: TextDate(
+                label: TextDateMaster(
               text: 'التاريخ',
             )),
           ], rows: [
@@ -162,7 +162,7 @@ class TableData extends StatelessWidget {
                 double.parse(upPrice1) == double.parse(upPrice2)
                     ? ArrowNon()
                     : (double.parse(upPrice1) > double.parse(upPrice2)
-                        ?  ArrowUp()
+                        ? ArrowUp()
                         : ArrowDown()),
               ),
               DataCell(Text(downPrice1)),
@@ -219,7 +219,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(upPrice6)),
               DataCell(Text(date.time6.value)),
             ]),
-              DataRow(cells: [
+            DataRow(cells: [
               DataCell(double.parse(upPrice7) == double.parse(upPrice8)
                   ? ArrowNon()
                   : (double.parse(upPrice7) > double.parse(upPrice8)
@@ -229,8 +229,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(upPrice7)),
               DataCell(Text(date.time7.value)),
             ]),
-           
-              DataRow(cells: [
+            DataRow(cells: [
               DataCell(double.parse(upPrice8) == double.parse(upPrice9)
                   ? ArrowNon()
                   : (double.parse(upPrice8) > double.parse(upPrice9)
@@ -250,7 +249,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(upPrice9)),
               DataCell(Text(date.time9.value)),
             ]),
-              DataRow(cells: [
+            DataRow(cells: [
               DataCell(double.parse(upPrice10) == double.parse(upPrice11)
                   ? ArrowNon()
                   : (double.parse(upPrice10) > double.parse(upPrice11)
@@ -261,7 +260,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time10.value)),
             ]),
             DataRow(cells: [
-               DataCell(double.parse(upPrice11) == double.parse(upPrice12)
+              DataCell(double.parse(upPrice11) == double.parse(upPrice12)
                   ? ArrowNon()
                   : (double.parse(upPrice11) > double.parse(upPrice12)
                       ? ArrowUp()
@@ -291,7 +290,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time13.value)),
             ]),
             DataRow(cells: [
-               DataCell(double.parse(upPrice14) == double.parse(upPrice15)
+              DataCell(double.parse(upPrice14) == double.parse(upPrice15)
                   ? ArrowNon()
                   : (double.parse(upPrice14) > double.parse(upPrice15)
                       ? ArrowUp()
@@ -311,7 +310,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time15.value)),
             ]),
             DataRow(cells: [
-      DataCell(double.parse(upPrice16) == double.parse(upPrice17)
+              DataCell(double.parse(upPrice16) == double.parse(upPrice17)
                   ? ArrowNon()
                   : (double.parse(upPrice16) > double.parse(upPrice17)
                       ? ArrowUp()
@@ -331,7 +330,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time17.value)),
             ]),
             DataRow(cells: [
- DataCell(double.parse(upPrice18) == double.parse(upPrice19)
+              DataCell(double.parse(upPrice18) == double.parse(upPrice19)
                   ? ArrowNon()
                   : (double.parse(upPrice18) > double.parse(upPrice19)
                       ? ArrowUp()
@@ -371,7 +370,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time21.value)),
             ]),
             DataRow(cells: [
-            DataCell(double.parse(upPrice22) == double.parse(upPrice23)
+              DataCell(double.parse(upPrice22) == double.parse(upPrice23)
                   ? ArrowNon()
                   : (double.parse(upPrice22) > double.parse(upPrice23)
                       ? ArrowUp()
@@ -381,7 +380,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time22.value)),
             ]),
             DataRow(cells: [
-             DataCell(double.parse(upPrice23) == double.parse(upPrice24)
+              DataCell(double.parse(upPrice23) == double.parse(upPrice24)
                   ? ArrowNon()
                   : (double.parse(upPrice23) > double.parse(upPrice24)
                       ? ArrowUp()
@@ -391,7 +390,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time23.value)),
             ]),
             DataRow(cells: [
-           DataCell(double.parse(upPrice24) == double.parse(upPrice25)
+              DataCell(double.parse(upPrice24) == double.parse(upPrice25)
                   ? ArrowNon()
                   : (double.parse(upPrice24) > double.parse(upPrice25)
                       ? ArrowUp()
@@ -401,7 +400,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time24.value)),
             ]),
             DataRow(cells: [
-        DataCell(double.parse(upPrice25) == double.parse(upPrice26)
+              DataCell(double.parse(upPrice25) == double.parse(upPrice26)
                   ? ArrowNon()
                   : (double.parse(upPrice25) > double.parse(upPrice26)
                       ? ArrowUp()
@@ -441,7 +440,7 @@ class TableData extends StatelessWidget {
               DataCell(Text(date.time28.value)),
             ]),
             DataRow(cells: [
- DataCell(double.parse(upPrice29) == double.parse(upPrice30)
+              DataCell(double.parse(upPrice29) == double.parse(upPrice30)
                   ? ArrowNon()
                   : (double.parse(upPrice29) > double.parse(upPrice30)
                       ? ArrowUp()

@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ContinarAlmost extends StatelessWidget {
-  String type;
-  ContinarAlmost({super.key, required this.type});
+  ContinarAlmost({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class ContinarAlmost extends StatelessWidget {
       },
       child: Container(
         alignment: Alignment.topCenter,
-        margin: const EdgeInsets.all(15),
+        margin: const EdgeInsets.only(right: 15, left: 15, top: 15, bottom: 25),
         width: double.infinity,
         height: 100,
         decoration: BoxDecoration(
@@ -39,7 +40,7 @@ class ContinarAlmost extends StatelessWidget {
               color: Colors.red,
               fontSize: 25,
               fontWeight: FontWeight.bold,
-              text: type,
+              text: 'قريبا',
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

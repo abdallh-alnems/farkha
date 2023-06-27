@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farkha_app/model/data_modela3alf_.dart';
+import 'package:farkha_app/model/data_model_a3alf_.dart';
 import 'package:farkha_app/model/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
