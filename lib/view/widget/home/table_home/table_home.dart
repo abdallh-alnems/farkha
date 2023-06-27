@@ -11,6 +11,7 @@ import 'package:farkha_app/logic/controller/master_circle_controllers/frakh_cont
 import 'package:farkha_app/logic/controller/master_circle_controllers/katkit_controller/katkit_abid_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/katkit_controller/katkit_baladi_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/katkit_controller/katkit_sasso_controller.dart';
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/home/table_home/table.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -117,7 +118,7 @@ class TableHome extends StatelessWidget {
     );
     }else {
                   return const Center(
-                    child: CircularProgressIndicator(color: Colors.blue),
+                    child: CircularProgressIndicator(color: mainColor),
                   ); 
   }
               }

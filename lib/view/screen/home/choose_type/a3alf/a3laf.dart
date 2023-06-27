@@ -1,4 +1,5 @@
 import 'package:farkha_app/logic/controller/master_circle_controllers/a3alf/a3laf_controller.dart';
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/a3laf_table.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class A3laf extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: CircularProgressIndicator(color: Colors.blue),
+                    child: CircularProgressIndicator(color: mainColor),
                   );
                 }
               },

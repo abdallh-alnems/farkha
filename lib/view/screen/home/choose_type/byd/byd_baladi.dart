@@ -2,6 +2,7 @@ import 'package:farkha_app/logic/controller/master_circle_controllers/bat_contro
 import 'package:farkha_app/logic/controller/master_circle_controllers/byd_controller/byd_abid_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/byd_controller/byd_aihmar_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/byd_controller/byd_baladi_controller.dart';
+import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class BydBaladi extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: CircularProgressIndicator(color: Colors.blue),
+                    child: CircularProgressIndicator(color: mainColor),
                   );
                 }
               },
