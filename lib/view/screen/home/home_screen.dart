@@ -37,11 +37,8 @@ class HomeScreen extends StatelessWidget {
           ),
           body: Column(
             children: [
-              MasterList(),
-              
-              ContinarAlmost(
-               
-              ),
+              MasterList(),             
+              ContinarAlmost(),
              Expanded(child: TableHome())
             ],
           )),
