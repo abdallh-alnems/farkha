@@ -1,13 +1,11 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:farkha_app/view/widget/home/advice%20scroll/continar_advice.dart';
+import 'package:flutter/material.dart';
 
-class advicScroll
- extends StatelessWidget {
-  const advicScroll
-  ({super.key});
+class AdviceScroll extends StatelessWidget {
+  const AdviceScroll({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ContinarAdvice();
   }
 }

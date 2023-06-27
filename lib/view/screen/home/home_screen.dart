@@ -1,5 +1,6 @@
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/utils/theme.dart';
+import 'package:farkha_app/view/widget/home/advice%20scroll/advice_scroll.dart';
 
 import 'package:farkha_app/view/widget/home/circle_master/master_list.dart';
 import 'package:farkha_app/view/widget/drawer/my_drawer.dart';
@@ -37,7 +38,8 @@ class HomeScreen extends StatelessWidget {
           ),
           body: Column(
             children: [
-              MasterList(),             
+              MasterList(),  
+              AdviceScroll(),           
               ContinarAlmost(),
              Expanded(child: TableHome())
             ],
