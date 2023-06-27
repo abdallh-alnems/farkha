@@ -38,7 +38,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: '  توقعات',
               icon: Icons.timeline,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -46,7 +45,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'الاضاءه',
               icon: Icons.wb_incandescent,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -54,7 +52,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'درجات الحرارة',
               icon: Icons.thermostat,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -62,7 +59,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'الرطوبه',
               icon: Icons.water_drop,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -70,7 +66,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'الصيف',
               icon: Icons.wb_sunny,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -78,7 +73,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'الشتاء',
               icon: Icons.ac_unit,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -86,7 +80,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'التجانس',
               icon: Icons.layers,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -94,7 +87,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'اوزان',
               icon: Icons.adjust,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -102,7 +94,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'استهلاك',
               icon: Icons.cable,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -110,7 +101,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'سلالات',
               icon: Icons.device_hub,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -118,7 +108,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'الارضية',
               icon: Icons.crop_square,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -126,7 +115,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'امراض',
               icon: Icons.warning,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -134,7 +122,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'اعراض',
               icon: Icons.delete_forever,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -142,7 +129,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'علاج',
               icon: Icons.local_pharmacy,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -150,7 +136,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'نصائح',
               icon: Icons.receipt,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -158,7 +143,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'اخطاء',
               icon: Icons.error,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -179,7 +163,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'مستلزمات',
               icon: Icons.radar,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -200,7 +183,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'المزرعة',
               icon: Icons.home,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -208,7 +190,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'تطهير',
               icon: Icons.cleaning_services,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -216,7 +197,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'استقبال',
               icon: Icons.check_box,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -224,7 +204,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'تحصينات',
               icon: Icons.security,
-              color: Colors.cyan,
             ),
             ListTitleDrawer(
               onTap: () {
@@ -245,7 +224,6 @@ class MyDrawer extends StatelessWidget {
               },
               title: 'دورة',
               icon: Icons.cached,
-              color: Colors.cyan,
             ),
             Divider(
               color: Colors.white,

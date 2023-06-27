@@ -10,7 +10,7 @@ class ListTitleDrawer extends StatelessWidget {
     super.key,
     required this.title,
     required this.icon,
-    required this.color,
+    this.color = iconDrawer,
     required this.onTap,
   });
 
