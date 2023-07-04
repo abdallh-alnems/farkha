@@ -1,4 +1,4 @@
-import 'package:farkha_app/view/widget/home/advice%20scroll/continar_advice.dart';
+import 'package:farkha_app/view/widget/home/advice/continar_data/continar_advice.dart';
 import 'package:flutter/material.dart';
 
 class AdviceScroll extends StatelessWidget {

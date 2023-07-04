@@ -58,7 +58,7 @@ class ContinarAlmost extends StatelessWidget {
                   children: [Icon(Icons.help), Text('مساعدة')],
                 ),
                 Column(
-                  children: [Icon(Icons.timeline), Text('توفعات')],
+                  children: [Icon(Icons.timeline), Text('توقعات')],
                 ),
               ],
             )

@@ -13,7 +13,7 @@ class MasterList extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
-        height: 150,
+        height: 110,
         child: Row(
           children: [
             SizedBox(
@@ -21,7 +21,7 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                 showDialog(
+                showDialog(
                   context: context,
                   builder: (context) {
                     return FrakhDialogWidget(
@@ -34,11 +34,11 @@ class MasterList extends StatelessWidget {
                       },
                       text2: 'فرخ ساسو',
                       onPressed3: () {
-                         Get.toNamed(Routes.FrakhBaladi);
+                        Get.toNamed(Routes.FrakhBaladi);
                       },
                       text3: ' فرخ بلدي',
-                      onPressed4: (){
-                         Get.toNamed(Routes.FrakhAmhitAbid);
+                      onPressed4: () {
+                        Get.toNamed(Routes.FrakhAmhitAbid);
                       },
                       text4: 'فرخ امهات ابيض',
                     );
@@ -67,7 +67,7 @@ class MasterList extends StatelessWidget {
                       },
                       text2: 'كتاكيت ساسو',
                       onPressed3: () {
-                         Get.toNamed(Routes.KatkitBaladi);
+                        Get.toNamed(Routes.KatkitBaladi);
                       },
                       text3: ' كتاكيت بلدي',
                     );
@@ -83,10 +83,10 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-              Get.toNamed(Routes.A3laf);
+                Get.toNamed(Routes.A3laf);
               },
               child: CircleAvatarHome(
-                type: 'اعلاف',
+                type: 'أعلاف',
               ),
             ),
             SizedBox(
@@ -94,7 +94,7 @@ class MasterList extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                  showDialog(
+                showDialog(
                   context: context,
                   builder: (context) {
                     return MyDialogWidget(
@@ -107,7 +107,7 @@ class MasterList extends StatelessWidget {
                       },
                       text2: 'بيض احمر',
                       onPressed3: () {
-                         Get.toNamed(Routes.BydBaladi);
+                        Get.toNamed(Routes.BydBaladi);
                       },
                       text3: ' بيض بلدي',
                     );
@@ -136,7 +136,7 @@ class MasterList extends StatelessWidget {
                       },
                       text2: 'بط فرنساوي',
                       onPressed3: () {
-                         Get.toNamed(Routes.BatMaskufi);
+                        Get.toNamed(Routes.BatMaskufi);
                       },
                       text3: ' بط مسكوفي',
                     );

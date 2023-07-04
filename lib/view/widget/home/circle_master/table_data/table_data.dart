@@ -146,11 +146,11 @@ class TableDataMasterCircle extends StatelessWidget {
             )),
             DataColumn(
                 label: TextDateMaster(
-              text: 'اقل',
+              text: 'أقل',
             )),
             DataColumn(
                 label: TextDateMaster(
-              text: 'اعلي',
+              text: 'أعلي',
             )),
             DataColumn(
                 label: TextDateMaster(

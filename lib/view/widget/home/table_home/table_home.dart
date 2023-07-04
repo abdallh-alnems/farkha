@@ -12,7 +12,8 @@ import 'package:farkha_app/logic/controller/master_circle_controllers/katkit_con
 import 'package:farkha_app/logic/controller/master_circle_controllers/katkit_controller/katkit_baladi_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/katkit_controller/katkit_sasso_controller.dart';
 import 'package:farkha_app/utils/theme.dart';
-import 'package:farkha_app/view/widget/home/table_home/table.dart';
+
+import 'package:farkha_app/view/widget/home/table_home/tableData.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,91 +38,86 @@ class TableHome extends StatelessWidget {
     final batMolar = Get.find<BatMolarController>();
     final batFiransawi = Get.find<BatFiransawiController>();
 
-    return GetBuilder<BatFiransawiController>(
-              builder: (_) {
-                if (frakhAbid.upmyData != null &&
-                    frakhAbid.downmyData != null &&
-                    frakhAmihatAbid.upmyData != null &&
-                    frakhAmihatAbid.downmyData != null &&
-                    frakhBaladi.upmyData != null &&
-                    frakhBaladi.downmyData != null &&
-                    frakhSasso.upmyData != null &&
-                    frakhSasso.downmyData != null &&
-                    bydAbid.upmyData != null &&
-                    bydAbid.downmyData != null &&
-                    bydAihmar.upmyData != null &&
-                    bydAihmar.downmyData != null &&
-                    bydBaladi.upmyData != null &&
-                    bydBaladi.downmyData != null &&
-                    katkitBaladi.upmyData != null &&
-                    katkitBaladi.downmyData != null &&
-                    katkitAbid.upmyData != null &&
-                    katkitAbid.downmyData != null &&
-                    katkitSasso.upmyData != null &&
-                    katkitSasso.downmyData != null &&
-                    batMaskufi.upmyData != null &&
-                    batMaskufi.downmyData != null &&
-                    batMolar.upmyData != null &&
-                    batMolar.downmyData != null &&
-                    batFiransawi.upmyData != null &&
-                    batFiransawi.downmyData != null 
-                    
-) {
-                  return TableDataHome(
-      //frakh
-      yUpFrakhAbid: frakhAbid.upmyData!.two,
-      upFrakhAbid: frakhAbid.upmyData!.one,
-      downFrakhAbid: frakhAbid.downmyData!.one,
-      yUpFrakhBaladi: frakhBaladi.upmyData!.two,
-      upFrakhBaladi: frakhBaladi.upmyData!.one,
-      downFrakhBaladi: frakhBaladi.downmyData!.one,
-      yUpFrakhSasso: frakhSasso.upmyData!.two,
-      upFrakhSasso: frakhSasso.upmyData!.one,
-      downFrakhSasso: frakhSasso.downmyData!.one,
-      yUpFrakhAmihatAbid: frakhAmihatAbid.upmyData!.two,
-      upFrakhAmihatAbid: frakhAmihatAbid.upmyData!.one,
-      downFrakhAmihatAbid: frakhAmihatAbid.downmyData!.one,
+    return GetBuilder<BatFiransawiController>(builder: (_) {
+      if (frakhAbid.upmyData != null &&
+          frakhAbid.downmyData != null &&
+          frakhAmihatAbid.upmyData != null &&
+          frakhAmihatAbid.downmyData != null &&
+          frakhBaladi.upmyData != null &&
+          frakhBaladi.downmyData != null &&
+          frakhSasso.upmyData != null &&
+          frakhSasso.downmyData != null &&
+          bydAbid.upmyData != null &&
+          bydAbid.downmyData != null &&
+          bydAihmar.upmyData != null &&
+          bydAihmar.downmyData != null &&
+          bydBaladi.upmyData != null &&
+          bydBaladi.downmyData != null &&
+          katkitBaladi.upmyData != null &&
+          katkitBaladi.downmyData != null &&
+          katkitAbid.upmyData != null &&
+          katkitAbid.downmyData != null &&
+          katkitSasso.upmyData != null &&
+          katkitSasso.downmyData != null &&
+          batMaskufi.upmyData != null &&
+          batMaskufi.downmyData != null &&
+          batMolar.upmyData != null &&
+          batMolar.downmyData != null &&
+          batFiransawi.upmyData != null &&
+          batFiransawi.downmyData != null) {
+        return TableDataHome(
+          //frakh
+          yUpFrakhAbid: frakhAbid.upmyData!.two,
+          upFrakhAbid: frakhAbid.upmyData!.one,
+          downFrakhAbid: frakhAbid.downmyData!.one,
+          yUpFrakhBaladi: frakhBaladi.upmyData!.two,
+          upFrakhBaladi: frakhBaladi.upmyData!.one,
+          downFrakhBaladi: frakhBaladi.downmyData!.one,
+          yUpFrakhSasso: frakhSasso.upmyData!.two,
+          upFrakhSasso: frakhSasso.upmyData!.one,
+          downFrakhSasso: frakhSasso.downmyData!.one,
+          yUpFrakhAmihatAbid: frakhAmihatAbid.upmyData!.two,
+          upFrakhAmihatAbid: frakhAmihatAbid.upmyData!.one,
+          downFrakhAmihatAbid: frakhAmihatAbid.downmyData!.one,
 
-      //bat
-      yUpBatFiransawi: batFiransawi.upmyData!.two,
-      upBatFiransawi: batFiransawi.upmyData!.one,
-      downBatFiransawi: batFiransawi.downmyData!.one,
-      yUpBatMolar: batMolar.upmyData!.two,
-      upBatMolar: batMolar.upmyData!.one,
-      downBatMolar: batMolar.downmyData!.one,
-      yUpBatMaskufi: batMaskufi.upmyData!.two,
-      upBatMaskufi: batMaskufi.upmyData!.one,
-      downBatMaskufi: batMaskufi.downmyData!.one,
+          //bat
+          yUpBatFiransawi: batFiransawi.upmyData!.two,
+          upBatFiransawi: batFiransawi.upmyData!.one,
+          downBatFiransawi: batFiransawi.downmyData!.one,
+          yUpBatMolar: batMolar.upmyData!.two,
+          upBatMolar: batMolar.upmyData!.one,
+          downBatMolar: batMolar.downmyData!.one,
+          yUpBatMaskufi: batMaskufi.upmyData!.two,
+          upBatMaskufi: batMaskufi.upmyData!.one,
+          downBatMaskufi: batMaskufi.downmyData!.one,
 
-     //byd
-     yUpBydAbid: bydAbid.upmyData!.two,
-      upBydAbid: bydAbid.upmyData!.one,
-      downBydAbid: bydAbid.downmyData!.one,
-      yUpBydAihmar: bydAihmar.upmyData!.two,
-      upBydAihmar: bydAihmar.upmyData!.one,
-      downBydAihmar: bydAihmar.downmyData!.one,
-      yUpBydBaladi: bydBaladi.upmyData!.two,
-      upBydBaladi: bydBaladi.upmyData!.one,
-      downBydBaladi: bydBaladi.downmyData!.one,
+          //byd
+          yUpBydAbid: bydAbid.upmyData!.two,
+          upBydAbid: bydAbid.upmyData!.one,
+          downBydAbid: bydAbid.downmyData!.one,
+          yUpBydAihmar: bydAihmar.upmyData!.two,
+          upBydAihmar: bydAihmar.upmyData!.one,
+          downBydAihmar: bydAihmar.downmyData!.one,
+          yUpBydBaladi: bydBaladi.upmyData!.two,
+          upBydBaladi: bydBaladi.upmyData!.one,
+          downBydBaladi: bydBaladi.downmyData!.one,
 
-
-     //katkit
-     yUpKatkitAbid: katkitAbid.upmyData!.two,
-      upKatkitAbid: katkitAbid.upmyData!.one,
-      downKatkitAbid: katkitAbid.downmyData!.one,
-      yUpKatkitBaladi: katkitBaladi.upmyData!.two,
-      upKatkitBaladi: katkitBaladi.upmyData!.one,
-      downKatkitBaladi: katkitBaladi.downmyData!.one,
-      yUpKatkitSasso: katkitSasso.upmyData!.two,
-      upKatkitSasso: katkitSasso.upmyData!.one,
-      downKatkitSasso: katkitSasso.downmyData!.one,
-    );
-    }else {
-                  return const Center(
-                    child: CircularProgressIndicator(color: mainColor),
-                  ); 
-  }
-              }
-    );
+          //katkit
+          yUpKatkitAbid: katkitAbid.upmyData!.two,
+          upKatkitAbid: katkitAbid.upmyData!.one,
+          downKatkitAbid: katkitAbid.downmyData!.one,
+          yUpKatkitBaladi: katkitBaladi.upmyData!.two,
+          upKatkitBaladi: katkitBaladi.upmyData!.one,
+          downKatkitBaladi: katkitBaladi.downmyData!.one,
+          yUpKatkitSasso: katkitSasso.upmyData!.two,
+          upKatkitSasso: katkitSasso.upmyData!.one,
+          downKatkitSasso: katkitSasso.downmyData!.one,
+        );
+      } else {
+        return const Center(
+          child: CircularProgressIndicator(color: scaColor),
+        );
+      }
+    });
   }
 }

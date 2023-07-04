@@ -12,12 +12,12 @@ class CircleAvatarHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      radius: 50,
-      backgroundColor: mainColor,
+      radius: 40,
+      backgroundColor: scaColor,
       child: Text(
         type,
         style: TextStyle(
-            fontSize: 25, fontWeight: FontWeight.w400, color: Colors.black),
+            fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white),
       ),
     );
   }

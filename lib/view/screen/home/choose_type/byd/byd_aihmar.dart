@@ -88,7 +88,7 @@ class BydAihmar extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: CircularProgressIndicator(color: mainColor),
+                    child: CircularProgressIndicator(color: scaColor),
                   );
                 }
               },
