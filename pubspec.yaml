@@ -35,10 +35,12 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.6.5
+  google_mobile_ads: ^3.0.0
   in_app_review: ^2.0.6
   intl: ^0.18.1
   introduction_screen: ^3.1.8
   launch_review: ^3.0.1
+  page_transition: ^2.0.9
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
