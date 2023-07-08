@@ -1,3 +1,4 @@
+import 'package:farkha_app/logic/controller/admob_controller.dart';
 import 'package:farkha_app/routes/routes.dart';
 import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/home/advice/advice_home.dart';
@@ -8,15 +9,49 @@ import 'package:farkha_app/view/widget/home/continar_almost.dart';
 import 'package:farkha_app/view/widget/home/table_home/table_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:intl/intl.dart';
-import 'package:launch_review/launch_review.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    initBannerAd();
+  }
+
+  late BannerAd bannerAd;
+  bool isAdLoaded = false;
+  var adUnit = 'ca-app-pub-3940256099942544/6300978111';
+
+  initBannerAd() {
+    bannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: adUnit,
+      listener: BannerAdListener(onAdLoaded: (ad) {
+        setState(() {
+          isAdLoaded = true;
+        });
+      }, onAdFailedToLoad: ((ad, error) {
+        ad.dispose();
+        print(error);
+      })),
+      request: AdRequest(),
+    );
+    bannerAd.load();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //  final controller = Get.find<GetBannerAd>();
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -40,9 +75,21 @@ class HomeScreen extends StatelessWidget {
           children: [
             MasterList(),
             AdviceScroll(),
-            Expanded(child: TableHome())
+            Expanded(child: TableHome()),
+            //     GetBuilder<GetBannerAd>
+
+            //     (builder: (_) {
+            //       return Container(child: controller.bannerWidget());
+            //     })
           ],
         ),
+        bottomNavigationBar: isAdLoaded
+            ? SizedBox(
+                height: bannerAd.size.height.toDouble(),
+                width: bannerAd.size.width.toDouble(),
+                child: AdWidget(ad: bannerAd),
+              )
+            : SizedBox(),
       ),
     );
   }

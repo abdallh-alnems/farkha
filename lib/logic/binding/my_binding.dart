@@ -1,3 +1,4 @@
+import 'package:farkha_app/logic/controller/admob_controller.dart';
 import 'package:farkha_app/logic/controller/date_time_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/bat_controller/bat_firansawi_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/bat_controller/bat_maskufi_controller.dart';
@@ -59,6 +60,9 @@ class MyBindings extends Bindings {
        Get.put(
       GetDateTime(),
     );
+    //  Get.put(
+    //   GetBannerAd(),
+    // );
     
    
   }
