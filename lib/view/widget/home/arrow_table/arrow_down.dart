@@ -5,7 +5,7 @@ class ArrowDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
+    return const Icon(
       Icons.arrow_downward,
       color: Colors.green,
     );

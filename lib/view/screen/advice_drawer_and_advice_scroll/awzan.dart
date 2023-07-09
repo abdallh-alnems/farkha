@@ -1,7 +1,8 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class Awzan extends StatelessWidget {
   const Awzan({super.key});
@@ -82,18 +83,18 @@ class Awzan extends StatelessWidget {
       TableRow row = TableRow(
         children: [
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               weight,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               '$i',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
@@ -107,9 +108,9 @@ class Awzan extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                ArrowBack(),
+               const  ArrowBack(),
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       TypeDrawer(
@@ -136,19 +137,19 @@ class Awzan extends StatelessWidget {
                         type:
                             '5 - التخلص من الإجهاد: يجب تقليل مصادر الضوضاء والاضطرابات في البيئة المحيطة بالفراخ، وتجنب التعرض للإجهاد بشكل عام.',
                       ),
-                      SizedBox(
+                     const SizedBox(
                         height: 10,
                       ),
                     ],
                   ),
                 ),
-                Text('الجدول التالي يمثل  اوزان الفراخ بالجرام عند عمر كل يوم'),
-                Text(
+               const Text('الجدول التالي يمثل  اوزان الفراخ بالجرام عند عمر كل يوم'),
+               const Text(
                   'ملحوظه : يجب وزن عشره فرخات ثم القسمه علي عشره ليكون المتوسط كالتالي',
                   style: TextStyle(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Table(
                       defaultVerticalAlignment:

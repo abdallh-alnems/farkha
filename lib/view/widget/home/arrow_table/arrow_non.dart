@@ -5,7 +5,7 @@ class ArrowNon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(
+    return const Icon(
       Icons.horizontal_rule,
       color: Colors.blue,
     );

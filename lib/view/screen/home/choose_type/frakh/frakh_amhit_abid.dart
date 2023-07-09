@@ -1,4 +1,3 @@
-import 'package:farkha_app/logic/controller/master_circle_controllers/bat_controller/bat_molar_controller.dart';
 
 import 'package:farkha_app/logic/controller/master_circle_controllers/frakh_controller/frakh_amihat_abid_controller.dart';
 import 'package:farkha_app/utils/theme.dart';
@@ -17,7 +16,7 @@ class FrakhAmhitAbid extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
+            appBar: const MyAppBar(
               text: 'فراخ ابيض امهات ',
             ),
             body: GetBuilder<FrakhAmihatAbidController>(

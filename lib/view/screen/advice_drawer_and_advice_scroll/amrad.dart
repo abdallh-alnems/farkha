@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/divider_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';

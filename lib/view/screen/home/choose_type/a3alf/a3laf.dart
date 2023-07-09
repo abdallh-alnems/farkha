@@ -15,7 +15,7 @@ class A3laf extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
+            appBar: const MyAppBar(
               text: 'اعلاف',
             ),
             body: GetBuilder<A3lafController>(

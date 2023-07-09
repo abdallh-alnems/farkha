@@ -17,7 +17,7 @@ class FrakhDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
+      title: const Text(
         'اختر النوع',
         textAlign: TextAlign.center,
       ),
@@ -27,12 +27,12 @@ class FrakhDialogWidget extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.cyan,
-                minimumSize: Size(double.infinity, 40),
+                minimumSize: const Size(double.infinity, 40),
               ),
               onPressed: onPressed1,
               child: Text(
                 text1,
-                style: TextStyle(fontSize: 23),
+                style: const TextStyle(fontSize: 23),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -41,12 +41,12 @@ class FrakhDialogWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.cyan,
-                  minimumSize: Size(double.infinity, 40),
+                  minimumSize: const Size(double.infinity, 40),
                 ),
                 onPressed: onPressed2,
                 child: Text(
                   text2,
-                  style: TextStyle(fontSize: 23),
+                  style: const TextStyle(fontSize: 23),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -54,12 +54,12 @@ class FrakhDialogWidget extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.cyan,
-                minimumSize: Size(double.infinity, 40),
+                minimumSize: const Size(double.infinity, 40),
               ),
               onPressed: onPressed3,
               child: Text(
                 text3,
-                style: TextStyle(fontSize: 23),
+                style: const TextStyle(fontSize: 23),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -68,12 +68,12 @@ class FrakhDialogWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.cyan,
-                  minimumSize: Size(double.infinity, 40),
+                  minimumSize: const Size(double.infinity, 40),
                 ),
                 onPressed: onPressed4,
                 child: Text(
                   text4,
-                  style: TextStyle(fontSize: 23),
+                  style: const TextStyle(fontSize: 23),
                   textAlign: TextAlign.center,
                 ),
               ),

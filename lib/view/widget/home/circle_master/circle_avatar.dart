@@ -16,7 +16,7 @@ class CircleAvatarHome extends StatelessWidget {
       backgroundColor: scaColor,
       child: Text(
         type,
-        style: TextStyle(
+        style: const TextStyle(
             fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white),
       ),
     );

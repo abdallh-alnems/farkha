@@ -19,7 +19,7 @@ class Advice extends StatelessWidget {
         ),
         Text(
           text,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         )
       ],
     );

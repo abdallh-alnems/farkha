@@ -7,13 +7,13 @@ class ArrowBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(left: 3),
+        margin: const EdgeInsets.only(left: 3),
         alignment: Alignment.bottomLeft,
         child: IconButton(
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               size: 26,
             )));

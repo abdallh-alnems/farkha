@@ -1,4 +1,3 @@
-import 'package:farkha_app/logic/binding/master_circle_bindings/a3alf_Bindings/a3laf_binding.dart';
 import 'package:farkha_app/view/screen/advice_drawer_and_advice_scroll/a3rad.dart';
 import 'package:farkha_app/view/screen/advice_drawer_and_advice_scroll/akhtaq.dart';
 import 'package:farkha_app/view/screen/advice_drawer_and_advice_scroll/alardya.dart';
@@ -38,213 +37,208 @@ import 'package:farkha_app/view/screen/home/home_screen.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
-  //initialRoutes
-  static const homeScreen = Routes.HomeScreen;
-
+  
   //GetPage
   static final routes = [
     GetPage(
-      name: Routes.HomeScreen,
-      page: () => HomeScreen(),
+      name: Routes.homeScreen,
+      page: () => const  HomeScreen(),
     ),
     //bat
     GetPage(
-      name: Routes.BatMolar,
-      page: () => BatMolar(),
+      name: Routes.batMolar,
+      page: () => const  BatMolar(),
      
     ),
     GetPage(
-      name: Routes.BatFiransawi,
-      page: () => BatFiransawi(),
+      name: Routes.bydAihmar,
+      page: () => const  BatFiransawi(),
       
     ),
     GetPage(
-      name: Routes.BatMaskufi,
-      page: () => BatMaskufi(),
+      name: Routes.batMaskufi,
+      page: () => const BatMaskufi(),
       
     ),
 
 //byd
     GetPage(
-      name: Routes.BydAbid,
-      page: () => BydAbid(),
+      name: Routes.bydAbid,
+      page: () => const  BydAbid(),
      
     ),
     GetPage(
-      name: Routes.BydAihmar,
-      page: () => BydAihmar(),
+      name: Routes.bydAihmar,
+      page: () => const  BydAihmar(),
      
     ),
     GetPage(
-      name: Routes.BydBaladi,
-      page: () => BydBaladi(),
+      name: Routes.bydBaladi,
+      page: () => const BydBaladi(),
       
     ),
 
 //frakh
     GetPage(
-      name: Routes.FrakhAbid,
-      page: () => FrakhAbid(),
+      name: Routes.frakhAbid,
+      page: () => const FrakhAbid(),
       
     ),
     GetPage(
-      name: Routes.FrakhAmhitAbid,
-      page: () => FrakhAmhitAbid(),
+      name: Routes.frakhAmhitAbid,
+      page: () => const FrakhAmhitAbid(),
       
     ),
     GetPage(
-      name: Routes.FrakhBaladi,
-      page: () => FrakhBaladi(),
+      name: Routes.frakhBaladi,
+      page: () => const FrakhBaladi(),
       
     ),
     GetPage(
-      name: Routes.FrakhSasso,
-      page: () => FrakhSasso(),
+      name: Routes.frakhSasso,
+      page: () => const FrakhSasso(),
    
     ),
 
     //katkit
     GetPage(
-      name: Routes.KatKitAbid,
-      page: () => KatkitAbid(),
+      name: Routes.katKitAbid,
+      page: () => const KatkitAbid(),
       
     ),
     GetPage(
-      name: Routes.KatkitBaladi,
-      page: () => KatkitBaladi(),
+      name: Routes.katkitBaladi,
+      page: () => const KatkitBaladi(),
       
     ),
     GetPage(
-      name: Routes.KatkitSasso,
-      page: () => KatkitSasso(),
+      name: Routes.katkitSasso,
+      page: () => const KatkitSasso(),
     
     ),
 //a3laf
     GetPage(
-      name: Routes.A3laf,
-      page: () => A3laf(),
-      binding: A3lafBinding(),
+      name: Routes.a3laf,
+      page: () => const A3laf(),
     ),
 
     GetPage(
-      name: Routes.DartgetAl7rara,
-      page: () => DartgetAl7rara(),
+      name: Routes.dartgetAl7rara,
+      page: () => const DartgetAl7rara(),
     ),
     GetPage(
-      name: Routes.Alida,
-      page: () => Alida(),
+      name: Routes.alida,
+      page: () => const Alida(),
     ),
     GetPage(
-      name: Routes.Alrotoba,
-      page: () => Alrotoba(),
+      name: Routes.alrotoba,
+      page: () => const Alrotoba(),
     ),
     GetPage(
-      name: Routes.Alsaf,
-      page: () => Alsaf(),
+      name: Routes.alsaf,
+      page: () => const Alsaf(),
     ),
     GetPage(
-      name: Routes.Alshata,
-      page: () => Alshata(),
+      name: Routes.alshata,
+      page: () => const Alshata(),
     ),
     GetPage(
-      name: Routes.Altaganous,
-      page: () => Altaganous(),
+      name: Routes.altaganous,
+      page: () => const Altaganous(),
     ),
     GetPage(
-      name: Routes.Awzan,
-      page: () => Awzan(),
+      name: Routes.awzan,
+      page: () => const Awzan(),
     ),
     GetPage(
-      name: Routes.Asthlak,
-      page: () => Asthlak(),
+      name: Routes.asthlak,
+      page: () => const Asthlak(),
     ),
-    GetPage(name: Routes.Solalat,
-     page: () => Solalat(),
+    GetPage(name: Routes.solalat,
+     page: () => const Solalat(),
      ),
     GetPage(
-      name: Routes.Alardya,
-      page: () => Alardya(),
+      name: Routes.alardya,
+      page: () => const Alardya(),
     ),
     GetPage(
-      name: Routes.Amard,
-      page: () => Amard(),
+      name: Routes.amard,
+      page: () => const Amard(),
     ),
     GetPage(
-      name: Routes.A3ard,
-      page: () => A3ard(),
+      name: Routes.a3ard,
+      page: () => const A3ard(),
     ),
     GetPage(
-      name: Routes.AL3lag,
-      page: () => AL3lag(),
+      name: Routes.aL3lag,
+      page: () => const AL3lag(),
     ),
     GetPage(
-      name: Routes.Nasa7a,
-      page: () => Nasa7a(),
+      name: Routes.nasa7a,
+      page: () => const Nasa7a(),
     ),
     GetPage(
-      name: Routes.Astaqbal,
-      page: () => Astaqbal(),
+      name: Routes.astaqbal,
+      page: () => const Astaqbal(),
     ),
     GetPage(
-      name: Routes.Akhtaq,
-      page: () => Akhtaq(),
+      name: Routes.akhtaq,
+      page: () => const Akhtaq(),
     ),
     GetPage(
-      name: Routes.Tather,
-      page: () => Tather(),
+      name: Routes.tather,
+      page: () => const Tather(),
     ),
     GetPage(
-      name: Routes.Ta7sen,
-      page: () => Ta7sen(),
+      name: Routes.ta7sen,
+      page: () => const Ta7sen(),
     ),
   ];
 }
 
 class Routes {
-  // ignore: constant_identifier_names
-  static const HomeScreen = "/homeScreen";
-  // ignore: constant_identifier_names
+  static const homeScreen = "/homeScreen";
 
 //bat
-  static const BatMolar = "/batmolar";
-  static const BatFiransawi = "/batfiransawi";
-  static const BatMaskufi = "/batmaskufi";
+  static const batMolar = "/batmolar";
+  static const batFiransawi = "/batfiransawi";
+  static const batMaskufi = "/batmaskufi";
 
 //byd
-  static const BydAbid = "/bydAbid";
-  static const BydAihmar = "/bydAihmar";
-  static const BydBaladi = "/bydBaladi";
+  static const bydAbid = "/bydAbid";
+  static const bydAihmar = "/bydAihmar";
+  static const bydBaladi = "/bydBaladi";
 
   //frakh
-  static const FrakhAbid = "/frakhAbid";
-  static const FrakhSasso = "/frakhSasso";
-  static const FrakhBaladi = "/frakhBaladi";
-  static const FrakhAmhitAbid = "/frakhAmhitAbid";
+  static const frakhAbid = "/frakhAbid";
+  static const frakhSasso = "/frakhSasso";
+  static const frakhBaladi = "/frakhBaladi";
+  static const frakhAmhitAbid = "/frakhAmhitAbid";
 
   //katkit
-  static const KatKitAbid = "/katKitAbid";
-  static const KatkitBaladi = "/katkitBaladi";
-  static const KatkitSasso = "/katkitSasso";
+  static const katKitAbid = "/katKitAbid";
+  static const katkitBaladi = "/katkitBaladi";
+  static const katkitSasso = "/katkitSasso";
 
 //a3laf
-  static const A3laf = "/a3laf";
+  static const a3laf = "/a3laf";
 
-  static const DartgetAl7rara = "/dartgetAl7rara";
-  static const Alida = "/alida";
-  static const Alrotoba = "/alrotoba";
-  static const Alsaf = "/alsaf";
-  static const Alshata = "/alshata";
-  static const Altaganous = "/altaganous";
-  static const Awzan = "/awzan";
-  static const Asthlak = "/asthlak";
-  static const Solalat = "/solalat";
-  static const Alardya = "/alardya";
-  static const Amard = "/amard";
-  static const A3ard = "/a3ard";
-  static const AL3lag = "/aL3lag";
-  static const Nasa7a = "/nasa7a";
-  static const Astaqbal = "/astaqbal";
-  static const Akhtaq = "/akhtaq";
-  static const Tather = "/tather";
-  static const Ta7sen = "/ta7sen";
+  static const dartgetAl7rara = "/dartgetAl7rara";
+  static const alida = "/alida";
+  static const alrotoba = "/alrotoba";
+  static const alsaf = "/alsaf";
+  static const alshata = "/alshata";
+  static const altaganous = "/altaganous";
+  static const awzan = "/awzan";
+  static const asthlak = "/asthlak";
+  static const solalat = "/solalat";
+  static const alardya = "/alardya";
+  static const amard = "/amard";
+  static const a3ard = "/a3ard";
+  static const aL3lag = "/aL3lag";
+  static const nasa7a = "/nasa7a";
+  static const astaqbal = "/astaqbal";
+  static const akhtaq = "/akhtaq";
+  static const tather = "/tather";
+  static const ta7sen = "/ta7sen";
 }

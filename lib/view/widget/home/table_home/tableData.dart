@@ -1,7 +1,8 @@
+// ignore_for_file: file_names
+
 import 'package:farkha_app/view/widget/home/arrow_table/arrow_down.dart';
 import 'package:farkha_app/view/widget/home/arrow_table/arrow_non.dart';
 import 'package:farkha_app/view/widget/home/arrow_table/arrow_up.dart';
-import 'package:farkha_app/view/widget/home/continar_almost.dart';
 import 'package:farkha_app/view/widget/home/table_home/text_title_data.dart';
 import 'package:farkha_app/view/widget/home/table_home/text_type.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class TableDataHome extends StatelessWidget {
       child: ListView(
         children: [
           DataTable(
-            columns: [
+            columns: const  [
             DataColumn(
                 label: TextDateHome(
               text: 'المؤشر',
@@ -122,10 +123,10 @@ class TableDataHome extends StatelessWidget {
             DataRow(cells: [
               DataCell(
                 double.parse(upFrakhAbid) == double.parse(yUpFrakhAbid)
-                    ? ArrowNon()
+                    ? const ArrowNon()
                     : (double.parse(upFrakhAbid) > double.parse(yUpFrakhAbid)
-                        ? ArrowUp()
-                        : ArrowDown()),
+                        ? const ArrowUp()
+                        : const ArrowDown()),
               ),
               DataCell(Text(downFrakhAbid)),
               DataCell(Text(upFrakhAbid)),
@@ -133,20 +134,20 @@ class TableDataHome extends StatelessWidget {
             ]),
             DataRow(cells: [
               DataCell(double.parse(upFrakhBaladi) == double.parse(yUpFrakhBaladi)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upFrakhBaladi) > double.parse(yUpFrakhBaladi)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downFrakhBaladi)),
               DataCell(Text(upFrakhBaladi)),
               DataCell(TextType(type: 'فرخ بلدي')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upFrakhSasso) == double.parse(yUpFrakhSasso)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upFrakhSasso) > double.parse(yUpFrakhSasso)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downFrakhSasso)),
               DataCell(Text(upFrakhSasso)),
               DataCell(TextType(type: 'فرخ ساسو')),
@@ -154,21 +155,21 @@ class TableDataHome extends StatelessWidget {
             DataRow(cells: [
               DataCell(double.parse(upFrakhAmihatAbid) ==
                       double.parse(yUpFrakhAmihatAbid)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upFrakhAmihatAbid) >
                           double.parse(yUpFrakhAmihatAbid)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downFrakhAmihatAbid)),
               DataCell(Text(upFrakhAmihatAbid)),
               DataCell(TextType(type: 'فرخ امهات')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upKatkitAbid) == double.parse(yUpKatkitAbid)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upKatkitAbid) > double.parse(yUpKatkitAbid)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downKatkitAbid)),
               DataCell(Text(upKatkitAbid)),
               DataCell(TextType(type: 'كتاكيت ابيض')),
@@ -176,70 +177,70 @@ class TableDataHome extends StatelessWidget {
             DataRow(cells: [
               DataCell(double.parse(upKatkitBaladi) ==
                       double.parse(yUpKatkitBaladi)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upKatkitBaladi) > double.parse(yUpKatkitBaladi)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downKatkitBaladi)),
               DataCell(Text(upKatkitBaladi)),
               DataCell(TextType(type: 'كتاكيت بلدي')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upKatkitSasso) == double.parse(yUpKatkitSasso)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upKatkitSasso) > double.parse(yUpKatkitSasso)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downKatkitSasso)),
               DataCell(Text(upKatkitSasso)),
               DataCell(TextType(type: 'كتاكيت ساسو')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upBydAihmar) == double.parse(yUpBydAihmar)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upBydAihmar) > double.parse(yUpBydAihmar)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downBydAihmar)),
               DataCell(Text(upBydAihmar)),
               DataCell(TextType(type: 'بيض احمر')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upBydAbid) == double.parse(yUpBydAbid)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upBydAbid) > double.parse(yUpBydAbid)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downBydAbid)),
               DataCell(Text(upBydAbid)),
               DataCell(TextType(type: 'بيض ابيض')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upBydBaladi) == double.parse(yUpBydBaladi)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upBydBaladi) > double.parse(yUpBydBaladi)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downBydBaladi)),
               DataCell(Text(upBydBaladi)),
               DataCell(TextType(type: 'بيض بلدي')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upBatMolar) == double.parse(yUpBatMolar)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upBatMolar) > double.parse(yUpBatMolar)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downBatMolar)),
               DataCell(Text(upBatMolar)),
               DataCell(TextType(type: 'بط مولار')),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upBatMaskufi) == double.parse(yUpBatMaskufi)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upBatMaskufi) > double.parse(yUpBatMaskufi)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downBatMaskufi)),
               DataCell(Text(upBatMaskufi)),
               DataCell(TextType(type: 'بط مسكوفي')),
@@ -247,10 +248,10 @@ class TableDataHome extends StatelessWidget {
             DataRow(cells: [
               DataCell(double.parse(upBatFiransawi) ==
                       double.parse(yUpBatFiransawi)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upBatFiransawi) > double.parse(yUpBatFiransawi)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downBatFiransawi)),
               DataCell(Text(upBatFiransawi)),
               DataCell(TextType(type: 'بط فرنساوي')),

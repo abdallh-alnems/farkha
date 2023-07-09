@@ -6,6 +6,6 @@ class AdviceScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContinarAdvice();
+    return const ContinarAdvice();
   }
 }

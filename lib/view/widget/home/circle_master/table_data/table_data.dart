@@ -139,7 +139,7 @@ class TableDataMasterCircle extends StatelessWidget {
     return Center(
       child: ListView(
         children: [
-          DataTable(columns: [
+          DataTable(columns: const [
             DataColumn(
                 label: TextDateMaster(
               text: 'المؤشر',
@@ -160,10 +160,10 @@ class TableDataMasterCircle extends StatelessWidget {
             DataRow(cells: [
               DataCell(
                 double.parse(upPrice1) == double.parse(upPrice2)
-                    ? ArrowNon()
+                    ?  const  ArrowNon()
                     : (double.parse(upPrice1) > double.parse(upPrice2)
-                        ? ArrowUp()
-                        : ArrowDown()),
+                        ?  const ArrowUp()
+                        :  const ArrowDown()),
               ),
               DataCell(Text(downPrice1)),
               DataCell(Text(upPrice1)),
@@ -171,286 +171,286 @@ class TableDataMasterCircle extends StatelessWidget {
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice2) == double.parse(upPrice3)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice2) > double.parse(upPrice3)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice2)),
               DataCell(Text(upPrice2)),
               DataCell(Text(date.time2.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice3) == double.parse(upPrice4)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice3) > double.parse(upPrice4)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice3)),
               DataCell(Text(upPrice3)),
               DataCell(Text(date.time3.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice4) == double.parse(upPrice5)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice4) > double.parse(upPrice5)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice4)),
               DataCell(Text(upPrice4)),
               DataCell(Text(date.time4.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice5) == double.parse(upPrice6)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice5) > double.parse(upPrice6)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice5)),
               DataCell(Text(upPrice5)),
               DataCell(Text(date.time5.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice6) == double.parse(upPrice7)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice6) > double.parse(upPrice7)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice6)),
               DataCell(Text(upPrice6)),
               DataCell(Text(date.time6.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice7) == double.parse(upPrice8)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice7) > double.parse(upPrice8)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice7)),
               DataCell(Text(upPrice7)),
               DataCell(Text(date.time7.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice8) == double.parse(upPrice9)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice8) > double.parse(upPrice9)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice8)),
               DataCell(Text(upPrice8)),
               DataCell(Text(date.time8.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice9) == double.parse(upPrice10)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice9) > double.parse(upPrice10)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice9)),
               DataCell(Text(upPrice9)),
               DataCell(Text(date.time9.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice10) == double.parse(upPrice11)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice10) > double.parse(upPrice11)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice10)),
               DataCell(Text(upPrice10)),
               DataCell(Text(date.time10.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice11) == double.parse(upPrice12)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice11) > double.parse(upPrice12)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice11)),
               DataCell(Text(upPrice11)),
               DataCell(Text(date.time11.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice12) == double.parse(upPrice13)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice12) > double.parse(upPrice13)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice12)),
               DataCell(Text(upPrice12)),
               DataCell(Text(date.time12.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice13) == double.parse(upPrice14)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice13) > double.parse(upPrice14)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice13)),
               DataCell(Text(upPrice13)),
               DataCell(Text(date.time13.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice14) == double.parse(upPrice15)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice14) > double.parse(upPrice15)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice14)),
               DataCell(Text(upPrice14)),
               DataCell(Text(date.time14.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice15) == double.parse(upPrice16)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice15) > double.parse(upPrice16)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice15)),
               DataCell(Text(upPrice15)),
               DataCell(Text(date.time15.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice16) == double.parse(upPrice17)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice16) > double.parse(upPrice17)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice16)),
               DataCell(Text(upPrice16)),
               DataCell(Text(date.time16.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice17) == double.parse(upPrice18)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice17) > double.parse(upPrice18)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice17)),
               DataCell(Text(upPrice17)),
               DataCell(Text(date.time17.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice18) == double.parse(upPrice19)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice18) > double.parse(upPrice19)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice18)),
               DataCell(Text(upPrice18)),
               DataCell(Text(date.time18.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice19) == double.parse(upPrice20)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice19) > double.parse(upPrice20)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice19)),
               DataCell(Text(upPrice19)),
               DataCell(Text(date.time19.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice20) == double.parse(upPrice21)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice20) > double.parse(upPrice21)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice20)),
               DataCell(Text(upPrice20)),
               DataCell(Text(date.time20.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice21) == double.parse(upPrice22)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice21) > double.parse(upPrice22)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice21)),
               DataCell(Text(upPrice21)),
               DataCell(Text(date.time21.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice22) == double.parse(upPrice23)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice22) > double.parse(upPrice23)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice22)),
               DataCell(Text(upPrice22)),
               DataCell(Text(date.time22.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice23) == double.parse(upPrice24)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice23) > double.parse(upPrice24)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice23)),
               DataCell(Text(upPrice23)),
               DataCell(Text(date.time23.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice24) == double.parse(upPrice25)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice24) > double.parse(upPrice25)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice24)),
               DataCell(Text(upPrice24)),
               DataCell(Text(date.time24.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice25) == double.parse(upPrice26)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice25) > double.parse(upPrice26)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice25)),
               DataCell(Text(upPrice25)),
               DataCell(Text(date.time25.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice26) == double.parse(upPrice27)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice26) > double.parse(upPrice27)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice26)),
               DataCell(Text(upPrice26)),
               DataCell(Text(date.time26.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice27) == double.parse(upPrice28)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice27) > double.parse(upPrice28)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice27)),
               DataCell(Text(upPrice27)),
               DataCell(Text(date.time27.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice28) == double.parse(upPrice29)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice28) > double.parse(upPrice29)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice28)),
               DataCell(Text(upPrice28)),
               DataCell(Text(date.time28.value)),
             ]),
             DataRow(cells: [
               DataCell(double.parse(upPrice29) == double.parse(upPrice30)
-                  ? ArrowNon()
+                  ? const ArrowNon()
                   : (double.parse(upPrice29) > double.parse(upPrice30)
-                      ? ArrowUp()
-                      : ArrowDown())),
+                      ? const ArrowUp()
+                      : const ArrowDown())),
               DataCell(Text(downPrice29)),
               DataCell(Text(upPrice29)),
               DataCell(Text(date.time29.value)),
             ]),
             DataRow(cells: [
-              DataCell(ArrowNon()),
+            const   DataCell( ArrowNon()),
               DataCell(Text(downPrice30)),
               DataCell(Text(upPrice30)),
               DataCell(Text(date.time30.value)),

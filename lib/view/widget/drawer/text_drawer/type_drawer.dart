@@ -1,6 +1,6 @@
-import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class TypeDrawer extends StatelessWidget {
   String type;
   TypeDrawer({super.key, required this.type});
@@ -8,10 +8,10 @@ class TypeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 20),
       child: Text(
         type,
-        style: TextStyle(fontSize: 20),
+        style: const TextStyle(fontSize: 20),
         textDirection: TextDirection.rtl,
       ),
     );

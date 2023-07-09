@@ -15,7 +15,7 @@ class BatMolar extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
+            appBar: const MyAppBar(
               text: 'بط مولار ',
             ),
             body: GetBuilder<BatMolarController>(

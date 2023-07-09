@@ -5,6 +5,6 @@ class DividerDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(color: Colors.black,);
+    return const Divider(color: Colors.black,);
   }
 }

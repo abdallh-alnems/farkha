@@ -32,7 +32,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: scaColor,
       elevation: 0,
       leading: IconButton(
-        icon: Icon(
+        icon: const Icon(
           Icons.arrow_back,
           color: Colors.white,
           size: 25,
@@ -45,6 +45,5 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   }
 
   @override
-  // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

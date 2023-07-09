@@ -1,9 +1,9 @@
 
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
-import 'package:farkha_app/view/widget/text_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class DartgetAl7rara extends StatelessWidget {
   const DartgetAl7rara({super.key});
@@ -85,18 +85,18 @@ class DartgetAl7rara extends StatelessWidget {
       TableRow row = TableRow(
         children: [
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               temperature,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               '$i',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
@@ -111,12 +111,12 @@ class DartgetAl7rara extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                ArrowBack(),
+               const ArrowBack(),
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
-                      Text(
+                    const  Text(
                         'علامات ارتفاع درجة الحرارة داخل الحظيرة',
                         style: TextStyle(fontSize: 16),
                         textDirection: TextDirection.rtl,
@@ -125,7 +125,7 @@ class DartgetAl7rara extends StatelessWidget {
                         type:
                             "  تلاحظ تباعد الدجاج عن بعضه بصوره غير طبيعية مع فتح جناحيه عن جسمه وبعض الدجاج يمد رقبته للأمام على الأرض ",
                       ),
-                      Text(
+                    const  Text(
                         'علامات انخفاض درجة الحرارة داخل المزرعه',
                         style: TextStyle(fontSize: 16),
                         textDirection: TextDirection.rtl,
@@ -137,11 +137,11 @@ class DartgetAl7rara extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+               const SizedBox(
                   height: 20,
                 ),
-                Text('الجدول التالي يمثل درجات الحراره باليوم'),
-                Container(
+               const Text('الجدول التالي يمثل درجات الحراره باليوم'),
+                SizedBox(
                   width: double.infinity,
                   child: Table(
                       defaultVerticalAlignment:

@@ -15,7 +15,7 @@ class BatMaskufi extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
+            appBar: const MyAppBar(
               text: 'بط مسكوفي ',
             ),
             body: GetBuilder<BatMaskufiController>(

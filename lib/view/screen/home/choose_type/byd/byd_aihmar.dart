@@ -1,5 +1,3 @@
-import 'package:farkha_app/logic/controller/master_circle_controllers/bat_controller/bat_molar_controller.dart';
-import 'package:farkha_app/logic/controller/master_circle_controllers/byd_controller/byd_abid_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/byd_controller/byd_aihmar_controller.dart';
 import 'package:farkha_app/utils/theme.dart';
 import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
@@ -17,8 +15,8 @@ class BydAihmar extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
-              text: 'بيض احمر ',
+            appBar: const MyAppBar(
+              text:  'بيض احمر ',
             ),
             body: GetBuilder<BydAihmarController>(
               builder: (_) {

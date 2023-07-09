@@ -1,7 +1,8 @@
+// ignore_for_file: prefer_const_constructors, sized_box_for_whitespace
+
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class Alida extends StatelessWidget {
   const Alida({super.key});
@@ -156,6 +157,7 @@ class Alida extends StatelessWidget {
       '5',
       '5',
     ];
+    // ignore: no_leading_underscores_for_local_identifiers
     TableRow _tpye = const TableRow(children: <Widget>[
       Padding(
         padding: EdgeInsets.all(13),
@@ -199,34 +201,34 @@ class Alida extends StatelessWidget {
       TableRow row = TableRow(
         children: [
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               lighting,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               darkness,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               intensity,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               '$i',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
@@ -241,9 +243,9 @@ class Alida extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                ArrowBack(),
+               const ArrowBack(),
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       TypeDrawer(

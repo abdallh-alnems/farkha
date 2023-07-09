@@ -12,10 +12,10 @@ class Akhtaq extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              ArrowBack(),
+             const ArrowBack(),
               Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     TypeDrawer(
                       type:

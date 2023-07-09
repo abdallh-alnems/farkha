@@ -1,7 +1,6 @@
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class Alsaf extends StatelessWidget {
   const Alsaf({super.key});
@@ -13,10 +12,10 @@ class Alsaf extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-             ArrowBack(),
+            const ArrowBack(),
               Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     TypeDrawer(
                       type:

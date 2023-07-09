@@ -1,6 +1,4 @@
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
-import 'package:farkha_app/view/widget/drawer/divider_drawer.dart';
-import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -14,10 +12,10 @@ class Nasa7a extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              ArrowBack(),
+             const ArrowBack(),
               Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     TypeDrawer(
                       type:

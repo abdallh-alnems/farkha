@@ -7,10 +7,10 @@ class TitleDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Text(
         title,
-        style: TextStyle(fontSize: 17),
+        style: const TextStyle(fontSize: 17),
       ),
     );
   }

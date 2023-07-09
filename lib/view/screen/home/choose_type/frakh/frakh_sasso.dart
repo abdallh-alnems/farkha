@@ -15,7 +15,7 @@ class FrakhSasso extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
+            appBar: const MyAppBar(
               text: 'فراخ ساسو ',
             ),
             body: GetBuilder<FrakhSassoController>(

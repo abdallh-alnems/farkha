@@ -20,46 +20,46 @@ class ContinarAdvice extends StatelessWidget {
             onTap: (){
 Scaffold.of(context).openDrawer();
             },
-            child: Advice(
+            child: const Advice(
               text: 'الكل',
               icon: Icons.all_inbox,
             ),
           ),
           InkWell(
              onTap: (){
-                              Get.toNamed(Routes.DartgetAl7rara);
+                              Get.toNamed(Routes.dartgetAl7rara);
             },
-            child: Advice(
+            child: const Advice(
               text: 'درجات الحرارة',
               icon: Icons.thermostat,
             ),
           ),
           InkWell(
              onTap: (){
-                              Get.toNamed(Routes.Awzan);
+                              Get.toNamed(Routes.awzan);
 
             },
-            child: Advice(
+            child: const Advice(
               text: 'أوزان',
               icon: Icons.adjust,
             ),
           ),
           InkWell(
              onTap: (){
-                              Get.toNamed(Routes.Nasa7a);
+                              Get.toNamed(Routes.nasa7a);
 
             },
-            child: Advice(
+            child: const Advice(
               text: 'نصائح',
               icon: Icons.receipt,
             ),
           ),
           InkWell(
              onTap: (){
-                              Get.toNamed(Routes.Ta7sen);
+                              Get.toNamed(Routes.ta7sen);
 
             },
-            child: Advice(
+            child: const Advice(
               text: 'تحصينات',
               icon: Icons.security,
             ),

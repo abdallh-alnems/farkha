@@ -15,7 +15,7 @@ class BatFiransawi extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: MyAppBar(
+            appBar: const MyAppBar(
               text: 'بط فرنساوي ',
             ),
             body: GetBuilder<BatFiransawiController>(

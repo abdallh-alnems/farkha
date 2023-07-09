@@ -12,11 +12,11 @@ class MasterList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Container(
+      child: SizedBox(
         height: 110,
         child: Row(
           children: [
-            SizedBox(
+           const SizedBox(
               width: 15,
             ),
             InkWell(
@@ -26,19 +26,19 @@ class MasterList extends StatelessWidget {
                   builder: (context) {
                     return FrakhDialogWidget(
                       onPressed1: () {
-                        Get.toNamed(Routes.FrakhAbid);
+                        Get.toNamed(Routes.frakhAbid);
                       },
                       text1: 'فرخ ابيض ',
                       onPressed2: () {
-                        Get.toNamed(Routes.FrakhSasso);
+                        Get.toNamed(Routes.frakhSasso);
                       },
                       text2: 'فرخ ساسو',
                       onPressed3: () {
-                        Get.toNamed(Routes.FrakhBaladi);
+                        Get.toNamed(Routes.frakhBaladi);
                       },
                       text3: ' فرخ بلدي',
                       onPressed4: () {
-                        Get.toNamed(Routes.FrakhAmhitAbid);
+                        Get.toNamed(Routes.frakhAmhitAbid);
                       },
                       text4: 'فرخ امهات ابيض',
                     );
@@ -49,7 +49,7 @@ class MasterList extends StatelessWidget {
                 type: 'فراخ',
               ),
             ),
-            SizedBox(
+          const  SizedBox(
               width: 25,
             ),
             InkWell(
@@ -59,15 +59,15 @@ class MasterList extends StatelessWidget {
                   builder: (context) {
                     return MyDialogWidget(
                       onPressed1: () {
-                        Get.toNamed(Routes.KatKitAbid);
+                        Get.toNamed(Routes.katKitAbid);
                       },
                       text1: 'كتاكيت ابيض',
                       onPressed2: () {
-                        Get.toNamed(Routes.KatkitSasso);
+                        Get.toNamed(Routes.katkitSasso);
                       },
                       text2: 'كتاكيت ساسو',
                       onPressed3: () {
-                        Get.toNamed(Routes.KatkitBaladi);
+                        Get.toNamed(Routes.katkitBaladi);
                       },
                       text3: ' كتاكيت بلدي',
                     );
@@ -78,18 +78,18 @@ class MasterList extends StatelessWidget {
                 type: 'كتاكيت',
               ),
             ),
-            SizedBox(
+           const SizedBox(
               width: 25,
             ),
             InkWell(
               onTap: () {
-                Get.toNamed(Routes.A3laf);
+                Get.toNamed(Routes.a3laf);
               },
               child: CircleAvatarHome(
                 type: 'أعلاف',
               ),
             ),
-            SizedBox(
+           const SizedBox(
               width: 25,
             ),
             InkWell(
@@ -99,15 +99,15 @@ class MasterList extends StatelessWidget {
                   builder: (context) {
                     return MyDialogWidget(
                       onPressed1: () {
-                        Get.toNamed(Routes.BydAbid);
+                        Get.toNamed(Routes.bydAbid);
                       },
                       text1: 'بيض ابيض',
                       onPressed2: () {
-                        Get.toNamed(Routes.BydAihmar);
+                        Get.toNamed(Routes.bydAihmar);
                       },
                       text2: 'بيض احمر',
                       onPressed3: () {
-                        Get.toNamed(Routes.BydBaladi);
+                        Get.toNamed(Routes.bydBaladi);
                       },
                       text3: ' بيض بلدي',
                     );
@@ -118,7 +118,7 @@ class MasterList extends StatelessWidget {
                 type: 'بيض',
               ),
             ),
-            SizedBox(
+          const  SizedBox(
               width: 25,
             ),
             InkWell(
@@ -128,15 +128,15 @@ class MasterList extends StatelessWidget {
                   builder: (context) {
                     return MyDialogWidget(
                       onPressed1: () {
-                        Get.toNamed(Routes.BatMolar);
+                        Get.toNamed(Routes.batMolar);
                       },
                       text1: 'بط مولار',
                       onPressed2: () {
-                        Get.toNamed(Routes.BatFiransawi);
+                        Get.toNamed(Routes.batFiransawi);
                       },
                       text2: 'بط فرنساوي',
                       onPressed3: () {
-                        Get.toNamed(Routes.BatMaskufi);
+                        Get.toNamed(Routes.batMaskufi);
                       },
                       text3: ' بط مسكوفي',
                     );
@@ -147,7 +147,7 @@ class MasterList extends StatelessWidget {
                 type: 'بط',
               ),
             ),
-            SizedBox(
+          const  SizedBox(
               width: 15,
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:farkha_app/view/screen/home/home_screen.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:page_transition/page_transition.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class SplashScreen extends StatelessWidget {
       splash: Image.asset(
         'assets/images/logo.png',
       ),
-      nextScreen: HomeScreen(),
+      nextScreen: const HomeScreen(),
     );
   }
 }

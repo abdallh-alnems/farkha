@@ -1,7 +1,8 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class Asthlak extends StatelessWidget {
   const Asthlak({super.key});
@@ -82,18 +83,18 @@ class Asthlak extends StatelessWidget {
       TableRow row = TableRow(
         children: [
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               consumption,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(13),
+            padding: const EdgeInsets.all(13),
             child: Text(
               '$i',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
           ),
@@ -107,9 +108,9 @@ class Asthlak extends StatelessWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                ArrowBack(),
+               const ArrowBack(),
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       TypeDrawer(
@@ -136,20 +137,20 @@ class Asthlak extends StatelessWidget {
                         type:
                             '5 - المراقبة: يجب مراقبة استهلاك الفراخ للعلف وزيادة وزنها بشكل منتظم، وتعديل كمية العلف وفقًا للحاجة، ومراقبة الفراخ لأي أعراض للمرض أو الوفاة المفاجئة.',
                       ),
-                      SizedBox(
+                     const SizedBox(
                         height: 10,
                       ),
                     ],
                   ),
                 ),
-                Text(
+               const Text(
                     'الجدول التالي يمثل  استهلاك الفراخ البيضاء للعلف بالجرام عند عمر كل يوم'),
-                Text(
+               const Text(
                   'ملحوظه : الفرخ الابيض  ياكل متوسط 3.5 كيلو علف طول الدورة',
                   style: TextStyle(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Table(
                       defaultVerticalAlignment:

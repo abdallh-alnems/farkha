@@ -5,6 +5,6 @@ class ArrowUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(Icons.arrow_upward,color: Colors.red,);
+    return const Icon(Icons.arrow_upward,color: Colors.red,);
   }
 }

@@ -12,10 +12,10 @@ class Ta7sen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              ArrowBack(),
+             const ArrowBack(),
               Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     TypeDrawer(
                       type: 'يتم تحصين الفراخ خلال الدورة ضد الأمراض الفيروسة مثل الجامبرو والنيوكاسل والأى بي فقط فهذه التحصينات عبارة عن فيروسات المرض يتم اعطاؤها للطائر لتكسبه مناعة ضد المرض لتلافي الاصابه به عند انتشار العدوى ويجود 3 تحصينات هامة ل 3 أمراض ويتم اعطاؤها كالتالي:',

@@ -13,7 +13,7 @@ class MyDrawer extends StatelessWidget {
       backgroundColor: scaColor,
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             left: 10,
             top: 20,
             bottom: 20,
@@ -24,12 +24,12 @@ class MyDrawer extends StatelessWidget {
                 Get.snackbar(
                   '',
                   '',
-                  titleText: Text(
+                  titleText: const Text(
                     '',
                     style: TextStyle(fontSize: 0),
                     textAlign: TextAlign.center,
                   ),
-                  messageText: Text(
+                  messageText: const Text(
                     'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
@@ -41,105 +41,105 @@ class MyDrawer extends StatelessWidget {
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Alida);
+                Get.toNamed(Routes.alida);
               },
               title: 'الاضاءه',
               icon: Icons.wb_incandescent,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.DartgetAl7rara);
+                Get.toNamed(Routes.dartgetAl7rara);
               },
               title: 'درجات الحرارة',
               icon: Icons.thermostat,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Alrotoba);
+                Get.toNamed(Routes.alrotoba);
               },
               title: 'الرطوبه',
               icon: Icons.water_drop,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Alsaf);
+                Get.toNamed(Routes.alsaf);
               },
               title: 'الصيف',
               icon: Icons.wb_sunny,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Alshata);
+                Get.toNamed(Routes.alshata);
               },
               title: 'الشتاء',
               icon: Icons.ac_unit,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Altaganous);
+                Get.toNamed(Routes.altaganous);
               },
               title: 'التجانس',
               icon: Icons.layers,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Awzan);
+                Get.toNamed(Routes.awzan);
               },
               title: 'اوزان',
               icon: Icons.adjust,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Asthlak);
+                Get.toNamed(Routes.asthlak);
               },
               title: 'استهلاك',
               icon: Icons.cable,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Solalat);
+                Get.toNamed(Routes.solalat);
               },
               title: 'سلالات',
               icon: Icons.device_hub,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Alardya);
+                Get.toNamed(Routes.alardya);
               },
               title: 'الارضية',
               icon: Icons.crop_square,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Amard);
+                Get.toNamed(Routes.amard);
               },
               title: 'امراض',
               icon: Icons.warning,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.A3ard);
+                Get.toNamed(Routes.a3ard);
               },
               title: 'اعراض',
               icon: Icons.delete_forever,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.AL3lag);
+                Get.toNamed(Routes.aL3lag);
               },
               title: 'علاج',
               icon: Icons.local_pharmacy,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Nasa7a);
+                Get.toNamed(Routes.nasa7a);
               },
               title: 'نصائح',
               icon: Icons.receipt,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Akhtaq);
+                Get.toNamed(Routes.akhtaq);
               },
               title: 'اخطاء',
               icon: Icons.error,
@@ -149,12 +149,12 @@ class MyDrawer extends StatelessWidget {
                 Get.snackbar(
                   '',
                   '',
-                  titleText: Text(
+                  titleText: const Text(
                     '',
                     style: TextStyle(fontSize: 0),
                     textAlign: TextAlign.center,
                   ),
-                  messageText: Text(
+                  messageText: const Text(
                     'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
@@ -169,12 +169,12 @@ class MyDrawer extends StatelessWidget {
                 Get.snackbar(
                   '',
                   '',
-                  titleText: Text(
+                  titleText: const Text(
                     '',
-                    style: TextStyle(fontSize: 0),
+                    style:  TextStyle(fontSize: 0),
                     textAlign: TextAlign.center,
                   ),
-                  messageText: Text(
+                  messageText: const Text(
                     'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
@@ -186,21 +186,21 @@ class MyDrawer extends StatelessWidget {
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Tather);
+                Get.toNamed(Routes.tather);
               },
               title: 'تطهير',
               icon: Icons.cleaning_services,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Astaqbal);
+                Get.toNamed(Routes.astaqbal);
               },
               title: 'استقبال',
               icon: Icons.check_box,
             ),
             ListTitleDrawer(
               onTap: () {
-                Get.toNamed(Routes.Ta7sen);
+                Get.toNamed(Routes.ta7sen);
               },
               title: 'تحصينات',
               icon: Icons.security,
@@ -210,12 +210,12 @@ class MyDrawer extends StatelessWidget {
                 Get.snackbar(
                   '',
                   '',
-                  titleText: Text(
+                  titleText: const Text(
                     '',
                     style: TextStyle(fontSize: 0),
                     textAlign: TextAlign.center,
                   ),
-                  messageText: Text(
+                  messageText: const Text(
                     'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
@@ -225,7 +225,7 @@ class MyDrawer extends StatelessWidget {
               title: 'دورة',
               icon: Icons.cached,
             ),
-            Divider(
+           const Divider(
               color: Colors.white,
             ),
             ListTitleDrawer(
@@ -233,12 +233,12 @@ class MyDrawer extends StatelessWidget {
                 Get.snackbar(
                   '',
                   '',
-                  titleText: Text(
+                  titleText: const Text(
                     '',
                     style: TextStyle(fontSize: 0),
                     textAlign: TextAlign.center,
                   ),
-                  messageText: Text(
+                  messageText: const Text(
                     'قريبا',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
@@ -254,12 +254,12 @@ class MyDrawer extends StatelessWidget {
                 Get.snackbar(
                   '',
                   '',
-                  titleText: Text(
+                  titleText: const Text(
                     '',
                     style: TextStyle(fontSize: 0),
                     textAlign: TextAlign.center,
                   ),
-                  messageText: Text(
+                  messageText: const Text(
                     'هذه الميزة لم تفعل بعد',
                     style: TextStyle(fontSize: 23),
                     textAlign: TextAlign.center,
