@@ -1,3 +1,5 @@
+import 'package:farkha_app/logic/controller/ad/ad_all_controller.dart';
+import 'package:farkha_app/logic/controller/ad/admob_controller.dart';
 import 'package:farkha_app/logic/controller/date_time_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/a3alf/a3laf_controller.dart';
 import 'package:farkha_app/logic/controller/master_circle_controllers/bat_controller/bat_firansawi_controller.dart';
@@ -59,6 +61,12 @@ class MyBindings extends Bindings {
     );
      Get.put(
       A3lafController(),
+    );
+       Get.put(
+      AdController(),
+    );
+     Get.put(
+      AdAllController(),
     );
        Get.put(
       GetDateTime(),

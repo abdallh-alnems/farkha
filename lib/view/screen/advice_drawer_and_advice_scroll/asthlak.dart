@@ -3,12 +3,17 @@
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:get/get.dart';
+import 'package:farkha_app/logic/controller/ad/ad_all_controller.dart';
 
 class Asthlak extends StatelessWidget {
   const Asthlak({super.key});
 
   @override
   Widget build(BuildContext context) {
+     final adController = Get.find<AdAllController>();
+
     List<TableRow> rows = [];
     List<String> variable = [
       '',
@@ -160,7 +165,20 @@ class Asthlak extends StatelessWidget {
                 ),
               ],
             ),
-          )),
+          ),
+          bottomNavigationBar: GetBuilder<AdAllController>( 
+          builder: (_) {
+          return adController.isAdLoaded
+              ? SizedBox(
+                  height: adController.bannerAdAll.size.height.toDouble(),
+                  width: adController.bannerAdAll.size.width.toDouble(),
+                  child: AdWidget(ad: adController.bannerAdAll),
+                )
+              : const SizedBox();
+        }),
+          
+          ),
+          
     );
   }
 }

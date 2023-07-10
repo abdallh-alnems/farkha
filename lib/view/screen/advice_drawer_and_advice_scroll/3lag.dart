@@ -1,16 +1,22 @@
 // ignore_for_file: file_names
 
+import 'package:farkha_app/logic/controller/ad/ad_all_controller.dart';
+import 'package:farkha_app/logic/controller/ad/admob_controller.dart';
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/divider_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/type_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AL3lag extends StatelessWidget {
   const AL3lag({super.key});
 
   @override
   Widget build(BuildContext context) {
+        final adController = Get.find<AdAllController>();
+
    return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -50,7 +56,18 @@ class AL3lag extends StatelessWidget {
                   ]))
             ],
           ),
+          
         ),
+        bottomNavigationBar: GetBuilder<AdAllController>( 
+          builder: (_) {
+          return adController.isAdLoaded
+              ? SizedBox(
+                  height: adController.bannerAdAll.size.height.toDouble(),
+                  width: adController.bannerAdAll.size.width.toDouble(),
+                  child: AdWidget(ad: adController.bannerAdAll),
+                )
+              : const SizedBox();
+        }),
       ),
     );
   }

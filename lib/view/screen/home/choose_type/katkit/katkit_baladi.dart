@@ -4,6 +4,8 @@ import 'package:farkha_app/view/widget/app_bar/my_app_bar.dart';
 import 'package:farkha_app/view/widget/home/circle_master/table_data/table_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:farkha_app/logic/controller/ad/ad_all_controller.dart';
 
 class KatkitBaladi extends StatelessWidget {
   const KatkitBaladi({Key? key}) : super(key: key);
@@ -11,6 +13,7 @@ class KatkitBaladi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final upController = Get.find<KatKitBaladiController>();
+    final adController = Get.find<AdAllController>();
 
     return SafeArea(
         child: Scaffold(
@@ -90,6 +93,20 @@ class KatkitBaladi extends StatelessWidget {
                   );
                 }
               },
-            )));
+            ),
+            
+ bottomNavigationBar: GetBuilder<AdAllController>(builder: (_) {
+          return adController.isAdLoaded
+              ? SizedBox(
+                  height: adController.bannerAdAll.size.height.toDouble(),
+                  width: adController.bannerAdAll.size.width.toDouble(),
+                  child: AdWidget(ad: adController.bannerAdAll),
+                )
+              : const SizedBox();
+        }),
+
+            ),
+            
+            );
   }
 }
