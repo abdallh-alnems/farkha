@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         body: Column(
-          children: [
+          children: const [
             MasterList(),
             AdviceScroll(),
             Expanded(child: TableHome()),

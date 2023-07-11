@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 
 import 'package:farkha_app/logic/controller/ad/ad_all_controller.dart';
-import 'package:farkha_app/logic/controller/ad/admob_controller.dart';
 import 'package:farkha_app/view/widget/drawer/arrow_back/arrow_back.dart';
 import 'package:farkha_app/view/widget/drawer/divider_drawer.dart';
 import 'package:farkha_app/view/widget/drawer/text_drawer/title_drawer.dart';
