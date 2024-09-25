@@ -1,6 +1,7 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class MyServices extends GetxService {
 
@@ -12,5 +13,6 @@ class MyServices extends GetxService {
 initialServices() async {
   await Get.putAsync(() => MyServices().init());
 
-//  WidgetsFlutterBinding.ensureInitialized();
-}
+WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ar');
+  }
