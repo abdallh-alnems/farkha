@@ -1,4 +1,4 @@
-package com.example.farkha_app
+package ni.nims.frkha
 
 import io.flutter.embedding.android.FlutterActivity
 
