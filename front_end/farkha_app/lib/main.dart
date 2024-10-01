@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
 import 'core/services/services.dart';
+import 'logic/bindings/my_binding.dart';
 
 void main() async {
   await initialServices();
-
   runApp(const MyApp());
 }
 
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
+            initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
           );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widget/ad_widget.dart';
 import '../widget/app_bar/app_bar_home.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -30,6 +31,8 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+              bottomNavigationBar: const AdmobHome(),
+
     );
   }
 }
