@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/constant/routes/route.dart';
-import '../widget/ad/banner/ad_all_banner.dart';
+import '../../core/constant/theme/color.dart';
+import '../../core/shared/card_price.dart';
 import '../widget/ad/banner/ad_home_banner.dart';
 import '../widget/ad/native/ad_home_native.dart';
 import '../widget/app_bar/app_bar_home.dart';
@@ -37,13 +38,23 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-           AdHomeNative(),
-          Center(child: ElevatedButton(onPressed: (){Get.toNamed(AppRoute.test);}, child: Text("ad"))),
+          AdHomeNative(),
+          CardPrice(
+            titleCard: "جميع الاسعار",
+          ),
+          CardPrice(
+            titleCard: "تاريخ الاسعار",
+          ),
+          Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed(AppRoute.test);
+                  },
+                  child: Text("ad"))),
           //  ElevatedButton(onPressed: (){Get.toNamed(AppRoute.adad);}, child: Text("adad"))
         ],
       ),
-               bottomNavigationBar: const AdHomeBanner(),
-
+      bottomNavigationBar: const AdHomeBanner(),
     );
   }
 }

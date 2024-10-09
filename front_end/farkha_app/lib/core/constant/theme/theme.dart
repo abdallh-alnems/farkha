@@ -6,4 +6,5 @@ ThemeData appThemes = ThemeData(
     backgroundColor: AppColor.primaryColor,
     titleTextStyle: TextStyle(),
   ),
+  textTheme: const TextTheme()
 );
