@@ -10,94 +10,26 @@ class Trt extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 13, right: 13, top: 9).r,
       child: Container(
-        width: double.infinity,
-        height: 105,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          color: AppColor.primaryColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Column(
-              children: [
-                Text(
-                  "العمر",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                  ),
-                ),
-                SizedBox(height: 8), // إضافة مسافة بين النص والخط
-                Container(
-                  width: 23.w, // عرض الخط
-                  height: 1.5.h, // سماكة الخط
-                  color: Colors.black, // لون الخط
-                ),
-                Text(
-                  "0",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "العمر",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                  ),
-                ),
-                SizedBox(height: 8), // إضافة مسافة بين النص والخط
-                Container(
-                  width: 23.w, // عرض الخط
-                  height: 1.5.h, // سماكة الخط
-                  color: Colors.black, // لون الخط
-                ),
-                Text(
-                  "0",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "العمر",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                  ),
-                ),
-                SizedBox(height: 8), // إضافة مسافة بين النص والخط
-                Container(
-                  width: 23.w, // عرض الخط
-                  height: 1.5.h, // سماكة الخط
-                  color: Colors.black, // لون الخط
-                ),
-                Text(
-                  "0",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17.sp,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+          width: double.infinity,
+          height: 105,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            color: AppColor.primaryColor,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add_circle,
+                color: Colors.white,
+                size: 25,
+              ),
+              Text(
+                "اضف دورة",
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+            ],
+          )),
     );
   }
 }
