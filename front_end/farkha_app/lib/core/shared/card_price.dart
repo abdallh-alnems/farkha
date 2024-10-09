@@ -12,16 +12,22 @@ class CardPrice extends StatelessWidget {
       padding: const EdgeInsets.only(left: 13, right: 13, top: 9).r,
       child: InkWell(
         child: Container(
+          width: double.infinity,
+          height: 37.h,
+          decoration: BoxDecoration(
+            color: AppColor.primaryColor,
+            borderRadius: BorderRadius.circular(7),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 Icons.arrow_back,
                 color: Colors.white,
-                size: 19,
+                size: 19.sp,
               ),
               SizedBox(
-                width: 11.w,
+                width: 13.w,
               ),
               Text(
                 titleCard,
@@ -31,12 +37,6 @@ class CardPrice extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          width: double.infinity,
-          height: 37,
-          decoration: BoxDecoration(
-            color: AppColor.primaryColor,
-            borderRadius: BorderRadius.circular(7),
           ),
         ),
       ),
