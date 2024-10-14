@@ -32,13 +32,7 @@ class HomeScreen extends StatelessWidget {
             titleCard: "تاريخ الاسعار     ",
           ),
          Dashboard(),
-          Center(
-              child: ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(AppRoute.test);
-                  },
-                  child: Text("ad"))),
-          //  ElevatedButton(onPressed: (){Get.toNamed(AppRoute.adad);}, child: Text("adad"))
+         
         ],
       ),
       bottomNavigationBar: const AdHomeBanner(),
