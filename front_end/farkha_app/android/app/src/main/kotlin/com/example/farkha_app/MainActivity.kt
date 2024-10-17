@@ -1,4 +1,4 @@
-package ni.nims.frkhatest
+package ni.nims.frkha
 
 import io.flutter.embedding.android.FlutterActivity
 

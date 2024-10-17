@@ -27,12 +27,8 @@ class CardPriceFarkhAbid extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Icon(
-              Icons.arrow_outward,
+              Icons.horizontal_rule,
               color: Colors.white,
-            ),
-            Text(
-              "55",
-              style: TextStyle(color: Colors.white),
             ),
             FutureBuilder<List<ModelLastPriceFarkhAbid>>(
                 future: lastPriceFarkhAbidController.allFetchProducts(),
@@ -40,7 +36,7 @@ class CardPriceFarkhAbid extends StatelessWidget {
                   if (snapshot.hasData) {
                     var price = snapshot.data?[0].price;
                     return Text(
-                     "$price",
+                      "$price",
                       style: TextStyle(color: Colors.white),
                     );
                   }
