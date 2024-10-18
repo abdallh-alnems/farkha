@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MyServices extends GetxService {
   Future<MyServices> init() async {
@@ -14,4 +15,5 @@ initialServices() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await initializeDateFormatting('ar');
+  await dotenv.load(fileName: ".env");
 }

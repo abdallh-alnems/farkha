@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import '../../../../core/constant/id/link_api.dart';
@@ -6,7 +7,9 @@ import '../../../../data/model/last_priec/farkh_abid.dart';
 
 class LastPriceFarkhAbidController extends GetxController {
   Future<List<ModelLastPriceFarkhAbid>> allFetchProducts() async {
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('NiMs_farkha:Abdallh29512A'))}';
+     String securityKey = dotenv.get("SECURITY_KEY");
+    String securityUser = dotenv.get("SECURITY_USER");
+    String basicAuth = 'Basic ${base64Encode(utf8.encode('$securityUser:$securityKey'))}';
     Map<String, String> myheaders = {'authorization': basicAuth};
     try {
       final response =

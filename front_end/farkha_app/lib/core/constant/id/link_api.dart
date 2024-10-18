@@ -1,6 +1,9 @@
-class ApiLinks {
-   static const String linkServerName = "https://nims.website/back_end";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-  static const String linkViewLastPriceFarkhAbid =
+class ApiLinks {
+static  String linkServerName = dotenv.get("API_HOST");
+
+
+  static  String linkViewLastPriceFarkhAbid =
       '$linkServerName/view/last_price/farkh_abid.php';
 }
