@@ -18,7 +18,7 @@ class CardPriceFarkhAbid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 13).r,
       child: Container(
         width: double.infinity,
-        height: 31,
+        height: 60, // زيادة الارتفاع لعرض المحتوى بشكل أفضل
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
           color: AppColor.primaryColor,
@@ -26,24 +26,45 @@ class CardPriceFarkhAbid extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Icon(
+            const Icon(
               Icons.horizontal_rule,
               color: Colors.white,
             ),
             FutureBuilder<List<ModelLastPriceFarkhAbid>>(
-                future: lastPriceFarkhAbidController.allFetchProducts(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var price = snapshot.data?[0].price;
-                    return Text(
-                      "$price",
-                      style: TextStyle(color: Colors.white),
-                    );
-                  }
-                  return const Center(
-                      child: CircularProgressIndicator(color: Colors.black));
-                }),
-            Text(
+              future: lastPriceFarkhAbidController.allFetchProducts(),
+              builder: (context, snapshot) {
+                // حالة تحميل البيانات
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(
+                    color: Colors.white,
+                  );
+                }
+
+                // حالة وجود خطأ في جلب البيانات
+                if (snapshot.hasError) {
+                  return Text(
+                    "حدث خطأ في جلب البيانات",
+                    style: TextStyle(color: Colors.white),
+                  );
+                }
+
+                // حالة وجود البيانات
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  var price = snapshot.data?[0].price;
+                  return Text(
+                    "$price",
+                    style: const TextStyle(color: Colors.white),
+                  );
+                }
+
+                // حالة عدم وجود بيانات
+                return Text(
+                  "لا توجد بيانات",
+                  style: TextStyle(color: Colors.white),
+                );
+              },
+            ),
+            const Text(
               "اللحم الابيض",
               style: TextStyle(color: Colors.white),
             ),

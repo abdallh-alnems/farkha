@@ -6,7 +6,7 @@ import 'core/constant/theme/theme.dart';
 import 'core/services/services.dart';
 import 'logic/bindings/my_binding.dart';
 
-void main() async {
+void main() async { 
   await initialServices();
   runApp(const MyApp());
 }

@@ -1,28 +1,26 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
-
 import '../../../../core/constant/id/link_api.dart';
 import '../../../../data/model/last_priec/farkh_abid.dart';
 
 class LastPriceFarkhAbidController extends GetxController {
   Future<List<ModelLastPriceFarkhAbid>> allFetchProducts() async {
+    String basicAuth = 'Basic ${base64Encode(utf8.encode('NiMs_farkha:Abdallh29512A'))}';
+    Map<String, String> myheaders = {'authorization': basicAuth};
     try {
-      final response = await http.get(Uri.parse(ApiLinks.linkViewLastPriceFarkhAbid));
+      final response =
+          await http.get(Uri.parse(ApiLinks.linkViewLastPriceFarkhAbid), headers: myheaders);
 
       if (response.statusCode == 200) {
-        print(
-            "===================================================================================");
-        print("تم احضار البيانات");
-        print(response.body); // طباعة محتوى الاستجابة
-        print(
-            "===================================================================================");
+        print("تم احضار البيانات بنجاح");
+        final responseData = jsonDecode(response.body);
 
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-        // تحقق من وجود المفتاح 'data' في الاستجابة
-        if (responseData.containsKey('data')) {
+        // التحقق من أن الاستجابة تحتوي على البيانات المطلوبة
+        if (responseData is Map<String, dynamic> && responseData.containsKey('data')) {
           final List<dynamic> jsonData = responseData['data'];
+
+          // تحويل البيانات إلى نماذج
           return jsonData
               .map((json) => ModelLastPriceFarkhAbid.fromJson(json))
               .toList();
@@ -31,19 +29,10 @@ class LastPriceFarkhAbidController extends GetxController {
           return [];
         }
       } else {
-        print(
-            "===================================================================================");
         print("لم يتم احضار البيانات: ${response.statusCode}");
-        print(
-            "===================================================================================");
         throw Exception('فشل في جلب البيانات');
       }
     } catch (error) {
-         print(
-            "===================================================================================");
-        print("لم يتم احضار البيانات:");
-        print(
-            "===================================================================================");
       print("حدث خطأ أثناء جلب البيانات: $error");
       throw Exception('فشل في جلب البيانات');
     }
