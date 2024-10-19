@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/theme/color.dart';
-import '../../core/shared/card_price.dart';
 import '../../test2.dart';
 import '../widget/ad/banner/ad_home_banner.dart';
 import '../widget/ad/native/ad_home_native.dart';
