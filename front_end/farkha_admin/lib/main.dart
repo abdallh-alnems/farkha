@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'logic/binding/my_binding.dart';
 import 'routes/get_page.dart';
@@ -6,6 +7,8 @@ import 'routes/get_page.dart';
 
 void main() async {
   runApp(const MyApp());
+    await dotenv.load(fileName: ".env");
+
 }
 
 class MyApp extends StatelessWidget {

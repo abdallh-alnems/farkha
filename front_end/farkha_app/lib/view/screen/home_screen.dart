@@ -25,12 +25,7 @@ class HomeScreen extends StatelessWidget {
         children: [
          CardPriceFarkhAbid(),
           AdHomeNative(),
-          CardPrice(
-            titleCard: "جميع الاسعار      ",
-          ),
-          CardPrice(
-            titleCard: "تاريخ الاسعار     ",
-          ),
+
          Dashboard(),
          
         ],

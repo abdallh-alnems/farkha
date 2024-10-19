@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../../link_api.dart';
 import '../widget/text_form.dart';
@@ -90,11 +91,16 @@ Future _addPrices() async {
       );
       return;
     }
-
+    String securityKey = dotenv.get("SECURITY_KEY");
+    String securityUser = dotenv.get("SECURITY_USER");
+     String basicAuth = 'Basic ${base64Encode(utf8.encode('$securityUser:$securityKey'))}';
+    Map<String, String> myheaders = {'authorization': basicAuth};
     for (var priceData in pricesToSubmit) {
       final response = await http.post(
         uri,
-        body: priceData, // Send each price and its type
+        body: priceData,
+         headers: myheaders,
+         // Send each price and its type
       );
 
       if (response.statusCode != 200) {

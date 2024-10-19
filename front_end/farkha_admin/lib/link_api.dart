@@ -1,6 +1,8 @@
-class ApiLinks {
-  static const String linkServerName = "http://192.168.1.9/farkha_php";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-  static const String add =
+class ApiLinks {
+  static  String linkServerName = dotenv.get("API_HOST");
+
+  static  String add =
       '$linkServerName/add.php';
 }
