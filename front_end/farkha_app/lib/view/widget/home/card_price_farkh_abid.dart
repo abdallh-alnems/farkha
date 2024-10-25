@@ -6,8 +6,8 @@ import '../../../core/constant/theme/color.dart';
 import '../../../data/model/last_priec/farkh_abid.dart';
 import '../../../logic/controller/price_controller/last_price/farkh_abid.dart';
 
-class CardPriceFarkhAbid extends StatelessWidget {
-  const CardPriceFarkhAbid({super.key});
+class CardPriceFarkhAbidHome extends StatelessWidget {
+  const CardPriceFarkhAbidHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class CardPriceFarkhAbid extends StatelessWidget {
         height: 60, // زيادة الارتفاع لعرض المحتوى بشكل أفضل
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
-          color: AppColor.primaryColor,
+          color: AppColor.secondaryColor,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -53,20 +53,17 @@ class CardPriceFarkhAbid extends StatelessWidget {
                   var price = snapshot.data?[0].price;
                   return Text(
                     "$price",
-                    style: const TextStyle(color: Colors.white),
                   );
                 }
 
                 // حالة عدم وجود بيانات
                 return Text(
                   "لا توجد بيانات",
-                  style: TextStyle(color: Colors.white),
                 );
               },
             ),
             const Text(
               "اللحم الابيض",
-              style: TextStyle(color: Colors.white),
             ),
           ],
         ),

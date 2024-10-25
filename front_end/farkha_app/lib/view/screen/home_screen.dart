@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/theme/color.dart';
+import '../../core/functions/alertexitapp.dart';
 import '../../test2.dart';
 import '../widget/ad/banner/ad_home_banner.dart';
 import '../widget/ad/native/ad_home_native.dart';
@@ -16,20 +17,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-      appBar: AppBarHome(),
-      drawer: MyDrawer(),
-      body: Column(
-        children: [
-         CardPriceFarkhAbid(),
-          AdHomeNative(),
-
-         Dashboard(),
-         
-        ],
+    return TapToExit(
+      child: Scaffold(
+        appBar: AppBarHome(),
+        drawer: MyDrawer(),
+        body: Column(
+          children: [
+            CardPriceFarkhAbidHome(),
+            AdHomeNative(),
+            Dashboard(),
+          ],
+        ),
+        bottomNavigationBar: const AdHomeBanner(),
       ),
-      bottomNavigationBar: const AdHomeBanner(),
     );
   }
 }

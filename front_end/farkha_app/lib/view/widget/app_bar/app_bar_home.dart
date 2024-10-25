@@ -1,5 +1,7 @@
+import 'package:farkha_app/core/constant/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constant/theme/imgae_asset.dart';
@@ -33,7 +35,9 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
       leading: Padding(
         padding: const EdgeInsets.only(left: 5).r,
         child: GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Get.toNamed(AppRoute.settings);
+          },
           child: Image.asset(
             AppImageAsset.setting,
             scale: 2.7,
