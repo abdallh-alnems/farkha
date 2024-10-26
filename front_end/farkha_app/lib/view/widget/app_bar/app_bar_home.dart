@@ -40,7 +40,7 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
           },
           child: Image.asset(
             AppImageAsset.setting,
-            scale: 2.7,
+            scale: 2.7.sp,
           ),
         ),
       ),

@@ -2,18 +2,16 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import '../../../../core/constant/headers.dart';
 import '../../../../core/constant/id/link_api.dart';
-import '../../../../data/model/last_priec/farkh_abid.dart';
+import '../../../../data/model/farkh_abid_model.dart';
 
 class LastPriceFarkhAbidController extends GetxController {
   Future<List<ModelLastPriceFarkhAbid>> allFetchProducts() async {
-     String securityKey = dotenv.get("SECURITY_KEY");
-    String securityUser = dotenv.get("SECURITY_USER");
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$securityUser:$securityKey'))}';
-    Map<String, String> myheaders = {'authorization': basicAuth};
+     Map<String, String> myheaders = getMyHeaders();
     try {
       final response =
-          await http.get(Uri.parse(ApiLinks.linkViewLastPriceFarkhAbid), headers: myheaders);
+          await http.get(Uri.parse(ApiLinks.linkFarkhAbid), headers: myheaders);
 
       if (response.statusCode == 200) {
         print("تم احضار البيانات بنجاح");
