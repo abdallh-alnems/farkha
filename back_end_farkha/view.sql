@@ -1,0 +1,2 @@
+-- CREATE OR REPLACE VIEW  lastpricefarkhabidview AS
+-- 	SELECT `prices`.`price` FROM `prices` WHERE `prices`.`price_type` = 1 ORDER BY `prices`.`date_price` DESC LIMIT 1; 

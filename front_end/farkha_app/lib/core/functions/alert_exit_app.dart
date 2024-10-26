@@ -33,7 +33,7 @@ class TapToExit extends StatelessWidget {
                 backgroundColor: AppColor.primaryColor,
                 content: Center(
                   child: Text(
-                    "اضغط مرة اخري للخروج !",
+                    "! اضغط مرة اخري للخروج",
                     style: TextStyle(fontSize: 15.sp),
                   ),
                 ),
