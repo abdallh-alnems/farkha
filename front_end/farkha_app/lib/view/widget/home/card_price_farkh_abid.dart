@@ -17,65 +17,65 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
         Get.find<LastPriceFarkhAbidController>();
     StatusRequest statusRequestt = StatusRequest.serverFailure;
 
-    return  Padding(
-        padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 13).r,
-        child: Container(
-          width: double.infinity,
-          height: 60,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(7),
-            color: AppColor.secondaryColor,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const Icon(
-                Icons.horizontal_rule,
-                color: Colors.white,
-              ),
-              HandlingDataView(
-                      statusRequest: statusRequestt,
-
-                widget: FutureBuilder<List<ModelLastPriceFarkhAbid>>(
-                  future: lastPriceFarkhAbidController.allFetchProducts(),
-                  builder: (context, snapshot) {
-                    // حالة تحميل البيانات
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator(
-                        color: Colors.white,
-                      );
-                    }
-                
-                    // حالة وجود خطأ في جلب البيانات
-                    if (snapshot.hasError) {
-                      return Text(
-                        "حدث خطأ في جلب البيانات",
-                        style: TextStyle(color: Colors.white),
-                      );
-                    }
-                
-                    // حالة وجود البيانات
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                      var price = snapshot.data?[0].price;
-                      return Text(
-                        "$price",
-                      );
-                    }
-                
-                    // حالة عدم وجود بيانات
-                    return Text(
-                      "لا توجد بيانات",
-                    );
-                  },
-                ),
-              ),
-              const Text(
-                "اللحم الابيض",
-              ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 15,
+      ).r,
+      child: Container(
+        width: double.infinity,
+        height: 45.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          color: AppColor.secondaryColor,
         ),
-      
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const Icon(
+              Icons.horizontal_rule,
+              color: Colors.white,
+            ),
+            HandlingDataView(
+              statusRequest: statusRequestt,
+              widget: FutureBuilder<List<ModelLastPriceFarkhAbid>>(
+                future: lastPriceFarkhAbidController.allFetchProducts(),
+                builder: (context, snapshot) {
+                  // حالة تحميل البيانات
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(
+                      color: Colors.white,
+                    );
+                  }
+
+                  // حالة وجود خطأ في جلب البيانات
+                  if (snapshot.hasError) {
+                    return Text(
+                      "حدث خطأ في جلب البيانات",
+                      style: TextStyle(color: Colors.white),
+                    );
+                  }
+
+                  // حالة وجود البيانات
+                  if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    var price = snapshot.data?[0].price;
+                    return Text(
+                      "$price",
+                    );
+                  }
+
+                  // حالة عدم وجود بيانات
+                  return Text(
+                    "لا توجد بيانات",
+                  );
+                },
+              ),
+            ),
+            const Text(
+              "اللحم الابيض",
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

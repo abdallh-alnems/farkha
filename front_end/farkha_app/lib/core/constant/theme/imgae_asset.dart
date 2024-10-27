@@ -5,7 +5,12 @@ class AppImageAsset {
   static const String rootIcons = "assets/icons";
   static const String rootLottie = "assets/lottie";
 
+  //============================= icons =========================================
+
   static const String setting = "$rootIcons/setting.png";
+  static const String price = "$rootIcons/price_index.png";
+    static const String addCycle = "$rootIcons/add_cycle.png";
+
 
   //============================= lottie =========================================
 
