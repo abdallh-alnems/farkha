@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constant/theme/color.dart';
-import '../../../core/constant/theme/imgae_asset.dart';
+import '../../../core/constant/theme/image_asset.dart';
 
 class CardPrice extends StatelessWidget {
   const CardPrice({super.key});
@@ -16,7 +16,7 @@ class CardPrice extends StatelessWidget {
         color: AppColor.secondaryColor,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Image.asset(
             AppImageAsset.price,

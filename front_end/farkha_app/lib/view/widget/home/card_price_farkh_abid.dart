@@ -15,7 +15,7 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final lastPriceFarkhAbidController =
         Get.find<LastPriceFarkhAbidController>();
-    StatusRequest statusRequestt = StatusRequest.serverFailure;
+    StatusRequest statusRequestt = StatusRequest.loading;
 
     return Padding(
       padding: const EdgeInsets.only(
