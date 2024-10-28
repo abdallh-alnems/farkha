@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
+import 'core/package/rating_app.dart';
 import 'core/services/services.dart';
 import 'logic/bindings/my_binding.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,

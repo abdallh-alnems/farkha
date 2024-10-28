@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/theme/color.dart';
 import '../../core/functions/alert_exit_app.dart';
+import '../../core/package/rating_app.dart';
 import '../../core/shared/custom_divider.dart';
 import '../widget/view_widget/points_of_sale.dart';
 import '../widget/view_widget/view_calculate_card.dart';
@@ -24,6 +25,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.find<RateMyAppController>();
+
     return TapToExit(
       child: Scaffold(
         appBar: AppBarHome(),
