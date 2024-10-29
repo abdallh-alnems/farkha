@@ -5,6 +5,7 @@ import '../../core/constant/routes/route.dart';
 import '../../core/constant/theme/color.dart';
 import '../../core/functions/alert_exit_app.dart';
 import '../../core/package/rating_app.dart';
+import '../../core/package/upgrade/upgrade.dart';
 import '../../core/shared/custom_divider.dart';
 import '../widget/view_widget/points_of_sale.dart';
 import '../widget/view_widget/view_calculate_card.dart';
@@ -28,25 +29,27 @@ class HomeScreen extends StatelessWidget {
     Get.find<RateMyAppController>();
 
     return TapToExit(
-      child: Scaffold(
-        appBar: AppBarHome(),
-        drawer: MyDrawer(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 13).r,
-            child: Column(
-              children: [
-                CardPriceFarkhAbidHome(),
-                ViewPricesAndCycle(),
-                AdHomeNative(),
-                ViewCalculate(),
-                ViewHomeFollowUpTools(),
-                PointsOfSale(),
-              ],
+      child: Upgrade(
+        child: Scaffold(
+          appBar: AppBarHome(),
+          drawer: MyDrawer(),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 13).r,
+              child: Column(
+                children: [
+                  CardPriceFarkhAbidHome(),
+                  ViewPricesAndCycle(),
+                  AdHomeNative(),
+                  ViewCalculate(),
+                  ViewHomeFollowUpTools(),
+                  PointsOfSale(),
+                ],
+              ),
             ),
           ),
+          bottomNavigationBar: const AdHomeBanner(),
         ),
-        bottomNavigationBar: const AdHomeBanner(),
       ),
     );
   }

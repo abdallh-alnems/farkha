@@ -7,7 +7,7 @@ import 'core/package/rating_app.dart';
 import 'core/services/services.dart';
 import 'logic/bindings/my_binding.dart';
 
-void main() async { 
+void main() async {
   await initialServices();
   runApp(const MyApp());
 }
@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,

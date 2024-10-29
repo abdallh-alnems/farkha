@@ -4,10 +4,9 @@ import 'color.dart';
 
 ThemeData appThemes = ThemeData(
   fontFamily: "Cairo",
-    scaffoldBackgroundColor: AppColor.appBackGroundColor,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColor.primaryColor,
-      
-     
-    ),
-    );
+  scaffoldBackgroundColor: AppColor.appBackGroundColor,
+  appBarTheme: const AppBarTheme(
+    backgroundColor: AppColor.primaryColor,
+  ),
+  
+);
