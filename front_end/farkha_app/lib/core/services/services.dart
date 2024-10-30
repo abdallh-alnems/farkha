@@ -17,7 +17,6 @@ initialServices() async {
   await Get.putAsync(() => MyServices().init());
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-  await Upgrader.clearSavedSettings();
   await initializeDateFormatting('ar');
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

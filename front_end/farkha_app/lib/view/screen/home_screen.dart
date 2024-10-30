@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   CardPriceFarkhAbidHome(),
                   ViewPricesAndCycle(),
-                  AdHomeNative(),
+               //   AdHomeNative(),
                   ViewCalculate(),
                   ViewHomeFollowUpTools(),
                   PointsOfSale(),

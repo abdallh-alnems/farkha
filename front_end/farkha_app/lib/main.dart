@@ -6,6 +6,7 @@ import 'core/constant/theme/theme.dart';
 import 'core/package/rating_app.dart';
 import 'core/services/services.dart';
 import 'logic/bindings/my_binding.dart';
+import 'view/screen/Settings.dart';
 
 void main() async {
   await initialServices();
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
+            home: Settings(),
           );
         });
   }

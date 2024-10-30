@@ -13,7 +13,6 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         "فرخة",
-        style: TextStyle(fontSize: 25.sp, color: Colors.white),
       ),
       actions: [
         Text(
@@ -43,7 +42,6 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      centerTitle: true,
     );
   }
 
