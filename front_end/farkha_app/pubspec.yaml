@@ -43,6 +43,7 @@ dependencies:
   upgrader: ^11.3.0
   firebase_core: ^3.6.0
   cloud_firestore: ^5.4.4
+  launch_review: ^3.0.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1

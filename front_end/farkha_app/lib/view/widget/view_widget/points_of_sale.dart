@@ -20,10 +20,12 @@ class PointsOfSale extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               BigCard(
+                onTap: () {},
                 image: AppImageAsset.chicksLab,
                 text: "معامل الكتاكيت",
               ),
               BigCard(
+                onTap: () {},
                 image: AppImageAsset.feedMills,
                 text: "شركات الاعلاف",
               ),

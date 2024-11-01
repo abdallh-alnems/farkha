@@ -10,13 +10,13 @@ class AppBarSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.only(top: 9).r,
+        padding: const EdgeInsets.only(top: 9, bottom: 13).r,
         child: Stack(
           children: [
             Align(
               alignment: Alignment.center,
               child: Text(
-                "الاعدادات",
+                "عام",
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),

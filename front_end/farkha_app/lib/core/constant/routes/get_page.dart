@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../../../test.dart';
-import '../../../view/screen/Settings.dart';
+import '../../../view/screen/articles/articles.dart';
+import '../../../view/screen/general.dart';
 import '../../../view/screen/home_screen.dart';
 import 'route.dart';
 
@@ -33,14 +34,19 @@ List<GetPage<dynamic>> pages = [
   GetPage(name: AppRoute.test, page: () => Test()),
   GetPage(name: AppRoute.adad, page: () => ADAD()),
 
-  // ================================ settings =================================
+  // ================================ general ==================================
 
   GetPage(
-    name: AppRoute.settings,
-    page: () => Settings(),
+    name: AppRoute.general,
+    page: () => General(),
     transition: Transition.leftToRight,
   ),
-
+  // ========================== view follow up tools ===========================
+   GetPage(
+    name: AppRoute.articles,
+    page: () => Articles(),
+    transition: Transition.downToUp,
+  ),
   // ================================= drawer ==================================
 
   GetPage(

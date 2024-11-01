@@ -34,7 +34,7 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.only(left: 5).r,
         child: GestureDetector(
           onTap: () {
-            Get.toNamed(AppRoute.settings);
+            Get.toNamed(AppRoute.general);
           },
           child: Image.asset(
             AppImageAsset.setting,

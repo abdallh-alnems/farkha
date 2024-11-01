@@ -4,10 +4,12 @@ class AppRoute {
   static const String test = "/test";
   static const String adad = "/adad";
 
-  // ================================ settings =================================
+  // ================================ general ==================================
 
-  static const String settings = "/settings";
+  static const String general = "/general";
 
+  // ========================== view follow up tools ===========================
+    static const String articles = "/articles";
   // ================================= drawer ==================================
 
   static const String dartgetAl7rara = "/dartgetAl7rara";

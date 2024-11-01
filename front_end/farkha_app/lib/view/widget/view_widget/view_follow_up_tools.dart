@@ -1,5 +1,7 @@
+import 'package:farkha_app/core/constant/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../../core/constant/theme/image_asset.dart';
 import '../../../core/shared/custom_divider.dart';
 import '../../../core/shared/card/big_card.dart';
@@ -20,10 +22,12 @@ class ViewHomeFollowUpTools extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               BigCard(
+                onTap: () {},
                 image: AppImageAsset.poultrySale,
                 text: "بيع الدواجن",
               ),
               BigCard(
+                onTap: () {},
                 image: AppImageAsset.chicken,
                 text: "احتياجات فراخ التسمين",
               ),
@@ -34,10 +38,12 @@ class ViewHomeFollowUpTools extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BigCard(
+              onTap: () {},
               image: AppImageAsset.diseases,
               text: "الامراض",
             ),
             BigCard(
+              onTap: () => Get.toNamed(AppRoute.articles),
               image: AppImageAsset.articles,
               text: "مقالات",
             ),

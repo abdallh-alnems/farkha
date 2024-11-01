@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
 import 'core/package/rating_app.dart';
-import 'core/services/services.dart';
+import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
-import 'view/screen/Settings.dart';
+import 'view/screen/general.dart';
 
 void main() async {
   await initialServices();
@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
-            home: Settings(),
+            themeMode: ThemeMode.dark,
+        
           );
         });
   }
