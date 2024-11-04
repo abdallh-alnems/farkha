@@ -5,55 +5,89 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../core/constant/id/ad_id.dart';
 
 class AdNativeController extends GetxController {
-  NativeAd? nativeAdHome;
-  NativeAd? nativeAdAll;
+  // ================================ banner ad ================================
 
-  RxBool isAdHomeLoadedNative = false.obs;
-  RxBool isAdAllLoadedNative = false.obs;
+  NativeAd? nativeAdFirst;
+  NativeAd? nativeAdSecond;
+  NativeAd? nativeAdThird;
 
-  final String adHomeIdNative = AdManager.nativeHome;
-  final String adAllIdNative = AdManager.nativeAll;
+  // ================================= loading =================================
+
+  RxBool isAdFirstLoadedNative = false.obs;
+  RxBool isAdSecondLoadedNative = false.obs;
+  RxBool isAdThirdLoadedNative = false.obs;
+
+  // ================================== ad id ==================================
+
+  final String adFirstIdNative = AdManager.nativeFirst;
+  final String adSecondIdNative = AdManager.nativeSecond;
+  final String adThirdIdNative = AdManager.nativeThird;
 
   @override
   void onInit() {
     super.onInit();
-    nativeHomeAd();
-    nativeAllAd();
+    nativeFirstAd();
+    nativeSecondAd();
+    nativeThirdAd();
   }
 
-  nativeHomeAd() {
-    nativeAdHome = NativeAd(
-        adUnitId: adHomeIdNative,
+  // ============================== native first Ad ============================
+
+  nativeFirstAd() {
+    nativeAdFirst = NativeAd(
+        adUnitId: adFirstIdNative,
         listener: NativeAdListener(
           onAdLoaded: (ad) {
-            isAdHomeLoadedNative.value = true;
+            isAdFirstLoadedNative.value = true;
             log("Ad Loaded");
           },
           onAdFailedToLoad: (ad, error) {
-            isAdHomeLoadedNative.value = false;
+            isAdFirstLoadedNative.value = false;
           },
         ),
         request: const AdRequest(),
         nativeTemplateStyle:
             NativeTemplateStyle(templateType: TemplateType.small));
-    nativeAdHome!.load();
+    nativeAdFirst!.load();
   }
 
-  nativeAllAd() {
-    nativeAdAll = NativeAd(
-        adUnitId: adAllIdNative,
+  // ============================== native second Ad ============================
+
+  nativeSecondAd() {
+    nativeAdSecond = NativeAd(
+        adUnitId: adSecondIdNative,
         listener: NativeAdListener(
           onAdLoaded: (ad) {
-            isAdAllLoadedNative.value = true;
+            isAdSecondLoadedNative.value = true;
             log("Ad Loaded");
           },
           onAdFailedToLoad: (ad, error) {
-            isAdAllLoadedNative.value = false;
+            isAdSecondLoadedNative.value = false;
           },
         ),
         request: const AdRequest(),
         nativeTemplateStyle:
             NativeTemplateStyle(templateType: TemplateType.small));
-    nativeAdAll!.load();
+    nativeAdSecond!.load();
+  }
+
+  // ============================== native third Ad ============================
+
+  nativeThirdAd() {
+    nativeAdThird = NativeAd(
+        adUnitId: adThirdIdNative,
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {
+            isAdThirdLoadedNative.value = true;
+            log("Ad Loaded");
+          },
+          onAdFailedToLoad: (ad, error) {
+            isAdThirdLoadedNative.value = false;
+          },
+        ),
+        request: const AdRequest(),
+        nativeTemplateStyle:
+            NativeTemplateStyle(templateType: TemplateType.small));
+    nativeAdThird!.load();
   }
 }

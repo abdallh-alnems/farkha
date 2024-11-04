@@ -9,7 +9,9 @@ class AppRoute {
   static const String general = "/general";
 
   // ========================== view follow up tools ===========================
-    static const String articles = "/articles";
+  
+    static const String articlesType = "/articlesType";
+
   // ================================= drawer ==================================
 
   static const String dartgetAl7rara = "/dartgetAl7rara";

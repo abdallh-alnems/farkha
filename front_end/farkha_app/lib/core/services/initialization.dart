@@ -27,4 +27,5 @@ class MyServices extends GetxService {
 Future<void> initialServices() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Get.putAsync(() => MyServices().init());
+
 }

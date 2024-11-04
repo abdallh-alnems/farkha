@@ -14,11 +14,10 @@ import '../widget/view_widget/view_follow_up_tools.dart';
 import '../widget/view_widget/view_price_and_cycle.dart';
 import '../widget/prices/card_price.dart';
 import '../../test2.dart';
-import '../widget/ad/banner/ad_home_banner.dart';
+import '../widget/ad/banner/ad_first_banner.dart';
 import '../widget/ad/native/ad_home_native.dart';
 import '../widget/app_bar/app_bar_home.dart';
 import '../widget/cycle/card_cycle.dart';
-import '../widget/drawer/my_drawer.dart';
 import '../widget/home/card_price_farkh_abid.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -32,7 +31,6 @@ class HomeScreen extends StatelessWidget {
       child: Upgrade(
         child: Scaffold(
           appBar: AppBarHome(),
-          drawer: MyDrawer(),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 13).r,
@@ -40,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   CardPriceFarkhAbidHome(),
                   ViewPricesAndCycle(),
-               //   AdHomeNative(),
+                  AdFirstNative(),
                   ViewCalculate(),
                   ViewHomeFollowUpTools(),
                   PointsOfSale(),
@@ -48,7 +46,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          bottomNavigationBar: const AdHomeBanner(),
+          bottomNavigationBar: const AdFirstBanner(),
         ),
       ),
     );

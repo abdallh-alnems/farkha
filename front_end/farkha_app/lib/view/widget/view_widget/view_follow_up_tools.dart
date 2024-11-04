@@ -43,7 +43,7 @@ class ViewHomeFollowUpTools extends StatelessWidget {
               text: "الامراض",
             ),
             BigCard(
-              onTap: () => Get.toNamed(AppRoute.articles),
+              onTap: () => Get.toNamed(AppRoute.articlesType),
               image: AppImageAsset.articles,
               text: "مقالات",
             ),

@@ -21,7 +21,7 @@ class BigCard extends StatelessWidget {
         width: 151.w,
         height: 111.h,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(7).r,
           color: AppColor.secondaryColor,
         ),
         child: Column(

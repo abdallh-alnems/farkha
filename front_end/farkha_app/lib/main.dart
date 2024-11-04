@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'core/constant/routes/get_page.dart';
@@ -6,6 +7,7 @@ import 'core/constant/theme/theme.dart';
 import 'core/package/rating_app.dart';
 import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
+import 'view/screen/articles/articles_type.dart';
 import 'view/screen/general.dart';
 
 void main() async {
@@ -28,8 +30,7 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
-            themeMode: ThemeMode.dark,
-        
+           home: ArticlesType(),
           );
         });
   }

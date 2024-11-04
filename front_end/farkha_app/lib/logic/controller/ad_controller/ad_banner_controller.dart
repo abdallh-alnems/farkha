@@ -3,51 +3,80 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../core/constant/id/ad_id.dart';
 
 class AdBannerController extends GetxController {
-  late BannerAd bannerAdHome;
-  late BannerAd bannerAdAll;
+  // ================================ banner ad ================================
 
-  RxBool isAdHomeLoaded = false.obs;
-  RxBool isAdAllLoaded = false.obs;
+  late BannerAd bannerAdFirst;
+  late BannerAd bannerAdSecond;
+  late BannerAd bannerAdThird;
 
-  String adHomeId = AdManager.bannerHome;
-  String adAllId = AdManager.bannerAll;
+  // ================================= loading =================================
+
+  RxBool isAdFirstLoaded = false.obs;
+  RxBool isAdSecondLoaded = false.obs;
+  RxBool isAdThirdLoaded = false.obs;
+
+  // ================================== ad id ==================================
+
+  String adFirstId = AdManager.bannerFirst;
+  String adSecondId = AdManager.bannerSecond;
+  String adThirdId = AdManager.bannerThird;
 
   @override
   void onInit() {
     super.onInit();
-    bannerHomeAd();
-    bannerAllAd();
+    bannerFirstAd();
+    bannerSecondAd();
+    bannerThirdAd();
   }
 
-  // ============================== banner Home Ad =============================
-  bannerHomeAd() {
-    bannerAdHome = BannerAd(
+  // ============================== banner first Ad ============================
+
+  bannerFirstAd() {
+    bannerAdFirst = BannerAd(
       size: AdSize.banner,
-      adUnitId: adHomeId,
+      adUnitId: adFirstId,
       listener: BannerAdListener(onAdLoaded: (ad) {
-        isAdHomeLoaded.value = true;
+        isAdFirstLoaded.value = true;
         update();
       }, onAdFailedToLoad: ((ad, error) {
         ad.dispose();
       })),
       request: const AdRequest(),
     );
-    bannerAdHome.load();
+    bannerAdFirst.load();
   }
 
-  // =============================== banner All Ad =============================
-  bannerAllAd() {
-    bannerAdAll = BannerAd(
+  // ============================== banner second Ad ===========================
+
+  bannerSecondAd() {
+    bannerAdSecond = BannerAd(
       size: AdSize.banner,
-      adUnitId: adAllId,
+      adUnitId: adSecondId,
       listener: BannerAdListener(onAdLoaded: (ad) {
-        isAdAllLoaded.value = true;
+        isAdSecondLoaded.value = true;
         update();
       }, onAdFailedToLoad: ((ad, error) {
         ad.dispose();
       })),
       request: const AdRequest(),
     );
-    bannerAdAll.load();
+    bannerAdSecond.load();
+  }
+
+  // ============================== banner third Ad ============================
+
+  bannerThirdAd() {
+    bannerAdThird = BannerAd(
+      size: AdSize.banner,
+      adUnitId: adThirdId,
+      listener: BannerAdListener(onAdLoaded: (ad) {
+        isAdThirdLoaded.value = true;
+        update();
+      }, onAdFailedToLoad: ((ad, error) {
+        ad.dispose();
+      })),
+      request: const AdRequest(),
+    );
+    bannerAdThird.load();
   }
 }

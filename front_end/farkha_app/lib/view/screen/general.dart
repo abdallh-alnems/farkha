@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:launch_review/launch_review.dart';
 import '../../core/shared/custom_divider.dart';
-import '../widget/app_bar/app_bar_setting.dart';
+import '../widget/ad/banner/ad_first_banner.dart';
+import '../widget/ad/banner/ad_second_banner.dart';
+import '../widget/app_bar/custom_app_bar.dart';
 import '../widget/general/general_item.dart';
 
 class General extends StatelessWidget {
@@ -13,7 +15,10 @@ class General extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          AppBarSetting(),
+          CustomAppBar(
+            text: "عام",
+            arrowDirection: false,
+          ),
           GeneralItem(
             onTap: () {
               Get.snackbar(
@@ -144,7 +149,9 @@ class General extends StatelessWidget {
             color: Colors.yellow,
           ),
         ],
+        
       ),
+       bottomNavigationBar: const AdSecondBanner(),
     );
   }
 }
