@@ -43,7 +43,7 @@ class ArticlesType extends StatelessWidget {
                     onTap: () => Get.toNamed(AppRoute.asthlak),
                   ),
                   ArticleTitle(
-                    text: "التجانس",
+                    text: "تجانس الاوزان",
                     onTap: () => Get.toNamed(AppRoute.altaganous),
                   ),
                   ArticleTitle(

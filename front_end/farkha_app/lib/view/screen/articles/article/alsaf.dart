@@ -1,6 +1,9 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../widget/ad/banner/ad_second_banner.dart';
-import 'package:farkha_app/view/widget/follow_up_tools/articles/articles/arrow_back/arrow_back.dart';
-import '../../../widget/follow_up_tools/articles/articles/text_article/type_article.dart';
+import '../../../widget/ad/native/ad_third_native.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -12,20 +15,23 @@ class Alsaf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const ArrowBack(),
-              Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(children: [
+    return Scaffold(
+      body: Column(
+        children: [
+          CustomAppBar(
+            text: "الصيف",
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15).r,
+                child: Column(
+                  children: [
                     TypeArticle(
                       type:
                           'تتطلب تربية الفراخ البيضاء في فصل الصيف اهتمامًا خاصًا بسبب الظروف الجوية الحارة والجافة التي يمكن أن تؤثر على صحة ونمو الفراخ. فيما يلي نقاط مهمة حول تربية الفراخ البيضاء في الصيف:',
                     ),
+                    AdThirdNative(),
                     TypeArticle(
                       type:
                           '1- توفير الظل: يجب توفير مكان ذي ظل للفراخ حتى يتمكنوا من الاستراحة في الأوقات الحارة من النهار.',
@@ -65,13 +71,15 @@ class Alsaf extends StatelessWidget {
                     TypeArticle(
                       type:
                           '10- مراقبة مستويات الرطوبة: يجب تجنب مستويات الرطوبة المرتفعة في بيئة تربية الفراخ، ويمكن استخدام أجهزة تحكم في مستويات الرطوبة مثل الضواغط لتحسين الظروف.',
-                    ),
-                  ]))
-            ],
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-        bottomNavigationBar: AdThirdBanner(),
+        ],
       ),
+      bottomNavigationBar: AdThirdBanner(),
     );
   }
 }

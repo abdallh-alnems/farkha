@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
-           home: ArticlesType(),
+          // home: ArticlesType(),
           );
         });
   }

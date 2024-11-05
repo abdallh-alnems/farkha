@@ -126,7 +126,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.akhtaq,
-    page: () => const Akhtaq(),
+    page: () =>  Akhtaq(),
     transition: Transition.downToUp,
   ),
   GetPage(

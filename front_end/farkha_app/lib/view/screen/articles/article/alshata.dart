@@ -1,5 +1,7 @@
-import 'package:farkha_app/view/widget/follow_up_tools/articles/articles/arrow_back/arrow_back.dart';
-import '../../../widget/follow_up_tools/articles/articles/text_article/type_article.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../widget/ad/native/ad_third_native.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:get/get.dart';
@@ -11,20 +13,22 @@ class Alshata extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const ArrowBack(),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
+    return Scaffold(
+      body: Column(
+        children: [
+          CustomAppBar(
+            text: "الشتاء",
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15).r,
                 child: Column(
                   children: [
                     TypeArticle(
                         type:
                             'تربية الفراخ البيضاء في الشتاء يحتاج إلى اهتمام خاص بالظروف البيئية المتغيرة وتوفير بيئة مناسبة للفراخ للحفاظ على صحتها وتحقيق أقصى قدر من الإنتاجية. إليك بعض النقاط التي يمكن توسيعها في هذا الموضوع:'),
+                    AdThirdNative(),
                     TypeArticle(
                         type:
                             '1- توفير درجة حرارة مناسبة: يجب الحرص على توفير درجة حرارة مناسبة للفراخ في فصل الشتاء، ويمكن استخدام الأجهزة الحرارية مثل المدافئ والمراوح لتحقيق هذا الهدف.'),
@@ -61,11 +65,11 @@ class Alshata extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-        bottomNavigationBar: AdThirdBanner(),
+        ],
       ),
+      bottomNavigationBar: AdThirdBanner(),
     );
   }
 }

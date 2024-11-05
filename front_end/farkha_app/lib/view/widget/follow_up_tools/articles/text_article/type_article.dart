@@ -13,6 +13,7 @@ class TypeArticle extends StatelessWidget {
         type,
         style: Theme.of(context).textTheme.bodyMedium,
         textDirection: TextDirection.rtl,
+        
       ),
     );
   }
