@@ -14,19 +14,19 @@ class HomeScreen extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () => Get.toNamed(AppRoute.add),
-              child: Text("Add"),
+              child: Text("اضافة"),
             ),
             ElevatedButton(
               onPressed: () {},
-              child: Text("Add"),
+              child: Text("عرض"),
             ),
             ElevatedButton(
               onPressed: () {},
-              child: Text("Add"),
+              child: Text("تحديث"),
             ),
             ElevatedButton(
               onPressed: () {},
-              child: Text("view"),
+              child: Text("مسح"),
             ),
           ],
         ),
