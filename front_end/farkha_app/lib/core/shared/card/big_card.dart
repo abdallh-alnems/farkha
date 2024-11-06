@@ -31,13 +31,13 @@ class BigCard extends StatelessWidget {
               image,
               scale: 2.1.sp,
             ),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: AppColor.primaryColor,
-                fontWeight: FontWeight.w600,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 9).r,
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                                         style: Theme.of(context).textTheme.displayMedium,
+
               ),
             )
           ],

@@ -47,11 +47,8 @@ class SmallCard extends StatelessWidget {
             Text(
               text,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: AppColor.primaryColor,
-                fontWeight: FontWeight.w600,
-              ),
+                          style: Theme.of(context).textTheme.displaySmall,
+
             )
           ],
         ),

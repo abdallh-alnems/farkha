@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../core/class/handling_data.dart';
+import '../../core/class/status_request.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/theme/color.dart';
 import '../../core/functions/alert_exit_app.dart';
@@ -31,20 +33,21 @@ class HomeScreen extends StatelessWidget {
       child: Upgrade(
         child: Scaffold(
           appBar: AppBarHome(),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 13).r,
-              child: Column(
-                children: [
-                  CardPriceFarkhAbidHome(),
-                  ViewPricesAndCycle(),
-                  AdFirstNative(),
-                  ViewCalculate(),
-                  ViewHomeFollowUpTools(),
-                  PointsOfSale(),
-                ],
+          body:  SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 13).r,
+                child: Column(
+                  children: [
+                    CardPriceFarkhAbidHome(),
+                    ViewPricesAndCycle(),
+                    AdFirstNative(),
+                    ViewCalculate(),
+                    ViewHomeFollowUpTools(),
+                    PointsOfSale(),
+                  ],
+                ),
               ),
-            ),
+            
           ),
           bottomNavigationBar: const AdFirstBanner(),
         ),

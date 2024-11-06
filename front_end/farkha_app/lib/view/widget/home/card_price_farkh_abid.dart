@@ -5,18 +5,15 @@ import 'package:get/get.dart';
 import '../../../core/class/handling_data.dart';
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/theme/color.dart';
+import '../../../core/shared/price_index.dart';
 import '../../../data/model/farkh_abid_model.dart';
-import '../../../logic/controller/price_controller/last_price/farkh_abid_controller.dart';
+import '../../../logic/controller/price_controller/farkh_abid_controller.dart';
 
 class CardPriceFarkhAbidHome extends StatelessWidget {
   const CardPriceFarkhAbidHome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final lastPriceFarkhAbidController =
-        Get.find<LastPriceFarkhAbidController>();
-    StatusRequest statusRequestt = StatusRequest.loading;
-
     return Padding(
       padding: const EdgeInsets.only(
         top: 15,
@@ -28,52 +25,32 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
           borderRadius: BorderRadius.circular(7),
           color: AppColor.secondaryColor,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const Icon(
-              Icons.horizontal_rule,
-              color: Colors.white,
-            ),
-            HandlingDataView(
-              statusRequest: statusRequestt,
-              widget: FutureBuilder<List<ModelLastPriceFarkhAbid>>(
-                future: lastPriceFarkhAbidController.allFetchProducts(),
-                builder: (context, snapshot) {
-                  // حالة تحميل البيانات
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(
-                      color: Colors.white,
-                    );
-                  }
-
-                  // حالة وجود خطأ في جلب البيانات
-                  if (snapshot.hasError) {
-                    return Text(
-                      "حدث خطأ في جلب البيانات",
-                      style: TextStyle(color: Colors.white),
-                    );
-                  }
-
-                  // حالة وجود البيانات
-                  if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                    var price = snapshot.data?[0].price;
-                    return Text(
-                      "$price",
-                    );
-                  }
-
-                  // حالة عدم وجود بيانات
-                  return Text(
-                    "لا توجد بيانات",
-                  );
-                },
+        child: GetBuilder<FarkhAbidController>(
+          builder: (controller) => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              PriceIndex(
+                todayPrice: double.tryParse(controller.todayPrice) ?? 0,
+                yesterdayPrice: double.tryParse(controller.yesterdayPrice) ?? 0,
               ),
-            ),
-            const Text(
-              "اللحم الابيض",
-            ),
-          ],
+              // فرق السعر
+              // HandlingDataView(
+              //   statusRequest: controller.statusRequest,
+              //   widget: Text(controller.priceYesterday),
+              // ),
+              HandlingDataView(
+                statusRequest: controller.statusRequest,
+                widget: Text(
+                  controller.todayPrice,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              Text(
+                "اللحم الابيض",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
         ),
       ),
     );

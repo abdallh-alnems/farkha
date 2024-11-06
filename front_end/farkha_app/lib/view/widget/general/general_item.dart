@@ -23,7 +23,8 @@ class GeneralItem extends StatelessWidget {
         onTap: onTap,
         title: Text(
           title,
-          style: TextStyle(fontSize: 17.sp, color: AppColor.primaryColor),
+                    style: Theme.of(context).textTheme.titleMedium,
+
           textDirection: TextDirection.rtl,
         ),
         leading: Icon(

@@ -5,5 +5,5 @@ static  String linkServerName = dotenv.get("API_HOST");
 
 
   static  String linkFarkhAbid =
-      '$linkServerName/view/last_price/farkh_abid.php';
+      '$linkServerName/view/farkh_abid.php';
 }
