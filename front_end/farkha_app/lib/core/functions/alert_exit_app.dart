@@ -1,9 +1,7 @@
-import 'package:farkha_app/core/constant/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../package/custom_snck_bar.dart';
+import '../package/custom_snack_bar.dart';
 
 class TapToExit extends StatelessWidget {
   const TapToExit({

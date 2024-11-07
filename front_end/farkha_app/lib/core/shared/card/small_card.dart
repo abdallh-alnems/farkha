@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../constant/theme/color.dart';
-import '../../constant/theme/image_asset.dart';
 
 class SmallCard extends StatelessWidget {
   final String image;

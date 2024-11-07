@@ -1,7 +1,7 @@
-import 'package:farkha_app/core/constant/theme/color.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../core/constant/theme/color.dart';
 
 class ArticleTitle extends StatelessWidget {
   final String text;

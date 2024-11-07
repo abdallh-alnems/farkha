@@ -1,14 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../widget/ad/banner/ad_second_banner.dart';
-import 'package:farkha_app/view/widget/follow_up_tools/articles/text_article/title_article.dart';
 import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/articles/text_article/title_article.dart';
 import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../../../widget/ad/banner/ad_third_banner.dart';
 
 class Astaqbal extends StatelessWidget {
@@ -19,15 +14,15 @@ class Astaqbal extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             text: "استقبال",
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15).r,
               child: SingleChildScrollView(
-                child: Column(children: [
-                  const TitleArticle(title: 'قبل استقبال الكتاكيت'),
+                child: const Column(children: [
+                  TitleArticle(title: 'قبل استقبال الكتاكيت'),
                   TypeArticle(
                     type: 'ازاله الفرشه السابقه واستبدالها بفرشه جديده نظيفه.',
                   ),
@@ -55,7 +50,7 @@ class Astaqbal extends StatelessWidget {
                         ' وضع الحواجز الخاصه بالتحضين أسفل لمبات التدفئه وذالك لتدفئه الكتكوت فى حاله الحظائر الى لاتستخدم التدفئه بالهواء الساخن',
                   ),
                   AdThirdNative(),
-                  const TitleArticle(title: 'كيفية استقبال الكتاكيت'),
+                  TitleArticle(title: 'كيفية استقبال الكتاكيت'),
                   TypeArticle(
                     type:
                         'فرش الارضيه بالنشاره فى الصيف بسمك 5 سم وفى الشتاء 10 سم.',
@@ -80,7 +75,7 @@ class Astaqbal extends StatelessWidget {
                     type:
                         'يتم التحضين على درجه حراره 34_35 لمده 3 ايام ثم يتم تقليل درجه الحراره تدريجيا كل يومين درجه حتى نهايه الاسبوع الاول على درجه حراره 31 ثم الاسبوع الثانى تكون درجه الحراره من 31 _الى 29 ثم الاسبوع الثالث من درجه حراره 29 الى 28 ثم الاسبوع الثالث تكون من 28 الى 26 واحرص على عدم نزول درجه الحراره عن 26 حتى لايتم الاصابه بالبرد',
                   ),
-                  const TitleArticle(title: 'استقبال الكتاكيت عمر يوم'),
+                  TitleArticle(title: 'استقبال الكتاكيت عمر يوم'),
                   TypeArticle(
                     type:
                         'يجب البدء بتربيه كتكوت سليم ذى صفات وراثيه عاليه , ومن قطيع أمهات خاليه من الامراض وخاصه الاسهال الابيض , والتيفود , والميكوبلازما , ولا تقل بيضه التفريخ عن 55جم حتى لانحصل على كتكوت قليل الوزن.',
@@ -131,7 +126,7 @@ class Astaqbal extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AdThirdBanner(),
+      bottomNavigationBar: const AdThirdBanner(),
     );
   }
 }

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../core/class/handling_data.dart';
-import '../../../core/class/status_request.dart';
 import '../../../core/constant/theme/color.dart';
 import '../../../core/shared/price_index.dart';
-import '../../../data/model/farkh_abid_model.dart';
 import '../../../logic/controller/price_controller/farkh_abid_controller.dart';
 
 class CardPriceFarkhAbidHome extends StatelessWidget {

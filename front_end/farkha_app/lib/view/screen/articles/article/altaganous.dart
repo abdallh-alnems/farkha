@@ -3,9 +3,6 @@ import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:get/get.dart';
-import '../../../widget/ad/banner/ad_second_banner.dart';
 import '../../../widget/ad/banner/ad_third_banner.dart';
 
 class Altaganous extends StatelessWidget {
@@ -16,14 +13,14 @@ class Altaganous extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             text: "تجانس الاوزان",
           ),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                child: Column(
+                child: const Column(
                   children: [
                     TypeArticle(
                         type:
@@ -48,7 +45,7 @@ class Altaganous extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AdThirdBanner(),
+      bottomNavigationBar: const AdThirdBanner(),
     );
   }
 }

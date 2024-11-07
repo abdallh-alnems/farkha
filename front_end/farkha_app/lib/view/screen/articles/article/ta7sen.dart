@@ -3,9 +3,6 @@ import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:get/get.dart';
-import '../../../widget/ad/banner/ad_second_banner.dart';
 import '../../../widget/ad/banner/ad_third_banner.dart';
 
 class Ta7sen extends StatelessWidget {
@@ -16,14 +13,14 @@ class Ta7sen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             text: "تحصينات",
           ),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                child: Column(children: [
+                child: const Column(children: [
                   TypeArticle(
                     type:
                         'يتم تحصين الفراخ خلال الدورة ضد الأمراض الفيروسة مثل الجامبرو والنيوكاسل والأى بي فقط فهذه التحصينات عبارة عن فيروسات المرض يتم اعطاؤها للطائر لتكسبه مناعة ضد المرض لتلافي الاصابه به عند انتشار العدوى ويجود 3 تحصينات هامة ل 3 أمراض ويتم اعطاؤها كالتالي:',
@@ -49,7 +46,7 @@ class Ta7sen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AdThirdBanner(),
+      bottomNavigationBar: const AdThirdBanner(),
     );
   }
 }

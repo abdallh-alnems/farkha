@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constant/theme/color.dart';
-import '../../constant/theme/image_asset.dart';
 
 class BigCard extends StatelessWidget {
   final void Function() onTap;

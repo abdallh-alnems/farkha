@@ -1,12 +1,9 @@
-import 'package:farkha_app/view/widget/follow_up_tools/articles/text_article/title_article.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/articles/text_article/title_article.dart';
 import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:get/get.dart';
-import '../../../widget/ad/banner/ad_second_banner.dart';
 import '../../../widget/ad/banner/ad_third_banner.dart';
 
 class Tather extends StatelessWidget {
@@ -17,14 +14,14 @@ class Tather extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             text: "تطهير",
           ),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                child: Column(children: [
+                child: const Column(children: [
                   TypeArticle(
                     type:
                         'برنامج تطهير مقترح لتنظيف وتطهير عنبر 500م2 إن تنظيف وتطهير المزرعة جيدا يعتبر أهم العوامل للحصول على نتائج   لذا يجب السماح بفترة كافية(أسبوعين على الأقل) بين انتهاء قطيع واستقبال قطيع جديد.يجب إتباع الإجراءات التالية للحصول على تنظيف وتطهير جيد للعنب',
@@ -50,7 +47,7 @@ class Tather extends StatelessWidget {
                     type:
                         'الخزانات وخطوط الماءغسيلها وتطهيرها باستخدام سيد 2000 بمعدل 2% (4لتر/ 200لتر ماء)لإزالة الترسيبات العضوية والغير عضوية ومنع ترسيب الاملاح والشوائب بخطوط العلف ويترك لمده 6 ساعات تم غسلها بالماء',
                   ),
-                  const TitleArticle(
+                  TitleArticle(
                     title: 'غسيل وتطهير العنبر',
                   ),
                   TypeArticle(
@@ -71,7 +68,7 @@ class Tather extends StatelessWidget {
                     type:
                         'رش العنبر بالفورمالين بمعدل 10% حيث ان الفورمالين بتركيز40%مع تشغيل الهياتر او الدفايات لمده 24ساعة مع غلق العنبر ثم تهويه العنبر لخروج غاز الفورمالدهيد.',
                   ),
-                  const TitleArticle(
+                  TitleArticle(
                     title: 'بعد جفاف العنبر كليا يتم الأتي',
                   ),
                   TypeArticle(
@@ -84,7 +81,7 @@ class Tather extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AdThirdBanner(),
+      bottomNavigationBar: const AdThirdBanner(),
     );
   }
 }

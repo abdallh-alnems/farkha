@@ -1,12 +1,7 @@
-import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import '../../../core/class/status_request.dart';
-import '../../../core/constant/headers.dart';
-import '../../../core/constant/id/link_api.dart';
-import '../../../core/functions/handingdatacontroller.dart';
-import '../../../data/datasource/remote/farkh_abid_data.dart';
+import '../../../core/functions/handing_data_controller.dart';
+import '../../../data/data_source/remote/farkh_abid_data.dart';
 import '../../../data/model/farkh_abid_model.dart';
 
 class FarkhAbidController extends GetxController {

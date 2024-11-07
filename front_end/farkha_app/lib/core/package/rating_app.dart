@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rate_my_app/rate_my_app.dart';
-import 'upgrade/check_min_version.dart';
 
 class RateMyAppController extends GetxController {
   final RateMyApp rateMyApp = RateMyApp(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:launch_review/launch_review.dart';
-import '../../core/shared/custom_divider.dart';
-import '../widget/ad/banner/ad_first_banner.dart';
 import '../widget/ad/banner/ad_second_banner.dart';
 import '../widget/app_bar/custom_app_bar.dart';
 import '../widget/general/general_item.dart';

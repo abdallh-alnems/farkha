@@ -1,7 +1,7 @@
 class AppImageAsset {
   //============================= root =========================================
 
-  static const String _rootImages = "assets/images";
+ // static const String _rootImages = "assets/images";
   static const String _rootIcons = "assets/icons";
   static const String _rootLottie = "assets/lottie";
 

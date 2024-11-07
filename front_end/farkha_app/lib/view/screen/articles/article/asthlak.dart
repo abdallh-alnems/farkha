@@ -1,5 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../data/datasource/static/data_list/articles_list.dart';
+import '../../../../data/data_source/static/data_list/articles_list.dart';
 import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class Asthlak extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TableRow> rows = [];
 
-    TableRow _tpye = TableRow(children: <Widget>[
+    TableRow tpye = TableRow(children: <Widget>[
       Padding(
         padding: EdgeInsets.symmetric(vertical: 7).r,
         child: Text(
@@ -99,7 +99,7 @@ class Asthlak extends StatelessWidget {
                           defaultVerticalAlignment:
                               TableCellVerticalAlignment.middle,
                           border: TableBorder.all(),
-                          children: <TableRow>[_tpye, ...rows]),
+                          children: <TableRow>[tpye, ...rows]),
                     ),
                   ],
                 ),

@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'route.dart';
-import '../../../test.dart';
 import '../../../view/screen/articles/articles_type.dart';
 import '../../../view/screen/general.dart';
 import '../../../view/screen/home_screen.dart';
@@ -31,7 +30,6 @@ List<GetPage<dynamic>> pages = [
   // ============================== Test =======================================
 
   // GetPage(name: AppRoute.test, page: () => Test()),
-  // GetPage(name: AppRoute.adad, page: () => ADAD()),
 
   // ================================ general ==================================
 
@@ -126,7 +124,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.akhtaq,
-    page: () =>  Akhtaq(),
+    page: () => Akhtaq(),
     transition: Transition.downToUp,
   ),
   GetPage(

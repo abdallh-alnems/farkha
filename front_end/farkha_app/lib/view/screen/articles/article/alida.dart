@@ -1,14 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../data/datasource/static/data_list/articles_list.dart';
-import '../../../widget/ad/banner/ad_second_banner.dart';
+import '../../../../data/data_source/static/data_list/articles_list.dart';
 import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 import '../../../widget/follow_up_tools/articles/text_article/title_article.dart';
 import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../widget/ad/banner/ad_third_banner.dart';
 
 class Alida extends StatelessWidget {
@@ -18,7 +14,7 @@ class Alida extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TableRow> rows = [];
 
-    TableRow _tpye = TableRow(children: <Widget>[
+    TableRow tpye = TableRow(children: <Widget>[
       Padding(
         padding: EdgeInsets.symmetric(vertical: 7).r,
         child: Text(
@@ -112,13 +108,13 @@ class Alida extends StatelessWidget {
                       style: TextStyle(color: Colors.red, fontSize: 11.sp),
                       textAlign: TextAlign.center,
                     ),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: Table(
                           defaultVerticalAlignment:
                               TableCellVerticalAlignment.middle,
                           border: TableBorder.all(),
-                          children: <TableRow>[_tpye, ...rows]),
+                          children: <TableRow>[tpye, ...rows]),
                     ),
                   ],
                 ),

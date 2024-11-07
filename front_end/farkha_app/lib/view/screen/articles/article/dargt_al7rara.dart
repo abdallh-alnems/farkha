@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:get/get.dart';
-import '../../../../data/datasource/static/data_list/articles_list.dart';
-import '../../../../test.dart';
-import '../../../widget/ad/banner/ad_second_banner.dart';
+import '../../../../data/data_source/static/data_list/articles_list.dart';
 import '../../../widget/ad/banner/ad_third_banner.dart';
 import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
@@ -18,7 +14,7 @@ class DartgetAl7rara extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TableRow> rows = [];
     
-    TableRow _tpye = TableRow(children: <Widget>[
+    TableRow tpye = TableRow(children: <Widget>[
       Padding(
         padding: EdgeInsets.symmetric(vertical: 7).r,
         child: Text(
@@ -93,7 +89,7 @@ class DartgetAl7rara extends StatelessWidget {
                         defaultVerticalAlignment:
                             TableCellVerticalAlignment.middle,
                         border: TableBorder.all(),
-                        children: <TableRow>[_tpye, ...rows]),
+                        children: <TableRow>[tpye, ...rows]),
                   ),
                 ],
               ),

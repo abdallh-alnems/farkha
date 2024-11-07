@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:farkha_app/core/constant/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../logic/controller/ad_controller/ad_banner_controller.dart';
 import '../../logic/controller/ad_controller/ad_native_controller.dart';
 import '../../logic/controller/price_controller/farkh_abid_controller.dart';
-import '../package/custom_snck_bar.dart';
+import '../package/custom_snack_bar.dart';
 
 class InternetController extends GetxController {
   bool _wasConnected = true;

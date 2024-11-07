@@ -1,13 +1,8 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../widget/ad/banner/ad_second_banner.dart';
 import '../../../widget/ad/native/ad_third_native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 import '../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../../../widget/ad/banner/ad_third_banner.dart';
 
 class Akhtaq extends StatelessWidget {
@@ -18,14 +13,14 @@ class Akhtaq extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
+          const CustomAppBar(
             text: "اخطاء",
           ),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15).r,
-                child: Column(children: [
+                child: const Column(children: [
                   TypeArticle(
                     type:
                         'تربية الفراخ البيضاء يمكن أن تكون صعبة ومليئة بالتحديات، والتي يمكن أن تؤدي إلى ارتكاب أخطاء قد تؤثر على صحة وسلامة الفراخ. إليك  أخطاء شائعة في تربية الفراخ البيضاء :',
@@ -77,7 +72,7 @@ class Akhtaq extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AdThirdBanner(),
+      bottomNavigationBar: const AdThirdBanner(),
     );
   }
 }

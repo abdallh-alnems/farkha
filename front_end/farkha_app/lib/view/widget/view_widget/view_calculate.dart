@@ -9,12 +9,12 @@ class ViewCalculate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: const [
         CustomDivider(
           text: "احسب",
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 5, bottom: 11),
+          padding: EdgeInsets.only(top: 5, bottom: 11),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
