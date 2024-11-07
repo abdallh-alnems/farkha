@@ -10,7 +10,7 @@ class AdManager {
   static String bannerSecond = isTest
       ? "ca-app-pub-3940256099942544/6300978111"
       : "ca-app-pub-8595701567488603/1584158060";
-      
+
   static String bannerThird = isTest
       ? "ca-app-pub-3940256099942544/6300978111"
       : "ca-app-pub-8595701567488603/8325394412";
