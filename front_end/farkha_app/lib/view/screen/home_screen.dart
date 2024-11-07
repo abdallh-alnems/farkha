@@ -6,6 +6,7 @@ import '../../core/class/status_request.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/theme/color.dart';
 import '../../core/functions/alert_exit_app.dart';
+import '../../core/functions/check_internet.dart';
 import '../../core/package/rating_app.dart';
 import '../../core/package/upgrade/upgrade.dart';
 import '../../core/shared/custom_divider.dart';
@@ -27,6 +28,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.find<InternetController>();
+
     Get.find<RateMyAppController>();
 
     return TapToExit(

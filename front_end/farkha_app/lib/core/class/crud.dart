@@ -9,7 +9,7 @@ class Crud {
   Future<Either<StatusRequest, Map>> postData(String linkUrl, Map data) async {
     Map<String, String> myheaders = getMyHeaders();
 
-    if (await checkInternet()) {
+    
       var response =
           await http.post(Uri.parse(linkUrl), headers: myheaders, body: data);
       print(response.statusCode);
@@ -22,8 +22,7 @@ class Crud {
       } else {
         return const Left(StatusRequest.serverFailure);
       }
-    } else {
-      return const Left(StatusRequest.offlineFailure);
+   
     }
   }
-}
+
