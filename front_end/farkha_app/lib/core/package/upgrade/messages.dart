@@ -3,7 +3,6 @@ import 'package:upgrader/upgrader.dart';
 class UpgradeMessages extends UpgraderMessages {
   @override
   String? message(UpgraderMessage messageKey) {
-    
     switch (messageKey) {
       case UpgraderMessage.body:
         return 'نسخة جديدة متوفرة من تطبيق {{appName}}';
@@ -21,7 +20,7 @@ class UpgradeMessages extends UpgraderMessages {
         return 'نسخة جديدة';
       default:
     }
-    
+
     return super.message(messageKey);
   }
 }

@@ -1,38 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:upgrader/upgrader.dart';
-import 'check_min_version.dart';
+import 'get_min_version.dart';
 import 'messages.dart';
 
 class Upgrade extends StatelessWidget {
-  final Widget child;
-
-  const Upgrade({super.key, required this.child});
+  const Upgrade({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final versionController = Get.find<MinVersionController>();
+    final versionController = Get.find<GetMinVersionController>();
 
-    return Obx(() {
-      String minVersion = versionController.minAppVersion.value;
-      bool showUpgrade = versionController.showUpgradeMessage.value;
-
-      return Stack(
-        children: [
-          child,
-          if (showUpgrade) _buildUpgradeAlert(minVersion),
-        ],
-      );
-    });
-  }
-
-  Widget _buildUpgradeAlert(String minVersion) {
-    return UpgradeAlert(
-      upgrader: Upgrader(
-          minAppVersion: minVersion,
-          messages: UpgradeMessages(),
-          durationUntilAlertAgain: const Duration(days: 10)),
-      showIgnore: false,
+    return FutureBuilder<void>(
+      future: versionController.fetchMinAppVersion(),
+      builder: (context, snapshot) {
+        return snapshot.connectionState == ConnectionState.done
+            ? UpgradeAlert(
+                dialogStyle: UpgradeDialogStyle.cupertino,
+                showIgnore: false,
+                upgrader: Upgrader(
+                  minAppVersion: versionController.minAppVersion,
+                  messages: UpgradeMessages(),
+                  durationUntilAlertAgain: Duration(days: 15),
+                ),
+              )
+            : SizedBox();
+      },
     );
   }
 }

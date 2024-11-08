@@ -20,32 +20,30 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.find<InternetController>();
-
     Get.find<RateMyAppController>();
 
-    return TapToExit(
-      child: Upgrade(
-        child: Scaffold(
-          appBar: const AppBarHome(),
-          body:  SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 13).r,
-                child: const Column(
-                  children: [
-                    CardPriceFarkhAbidHome(),
-                    ViewPricesAndCycle(),
-                    AdFirstNative(),
-                    ViewCalculate(),
-                    ViewHomeFollowUpTools(),
-                    PointsOfSale(),
-                  ],
-                ),
+    return Scaffold(
+      appBar: const AppBarHome(),
+      body:  TapToExit(
+        child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 13).r,
+              child: const Column(
+                children: [
+                   Upgrade(),
+                  CardPriceFarkhAbidHome(),
+                  ViewPricesAndCycle(),
+                  AdFirstNative(),
+                  ViewCalculate(),
+                  ViewHomeFollowUpTools(),
+                  PointsOfSale(),
+                ],
               ),
-            
-          ),
-          bottomNavigationBar: const AdFirstBanner(),
+            ),
+          
         ),
       ),
+      bottomNavigationBar: const AdFirstBanner(),
     );
   }
 }

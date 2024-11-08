@@ -32,5 +32,4 @@ class AppImageAsset {
   static const String loading = "$_rootLottie/loading.json";
   static const String error = "$_rootLottie/error.json";
   static const String noData = "$_rootLottie/no_data.json";
-  static const String offline = "$_rootLottie/offline.json";
 }

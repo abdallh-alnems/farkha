@@ -29,6 +29,7 @@ class RateMyAppController extends GetxController {
           rateButton: 'تقيييم',
           noButton: 'لا شكرًا',
           laterButton: 'لاحقا',
+          
           ignoreNativeDialog: true,
           dialogStyle: DialogStyle(
             titleAlign: TextAlign.end,

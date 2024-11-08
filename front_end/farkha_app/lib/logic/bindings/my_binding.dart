@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import '../../core/class/crud.dart';
 import '../../core/functions/check_internet.dart';
-import '../../core/package/upgrade/check_min_version.dart';
 import '../../core/package/rating_app.dart';
+import '../../core/package/upgrade/get_min_version.dart';
 import '../controller/ad_controller/ad_banner_controller.dart';
 import '../controller/ad_controller/ad_native_controller.dart';
 import '../controller/price_controller/farkh_abid_controller.dart';
@@ -22,12 +22,7 @@ class MyBindings extends Bindings {
 
     // ================================ package ==================================
     Get.put(InternetController());
-
-    Get.lazyPut(
-      () => RateMyAppController(),
-    );
-    Get.lazyPut(
-      () => MinVersionController(),
-    );
+    Get.lazyPut(() => RateMyAppController());
+    Get.put(GetMinVersionController());
   }
 }

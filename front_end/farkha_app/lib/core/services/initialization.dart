@@ -17,6 +17,8 @@ class MyServices extends GetxService {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
 
+        
+
     return this;
   }
 }
