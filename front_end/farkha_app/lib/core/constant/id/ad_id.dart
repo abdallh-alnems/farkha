@@ -1,5 +1,5 @@
 class AdManager {
-  static bool isTest = false;
+  static bool isTest = true;
 
   //================================== banner ==================================
 

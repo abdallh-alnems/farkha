@@ -44,6 +44,8 @@ dependencies:
   firebase_core: ^3.6.0
   cloud_firestore: ^5.4.4
   launch_review: ^3.0.1
+  share_plus: ^10.1.2
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1

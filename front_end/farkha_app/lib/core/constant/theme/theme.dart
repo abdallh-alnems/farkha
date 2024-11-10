@@ -5,7 +5,7 @@ import 'color.dart';
 
 ThemeData appThemes = ThemeData(
   fontFamily: "Cairo",
-  scaffoldBackgroundColor: AppColor.appBackGroundColor,
+  scaffoldBackgroundColor:  AppColor.appBackGroundColor,
   appBarTheme: AppBarTheme(
     backgroundColor: AppColor.primaryColor,
     titleTextStyle: TextStyle(fontSize: 25.sp, color: Colors.white),
@@ -22,8 +22,19 @@ ThemeData appThemes = ThemeData(
     titleSmall: TextStyle(fontSize: 13.sp),
     titleMedium: TextStyle(fontSize: 15.sp, color: AppColor.primaryColor),
     bodyMedium: TextStyle(fontSize: 15.sp),
-    displaySmall:  TextStyle(fontSize: 13.sp, color: AppColor.primaryColor, fontWeight: FontWeight.w600),
-    displayMedium: TextStyle(fontSize: 15.sp, color: AppColor.primaryColor, fontWeight: FontWeight.w600),
-    
+    displaySmall: TextStyle(
+        fontSize: 13.sp,
+        color: AppColor.primaryColor,
+        fontWeight: FontWeight.w600),
+    displayMedium: TextStyle(
+        fontSize: 15.sp,
+        color: AppColor.primaryColor,
+        fontWeight: FontWeight.w600),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColor.primaryColor,
+      foregroundColor: Colors.white,
+    ),
   ),
 );

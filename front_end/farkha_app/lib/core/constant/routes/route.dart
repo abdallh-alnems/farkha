@@ -7,10 +7,11 @@ class AppRoute {
   // ================================ general ==================================
 
   static const String general = "/general";
+  static const String suggestion = "/suggestion";
 
   // ========================== view follow up tools ===========================
-  
-    static const String articlesType = "/articlesType";
+
+  static const String articlesType = "/articlesType";
 
   // ================================= drawer ==================================
 

@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
+import '../../../view/screen/general/suggestion.dart';
 import 'route.dart';
 import '../../../view/screen/articles/articles_type.dart';
-import '../../../view/screen/general.dart';
+import '../../../view/screen/general/general.dart';
 import '../../../view/screen/home_screen.dart';
 import '../../../view/screen/articles/article/a3rad.dart';
 import '../../../view/screen/articles/article/akhtaq.dart';
@@ -38,6 +39,13 @@ List<GetPage<dynamic>> pages = [
     page: () => General(),
     transition: Transition.leftToRight,
   ),
+
+  GetPage(
+    name: AppRoute.suggestion,
+    page: () => Suggestion(),
+    transition: Transition.leftToRight,
+  ),
+
   // ========================== view follow up tools ===========================
   GetPage(
     name: AppRoute.articlesType,
