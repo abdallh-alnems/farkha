@@ -1,27 +1,30 @@
 import 'package:get/get.dart';
+import '../../../view/screen/calculate/chicken_density.dart';
+import '../../../view/screen/calculate/feed_consumption.dart';
+import '../../../view/screen/calculate/table_analysis.dart';
 import '../../../view/screen/general/suggestion.dart';
 import 'route.dart';
-import '../../../view/screen/articles/articles_type.dart';
+import '../../../view/screen/follow_up_tools/articles/articles_type.dart';
 import '../../../view/screen/general/general.dart';
 import '../../../view/screen/home_screen.dart';
-import '../../../view/screen/articles/article/a3rad.dart';
-import '../../../view/screen/articles/article/akhtaq.dart';
-import '../../../view/screen/articles/article/alardya.dart';
-import '../../../view/screen/articles/article/alida.dart';
-import '../../../view/screen/articles/article/alrtoba.dart';
-import '../../../view/screen/articles/article/alsaf.dart';
-import '../../../view/screen/articles/article/alshata.dart';
-import '../../../view/screen/articles/article/altaganous.dart';
-import '../../../view/screen/articles/article/amrad.dart';
-import '../../../view/screen/articles/article/astaqbal.dart';
-import '../../../view/screen/articles/article/asthlak.dart';
-import '../../../view/screen/articles/article/awzan.dart';
-import '../../../view/screen/articles/article/dargt_al7rara.dart';
-import '../../../view/screen/articles/article/nasa7a.dart';
-import '../../../view/screen/articles/article/solalat.dart';
-import '../../../view/screen/articles/article/ta7sen.dart';
-import '../../../view/screen/articles/article/tather.dart';
-import '../../../view/screen/articles/article/al3lag.dart';
+import '../../../view/screen/follow_up_tools/articles/article/a3rad.dart';
+import '../../../view/screen/follow_up_tools/articles/article/akhtaq.dart';
+import '../../../view/screen/follow_up_tools/articles/article/alardya.dart';
+import '../../../view/screen/follow_up_tools/articles/article/alida.dart';
+import '../../../view/screen/follow_up_tools/articles/article/alrtoba.dart';
+import '../../../view/screen/follow_up_tools/articles/article/alsaf.dart';
+import '../../../view/screen/follow_up_tools/articles/article/alshata.dart';
+import '../../../view/screen/follow_up_tools/articles/article/altaganous.dart';
+import '../../../view/screen/follow_up_tools/articles/article/amrad.dart';
+import '../../../view/screen/follow_up_tools/articles/article/astaqbal.dart';
+import '../../../view/screen/follow_up_tools/articles/article/asthlak.dart';
+import '../../../view/screen/follow_up_tools/articles/article/awzan.dart';
+import '../../../view/screen/follow_up_tools/articles/article/dargt_al7rara.dart';
+import '../../../view/screen/follow_up_tools/articles/article/nasa7a.dart';
+import '../../../view/screen/follow_up_tools/articles/article/solalat.dart';
+import '../../../view/screen/follow_up_tools/articles/article/ta7sen.dart';
+import '../../../view/screen/follow_up_tools/articles/article/tather.dart';
+import '../../../view/screen/follow_up_tools/articles/article/al3lag.dart';
 
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
@@ -47,13 +50,34 @@ List<GetPage<dynamic>> pages = [
   ),
 
   // ========================== view follow up tools ===========================
+
   GetPage(
     name: AppRoute.articlesType,
     page: () => ArticlesType(),
     transition: Transition.downToUp,
   ),
 
-  // ================================= articles ==================================
+  // =============================== calculate =================================
+
+  GetPage(
+    name: AppRoute.chickenDensity,
+    page: () => ChickenDensity(),
+    transition: Transition.downToUp,
+  ),
+
+  GetPage(
+    name: AppRoute.feedConsumption,
+    page: () => FeedConsumption(),
+    transition: Transition.downToUp,
+  ),
+
+  GetPage(
+    name: AppRoute.tableAnalysis,
+    page: () => TableAnalysis(),
+    transition: Transition.downToUp,
+  ),
+
+  // ================================ articles =================================
 
   GetPage(
     name: AppRoute.dartgetAl7rara,

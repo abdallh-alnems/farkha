@@ -11,7 +11,7 @@ class GeneralItem extends StatelessWidget {
     super.key,
     required this.title,
     required this.icon,
-    this.color = AppColor.primaryColor,
+    this.color = const Color(0xff2A4D69),
     required this.onTap,
   });
 

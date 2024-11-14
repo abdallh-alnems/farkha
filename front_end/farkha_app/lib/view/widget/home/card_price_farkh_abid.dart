@@ -30,11 +30,7 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
                 todayPrice: double.tryParse(controller.todayPrice) ?? 0,
                 yesterdayPrice: double.tryParse(controller.yesterdayPrice) ?? 0,
               ),
-              // فرق السعر
-              // HandlingDataView(
-              //   statusRequest: controller.statusRequest,
-              //   widget: Text(controller.priceYesterday),
-              // ),
+             
               HandlingDataView(
                 statusRequest: controller.statusRequest,
                 widget: Text(

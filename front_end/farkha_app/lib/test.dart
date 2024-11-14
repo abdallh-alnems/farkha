@@ -28,5 +28,10 @@
       
 //       return child; 
 //     });
+
 //   }
 // }
+
+  // static const Color primaryColor = Color(0xff4C708E); 
+  // static const Color secondaryColor = Color(0xffB8C2C3); 
+  // static Color appBackGroundColor = Color(0xFF202124); 

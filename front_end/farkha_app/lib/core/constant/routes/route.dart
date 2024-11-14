@@ -13,7 +13,13 @@ class AppRoute {
 
   static const String articlesType = "/articlesType";
 
-  // ================================= drawer ==================================
+  // =============================== calculate =================================
+
+  static const String chickenDensity = "/chickenDensity";
+  static const String tableAnalysis = "/tableAnalysis";
+  static const String feedConsumption = "/feedConsumption";
+
+  // ================================ articles =================================
 
   static const String dartgetAl7rara = "/dartgetAl7rara";
   static const String alida = "/alida";

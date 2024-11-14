@@ -1,8 +1,8 @@
-import 'package:farkha_app/core/constant/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/constant/routes/route.dart';
 import '../../../core/services/open_gmail.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
@@ -13,6 +13,7 @@ class General extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         children: [
@@ -105,6 +106,11 @@ class General extends StatelessWidget {
             icon: Icons.star,
             color: Colors.yellow,
           ),
+          ElevatedButton(
+              onPressed: () {
+           
+              },
+              child: Text("data"))
         ],
       ),
       bottomNavigationBar: const AdSecondBanner(),
