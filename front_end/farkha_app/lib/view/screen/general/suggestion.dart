@@ -1,7 +1,7 @@
-import 'package:farkha_app/core/class/handling_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../core/class/handling_data.dart';
 import '../../../logic/controller/suggestion_controller.dart';
 import '../../widget/ad/banner/ad_third_banner.dart';
 import '../../widget/ad/native/ad_third_native.dart';

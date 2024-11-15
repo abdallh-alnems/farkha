@@ -9,7 +9,7 @@ class TableAnalysis extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+        children: const [
           CustomAppBar(
             text: "دراسة جدول",
           ),

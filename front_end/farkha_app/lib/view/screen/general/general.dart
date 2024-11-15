@@ -13,7 +13,6 @@ class General extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         children: [
@@ -106,11 +105,6 @@ class General extends StatelessWidget {
             icon: Icons.star,
             color: Colors.yellow,
           ),
-          ElevatedButton(
-              onPressed: () {
-           
-              },
-              child: Text("data"))
         ],
       ),
       bottomNavigationBar: const AdSecondBanner(),

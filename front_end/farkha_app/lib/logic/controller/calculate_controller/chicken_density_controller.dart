@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:farkha_app/core/services/initialization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/package/custom_dialog.dart';
+import '../../../core/services/initialization.dart';
 
 class ChickenDensityController extends GetxController {
   MyServices myServices = Get.find();
@@ -47,7 +47,7 @@ class ChickenDensityController extends GetxController {
   void showDialogChickenDensity() {
     DialogHelper.showDialog(
       middleText:
-          "هذة الاداة تساعدك علي حساب المساحة المطلوبة لكل عمر \n \n يجب تقسيم العنبر في يوم استقبال الكتاكيت ثم التوسيع تدريجيا لحين تاخذ الفراخ العنبر بالكامل \n \n اذا اردت معرفة عدد الفراخ التي يمكن للعنبر الخاص بك ان يحتويها اضرب مساحة العنبر في 10",
+          "هذة الاداة تساعدك علي حساب المساحة المطلوبة لكل عمر \n \n يجب تقسيم العنبر في يوم استقبال الكتاكيت ثم التوسيع تدريجيا لحين تاخذ الفراخ العنبر بالكامل \n \n المساحة المعروضة يجب ان تكون المساحة المخصصة للفراخ فقط دون اماكن تخزين احتياجات الدورة \n \n اذا اردت معرفة عدد الفراخ التي يمكن للعنبر الخاص بك ان يحتويها اضرب مساحة العنبر في 10",
     );
   }
 

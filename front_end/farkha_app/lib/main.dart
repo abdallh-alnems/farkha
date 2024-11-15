@@ -6,7 +6,6 @@ import 'core/constant/theme/theme.dart';
 import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
 
-
 void main() async {
   await initialServices();
   runApp(const MyApp());
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
-          //  home: ChickenDensity(),
+          //  home: FeedConsumption(),
           );
         });
   }

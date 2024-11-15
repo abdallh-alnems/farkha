@@ -1,5 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../data/data_source/static/data_list/articles_list.dart';
+import '../../../../../data/data_source/static/data_list/articles_data.dart';
 import '../../../../widget/ad/native/ad_third_native.dart';
 import '../../../../widget/app_bar/custom_app_bar.dart';
 import 'package:flutter/material.dart';
