@@ -1,5 +1,5 @@
-import '../../../core/class/crud.dart';
-import '../../../core/constant/id/link_api.dart';
+import '../../../../core/class/crud.dart';
+import '../../../../core/constant/id/link_api.dart';
 
 class FarkhAbidData {
   Crud crud;

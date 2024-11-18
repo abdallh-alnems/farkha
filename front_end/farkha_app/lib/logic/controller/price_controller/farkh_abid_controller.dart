@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import '../../../core/class/status_request.dart';
 import '../../../core/functions/handing_data_controller.dart';
-import '../../../data/data_source/remote/farkh_abid_data.dart';
+import '../../../data/data_source/remote/prices_data/farkh_abid_data.dart';
 
 class FarkhAbidController extends GetxController {
   String todayPrice = '';
@@ -16,7 +16,7 @@ class FarkhAbidController extends GetxController {
     statusRequest = handlingData(response);
     if (StatusRequest.success == statusRequest) {
       if (response['status'] == "success") {
-        dynamic data = response['data'];
+        List data = response['data'];
         todayPrice = data[0]['price'].toString();
         yesterdayPrice = data[1]['price'].toString();
       } else {

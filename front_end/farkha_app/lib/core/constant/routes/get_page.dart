@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
 import '../../../view/screen/calculate/feed_consumption.dart';
-import '../../../view/screen/calculate/table_analysis.dart';
+import '../../../view/screen/calculate/feasibility_study.dart';
 import '../../../view/screen/general/suggestion.dart';
+import '../../../view/screen/prices/last_prices.dart';
 import 'route.dart';
 import '../../../view/screen/follow_up_tools/articles/articles_type.dart';
 import '../../../view/screen/general/general.dart';
@@ -34,6 +35,14 @@ List<GetPage<dynamic>> pages = [
   // ============================== Test =======================================
 
   // GetPage(name: AppRoute.test, page: () => Test()),
+
+    // ================================ prices ===================================
+ GetPage(
+    name: AppRoute.lastPrices,
+    page: () => LastPrices(),
+    transition: Transition.rightToLeft,
+  ),
+
 
   // ================================ general ==================================
 
@@ -72,8 +81,8 @@ List<GetPage<dynamic>> pages = [
   ),
 
   GetPage(
-    name: AppRoute.tableAnalysis,
-    page: () => TableAnalysis(),
+    name: AppRoute.feasibilityStudy,
+    page: () => FeasibilityStudy(),
     transition: Transition.downToUp,
   ),
 

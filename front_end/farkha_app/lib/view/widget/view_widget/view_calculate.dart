@@ -47,8 +47,8 @@ class ViewCalculate extends StatelessWidget {
                     ),
                   );
                 },
-                image: AppImageAsset.tableAnalysis,
-                text: "دراسة جدول",
+                image: AppImageAsset.feasibilityStudy,
+                text: "دراسة جدوي",
               ),
             ],
           ),

@@ -12,7 +12,7 @@ class AppImageAsset {
   // ! calculate
   static const String birdDensity = "$_rootIcons/bird_density.png";
   static const String feedConsumption = "$_rootIcons/feed_consumption.png";
-  static const String tableAnalysis = "$_rootIcons/table_analysis.png";
+  static const String feasibilityStudy = "$_rootIcons/feasibility_study.png";
 
   // ! follow up tools
   static const String chicken = "$_rootIcons/chicken.png";

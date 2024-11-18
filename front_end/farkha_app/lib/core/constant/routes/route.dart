@@ -3,7 +3,10 @@ class AppRoute {
 
   static const String test = "/test";
   static const String adad = "/adad";
+  // ================================ prices ===================================
 
+  static const String lastPrices = "/lastPrices";
+  
   // ================================ general ==================================
 
   static const String general = "/general";
@@ -16,7 +19,7 @@ class AppRoute {
   // =============================== calculate =================================
 
   static const String chickenDensity = "/chickenDensity";
-  static const String tableAnalysis = "/tableAnalysis";
+  static const String feasibilityStudy = "/feasibilityStudy";
   static const String feedConsumption = "/feedConsumption";
 
   // ================================ articles =================================

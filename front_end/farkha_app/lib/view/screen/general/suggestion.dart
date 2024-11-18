@@ -12,7 +12,6 @@ class Suggestion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(SuggestionController());
     final TextEditingController textController = TextEditingController();
     return Scaffold(
       body: Column(
@@ -21,7 +20,9 @@ class Suggestion extends StatelessWidget {
             text: "اقتراح",
             arrowDirection: false,
           ),
-          GetBuilder<SuggestionController>(builder: (suggestionController) {
+          GetBuilder<SuggestionController>(
+              init: SuggestionController(),
+            builder: (suggestionController) {
             return HandlingDataView(
               statusRequest: suggestionController.statusRequest,
               widget: Expanded(
