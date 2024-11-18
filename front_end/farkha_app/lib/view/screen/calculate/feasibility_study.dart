@@ -1,3 +1,4 @@
+import 'package:farkha_app/view/widget/ad/banner/ad_second_banner.dart';
 import 'package:flutter/material.dart';
 
 import '../../widget/app_bar/custom_app_bar.dart';
@@ -15,6 +16,7 @@ class FeasibilityStudy extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: AdSecondBanner(),
     );
   }
 }

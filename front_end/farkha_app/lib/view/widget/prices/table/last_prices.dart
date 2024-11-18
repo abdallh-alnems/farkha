@@ -83,12 +83,14 @@ class TableLastPrices extends StatelessWidget {
                         },
                         children: [
                           ...controller.pricesList.map((price) {
-                            int? priceDifference;
-                            String differenceSign = "";
+                            int latestPrice = price.latestPrice ?? 0;
+                            int secondLatestPrice =
+                                price.secondLatestPrice ?? latestPrice;
 
-                            priceDifference =
-                                price.latestPrice! - price.secondLatestPrice!;
-                            differenceSign = priceDifference > 0 ? "+" : "";
+                            int priceDifference =
+                                latestPrice - secondLatestPrice;
+                            String differenceSign =
+                                priceDifference > 0 ? "+" : "";
 
                             return TableRow(
                               children: [
@@ -97,8 +99,8 @@ class TableLastPrices extends StatelessWidget {
                                       const EdgeInsets.symmetric(vertical: 11)
                                           .r,
                                   child: PriceIndex(
-                                    todayPrice: price.latestPrice,
-                                    yesterdayPrice: price.secondLatestPrice,
+                                    todayPrice: latestPrice,
+                                    yesterdayPrice: secondLatestPrice,
                                   ),
                                 ),
                                 Padding(
@@ -119,7 +121,7 @@ class TableLastPrices extends StatelessWidget {
                                       const EdgeInsets.symmetric(vertical: 11)
                                           .r,
                                   child: Text(
-                                    price.latestPrice.toString(),
+                                    latestPrice.toString(),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -128,7 +130,7 @@ class TableLastPrices extends StatelessWidget {
                                           top: 11, bottom: 11, right: 15)
                                       .r,
                                   child: Text(
-                                    price.typeName!,
+                                    price.typeName ?? "غير محدد",
                                     textAlign: TextAlign.right,
                                   ),
                                 ),

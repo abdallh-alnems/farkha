@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../core/shared/custom_text_filed.dart';
+import '../../../core/shared/inputs/custom_text_filed.dart';
 import '../../../logic/controller/calculate_controller/chicken_density_controller.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
 import '../../widget/ad/native/ad_second_native.dart';

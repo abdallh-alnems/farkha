@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../core/shared/custom_text_filed.dart';
-import '../../../logic/controller/calculate_controller/feed_consumption.dart';
+import '../../../core/shared/inputs/age_dropdown.dart';
+import '../../../core/shared/inputs/custom_text_filed.dart';
+import '../../../logic/controller/calculate_controller/feed_consumption_controller.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
 import '../../widget/ad/native/ad_second_native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
@@ -37,25 +38,11 @@ class FeedConsumption extends StatelessWidget {
                         if (controller.isCumulative.value) {
                           return SizedBox.shrink();
                         } else {
-                          return DropdownButtonFormField<int>(
-                            value: controller.selectedAge.value,
-                            onChanged: (int? newValue) {
+                          return AgeDropdown(
+                            selectedAge: controller.selectedAge.value, 
+                            onChanged: (int? newValue) { 
                               controller.selectedAge.value = newValue;
                             },
-                            decoration: InputDecoration(
-                              labelText: 'اختار العمر',
-                              border: OutlineInputBorder(),
-                            ),
-                            items: List.generate(45, (index) => index + 1)
-                                .map((age) {
-                              return DropdownMenuItem<int>(
-                                value: age,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text('$age يوم'),
-                                ),
-                              );
-                            }).toList(),
                           );
                         }
                       }),

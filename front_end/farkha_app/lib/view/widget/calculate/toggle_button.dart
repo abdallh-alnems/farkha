@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/theme/color.dart';
-import '../../../../logic/controller/calculate_controller/feed_consumption.dart';
+import '../../../logic/controller/calculate_controller/feed_consumption_controller.dart';
 
 class FeedToggleButtons extends GetView<FeedConsumptionController> {
   const FeedToggleButtons({super.key});
