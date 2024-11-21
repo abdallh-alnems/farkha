@@ -6,12 +6,12 @@ import '../../../data/model/last_prices_model.dart';
 
 class LastPricesController extends GetxController {
   late StatusRequest statusRequest;
-  LastPricesData farkhAbidData = LastPricesData(Get.find());
+  LastPricesData lastPricesData = LastPricesData(Get.find());
   List<LastPricesModel> pricesList = [];
 
   getDataLastPrices() async {
     statusRequest = StatusRequest.loading;
-    var response = await farkhAbidData.getData();
+    var response = await lastPricesData.getData();
     statusRequest = handlingData(response);
     if (StatusRequest.success == statusRequest) {
       if (response['status'] == "success") {

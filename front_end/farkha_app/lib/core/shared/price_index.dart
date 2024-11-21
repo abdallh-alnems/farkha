@@ -1,5 +1,6 @@
-import 'package:farkha_app/core/constant/theme/color.dart';
 import 'package:flutter/material.dart';
+
+import '../constant/theme/color.dart';
 
 class PriceIndex extends StatelessWidget {
   final num? todayPrice;

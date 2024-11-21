@@ -17,8 +17,8 @@ class FeedConsumptionController extends GetxController {
     }
 
     final int count = int.tryParse(countController.text) ?? 0;
-
     double totalFeed;
+
     if (isCumulative.value) {
       double badi = count * 0.5;
       double nami = count * 1.2;

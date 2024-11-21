@@ -130,7 +130,7 @@ class TableLastPrices extends StatelessWidget {
                                           top: 11, bottom: 11, right: 15)
                                       .r,
                                   child: Text(
-                                    price.typeName ?? "غير محدد",
+                                    price.typeName!,
                                     textAlign: TextAlign.right,
                                   ),
                                 ),

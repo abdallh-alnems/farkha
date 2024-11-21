@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../core/shared/calculate_result.dart';
 import '../../../core/shared/inputs/custom_text_filed.dart';
 import '../../../logic/controller/calculate_controller/chicken_density_controller.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
@@ -71,12 +72,9 @@ class ChickenDensity extends StatelessWidget {
                       child: Text('احسب المساحة'),
                     ),
                   ),
-                 
                   Obx(
-                    () => Text(
-                      controller.areaResult.value,
-                      style: Theme.of(context).textTheme.titleMedium,
-                      textAlign: TextAlign.center,
+                    () => CalculateResult(
+                      text: controller.areaResult.value,
                     ),
                   ),
                 ],

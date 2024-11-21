@@ -6,7 +6,7 @@ import '../../../core/services/initialization.dart';
 
 class ChickenDensityController extends GetxController {
   MyServices myServices = Get.find();
-  final chickensController = TextEditingController();
+  final TextEditingController chickensController = TextEditingController();
   final RxString selectedAge = ''.obs;
   final RxString areaResult = ''.obs;
 
@@ -52,9 +52,9 @@ class ChickenDensityController extends GetxController {
   }
 
   void checkAndShowDialog() {
-    if (myServices.getStorage.read("hasShownDialog") != false) {
+    if (myServices.getStorage.read("chickenDensityDialog") != false) {
       showDialogChickenDensity();
-      myServices.getStorage.write("hasShownDialog", false);
+      myServices.getStorage.write("chickenDensityDialog", false);
     }
   }
 
