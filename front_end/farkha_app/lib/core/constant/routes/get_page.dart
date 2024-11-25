@@ -18,7 +18,7 @@ import '../../../view/screen/follow_up_tools/articles/article/alshata.dart';
 import '../../../view/screen/follow_up_tools/articles/article/altaganous.dart';
 import '../../../view/screen/follow_up_tools/articles/article/amrad.dart';
 import '../../../view/screen/follow_up_tools/articles/article/astaqbal.dart';
-import '../../../view/screen/follow_up_tools/articles/article/asthlak.dart';
+import '../../../view/screen/follow_up_tools/articles/article/asthlak_al3laf.dart';
 import '../../../view/screen/follow_up_tools/articles/article/awzan.dart';
 import '../../../view/screen/follow_up_tools/articles/article/dargt_al7rara.dart';
 import '../../../view/screen/follow_up_tools/articles/article/nasa7a.dart';
@@ -124,8 +124,8 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.downToUp,
   ),
   GetPage(
-    name: AppRoute.asthlak,
-    page: () => const Asthlak(),
+    name: AppRoute.asthlakAl3laf,
+    page: () =>  AsthlakAl3laf(),
     transition: Transition.downToUp,
   ),
   GetPage(

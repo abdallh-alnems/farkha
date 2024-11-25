@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../data/data_source/static/data_list/controller_data.dart';
+
+import '../../../data/data_source/static/data_list/articles_data.dart';
 
 class FeedConsumptionController extends GetxController {
   TextEditingController countController = TextEditingController();

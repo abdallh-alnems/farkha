@@ -1,57 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../../../../data/data_source/static/data_list/articles_data.dart';
+import '../../../../../logic/controller/articles_controller.dart';
 import '../../../../widget/ad/native/ad_third_native.dart';
 import '../../../../widget/app_bar/custom_app_bar.dart';
-import 'package:flutter/material.dart';
 import '../../../../widget/ad/banner/ad_third_banner.dart';
 import '../../../../widget/follow_up_tools/articles/text_article/title_article.dart';
 import '../../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 
-class Asthlak extends StatelessWidget {
-  const Asthlak({super.key});
+class AsthlakAl3laf extends StatelessWidget {
+  AsthlakAl3laf({super.key});
+
+  final ArticlesController controller = Get.put(ArticlesController());
 
   @override
   Widget build(BuildContext context) {
-    List<TableRow> rows = [];
-
-    TableRow tpye = TableRow(children: <Widget>[
-      Padding(
-        padding: EdgeInsets.symmetric(vertical: 7).r,
-        child: Text(
-          ' الاستهلاك بالجرام',
-          style: Theme.of(context).textTheme.headlineMedium,
-          textAlign: TextAlign.center,
-        ),
-      ),
-      Text(
-        'العمر باليوم',
-        style: Theme.of(context).textTheme.headlineMedium,
-        textAlign: TextAlign.center,
-      )
-    ]);
-
-    for (int i = 1; i <= 45; i++,) {
-      String consumption = consumptions[i];
-
-      TableRow row = TableRow(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 7).r,
-            child: Text(
-              consumption,
-              style: TextStyle(fontSize: 19.sp),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Text(
-            '$i',
-            style: TextStyle(fontSize: 19.sp),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-      rows.add(row);
-    }
     return Scaffold(
       body: Column(
         children: [
@@ -96,10 +60,15 @@ class Asthlak extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: Table(
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          border: TableBorder.all(),
-                          children: <TableRow>[tpye, ...rows]),
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        border: TableBorder.all(),
+                        children: controller.getRows(
+                          feedConsumptions,
+                          context,
+                          "الاستهلاك بالجرام",
+                        ),
+                      ),
                     ),
                   ],
                 ),

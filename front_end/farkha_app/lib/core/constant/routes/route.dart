@@ -31,7 +31,7 @@ class AppRoute {
   static const String alshata = "/alshata";
   static const String altaganous = "/altaganous";
   static const String awzan = "/awzan";
-  static const String asthlak = "/asthlak";
+  static const String asthlakAl3laf = "/asthlakAl3laf";
   static const String solalat = "/solalat";
   static const String alardya = "/alardya";
   static const String amard = "/amard";
