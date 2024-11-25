@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../../../data/data_source/static/data_list/articles_data.dart';
+import '../../../../../data/data_source/static/poultry_management_data.dart';
 import '../../../../../logic/controller/articles_controller.dart';
 import '../../../../widget/ad/banner/ad_third_banner.dart';
 import '../../../../widget/ad/native/ad_third_native.dart';
