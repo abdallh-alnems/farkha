@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import '../../../data/data_source/static/poultry_management_data.dart';
 
 class FeedConsumptionController extends GetxController {
-  TextEditingController countController = TextEditingController();
-  Rxn selectedAge = Rxn<int>();
-  RxString result = ''.obs;
-  RxBool isCumulative = false.obs;
+  final TextEditingController countController = TextEditingController();
+  final Rxn selectedAge = Rxn<int>();
+  final RxString result = ''.obs;
+  final RxBool isCumulative = false.obs;
 
   final List<int> feedConsumption = feedConsumptions;
 

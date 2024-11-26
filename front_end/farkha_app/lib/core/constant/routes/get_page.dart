@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
 import '../../../view/screen/calculate/feed_consumption.dart';
 import '../../../view/screen/calculate/feasibility_study.dart';
+import '../../../view/screen/follow_up_tools/broiler_chicken_requirements.dart';
 import '../../../view/screen/general/suggestion.dart';
 import '../../../view/screen/prices/last_prices.dart';
 import 'route.dart';
@@ -36,13 +37,12 @@ List<GetPage<dynamic>> pages = [
 
   // GetPage(name: AppRoute.test, page: () => Test()),
 
-    // ================================ prices ===================================
- GetPage(
+  // ================================ prices ===================================
+  GetPage(
     name: AppRoute.lastPrices,
     page: () => LastPrices(),
     transition: Transition.rightToLeft,
   ),
-
 
   // ================================ general ==================================
 
@@ -63,6 +63,12 @@ List<GetPage<dynamic>> pages = [
   GetPage(
     name: AppRoute.articlesType,
     page: () => ArticlesType(),
+    transition: Transition.downToUp,
+  ),
+
+  GetPage(
+    name: AppRoute.broilerChickenRequirements,
+    page: () => BroilerChickenRequirements(),
     transition: Transition.downToUp,
   ),
 
@@ -125,7 +131,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.asthlakAl3laf,
-    page: () =>  AsthlakAl3laf(),
+    page: () => AsthlakAl3laf(),
     transition: Transition.downToUp,
   ),
   GetPage(

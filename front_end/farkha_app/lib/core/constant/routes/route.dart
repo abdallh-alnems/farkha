@@ -6,7 +6,7 @@ class AppRoute {
   // ================================ prices ===================================
 
   static const String lastPrices = "/lastPrices";
-  
+
   // ================================ general ==================================
 
   static const String general = "/general";
@@ -15,6 +15,8 @@ class AppRoute {
   // ========================== view follow up tools ===========================
 
   static const String articlesType = "/articlesType";
+  static const String broilerChickenRequirements =
+      "/broilerChickenRequirements";
 
   // =============================== calculate =================================
 

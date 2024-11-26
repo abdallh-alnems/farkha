@@ -5,6 +5,7 @@ import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
 import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
+import 'view/screen/follow_up_tools/broiler_chicken_requirements.dart';
 
 void main() async { 
   await initialServices();
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
+            home: BroilerChickenRequirements(),
           );
         });
   }

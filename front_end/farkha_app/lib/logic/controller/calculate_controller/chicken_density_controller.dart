@@ -7,13 +7,13 @@ import '../../../core/services/initialization.dart';
 class ChickenDensityController extends GetxController {
   MyServices myServices = Get.find();
   final TextEditingController chickensController = TextEditingController();
-  final RxString selectedAge = ''.obs;
+final Rxn<String> selectedAge = Rxn<String>();
   final RxString areaResult = ''.obs;
 
   void calculateArea() {
     final int? chickens = int.tryParse(chickensController.text);
 
-    if (chickens == null || selectedAge.value.isEmpty || chickens <= 0) {
+    if (chickens == null || selectedAge.value == null || chickens <= 0) {
       areaResult.value = 'يرجى إدخال قيم صحيحة';
       return;
     }
