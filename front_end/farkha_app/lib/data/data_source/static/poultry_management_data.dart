@@ -1,3 +1,5 @@
+// =============================== asthlak_al3laf ==============================
+
 List<int> feedConsumptions = [
   6,
   9,
@@ -45,6 +47,8 @@ List<int> feedConsumptions = [
   202,
   203,
 ];
+
+// =============================== dargt al7rara ===============================
 
 List<int> temperatureList = [
   34,
@@ -94,6 +98,8 @@ List<int> temperatureList = [
   22
 ];
 
+// =================================== awzan ===================================
+
 List<int> weightsList = [
   40,
   54,
@@ -141,6 +147,8 @@ List<int> weightsList = [
   2750,
   2800,
 ];
+
+// =================================== alida ===================================
 
 List<int> darknessLevels = [
   0,

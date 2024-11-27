@@ -7,7 +7,7 @@ import '../../../core/services/initialization.dart';
 class ChickenDensityController extends GetxController {
   MyServices myServices = Get.find();
   final TextEditingController chickensController = TextEditingController();
-final Rxn<String> selectedAge = Rxn<String>();
+  final Rxn<String> selectedAge = Rxn<String>();
   final RxString areaResult = ''.obs;
 
   void calculateArea() {
@@ -20,19 +20,19 @@ final Rxn<String> selectedAge = Rxn<String>();
 
     double recommendedDensity;
     switch (selectedAge.value) {
-      case '( 7 - 1 ) الاسبوع الاول':
+      case 'الاسبوع الاول':
         recommendedDensity = 30;
         break;
-      case '( 14 - 7 ) الاسبوع الثاني':
+      case 'الاسبوع الثاني':
         recommendedDensity = 25;
         break;
-      case '( 21 - 14 ) الاسبوع الثالث':
+      case 'الاسبوع الثالث':
         recommendedDensity = 20;
         break;
-      case '( 28 - 21 ) الاسبوع الرابع':
+      case 'الاسبوع الرابع':
         recommendedDensity = 15;
         break;
-      case '( الي نهاية الدورة ) الاسبوع الخامس':
+      case 'الاسبوع الخامس':
         recommendedDensity = 10;
         break;
       default:

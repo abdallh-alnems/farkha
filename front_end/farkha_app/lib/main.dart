@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
             initialBinding: MyBindings(),
             getPages: pages,
             theme: appThemes,
-            home: BroilerChickenRequirements(),
+           // home: BroilerChickenRequirements(),
           );
         });
   }

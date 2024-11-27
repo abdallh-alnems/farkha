@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/shared/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
@@ -35,21 +34,16 @@ class FeedConsumption extends StatelessWidget {
                     value: age,
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: Text('$age يوم'),
+                      child: Text(
+                        '$age يوم',
+                        style: TextStyle(color: Colors.black),
+                      ),
                     ),
                   );
                 }).toList(),
+                onPressed: controller.calculateFeedConsumption,
+                textElevatedButton: 'حساب الاستهلاك',
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 19, bottom: 17).r,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        controller.calculateFeedConsumption();
-                      },
-                      child: Text('حساب الاستهلاك'),
-                    ),
-                  ),
                   Obx(
                     () => CalculateResult(
                       text: controller.result.value,

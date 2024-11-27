@@ -28,28 +28,26 @@ class ChickenDensity extends StatelessWidget {
             },
             selectedAge: controller.selectedAge.value,
             items: <String>[
-              '( 7 - 1 ) الاسبوع الاول',
-              '( 14 - 7 ) الاسبوع الثاني',
-              '( 21 - 14 ) الاسبوع الثالث',
-              '( 28 - 21 ) الاسبوع الرابع',
-              '( الي نهاية الدورة ) الاسبوع الخامس',
+              'الاسبوع الاول',
+              'الاسبوع الثاني',
+              'الاسبوع الثالث',
+              'الاسبوع الرابع',
+              'الاسبوع الخامس',
             ].map((String age) {
               return DropdownMenuItem<String>(
                 value: age,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(age),
+                  child: Text(
+                    age,
+                    style: TextStyle(fontSize: 13.sp, color: Colors.black),
+                  ),
                 ),
               );
             }).toList(),
+            onPressed: controller.calculateArea,
+            textElevatedButton: 'احسب المساحة',
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 19, bottom: 17).r,
-                child: ElevatedButton(
-                  onPressed: controller.calculateArea,
-                  child: Text('احسب المساحة'),
-                ),
-              ),
               Obx(
                 () => CalculateResult(
                   text: controller.areaResult.value,

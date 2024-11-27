@@ -10,7 +10,7 @@ class FeedToggleButtons extends GetView<FeedConsumptionController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 17, bottom: 23).r,
+      margin: EdgeInsets.symmetric(vertical: 13).r,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(

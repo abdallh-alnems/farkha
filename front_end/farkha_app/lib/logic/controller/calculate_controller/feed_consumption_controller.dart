@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../data/data_source/static/poultry_management_data.dart';
 
 class FeedConsumptionController extends GetxController {

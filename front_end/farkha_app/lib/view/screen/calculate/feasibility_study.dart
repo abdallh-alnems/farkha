@@ -20,24 +20,16 @@ class FeasibilityStudy extends StatelessWidget {
       body: Column(
         children: [
           const CustomAppBar(
-            text: "دراسة جدول",
+            text: "دراسة جدوي",
           ),
           Expanded(
             child: SingleChildScrollView(
               child: ChickenForm(
                 controller: controller.countChickens,
                 notShowDropdownButton: true.obs,
+                onPressed: controller.calculateFeasibility,
+                textElevatedButton: 'عمل دراسة الجدوي',
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 9, bottom: 15).r,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        controller.calculateFeasibility();
-                      },
-                      child: const Text('احسب'),
-                    ),
-                  ),
                   Obx(() => HandlingDataView(
                         statusRequest: controller.statusRequest,
                         widget: Column(
@@ -70,7 +62,7 @@ class FeasibilityStudy extends StatelessWidget {
               controller.showStudyDetailsDialog();
             },
             child: Text(
-              "كيف يتم عمل دراسة الجدول",
+              "كيف يتم عمل دراسة الجدوي",
               style: TextStyle(color: Colors.black38),
             ),
           ),
