@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/class/handling_data.dart';
-import '../../../core/shared/calculate_result.dart';
+import '../../widget/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
@@ -25,11 +25,20 @@ class FeasibilityStudy extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: ChickenForm(
+                formKey: controller.formState,
                 controller: controller.countChickens,
                 notShowDropdownButton: true.obs,
-                onPressed: controller.calculateFeasibility,
-                textElevatedButton: 'عمل دراسة الجدوي',
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 19, bottom: 17).r,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        controller.calculateFeasibility();
+                      },
+                      child: Text("احسب دراسة الجدوي"),
+                    ),
+                  ),
                   Obx(() => HandlingDataView(
                         statusRequest: controller.statusRequest,
                         widget: Column(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../core/shared/calculate_result.dart';
+import '../../widget/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/chicken_density_controller.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
@@ -22,9 +22,11 @@ class ChickenDensity extends StatelessWidget {
             text: "كثافة الفراخ",
           ),
           ChickenForm(
+            formKey: controller.formState,
             controller: controller.chickensController,
             onChanged: (dynamic newValue) {
               controller.selectedAge.value = newValue!;
+              controller.calculateArea();
             },
             selectedAge: controller.selectedAge.value,
             items: <String>[
@@ -45,12 +47,13 @@ class ChickenDensity extends StatelessWidget {
                 ),
               );
             }).toList(),
-            onPressed: controller.calculateArea,
-            textElevatedButton: 'احسب المساحة',
             children: [
-              Obx(
-                () => CalculateResult(
-                  text: controller.areaResult.value,
+              Padding(
+                padding: const EdgeInsets.only(top: 55),
+                child: Obx(
+                  () => CalculateResult(
+                    text: controller.areaResult.value,
+                  ),
                 ),
               ),
             ],

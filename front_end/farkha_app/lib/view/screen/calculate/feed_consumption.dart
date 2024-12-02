@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../core/shared/calculate_result.dart';
+import '../../widget/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/feed_consumption_controller.dart';
 import '../../widget/ad/banner/ad_second_banner.dart';
@@ -23,9 +24,11 @@ class FeedConsumption extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               child: ChickenForm(
+                formKey: controller.formState,
                 controller: controller.countController,
                 onChanged: (newValue) {
                   controller.selectedAge.value = newValue;
+                  controller.calculateFeedConsumption();
                 },
                 selectedAge: controller.selectedAge.value,
                 notShowDropdownButton: controller.isCumulative,
@@ -41,12 +44,13 @@ class FeedConsumption extends StatelessWidget {
                     ),
                   );
                 }).toList(),
-                onPressed: controller.calculateFeedConsumption,
-                textElevatedButton: 'حساب الاستهلاك',
                 children: [
-                  Obx(
-                    () => CalculateResult(
-                      text: controller.result.value,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 33).r,
+                    child: Obx(
+                      () => CalculateResult(
+                        text: controller.result.value,
+                      ),
                     ),
                   ),
                 ],

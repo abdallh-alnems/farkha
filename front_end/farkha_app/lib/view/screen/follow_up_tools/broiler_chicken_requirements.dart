@@ -20,31 +20,31 @@ class BroilerChickenRequirements extends StatelessWidget {
           CustomAppBar(
             text: "احتياجات فراخ التسمين",
           ),
-          ChickenForm(
-            controller: controller.chickensController,
-            onChanged: (newValue) {
-              controller.selectedAge.value = newValue;
-            },
-            selectedAge: controller.selectedAge.value,
-            items: List.generate(45, (index) => index + 1).map((age) {
-              return DropdownMenuItem<int>(
-                value: age,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text('$age يوم'),
-                ),
-              );
-            }).toList(),
-            onPressed: () {},
-            textElevatedButton: 'احتياجات فراخ التسمين',
-            children: [
-              Obx(() {
-                // Show the temperature based on selected age
-                int temperature = controller.getTemperature();
-                return Text(temperature != 0 ? 'درجة الحرارة: $temperature' : 'الرجاء اختيار العمر');
-              }),
-            ],
-          ),
+          // ChickenForm(
+          //   controller: controller.chickensController,
+          //   onChanged: (newValue) {
+          //     controller.selectedAge.value = newValue;
+          //   },
+          //   selectedAge: controller.selectedAge.value,
+          //   items: List.generate(45, (index) => index + 1).map((age) {
+          //     return DropdownMenuItem<int>(
+          //       value: age,
+          //       child: Align(
+          //         alignment: Alignment.centerRight,
+          //         child: Text('$age يوم'),
+          //       ),
+          //     );
+          //   }).toList(),
+          //   onPressed: () {},
+          //   textElevatedButton: 'احتياجات فراخ التسمين',
+          //   children: [
+          //     Obx(() {
+          //       // Show the temperature based on selected age
+          //       int temperature = controller.getTemperature();
+          //       return Text(temperature != 0 ? 'درجة الحرارة: $temperature' : 'الرجاء اختيار العمر');
+          //     }),
+          //   ],
+          // ),
         ],
       ),
       bottomNavigationBar: const AdSecondBanner(),

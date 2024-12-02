@@ -7,10 +7,11 @@ import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/feasibility_study_data.dart';
 
 class FeasibilityController extends GetxController {
-  MyServices myServices = Get.find();
+  final GlobalKey<FormState> formState = GlobalKey<FormState>();
+  final MyServices myServices = Get.find();
   late StatusRequest statusRequest = StatusRequest.none;
   final TextEditingController countChickens = TextEditingController();
-  FeasibilityData feasibilityData = FeasibilityData(Get.find());
+  final FeasibilityData feasibilityData = FeasibilityData(Get.find());
 
   late int chickenSalePrice;
   late int chickPrice;

@@ -3,19 +3,29 @@ import 'package:get/get.dart';
 import '../../../data/data_source/static/poultry_management_data.dart';
 
 class FeedConsumptionController extends GetxController {
+  final GlobalKey<FormState> formState = GlobalKey<FormState>();
   final TextEditingController countController = TextEditingController();
   final Rxn selectedAge = Rxn<int>();
-  final RxString result = ''.obs;
+  final RxString result = 'ادخل العدد والعمر'.obs;
   final RxBool isCumulative = false.obs;
-
   final List<int> feedConsumption = feedConsumptions;
 
-  void calculateFeedConsumption() {
-    if (countController.text.isEmpty) {
-      result.value = 'يرجى تعبئة جميع الحقول المطلوبة';
-      return;
-    }
+  FeedConsumptionController() {
+    countController.addListener(() {
+      if (_areInputsValid()) {
+        calculateFeedConsumption();
+      }
+    });
+  }
 
+  bool _areInputsValid() {
+    if (isCumulative.value) {
+      return countController.text.isNotEmpty;
+    }
+    return countController.text.isNotEmpty && selectedAge.value != null;
+  }
+
+  void calculateFeedConsumption() {
     final int count = int.tryParse(countController.text) ?? 0;
     double totalFeed;
 
@@ -32,22 +42,27 @@ class FeedConsumptionController extends GetxController {
           'استهلاك العلف الناهي : ${nahi.toStringAsFixed(1)} كيلو\n \n'
           'الاستهلاك الكلي للعلف طوال الدورة : ${total.toStringAsFixed(1)} كيلو';
     } else {
-      if (selectedAge.value == null ||
-          selectedAge.value! <= 0 ||
-          selectedAge.value! > feedConsumption.length) {
-        result.value = 'يرجى اختيار عمر صحيح ضمن المدى المحدد.';
-        return;
-      }
-
       totalFeed = feedConsumption[selectedAge.value! - 1] * count.toDouble();
       result.value =
           'استهلاك ${countController.text} فراخ للعلف في اليوم عند عمر ${selectedAge.value} يوم : \n${totalFeed.toStringAsFixed(0)} جرام';
     }
+    FocusScope.of(Get.context!).unfocus();
+  }
+
+  void _resetResultMessage() {
+    if (countController.text.isEmpty) {
+      if (isCumulative.value) {
+        result.value = 'ادخل العدد';
+      } else {
+        result.value = 'ادخل العدد والعمر';
+      }
+    }
   }
 
   void resetInputs() {
-    countController.clear();
-    selectedAge.value = null;
-    result.value = '';
+    isCumulative.value = !isCumulative.value;
+    selectedAge.value ??= 1;
+    calculateFeedConsumption();
+    _resetResultMessage();
   }
 }

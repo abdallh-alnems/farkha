@@ -5,43 +5,49 @@ import '../../../core/package/custom_dialog.dart';
 import '../../../core/services/initialization.dart';
 
 class ChickenDensityController extends GetxController {
-  MyServices myServices = Get.find();
+  final GlobalKey<FormState> formState = GlobalKey<FormState>();
+  final MyServices myServices = Get.find();
   final TextEditingController chickensController = TextEditingController();
   final Rxn<String> selectedAge = Rxn<String>();
-  final RxString areaResult = ''.obs;
+  final RxString areaResult = 'ادخل العدد والعمر'.obs;
+
+  ChickenDensityController() {
+    chickensController.addListener(() {
+      if (_areInputsValid()) {
+        calculateArea();
+      }
+    });
+  }
+
+  bool _areInputsValid() {
+    return chickensController.text.isNotEmpty && selectedAge.value != null;
+  }
 
   void calculateArea() {
     final int? chickens = int.tryParse(chickensController.text);
 
-    if (chickens == null || selectedAge.value == null || chickens <= 0) {
-      areaResult.value = 'يرجى إدخال قيم صحيحة';
-      return;
-    }
+    double recommendedDensity = _getRecommendedDensity(selectedAge.value!);
+    final double requiredArea = chickens! / recommendedDensity;
 
-    double recommendedDensity;
-    switch (selectedAge.value) {
-      case 'الاسبوع الاول':
-        recommendedDensity = 30;
-        break;
-      case 'الاسبوع الثاني':
-        recommendedDensity = 25;
-        break;
-      case 'الاسبوع الثالث':
-        recommendedDensity = 20;
-        break;
-      case 'الاسبوع الرابع':
-        recommendedDensity = 15;
-        break;
-      case 'الاسبوع الخامس':
-        recommendedDensity = 10;
-        break;
-      default:
-        recommendedDensity = 0;
-    }
-
-    final double requiredArea = chickens / recommendedDensity;
     areaResult.value =
         'المساحة المطلوبة لهذه الفراخ في هذا العمر : \n ${requiredArea.toStringAsFixed(0)} متر مربع';
+  }
+
+  double _getRecommendedDensity(String age) {
+    switch (age) {
+      case 'الاسبوع الاول':
+        return 30;
+      case 'الاسبوع الثاني':
+        return 25;
+      case 'الاسبوع الثالث':
+        return 20;
+      case 'الاسبوع الرابع':
+        return 15;
+      case 'الاسبوع الخامس':
+        return 10;
+      default:
+        return 0;
+    }
   }
 
   void showDialogChickenDensity() {

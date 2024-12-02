@@ -13,7 +13,7 @@ class FeasibilityStudyTitle extends GetView<FeasibilityController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 7).r,
+      padding: const EdgeInsets.only(top: 7, bottom: 3).r,
       child: Text(
         controller.profitResult.value == "" ? "" : title,
         style: Theme.of(context).textTheme.headlineLarge,

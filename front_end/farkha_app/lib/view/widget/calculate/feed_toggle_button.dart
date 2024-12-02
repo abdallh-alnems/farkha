@@ -25,18 +25,10 @@ class FeedToggleButtons extends GetView<FeedConsumptionController> {
             ToggleButton(
               label: 'يومي',
               isActive: !controller.isCumulative.value,
-              onTap: () {
-                controller.isCumulative.value = false;
-                controller.resetInputs();
-              },
             ),
             ToggleButton(
               label: 'تراكمي',
               isActive: controller.isCumulative.value,
-              onTap: () {
-                controller.isCumulative.value = true;
-                controller.resetInputs();
-              },
             ),
           ],
         );
@@ -45,22 +37,20 @@ class FeedToggleButtons extends GetView<FeedConsumptionController> {
   }
 }
 
-class ToggleButton extends StatelessWidget {
+class ToggleButton extends GetView<FeedConsumptionController> {
   final String label;
   final bool isActive;
-  final VoidCallback onTap;
 
   const ToggleButton({
     super.key,
     required this.label,
     required this.isActive,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: controller.resetInputs,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6).r,
         decoration: BoxDecoration(
