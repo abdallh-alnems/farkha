@@ -11,7 +11,9 @@ class ChickenForm extends StatelessWidget {
   final List<DropdownMenuItem<dynamic>>? items;
   final RxBool notShowDropdownButton;
   final List<Widget> children;
-  final GlobalKey<FormState> formKey;
+  final String buttonText;
+  final Function()? buttonOnPressed;
+  final bool showButton;
 
   ChickenForm({
     super.key,
@@ -21,69 +23,85 @@ class ChickenForm extends StatelessWidget {
     this.items,
     required this.children,
     RxBool? notShowDropdownButton,
-    required this.formKey,
+    this.buttonText = "",
+    this.buttonOnPressed,
+    this.showButton = false,
   }) : notShowDropdownButton = notShowDropdownButton ?? false.obs;
 
   static void _defaultOnChanged(dynamic value) {}
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 19).r,
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Form(
-          key: formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,  
-
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 13).r,
-                child: AdSecondNative(),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: controller,
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.right,
-                      decoration: InputDecoration(
-                        labelText: 'عدد الفراخ',
-                        border: OutlineInputBorder(),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 19).r,
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5).r,
+                  child: AdSecondNative(),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: controller,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.right,
+                        decoration: InputDecoration(
+                          labelText: 'عدد الفراخ',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          return validateChickInput(value!);
+                        },
                       ),
-                      validator: (value) {
-                        return validateChickInput(value!);
-                      },
+                    ),
+                    SizedBox(width: 11.h),
+                    Obx(() {
+                      return notShowDropdownButton.value
+                          ? SizedBox.shrink()
+                          : Expanded(
+                              child: DropdownButtonFormField<dynamic>(
+                                value: selectedAge,
+                                onChanged: onChanged,
+                                decoration: InputDecoration(
+                                  labelText: 'اختار العمر',
+                                  border: const OutlineInputBorder(),
+                                ),
+                                items: items,
+                              ),
+                            );
+                    }),
+                  ],
+                ),
+           showButton
+    ? Padding(
+        padding: const EdgeInsets.only(top: 17).r,
+        child: ElevatedButton(
+          onPressed: buttonOnPressed,
+          child: Text(buttonText),
+        ),
+      )
+    : SizedBox.shrink(),
+
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: children,
                     ),
                   ),
-                  SizedBox(width: 11.h),
-                  Obx(() {
-                    return notShowDropdownButton.value
-                        ? SizedBox.shrink()
-                        : Expanded(
-                            child: DropdownButtonFormField<dynamic>(
-                              value: selectedAge,
-                              onChanged: onChanged,
-                              decoration: InputDecoration(
-                                labelText: 'اختار العمر',
-                                border: const OutlineInputBorder(),
-                              ),
-                              items: items,
-                            ),
-                          );
-                  }),
-                ],
-              ),
-              ...children,
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-
-

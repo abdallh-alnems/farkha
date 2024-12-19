@@ -5,14 +5,13 @@ import '../../../core/package/custom_dialog.dart';
 import '../../../core/services/initialization.dart';
 
 class ChickenDensityController extends GetxController {
-  final GlobalKey<FormState> formState = GlobalKey<FormState>();
   final MyServices myServices = Get.find();
-  final TextEditingController chickensController = TextEditingController();
+  final TextEditingController textController = TextEditingController();
   final Rxn<String> selectedAge = Rxn<String>();
   final RxString areaResult = 'ادخل العدد والعمر'.obs;
 
   ChickenDensityController() {
-    chickensController.addListener(() {
+    textController.addListener(() {
       if (_areInputsValid()) {
         calculateArea();
       }
@@ -20,20 +19,23 @@ class ChickenDensityController extends GetxController {
   }
 
   bool _areInputsValid() {
-    return chickensController.text.isNotEmpty && selectedAge.value != null;
+    return textController.text.isNotEmpty &&
+        int.tryParse(textController.text) != null &&
+        selectedAge.value != null;
   }
 
   void calculateArea() {
-    final int? chickens = int.tryParse(chickensController.text);
+    final int? chickens = int.tryParse(textController.text);
 
-    double recommendedDensity = _getRecommendedDensity(selectedAge.value!);
-    final double requiredArea = chickens! / recommendedDensity;
+    int recommendedDensity = _getRecommendedDensity(selectedAge.value!);
+    final double requiredArea =
+        (chickens! / recommendedDensity).clamp(1, double.infinity);
 
     areaResult.value =
-        'المساحة المطلوبة لهذه الفراخ في هذا العمر : \n ${requiredArea.toStringAsFixed(0)} متر مربع';
+        'المساحة المطلوبة  لعدد ${textController.text} فرخ في عمر $selectedAge هي : \n ${requiredArea.toStringAsFixed(0)} متر مربع';
   }
 
-  double _getRecommendedDensity(String age) {
+  int _getRecommendedDensity(String age) {
     switch (age) {
       case 'الاسبوع الاول':
         return 30;

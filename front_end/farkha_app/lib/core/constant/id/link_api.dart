@@ -1,8 +1,8 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../services/env.dart';
 
 class ApiLinks {
   // ================================= server ==================================
-  static final String _linkServerName = dotenv.get("API_HOST");
+  static final String _linkServerName = EnvService.linkServerName;
 
   // ================================= prices ==================================
   static String linkFarkhAbid = '$_linkServerName/view/farkh_abid.php';

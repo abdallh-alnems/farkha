@@ -15,7 +15,7 @@ class FeasibilityStudyTitle extends GetView<FeasibilityController> {
     return Padding(
       padding: const EdgeInsets.only(top: 7, bottom: 3).r,
       child: Text(
-        controller.profitResult.value == "" ? "" : title,
+        title,
         style: Theme.of(context).textTheme.headlineLarge,
       ),
     );

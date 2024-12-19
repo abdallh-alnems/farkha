@@ -22,8 +22,7 @@ class ChickenDensity extends StatelessWidget {
             text: "كثافة الفراخ",
           ),
           ChickenForm(
-            formKey: controller.formState,
-            controller: controller.chickensController,
+            controller: controller.textController,
             onChanged: (dynamic newValue) {
               controller.selectedAge.value = newValue!;
               controller.calculateArea();

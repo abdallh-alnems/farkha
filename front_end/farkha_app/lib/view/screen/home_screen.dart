@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 13).r,
               child: const Column(
                 children: [
-                   Upgrade(),
+                  Upgrade(),
                   CardPriceFarkhAbidHome(),
                   ViewPricesAndCycle(),
                   AdFirstNative(),

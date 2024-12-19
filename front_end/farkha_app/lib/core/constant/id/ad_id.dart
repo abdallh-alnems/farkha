@@ -1,31 +1,31 @@
 class AdManager {
-  static bool isTest = false;
+  // ============================ private variables ============================
 
-  //================================== banner ==================================
+  static const bool _isTest = true;
 
-  static String bannerFirst = isTest
-      ? "ca-app-pub-3940256099942544/6300978111"
-      : "ca-app-pub-8595701567488603/1751748833";
+  static const String _teatBanner = "ca-app-pub-3940256099942544/6300978111";
 
-  static String bannerSecond = isTest
-      ? "ca-app-pub-3940256099942544/6300978111"
-      : "ca-app-pub-8595701567488603/1584158060";
+  static const String _teatNative = "ca-app-pub-3940256099942544/2247696110";
 
-  static String bannerThird = isTest
-      ? "ca-app-pub-3940256099942544/6300978111"
-      : "ca-app-pub-8595701567488603/8325394412";
+  // ================================== banner =================================
 
-  //================================== native ==================================
+  static String bannerFirst =
+      _isTest ? _teatBanner : "ca-app-pub-8595701567488603/1751748833";
 
-  static String nativeFirst = isTest
-      ? "ca-app-pub-3940256099942544/2247696110"
-      : "ca-app-pub-8595701567488603/4494984718";
+  static String bannerSecond =
+      _isTest ? _teatBanner : "ca-app-pub-8595701567488603/1584158060";
 
-  static String nativeSecond = isTest
-      ? "ca-app-pub-3940256099942544/2247696110"
-      : "ca-app-pub-8595701567488603/1075378798";
+  static String bannerThird =
+      _isTest ? _teatBanner : "ca-app-pub-8595701567488603/8325394412";
 
-  static String nativeThird = isTest
-      ? "ca-app-pub-3940256099942544/2247696110"
-      : "ca-app-pub-8595701567488603/1164528612";
+  // ================================== native =================================
+
+  static String nativeFirst =
+      _isTest ? _teatNative : "ca-app-pub-8595701567488603/4494984718";
+
+  static String nativeSecond =
+      _isTest ? _teatNative : "ca-app-pub-8595701567488603/1075378798";
+
+  static String nativeThird =
+      _isTest ? _teatNative : "ca-app-pub-8595701567488603/1164528612";
 }

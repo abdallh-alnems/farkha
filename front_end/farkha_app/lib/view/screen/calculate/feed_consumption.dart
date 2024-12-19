@@ -21,41 +21,36 @@ class FeedConsumption extends StatelessWidget {
         children: [
           CustomAppBar(text: "استهلاك العلف"),
           FeedToggleButtons(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: ChickenForm(
-                formKey: controller.formState,
-                controller: controller.countController,
-                onChanged: (newValue) {
-                  controller.selectedAge.value = newValue;
-                  controller.calculateFeedConsumption();
-                },
-                selectedAge: controller.selectedAge.value,
-                notShowDropdownButton: controller.isCumulative,
-                items: List.generate(45, (index) => index + 1).map((age) {
-                  return DropdownMenuItem<int>(
-                    value: age,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        '$age يوم',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  );
-                }).toList(),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 33).r,
-                    child: Obx(
-                      () => CalculateResult(
-                        text: controller.result.value,
-                      ),
-                    ),
+          ChickenForm(
+            controller: controller.textController,
+            onChanged: (newValue) {
+              controller.selectedAge.value = newValue;
+              controller.calculateFeedConsumption();
+            },
+            selectedAge: controller.selectedAge.value,
+            notShowDropdownButton: controller.isCumulative,
+            items: List.generate(45, (index) => index + 1).map((age) {
+              return DropdownMenuItem<int>(
+                value: age,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '$age يوم',
+                    style: TextStyle(color: Colors.black),
                   ),
-                ],
+                ),
+              );
+            }).toList(),
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 33).r,
+                child: Obx(
+                  () => CalculateResult(
+                    text: controller.result.value,
+                  ),
+                ),
               ),
-            ),
+            ],
           )
         ],
       ),

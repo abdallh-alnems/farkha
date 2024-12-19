@@ -22,49 +22,53 @@ class FeasibilityStudy extends StatelessWidget {
           const CustomAppBar(
             text: "دراسة جدوي",
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: ChickenForm(
-                formKey: controller.formState,
-                controller: controller.countChickens,
-                notShowDropdownButton: true.obs,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 19, bottom: 17).r,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        controller.calculateFeasibility();
-                      },
-                      child: Text("احسب دراسة الجدوي"),
-                    ),
-                  ),
-                  Obx(() => HandlingDataView(
-                        statusRequest: controller.statusRequest,
-                        widget: Column(
-                          children: [
-                            FeasibilityStudyTitle(
-                              title: "التكاليف",
-                            ),
-                            ..._buildCostResults(),
-                            FeasibilityStudyTitle(
-                              title: "المبيعات",
-                            ),
-                            CalculateResult(
-                              text: controller.salesResult.value,
-                            ),
-                            FeasibilityStudyTitle(
-                              title: "الارباح",
-                            ),
-                            CalculateResult(
-                              text: controller.profitResult.value,
-                            ),
-                          ],
-                        ),
-                      )),
-                ],
+          ChickenForm(
+            controller: controller.textController,
+            notShowDropdownButton: true.obs,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 19, bottom: 17).r,
+                child: ElevatedButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    controller.calculateFeasibility();
+                  },
+                  child: Text("احسب دراسة الجدوي"),
+                ),
               ),
-            ),
+              Obx(() {
+                if (controller.showData.value) {
+                  return HandlingDataView(
+                    statusRequest: controller.statusRequest,
+                    widget: Column(
+                      children: [
+                        FeasibilityStudyTitle(
+                          title: "التكاليف",
+                        ),
+                        ..._buildCostResults(),
+                        FeasibilityStudyTitle(
+                          title: "المبيعات",
+                        ),
+                        CalculateResult(
+                          text: controller.salesResult.value,
+                        ),
+                        FeasibilityStudyTitle(
+                          title: "الارباح",
+                        ),
+                        CalculateResult(
+                          text: controller.profitResult.value,
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Text('ادخل العدد والعمر'),
+                  );
+                }
+              }),
+            ],
           ),
           GestureDetector(
             onTap: () {

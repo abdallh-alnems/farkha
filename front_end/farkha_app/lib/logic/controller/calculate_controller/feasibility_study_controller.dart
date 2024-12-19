@@ -7,10 +7,9 @@ import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/feasibility_study_data.dart';
 
 class FeasibilityController extends GetxController {
-  final GlobalKey<FormState> formState = GlobalKey<FormState>();
   final MyServices myServices = Get.find();
   late StatusRequest statusRequest = StatusRequest.none;
-  final TextEditingController countChickens = TextEditingController();
+  final TextEditingController textController = TextEditingController();
   final FeasibilityData feasibilityData = FeasibilityData(Get.find());
 
   late int chickenSalePrice;
@@ -26,6 +25,8 @@ class FeasibilityController extends GetxController {
   RxString totalCostResult = "".obs;
   RxString salesResult = "".obs;
   RxString profitResult = "".obs;
+
+  RxBool showData = false.obs;
 
   Future<void> fetchFeasibilityData() async {
     try {
@@ -58,6 +59,8 @@ class FeasibilityController extends GetxController {
   }
 
   void calculateFeasibility() async {
+    showData = true.obs;
+
     try {
       if (statusRequest != StatusRequest.success) {
         await fetchFeasibilityData();
@@ -66,14 +69,14 @@ class FeasibilityController extends GetxController {
         }
       }
 
-      int count = int.parse(countChickens.text);
+      int count = int.parse(textController.text);
 
       const double mortalityRate = 0.05;
       const double badiConsumption = 0.5;
       const double namiConsumption = 1.2;
       const double nahiConsumption = 1.8;
       const int overheadPerChicken = 10;
-      const double averageWeight = 2.3;
+      const int averageWeight = 2;
 
       int deadChickens = (count * mortalityRate).round();
       int remainingChickens = count - deadChickens;
@@ -90,7 +93,7 @@ class FeasibilityController extends GetxController {
 
       double totalCost = totalChickenPrice + totalFeedCost + totalOverheadCost;
 
-      double totalSales = remainingChickens * averageWeight * chickenSalePrice;
+      int totalSales = remainingChickens * averageWeight * chickenSalePrice;
 
       double profit = totalSales - totalCost;
 
@@ -106,13 +109,7 @@ class FeasibilityController extends GetxController {
 
       update();
     } catch (e) {
-      mortalityResult.value = "الرجاء إدخال عدد الفراخ";
-      chickenCostResult.value = "";
-      feedCostResult.value = "";
-      overheadCostResult.value = "";
-      totalCostResult.value = "";
-      salesResult.value = "";
-      profitResult.value = "";
+      statusRequest = StatusRequest.failure;
       update();
     }
   }

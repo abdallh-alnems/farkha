@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
+import 'route.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
 import '../../../view/screen/calculate/feed_consumption.dart';
 import '../../../view/screen/calculate/feasibility_study.dart';
 import '../../../view/screen/follow_up_tools/broiler_chicken_requirements.dart';
 import '../../../view/screen/general/suggestion.dart';
 import '../../../view/screen/prices/last_prices.dart';
-import 'route.dart';
 import '../../../view/screen/follow_up_tools/articles/articles_type.dart';
 import '../../../view/screen/general/general.dart';
 import '../../../view/screen/home_screen.dart';
@@ -31,7 +31,10 @@ import '../../../view/screen/follow_up_tools/articles/article/al3lag.dart';
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
 
-  GetPage(name: "/", page: () => HomeScreen()),
+  GetPage(
+    name: "/",
+    page: () => HomeScreen(),
+  ),
 
   // ============================== Test =======================================
 
