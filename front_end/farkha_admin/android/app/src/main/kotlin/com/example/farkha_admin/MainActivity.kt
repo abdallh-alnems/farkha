@@ -1,4 +1,4 @@
-package com.example.farkha_admin
+package ni.nims.farkha_services
 
 import io.flutter.embedding.android.FlutterActivity
 

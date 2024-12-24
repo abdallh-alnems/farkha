@@ -2,7 +2,6 @@
 
 include "../connect.php";
 
-
 $stmt = $con->prepare("SELECT `prices`.`price` FROM `prices` WHERE `prices`.`price_type` = 1 ORDER BY `prices`.`date_price` DESC LIMIT 2;");
 
 $stmt->execute(array());

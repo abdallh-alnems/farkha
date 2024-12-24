@@ -6,10 +6,10 @@ import 'status_request.dart';
 
 class Crud {
   Future<Either<StatusRequest, Map>> postData(String linkUrl, Map data) async {
-    Map<String, String> myheaders = getMyHeaders();
+    Map<String, String> myHeaders = getMyHeaders();
 
     var response =
-        await http.post(Uri.parse(linkUrl), headers: myheaders, body: data);
+        await http.post(Uri.parse(linkUrl), headers: myHeaders, body: data);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       Map responseBody = jsonDecode(response.body);

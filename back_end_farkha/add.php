@@ -3,12 +3,12 @@
 include "connect.php";
 
 $price =  filterRequset('price');
-$id_type = filterRequset('id_type');
+$typeId = filterRequset('type_id');
 
 $stmt = $con->prepare("INSERT INTO `prices` (`price`, `price_type`)
 VALUES (?, ?);");
 
-$stmt->execute(array($price  , $id_type ));
+$stmt->execute(array($price  , $typeId ));
 
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -21,4 +21,4 @@ if($count > 0 ){
     echo json_encode(array("status" => "fail" )) ;
 }
 
-?>
+?>          

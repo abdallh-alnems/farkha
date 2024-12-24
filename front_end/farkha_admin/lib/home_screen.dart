@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../routes/route.dart';
+import 'view_main.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,20 +12,25 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () => Get.toNamed(AppRoute.add),
-              child: Text("اضافة"),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Main(),
+                ),
+              ),
+              child: const Text("اضافة"),
             ),
             ElevatedButton(
               onPressed: () {},
-              child: Text("عرض"),
+              child: const Text("عرض"),
             ),
             ElevatedButton(
               onPressed: () {},
-              child: Text("تحديث"),
+              child: const Text("تحديث"),
             ),
             ElevatedButton(
               onPressed: () {},
-              child: Text("مسح"),
+              child: const Text("مسح"),
             ),
           ],
         ),
