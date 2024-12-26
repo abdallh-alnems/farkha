@@ -12,7 +12,7 @@ class CardPrice extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(AppRoute.lastPrices);
+        Get.toNamed(AppRoute.mainTypes);
       },
       child: Container(
         width: 149.w,

@@ -22,9 +22,9 @@ class _AddPricesState extends State<AddPrices> {
   Future<void> fetchEggTypes() async {
     try {
       final response = await http.post(
-        Uri.parse(ApiLinks.getPrices),
+        Uri.parse(ApiLinks.getLastPrices),
         headers: myHeaders,
-        body: {'types': widget.mainId.toString()},
+        body: {'type': widget.mainId.toString()},
       );
 
       if (response.statusCode == 200) {

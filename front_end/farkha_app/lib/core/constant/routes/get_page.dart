@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../view/screen/prices/main_types.dart';
 import 'route.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
 import '../../../view/screen/calculate/feed_consumption.dart';
@@ -44,6 +45,11 @@ List<GetPage<dynamic>> pages = [
   GetPage(
     name: AppRoute.lastPrices,
     page: () => LastPrices(),
+    transition: Transition.rightToLeft,
+  ),
+  GetPage(
+    name: AppRoute.mainTypes,
+    page: () => MainTypes(),
     transition: Transition.rightToLeft,
   ),
 

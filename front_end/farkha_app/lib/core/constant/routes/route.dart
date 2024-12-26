@@ -6,6 +6,8 @@ class AppRoute {
   // ================================ prices ===================================
 
   static const String lastPrices = "/lastPrices";
+    static const String mainTypes = "/mainTypes";
+
 
   // ================================ general ==================================
 

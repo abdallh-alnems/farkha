@@ -5,7 +5,7 @@ class FarkhAbidData {
   Crud crud;
   FarkhAbidData(this.crud);
   getData() async {
-    var response = await crud.postData(ApiLinks.linkFarkhAbid, {});
+    var response = await crud.postData(ApiLinks.farkhAbid, {});
     return response.fold((l) => l, (r) => r);
   }
 }

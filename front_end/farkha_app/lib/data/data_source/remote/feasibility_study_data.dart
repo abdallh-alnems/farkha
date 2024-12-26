@@ -5,7 +5,7 @@ class FeasibilityData {
   Crud crud;
   FeasibilityData(this.crud);
   getData() async {
-    var response = await crud.postData(ApiLinks.linkFeasibilityStudy, {});
+    var response = await crud.postData(ApiLinks.feasibilityStudy, {});
     return response.fold((l) => l, (r) => r);
   }
 }

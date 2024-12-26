@@ -6,7 +6,7 @@ class SuggestionData {
   SuggestionData(this.crud);
   addSuggestion(String suggestionText) async {
     var response = await crud
-        .postData(ApiLinks.linkSuggestion, {"suggestion": suggestionText});
+        .postData(ApiLinks.suggestion, {"suggestion": suggestionText});
     return response.fold((l) => l, (r) => r);
   }
 }

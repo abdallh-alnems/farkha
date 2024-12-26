@@ -11,8 +11,8 @@ class TableLastPrices extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<LastPricesController>(
-      init: LastPricesController(),
       builder: (controller) {
         return HandlingDataView(
           statusRequest: controller.statusRequest,
@@ -82,10 +82,10 @@ class TableLastPrices extends StatelessWidget {
                           3: FlexColumnWidth(2),
                         },
                         children: [
-                          ...controller.pricesList.map((price) {
-                            int latestPrice = price.latestPrice ?? 0;
+                          ...controller.lastPricesList.map((price) {
+                            int latestPrice = price["price"] ?? 0;
                             int secondLatestPrice =
-                                price.secondLatestPrice ?? latestPrice;
+                                price["lastPrice"] ?? latestPrice;
 
                             int priceDifference =
                                 latestPrice - secondLatestPrice;
@@ -130,7 +130,7 @@ class TableLastPrices extends StatelessWidget {
                                           top: 11, bottom: 11, right: 15)
                                       .r,
                                   child: Text(
-                                    price.typeName!,
+                                    price["type"],
                                     textAlign: TextAlign.right,
                                   ),
                                 ),

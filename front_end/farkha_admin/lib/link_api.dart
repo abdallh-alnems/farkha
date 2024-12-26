@@ -7,7 +7,7 @@ class ApiLinks {
   static String add = '$linkServerName/add.php';
 
   static String main = '$linkServerName/read/main.php';
-  static String getPrices = '$linkServerName/read/prices.php';
+  static String getLastPrices = '$linkServerName/read/last_prices.php';
 }
 
 Map<String, String> getMyHeaders() {
