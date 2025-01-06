@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../view/widget/ad/native/ad_second_native.dart';
+import '../../view/widget/app/ad/native/ad_second_native.dart';
 import '../functions/valid_input/validate_chick_input.dart';
 
 class ChickenForm extends StatelessWidget {

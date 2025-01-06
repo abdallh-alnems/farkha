@@ -26,23 +26,23 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
                   text1:
                       "درجة الحرارة المطلوبة : °${controller.ageTemperature}",
                   text2: "درجة حرارة الطقس: °${controller.currentTemperature}",
-                  image: AppImageAsset.thermometer,
+                  image: ImageAsset.thermometer,
                 ),
                 CardBroilerChickenRequirements(
                   text1:
                       "المساحة المطلوبة : ${controller.requiredArea.toStringAsFixed(0)}م",
                   text2:
                       "المساحة الكلية : ${controller.collegeArea.toStringAsFixed(0)}م",
-                  image: AppImageAsset.chickenDensity,
+                  image: ImageAsset.chickenDensity,
                 ),
                 CardBroilerChickenRequirements(
                   text1: "نسبة الرطوبة هي : ${controller.ageHumidityRange}",
                   text2: "نسبة رطوبة الطقس : ${controller.currentHumidity}%",
-                  image: AppImageAsset.humidity,
+                  image: ImageAsset.humidity,
                 ),
                 CardBroilerChickenRequirements(
                   text1: " سرعة الرياح : ${controller.currentWindSpeed}كم/ساعة",
-                  image: AppImageAsset.ventilation,
+                  image: ImageAsset.ventilation,
                   showText2: false,
                 ),
                 CardBroilerChickenRequirements(
@@ -50,11 +50,11 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
                       "عدد ساعات الاظلام هي : ${controller.ageDarkness} ساعة",
                   text2:
                       "عدد ساعات الاضاءة : ${24 - controller.ageDarkness} ساعة",
-                  image: AppImageAsset.lighting,
+                  image: ImageAsset.lighting,
                 ),
                 CardBroilerChickenRequirements(
                   text1: "متوسط الوزن : ${controller.ageWeight} جرام",
-                  image: AppImageAsset.weighing,
+                  image: ImageAsset.weighing,
                   showText2: false,
                 ),
                 CardBroilerChickenRequirements(
@@ -62,7 +62,7 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
                       " استهلاك العلف اليومي : ${controller.dailyFeedConsumption} جرام",
                   text2:
                       "استهلاك العلف الكلي : ${controller.totalFeedConsumption}كيلو",
-                  image: AppImageAsset.feed,
+                  image: ImageAsset.feed,
                 ),
                 Divider(
                   color: AppColor.primaryColor,

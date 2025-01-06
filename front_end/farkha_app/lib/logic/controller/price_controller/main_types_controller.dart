@@ -4,7 +4,7 @@ import '../../../core/functions/handing_data_controller.dart';
 import '../../../data/data_source/remote/prices_data/main_types_data.dart';
 
 class MainTypesController extends GetxController {
-  StatusRequest statusRequest = StatusRequest.none;
+ late StatusRequest statusRequest ;
   MainDataData mainDataData = MainDataData(Get.find());
   List<Map<String, dynamic>> mainTypesList = [];
 

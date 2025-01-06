@@ -4,9 +4,9 @@ import 'package:farkha_app/core/constant/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/price_controller/main_types_controller.dart';
-import '../../widget/ad/banner/ad_second_banner.dart';
-import '../../widget/ad/native/ad_second_native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/app/ad/banner/ad_second_banner.dart';
+import '../../widget/app/ad/native/ad_second_native.dart';
+import '../../widget/bar/app_bar/custom_app_bar.dart';
 
 class MainTypes extends StatelessWidget {
   const MainTypes({super.key});

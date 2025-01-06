@@ -1,11 +1,15 @@
-class AppImageAsset {
-  //============================= root =========================================
+class ImageAsset {
+  // =================================== root ==================================
 
-  // static const String _rootImages = "assets/images";
+  static const String _rootImages = "assets/images";
   static const String _rootIcons = "assets/icons";
   static const String _rootLottie = "assets/lottie";
 
-  //============================= icons =========================================
+  // ================================== images =================================
+
+  static const String logo = "$_rootImages/logo.png";
+
+  // ================================== icons ==================================
 
   static const String setting = "$_rootIcons/setting.png";
 
@@ -38,7 +42,7 @@ class AppImageAsset {
   static const String weighing = "$_rootIcons/weighing.png";
   static const String chickenDensity = "$_rootIcons/density.png";
 
-  //============================= lottie =========================================
+  // ================================== lottie =================================
 
   static const String loading = "$_rootLottie/loading.json";
   static const String error = "$_rootLottie/error.json";

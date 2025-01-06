@@ -22,19 +22,19 @@ class ViewCalculate extends StatelessWidget {
             children: [
               SmallCard(
                 onTap: () => Get.toNamed(AppRoute.chickenDensity),
-                image: AppImageAsset.birdDensity,
+                image: ImageAsset.birdDensity,
                 text: "كثافة الفراخ",
               ),
               SmallCard(
                 onTap: () => Get.toNamed(AppRoute.feedConsumption),
-                image: AppImageAsset.feedConsumption,
+                image: ImageAsset.feedConsumption,
                 text: "استهلاك العلف",
               ),
               SmallCard(
                 onTap: () {
                   Get.toNamed(AppRoute.feasibilityStudy);
                 },
-                image: AppImageAsset.feasibilityStudy,
+                image: ImageAsset.feasibilityStudy,
                 text: "دراسة جدوي",
               ),
             ],

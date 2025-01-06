@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../view/screen/main_page.dart';
 import '../../../view/screen/prices/main_types.dart';
 import 'route.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
@@ -9,7 +10,7 @@ import '../../../view/screen/general/suggestion.dart';
 import '../../../view/screen/prices/last_prices.dart';
 import '../../../view/screen/follow_up_tools/articles/articles_type.dart';
 import '../../../view/screen/general/general.dart';
-import '../../../view/screen/home_screen.dart';
+import '../../../view/screen/body/mobile_body.dart';
 import '../../../view/screen/follow_up_tools/articles/article/a3rad.dart';
 import '../../../view/screen/follow_up_tools/articles/article/akhtaq.dart';
 import '../../../view/screen/follow_up_tools/articles/article/alardya.dart';
@@ -34,7 +35,7 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(
     name: "/",
-    page: () => HomeScreen(),
+    page: () => MainPage(),
   ),
 
   // ============================== Test =======================================

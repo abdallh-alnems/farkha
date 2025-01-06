@@ -28,7 +28,7 @@ class BigCard extends StatelessWidget {
           children: [
             Image.asset(
               image,
-              scale: 2.1.sp,
+              scale: 2.1,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 9).r,

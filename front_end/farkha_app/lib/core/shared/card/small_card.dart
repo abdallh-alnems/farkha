@@ -25,7 +25,7 @@ class SmallCard extends StatelessWidget {
           children: [
             Image.asset(
               image,
-              scale: 2.5.sp,
+              scale: 2.5,
             ),
             Text(
               text,

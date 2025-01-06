@@ -29,7 +29,7 @@ class CardBroilerChickenRequirements extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 7.7).r,
           child: Row(
             children: [
-              Image.asset(image, scale: 1.23.sp),
+              Image.asset(image, scale: 1.23),
               SizedBox(width: 19.w),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

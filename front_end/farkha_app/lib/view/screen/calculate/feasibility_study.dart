@@ -5,8 +5,8 @@ import '../../../core/class/handling_data.dart';
 import '../../widget/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
-import '../../widget/ad/banner/ad_second_banner.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/app/ad/banner/ad_second_banner.dart';
+import '../../widget/bar/app_bar/custom_app_bar.dart';
 import '../../widget/calculate/feasibility_study_title.dart';
 
 class FeasibilityStudy extends StatelessWidget {

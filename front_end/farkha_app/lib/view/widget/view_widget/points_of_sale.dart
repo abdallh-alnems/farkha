@@ -22,41 +22,41 @@ class PointsOfSale extends StatelessWidget {
               BigCard(
                 onTap: () {
                   Get.snackbar(
-                '',
-                '',
-                titleText: const Text(
-                  '',
-                  style: TextStyle(fontSize: 0),
-                  textAlign: TextAlign.center,
-                ),
-                messageText: const Text(
-                  'قريبا',
-                  style: TextStyle(fontSize: 23),
-                  textAlign: TextAlign.center,
-                ),
-              );
+                    '',
+                    '',
+                    titleText: const Text(
+                      '',
+                      style: TextStyle(fontSize: 0),
+                      textAlign: TextAlign.center,
+                    ),
+                    messageText: const Text(
+                      'قريبا',
+                      style: TextStyle(fontSize: 23),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
                 },
-                image: AppImageAsset.chicksLab,
+                image: ImageAsset.chicksLab,
                 text: "معامل الكتاكيت",
               ),
               BigCard(
                 onTap: () {
                   Get.snackbar(
-                '',
-                '',
-                titleText: const Text(
-                  '',
-                  style: TextStyle(fontSize: 0),
-                  textAlign: TextAlign.center,
-                ),
-                messageText: const Text(
-                  'قريبا',
-                  style: TextStyle(fontSize: 23),
-                  textAlign: TextAlign.center,
-                ),
-              );
+                    '',
+                    '',
+                    titleText: const Text(
+                      '',
+                      style: TextStyle(fontSize: 0),
+                      textAlign: TextAlign.center,
+                    ),
+                    messageText: const Text(
+                      'قريبا',
+                      style: TextStyle(fontSize: 23),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
                 },
-                image: AppImageAsset.feedMills,
+                image: ImageAsset.feedMills,
                 text: "شركات الاعلاف",
               ),
             ],

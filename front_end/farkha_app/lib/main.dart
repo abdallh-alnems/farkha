@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             initialBinding: MyBindings(),
             getPages: pages,
-            theme: appThemes,
+            theme: AppTheme().lightThemes(),
           );
         });
   }

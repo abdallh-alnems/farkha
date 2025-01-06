@@ -37,12 +37,12 @@ class ViewHomeFollowUpTools extends StatelessWidget {
                     ),
                   );
                 },
-                image: AppImageAsset.poultrySale,
+                image: ImageAsset.poultrySale,
                 text: "بيع الدواجن",
               ),
               BigCard(
                 onTap: () => Get.toNamed(AppRoute.broilerChickenRequirements),
-                image: AppImageAsset.chicken,
+                image: ImageAsset.chicken,
                 text: "احتياجات فراخ التسمين",
               ),
             ],
@@ -68,12 +68,12 @@ class ViewHomeFollowUpTools extends StatelessWidget {
                   ),
                 );
               },
-              image: AppImageAsset.diseases,
+              image: ImageAsset.diseases,
               text: "الامراض",
             ),
             BigCard(
               onTap: () => Get.toNamed(AppRoute.articlesType),
-              image: AppImageAsset.articles,
+              image: ImageAsset.articles,
               text: "مقالات",
             ),
           ],

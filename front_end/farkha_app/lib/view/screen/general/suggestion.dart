@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/class/handling_data.dart';
 import '../../../logic/controller/suggestion_controller.dart';
-import '../../widget/ad/banner/ad_third_banner.dart';
-import '../../widget/ad/native/ad_third_native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/app/ad/banner/ad_third_banner.dart';
+import '../../widget/app/ad/native/ad_third_native.dart';
+import '../../widget/bar/app_bar/custom_app_bar.dart';
 
 class Suggestion extends StatelessWidget {
   const Suggestion({super.key});

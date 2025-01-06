@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/ad/native/ad_third_native.dart';
-import '../../../../widget/app_bar/custom_app_bar.dart';
+import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/bar/app_bar/custom_app_bar.dart';
 import '../../../../widget/follow_up_tools/articles/text_article/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/ad/banner/ad_third_banner.dart';
+import '../../../../widget/app/ad/banner/ad_third_banner.dart';
 
 class Akhtaq extends StatelessWidget {
   const Akhtaq({super.key});

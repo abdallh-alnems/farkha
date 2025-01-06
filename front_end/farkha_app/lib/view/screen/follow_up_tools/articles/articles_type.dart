@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/routes/route.dart';
-import '../../../widget/ad/banner/ad_second_banner.dart';
-import '../../../widget/ad/native/ad_second_native.dart';
-import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/app/ad/banner/ad_second_banner.dart';
+import '../../../widget/app/ad/native/ad_second_native.dart';
+import '../../../widget/bar/app_bar/custom_app_bar.dart';
 import '../../../widget/follow_up_tools/articles/article_title.dart';
 
 class ArticlesType extends StatelessWidget {

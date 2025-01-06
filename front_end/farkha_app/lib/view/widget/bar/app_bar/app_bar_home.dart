@@ -1,9 +1,9 @@
-import 'package:farkha_app/core/constant/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../core/constant/theme/image_asset.dart';
+import '../../../../core/constant/routes/route.dart';
+import '../../../../core/constant/theme/image_asset.dart';
 
 class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
   const AppBarHome({super.key});
@@ -37,8 +37,8 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
             Get.toNamed(AppRoute.general);
           },
           child: Image.asset(
-            AppImageAsset.setting,
-            scale: 2.8.sp,
+            ImageAsset.setting,
+            scale: 2.8,
           ),
         ),
       ),

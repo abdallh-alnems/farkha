@@ -4,8 +4,8 @@ import 'package:launch_review/launch_review.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/services/open_gmail.dart';
-import '../../widget/ad/banner/ad_second_banner.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/app/ad/banner/ad_second_banner.dart';
+import '../../widget/bar/app_bar/custom_app_bar.dart';
 import '../../widget/general/general_item.dart';
 
 class General extends StatelessWidget {

@@ -5,7 +5,8 @@ import '../constant/theme/color.dart';
 class PriceIndex extends StatelessWidget {
   final num? todayPrice;
   final num? yesterdayPrice;
-  const PriceIndex({super.key, this.todayPrice, this.yesterdayPrice});
+  const PriceIndex(
+      {super.key, required this.todayPrice, required this.yesterdayPrice});
 
   @override
   Widget build(BuildContext context) {

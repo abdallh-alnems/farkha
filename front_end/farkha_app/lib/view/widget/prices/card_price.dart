@@ -25,8 +25,8 @@ class CardPrice extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              AppImageAsset.price,
-              scale: 1.9.sp,
+              ImageAsset.price,
+              scale: 1.9,
             ),
             Text(
               "الاسعار",
