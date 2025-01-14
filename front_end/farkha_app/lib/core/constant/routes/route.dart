@@ -6,8 +6,7 @@ class AppRoute {
   // ================================ prices ===================================
 
   static const String lastPrices = "/lastPrices";
-    static const String mainTypes = "/mainTypes";
-
+  static const String mainTypes = "/mainTypes";
 
   // ================================ general ==================================
 
@@ -22,8 +21,11 @@ class AppRoute {
 
   // =============================== calculate =================================
 
-  static const String chickenDensity = "/chickenDensity";
+  // ! feasibility study
   static const String feasibilityStudy = "/feasibilityStudy";
+  static const String howToDoAFeasibilityStudy = "/howToDoAFeasibilityStudy";
+  
+  static const String chickenDensity = "/chickenDensity";
   static const String feedConsumption = "/feedConsumption";
 
   // ================================ articles =================================

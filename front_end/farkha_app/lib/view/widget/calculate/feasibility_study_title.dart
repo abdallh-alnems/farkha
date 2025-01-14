@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
 
-class FeasibilityStudyTitle extends GetView<FeasibilityController> {
+class ResultTitle extends GetView<FeasibilityController> {
   final String title;
-  const FeasibilityStudyTitle({
+  const ResultTitle({
     super.key,
     required this.title,
   });

@@ -6,6 +6,7 @@ import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/chicken_density_controller.dart';
 import '../../widget/app/ad/banner/ad_second_banner.dart';
 import '../../widget/bar/app_bar/custom_app_bar.dart';
+import '../../widget/calculate/feasibility_study_title.dart';
 
 class ChickenDensity extends StatelessWidget {
   const ChickenDensity({super.key});
@@ -18,43 +19,53 @@ class ChickenDensity extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "كثافة الفراخ",
-          ),
+          const CustomAppBar(text: "كثافة الفراخ"),
           ChickenForm(
-            controller: controller.textController,
-            onChanged: (dynamic newValue) {
-              controller.selectedAge.value = newValue!;
-              controller.calculateArea();
+            controller: controller.chickenCountTextController,
+            selectedAge: controller.selectedAgeCategory.value,
+            onChanged: (value) {
+              controller.selectedAgeCategory.value = value!;
+              controller.calculateAreas();
             },
-            selectedAge: controller.selectedAge.value,
-            items: <String>[
+            items: [
               'الاسبوع الاول',
               'الاسبوع الثاني',
               'الاسبوع الثالث',
               'الاسبوع الرابع',
-              'الاسبوع الخامس',
-            ].map((String age) {
-              return DropdownMenuItem<String>(
-                value: age,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    age,
-                    style: TextStyle(fontSize: 13.sp, color: Colors.black),
-                  ),
-                ),
-              );
-            }).toList(),
+              'الاسبوع الخامس'
+            ]
+                .map((age) => DropdownMenuItem<String>(
+                      value: age,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(age, style: TextStyle(fontSize: 13.sp)),
+                      ),
+                    ))
+                .toList(),
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 55),
-                child: Obx(
-                  () => CalculateResult(
-                    text: controller.areaResult.value,
-                  ),
-                ),
-              ),
+              Obx(() {
+                if (controller.shouldDisplayResults.value) {
+                  return Column(
+                    children: [
+                      SizedBox(height: 33),
+                      ResultTitle(title: "الارضي"),
+                      CalculateResult(
+                          text: controller.currentAgeGroundAreaResult.value),
+                      const SizedBox(height: 5),
+                      CalculateResult(
+                          text: controller.totalGroundAreaResult.value),
+                      const SizedBox(height: 13),
+                      ResultTitle(title: "البطاريات"),
+                      CalculateResult(
+                          text: controller.batteryCageAreaResult.value),
+                    ],
+                  );
+                }
+                return const Padding(
+                  padding: EdgeInsets.only(top: 35),
+                  child: Text('ادخل العدد والعمر'),
+                );
+              }),
             ],
           ),
         ],

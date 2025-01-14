@@ -1,7 +1,7 @@
 class AdManager {
   // ============================ private variables ============================
 
-  static const bool _isTest = false;
+  static const bool _isTest = true;
 
   static const String _teatBanner = "ca-app-pub-3940256099942544/6300978111";
 

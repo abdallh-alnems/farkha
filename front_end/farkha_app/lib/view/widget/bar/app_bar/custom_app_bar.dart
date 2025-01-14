@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/constant/theme/color.dart';
 
-class CustomAppBar extends StatelessWidget  {
+class CustomAppBar extends StatelessWidget {
   final String text;
   final bool arrowDirection;
 
@@ -63,5 +63,4 @@ class CustomAppBar extends StatelessWidget  {
       ),
     );
   }
-
 }

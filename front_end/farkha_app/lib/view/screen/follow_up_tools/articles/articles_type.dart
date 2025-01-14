@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/routes/route.dart';
+import '../../../../core/shared/card_title.dart';
 import '../../../widget/app/ad/banner/ad_second_banner.dart';
 import '../../../widget/app/ad/native/ad_second_native.dart';
 import '../../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../../widget/follow_up_tools/articles/article_title.dart';
 
 class ArticlesType extends StatelessWidget {
   const ArticlesType({super.key});
@@ -15,9 +15,7 @@ class ArticlesType extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "مقالات",
-          ),
+          CustomAppBar(text: "مقالات"),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -26,75 +24,75 @@ class ArticlesType extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 19).r,
                     child: AdSecondNative(),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "درجات الحرارة",
                     onTap: () => Get.toNamed(AppRoute.dartgetAl7rara),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "اوزان",
                     onTap: () => Get.toNamed(AppRoute.awzan),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "الاضاءة",
                     onTap: () => Get.toNamed(AppRoute.alida),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "استهلاك العلف",
                     onTap: () => Get.toNamed(AppRoute.asthlakAl3laf),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "تجانس الاوزان",
                     onTap: () => Get.toNamed(AppRoute.altaganous),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "الرطوبة",
                     onTap: () => Get.toNamed(AppRoute.alrotoba),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "امراض",
                     onTap: () => Get.toNamed(AppRoute.amard),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "اعراض",
                     onTap: () => Get.toNamed(AppRoute.a3ard),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "علاج",
                     onTap: () => Get.toNamed(AppRoute.aL3lag),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "نصائح",
                     onTap: () => Get.toNamed(AppRoute.nasa7a),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "اخطاء",
                     onTap: () => Get.toNamed(AppRoute.akhtaq),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "تطهير",
                     onTap: () => Get.toNamed(AppRoute.tather),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "استقبال",
                     onTap: () => Get.toNamed(AppRoute.astaqbal),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "تحصينات",
                     onTap: () => Get.toNamed(AppRoute.ta7sen),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "سلالات",
                     onTap: () => Get.toNamed(AppRoute.solalat),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "الارضية",
                     onTap: () => Get.toNamed(AppRoute.alardya),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "الصيف",
                     onTap: () => Get.toNamed(AppRoute.alsaf),
                   ),
-                  ArticleTitle(
+                  CardTitle(
                     text: "الشتاء",
                     onTap: () => Get.toNamed(AppRoute.alshata),
                   ),

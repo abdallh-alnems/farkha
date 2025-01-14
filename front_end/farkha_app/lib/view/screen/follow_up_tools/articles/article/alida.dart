@@ -5,8 +5,8 @@ import '../../../../../data/data_source/static/poultry_management_data.dart';
 import '../../../../../logic/controller/articles_controller.dart';
 import '../../../../widget/app/ad/native/ad_third_native.dart';
 import '../../../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../../../widget/follow_up_tools/articles/text_article/title_article.dart';
-import '../../../../widget/follow_up_tools/articles/text_article/type_article.dart';
+import '../../../../widget/follow_up_tools/articles/title_article.dart';
+import '../../../../widget/follow_up_tools/articles/type_article.dart';
 import '../../../../widget/app/ad/banner/ad_third_banner.dart';
 
 class Alida extends StatelessWidget {
@@ -19,9 +19,7 @@ class Alida extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "الاضاءة",
-          ),
+          CustomAppBar(text: "الاضاءة"),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

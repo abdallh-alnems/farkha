@@ -6,22 +6,20 @@ import '../../../../../logic/controller/articles_controller.dart';
 import '../../../../widget/app/ad/native/ad_third_native.dart';
 import '../../../../widget/bar/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/ad/banner/ad_third_banner.dart';
-import '../../../../widget/follow_up_tools/articles/text_article/title_article.dart';
-import '../../../../widget/follow_up_tools/articles/text_article/type_article.dart';
+import '../../../../widget/follow_up_tools/articles/title_article.dart';
+import '../../../../widget/follow_up_tools/articles/type_article.dart';
 
 class AsthlakAl3laf extends StatelessWidget {
-  AsthlakAl3laf({super.key});
-
-  final ArticlesController controller = Get.put(ArticlesController());
+  const AsthlakAl3laf({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ArticlesController controller = Get.put(ArticlesController());
+
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "استهلاك العلف",
-          ),
+          CustomAppBar(text: "استهلاك العلف"),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

@@ -6,50 +6,58 @@ import '../../../core/services/initialization.dart';
 
 class ChickenDensityController extends GetxController {
   final MyServices myServices = Get.find();
-  final TextEditingController textController = TextEditingController();
-  final Rxn<String> selectedAge = Rxn<String>();
-  final RxString areaResult = 'ادخل العدد والعمر'.obs;
+  final TextEditingController chickenCountTextController = TextEditingController();
+  final Rxn<String> selectedAgeCategory = Rxn<String>();
+  final RxBool shouldDisplayResults = false.obs;
+  final RxString currentAgeGroundAreaResult = ''.obs;
+  final RxString totalGroundAreaResult = ''.obs;
+  final RxString batteryCageAreaResult = ''.obs;
 
   ChickenDensityController() {
-    textController.addListener(() {
-      if (_areInputsValid()) {
-        calculateArea();
-      }
-    });
+    chickenCountTextController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    if (_areInputsValid()) calculateAreas();
   }
 
   bool _areInputsValid() {
-    return textController.text.isNotEmpty &&
-        int.tryParse(textController.text) != null &&
-        selectedAge.value != null;
+    return chickenCountTextController.text.isNotEmpty &&
+        int.tryParse(chickenCountTextController.text) != null &&
+        selectedAgeCategory.value != null;
   }
 
-  void calculateArea() {
-    final int? chickens = int.tryParse(textController.text);
+  void calculateAreas() {
+    if (!_areInputsValid()) {
+      shouldDisplayResults.value = false;
+      return;
+    }
+    shouldDisplayResults.value = true;
+    final chickenCount = int.tryParse(chickenCountTextController.text) ?? 0;
+    final recommendedDensity = _getRecommendedDensity(selectedAgeCategory.value!);
 
-    int recommendedDensity = _getRecommendedDensity(selectedAge.value!);
-    final double requiredArea =
-        (chickens! / recommendedDensity).clamp(1, double.infinity);
+    final requiredGroundArea =
+        (chickenCount / recommendedDensity).clamp(1, double.infinity);
+    final totalArea = (chickenCount / 10).clamp(1, double.infinity);
+    final requiredBatteryCageArea = (chickenCount / 16).clamp(1, double.infinity);
 
-    areaResult.value =
-        'المساحة المطلوبة  لعدد ${textController.text} فرخ في عمر $selectedAge هي : \n ${requiredArea.toStringAsFixed(0)} متر مربع';
+    currentAgeGroundAreaResult.value =
+        'المساحة المطلوبة في عمر $selectedAgeCategory: ${requiredGroundArea.toStringAsFixed(0)}م';
+    totalGroundAreaResult.value =
+        'المساحة الكلية حتى عمر البيع: ${totalArea.toStringAsFixed(0)}م';
+    batteryCageAreaResult.value =
+        'المساحة المطلوبة للتربية في البطاريات: ${requiredBatteryCageArea.toStringAsFixed(0)}م';
   }
 
   int _getRecommendedDensity(String age) {
-    switch (age) {
-      case 'الاسبوع الاول':
-        return 30;
-      case 'الاسبوع الثاني':
-        return 25;
-      case 'الاسبوع الثالث':
-        return 20;
-      case 'الاسبوع الرابع':
-        return 15;
-      case 'الاسبوع الخامس':
-        return 10;
-      default:
-        return 0;
-    }
+    const densityMap = {
+      'الاسبوع الاول': 30,
+      'الاسبوع الثاني': 25,
+      'الاسبوع الثالث': 20,
+      'الاسبوع الرابع': 15,
+      'الاسبوع الخامس': 10,
+    };
+    return densityMap[age] ?? 0;
   }
 
   void showDialogChickenDensity() {
@@ -72,5 +80,11 @@ class ChickenDensityController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAndShowDialog();
     });
+  }
+
+  @override
+  void onClose() {
+    chickenCountTextController.dispose();
+    super.onClose();
   }
 }

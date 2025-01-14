@@ -11,7 +11,6 @@ class TableLastPrices extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GetBuilder<LastPricesController>(
       builder: (controller) {
         return HandlingDataView(
@@ -19,134 +18,120 @@ class TableLastPrices extends StatelessWidget {
           widget: Expanded(
             child: Column(
               children: [
-                Container(
-                  height: 33.h,
-                  color: AppColor.primaryColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Center(
-                          child: Text(
-                            "المؤشر",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Center(
-                          child: Text(
-                            "فرق",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Center(
-                          child: Text(
-                            "السعر",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 41).r,
-                          child: Text(
-                            "النوع",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 7).r,
-                      child: Table(
-                        border: const TableBorder(
-                          horizontalInside:
-                              BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        columnWidths: const {
-                          0: FlexColumnWidth(1),
-                          1: FlexColumnWidth(1),
-                          2: FlexColumnWidth(1),
-                          3: FlexColumnWidth(2),
-                        },
-                        children: [
-                          ...controller.lastPricesList.map((price) {
-                            int latestPrice = price["price"] ?? 0;
-                            int secondLatestPrice =
-                                price["lastPrice"] ?? latestPrice;
-
-                            int priceDifference =
-                                latestPrice - secondLatestPrice;
-                            String differenceSign =
-                                priceDifference > 0 ? "+" : "";
-
-                            return TableRow(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 11)
-                                          .r,
-                                  child: PriceIndex(
-                                    todayPrice: latestPrice,
-                                    yesterdayPrice: secondLatestPrice,
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 11)
-                                          .r,
-                                  child: Text(
-                                    "$differenceSign${priceDifference.toStringAsFixed(0)}",
-                                    style: TextStyle(
-                                        color: priceDifference > 0
-                                            ? Colors.red
-                                            : Colors.green),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 11)
-                                          .r,
-                                  child: Text(
-                                    latestPrice.toString(),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                          top: 11, bottom: 11, right: 15)
-                                      .r,
-                                  child: Text(
-                                    price["type"],
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                              ],
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                _buildHeader(),
+                _buildTableBody(controller),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      height: 33.h,
+      color: AppColor.primaryColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildHeaderCell("المؤشر"),
+          _buildHeaderCell("فرق"),
+          _buildHeaderCell("السعر"),
+          _buildHeaderCell("النوع", flex: 2),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderCell(String text, {int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableBody(LastPricesController controller) {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 7).r,
+          child: Column(
+            children: [
+              Table(
+                border: const TableBorder(
+                  horizontalInside:
+                      BorderSide(color: AppColor.primaryColor, width: 1),
+                ),
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(1),
+                  2: FlexColumnWidth(1),
+                  3: FlexColumnWidth(2),
+                },
+                children: controller.lastPricesList
+                    .map((price) => _buildTableRow(price))
+                    .toList(),
+              ),
+              Divider(
+                color: AppColor.primaryColor,
+                thickness: 1,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  TableRow _buildTableRow(Map<String, dynamic> price) {
+    final int latestPrice = price["price"] ?? 0;
+    final int secondLatestPrice = price["lastPrice"] ?? latestPrice;
+    final int priceDifference = latestPrice - secondLatestPrice;
+    final String differenceSign = priceDifference > 0 ? "+" : "";
+
+    return TableRow(
+      children: [
+        _buildTableCell(
+          child: PriceIndex(
+            todayPrice: latestPrice,
+            yesterdayPrice: secondLatestPrice,
+          ),
+        ),
+        _buildTableCell(
+          child: Text(
+            "$differenceSign${priceDifference.toStringAsFixed(0)}",
+            style: TextStyle(
+              color: priceDifference > 0 ? Colors.red : Colors.green,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        _buildTableCell(
+          child: Text(
+            latestPrice.toString(),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        _buildTableCell(
+          child: Center(child: Text(price["type"] ?? "")),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTableCell({required Widget child}) {
+    return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.middle,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 11).r,
+        child: child,
+      ),
     );
   }
 }

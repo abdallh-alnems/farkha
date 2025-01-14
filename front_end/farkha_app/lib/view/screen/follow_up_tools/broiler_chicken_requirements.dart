@@ -16,9 +16,7 @@ class BroilerChickenRequirements extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "احتياجات فراخ التسمين",
-          ),
+          CustomAppBar(text: "احتياجات فراخ التسمين"),
           ChickenForm(
             controller: controller.chickensCountController,
             onChanged: (newValue) {

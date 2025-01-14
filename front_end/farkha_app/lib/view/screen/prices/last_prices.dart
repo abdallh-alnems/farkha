@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/price_controller/last_prices_controller.dart';
 import '../../widget/app/ad/banner/ad_third_banner.dart';
@@ -20,10 +21,11 @@ class LastPrices extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "اسعار $mainName",
+          CustomAppBar(text: "اسعار $mainName"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 13).r,
+            child: AdThirdNative(),
           ),
-          AdThirdNative(),
           TableLastPrices(),
         ],
       ),

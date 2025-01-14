@@ -1,7 +1,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../widget/app/ad/native/ad_third_native.dart';
 import '../../../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../../../widget/follow_up_tools/articles/text_article/type_article.dart';
+import '../../../../widget/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
 import '../../../../widget/app/ad/banner/ad_third_banner.dart';
 
@@ -13,9 +13,7 @@ class Alshata extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(
-            text: "الشتاء",
-          ),
+          const CustomAppBar(text: "الشتاء"),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

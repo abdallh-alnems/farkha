@@ -5,51 +5,45 @@ import '../../../core/functions/handing_data_controller.dart';
 import '../../../core/package/custom_dialog.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/feasibility_study_data.dart';
+import '../../../data/model/feasibility_model.dart';
 
 class FeasibilityController extends GetxController {
-  final MyServices myServices = Get.find();
+  final MyServices _myServices = Get.find();
   late StatusRequest statusRequest = StatusRequest.none;
-  final TextEditingController textController = TextEditingController();
-  final FeasibilityData feasibilityData = FeasibilityData(Get.find());
+  final TextEditingController countController = TextEditingController();
+  final FeasibilityData _feasibilityDataService = FeasibilityData(Get.find());
+  late FeasibilityModel feasibilityModel;
 
-  late int chickenSalePrice;
-  late int chickPrice;
-  late int badiPrice;
-  late int namiPrice;
-  late int nahiPrice;
+  RxString mortalityRateText = "".obs;
+  RxString chickenCostText = "".obs;
+  RxString feedCostText = "".obs;
+  RxString overheadCostText = "".obs;
+  RxString totalCostText = "".obs;
+  RxString totalSalesText = "".obs;
+  RxString profitText = "".obs;
 
-  RxString mortalityResult = "".obs;
-  RxString chickenCostResult = "".obs;
-  RxString feedCostResult = "".obs;
-  RxString overheadCostResult = "".obs;
-  RxString totalCostResult = "".obs;
-  RxString salesResult = "".obs;
-  RxString profitResult = "".obs;
+  RxBool showResults = false.obs;
 
-  RxBool showData = false.obs;
+  static const double mortalityRate = 0.05;
+  static const double badiFeedConsumption = 0.5;
+  static const double namiFeedConsumption = 1.2;
+  static const double nahiFeedConsumption = 1.8;
+  static const int overheadPerChicken = 10;
+  static const int averageWeight = 2;
 
   Future<void> fetchFeasibilityData() async {
     try {
       statusRequest = StatusRequest.loading;
       update();
 
-      var response = await feasibilityData.getData();
+      var response = await _feasibilityDataService.getData();
       statusRequest = handlingData(response);
 
-      if (StatusRequest.success == statusRequest) {
-        if (response['status'] == "success") {
-          List data = response['data'];
-
-          chickenSalePrice = data[0]['price'];
-          chickPrice = data[1]['price'];
-          badiPrice = data[2]['price'];
-          namiPrice = data[3]['price'];
-          nahiPrice = data[4]['price'];
-
-          statusRequest = StatusRequest.success;
-        } else {
-          statusRequest = StatusRequest.failure;
-        }
+      if (statusRequest == StatusRequest.success &&
+          response['status'] == "success") {
+        feasibilityModel = FeasibilityModel.fromJson(response['data']);
+      } else {
+        statusRequest = StatusRequest.failure;
       }
       update();
     } catch (e) {
@@ -59,53 +53,29 @@ class FeasibilityController extends GetxController {
   }
 
   void calculateFeasibility() async {
-    showData = true.obs;
+    showResults.value = true;
 
     try {
       if (statusRequest != StatusRequest.success) {
         await fetchFeasibilityData();
-        if (statusRequest != StatusRequest.success) {
-          return;
-        }
       }
 
-      int count = int.parse(textController.text);
+      int chickenCount = int.parse(countController.text);
 
-      const double mortalityRate = 0.05;
-      const double badiConsumption = 0.5;
-      const double namiConsumption = 1.2;
-      const double nahiConsumption = 1.8;
-      const int overheadPerChicken = 10;
-      const int averageWeight = 2;
+      int deadChickens = (chickenCount * mortalityRate).round();
+      int remainingChickens = chickenCount - deadChickens;
 
-      int deadChickens = (count * mortalityRate).round();
-      int remainingChickens = count - deadChickens;
+      int totalChickenCost = chickenCount * feasibilityModel.chickPrice;
+      double totalFeedCost = _calculateFeedCost(chickenCount);
+      int totalOverheadCost = chickenCount * overheadPerChicken;
+      double totalCost = totalChickenCost + totalFeedCost + totalOverheadCost;
 
-      int totalChickenPrice = count * chickPrice;
-
-      double badiCost = badiConsumption * (badiPrice / 1000);
-      double namiCost = namiConsumption * (namiPrice / 1000);
-      double nahiCost = nahiConsumption * (nahiPrice / 1000);
-
-      double totalFeedCost = (badiCost + namiCost + nahiCost) * count;
-
-      int totalOverheadCost = count * overheadPerChicken;
-
-      double totalCost = totalChickenPrice + totalFeedCost + totalOverheadCost;
-
-      int totalSales = remainingChickens * averageWeight * chickenSalePrice;
-
+      int totalSales =
+          remainingChickens * averageWeight * feasibilityModel.chickenSalePrice;
       double profit = totalSales - totalCost;
 
-      mortalityResult.value = "النافق : $deadChickens فراخ";
-      chickenCostResult.value = "سعر الكتاكيت : $totalChickenPrice ج";
-      feedCostResult.value =
-          "تكلفة العلف : ${totalFeedCost.toStringAsFixed(0)} ج";
-      overheadCostResult.value = "النثريات : $totalOverheadCost ج";
-      totalCostResult.value =
-          "التكلفة الإجمالية: ${totalCost.toStringAsFixed(0)} ج";
-      salesResult.value = "إجمالي المبيعات: ${totalSales.toStringAsFixed(0)} ج";
-      profitResult.value = "الأرباح: ${profit.toStringAsFixed(0)} ج";
+      _updateResultText(deadChickens, totalChickenCost, totalFeedCost,
+          totalOverheadCost, totalCost, totalSales, profit);
 
       update();
     } catch (e) {
@@ -114,33 +84,39 @@ class FeasibilityController extends GetxController {
     }
   }
 
-  void showStudyDetailsDialog() async {
+  double _calculateFeedCost(int chickenCount) {
+    double badiFeedCost =
+        badiFeedConsumption * (feasibilityModel.badiPrice / 1000);
+    double namiFeedCost =
+        namiFeedConsumption * (feasibilityModel.namiPrice / 1000);
+    double nahiFeedCost =
+        nahiFeedConsumption * (feasibilityModel.nahiPrice / 1000);
+
+    return (badiFeedCost + namiFeedCost + nahiFeedCost) * chickenCount;
+  }
+
+  void _updateResultText(
+      int deadChickens,
+      int totalChickenCost,
+      double totalFeedCost,
+      int totalOverheadCost,
+      double totalCost,
+      int totalSales,
+      double profit) {
+    mortalityRateText.value = "النافق : $deadChickens فراخ";
+    chickenCostText.value = "سعر الكتاكيت : $totalChickenCost ج";
+    feedCostText.value = "تكلفة العلف : ${totalFeedCost.toStringAsFixed(0)} ج";
+    overheadCostText.value = "النثريات : $totalOverheadCost ج";
+    totalCostText.value =
+        "التكلفة الإجمالية: ${totalCost.toStringAsFixed(0)} ج";
+    totalSalesText.value =
+        "إجمالي المبيعات: ${totalSales.toStringAsFixed(0)} ج";
+    profitText.value = "الأرباح: ${profit.toStringAsFixed(0)} ج";
+  }
+
+  void ensureFeasibilityData() async {
     if (statusRequest != StatusRequest.success) {
       await fetchFeasibilityData();
-    }
-
-    if (statusRequest == StatusRequest.success) {
-      DialogHelper.showDialog(
-        middleText: "الأسعار المستخدمة في دراسة الجدوى \n"
-            "سعر الكتكوت : $chickPrice ج\n"
-            "سعر بيع الفراخ : $chickenSalePrice ج\n"
-            "سعر علف بادي : $badiPrice ج\n"
-            "سعر علف نامي : $namiPrice ج\n"
-            "سعر علف ناهي : $nahiPrice ج\n\n"
-            "طريقة حساب دراسة الجدوى\n\n"
-            "تكلفة الكتاكيت = عدد الكتاكيت × سعر الكتكوت\n\n"
-            "تكلفة العلف = استهلاك العلف البادي × سعر علف بادي +\n"
-            "استهلاك العلف النامي × سعر علف نامي +\n"
-            "استهلاك العلف الناهي × سعر علف ناهي\n\n"
-            "النثريات = عدد الفراخ × 10ج لكل فرخة\n\n"
-            "إجمالي التكاليف = تكلفة الكتاكيت + تكلفة العلف + النثريات\n\n"
-            "إجمالي المبيعات = عدد الفراخ × سعر بيع الفراخ\n\n"
-            "الربح النهائي = إجمالي المبيعات - إجمالي التكاليف",
-      );
-    } else {
-      DialogHelper.showDialog(
-        middleText: "عذرًا، تعذر تحميل البيانات. حاول مرة أخرى لاحقًا.",
-      );
     }
   }
 
@@ -151,9 +127,9 @@ class FeasibilityController extends GetxController {
   }
 
   void checkAndShowDialog() {
-    if (myServices.getStorage.read("feasibilityStudyDialog") != false) {
+    if (_myServices.getStorage.read("feasibilityStudyDialog") != false) {
       showFeasibilityGuide();
-      myServices.getStorage.write("feasibilityStudyDialog", false);
+      _myServices.getStorage.write("feasibilityStudyDialog", false);
     }
   }
 

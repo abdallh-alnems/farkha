@@ -1,8 +1,9 @@
-import 'package:farkha_app/core/class/handling_data.dart';
-import 'package:farkha_app/core/constant/routes/route.dart';
-import 'package:farkha_app/core/constant/theme/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../core/class/handling_data.dart';
+import '../../../core/constant/routes/route.dart';
+import '../../../core/shared/card_title.dart';
 import '../../../logic/controller/price_controller/main_types_controller.dart';
 import '../../widget/app/ad/banner/ad_second_banner.dart';
 import '../../widget/app/ad/native/ad_second_native.dart';
@@ -18,11 +19,9 @@ class MainTypes extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(
-            text: "الانواع",
-          ),
+          const CustomAppBar(text: "الانواع"),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 11).r,
             child: const AdSecondNative(),
           ),
           Expanded(
@@ -34,32 +33,15 @@ class MainTypes extends StatelessWidget {
                     itemCount: controller.mainTypesList.length,
                     itemBuilder: (context, index) {
                       final mainTypes = controller.mainTypesList[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 13, horizontal: 33),
-                        child: GestureDetector(
-                          onTap: () => Get.toNamed(
-                            AppRoute.lastPrices,
-                            arguments: {
-                              'main_id': mainTypes['main_id'],
-                              "main_name": mainTypes['main_name'],
-                            },
-                          ),
-                          child: Container(
-                            width: double.infinity,
-                            height: 41,
-                            color: AppColor.primaryColor,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  mainTypes['main_name'],
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
+                      return CardTitle(
+                        onTap: () => Get.toNamed(
+                          AppRoute.lastPrices,
+                          arguments: {
+                            'main_id': mainTypes['main_id'],
+                            "main_name": mainTypes['main_name'],
+                          },
                         ),
+                        text: mainTypes['main_name'],
                       );
                     },
                   ),

@@ -42,7 +42,7 @@ class ChickenForm extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5).r,
+                  padding: const EdgeInsets.symmetric(vertical: 9).r,
                   child: AdSecondNative(),
                 ),
                 Row(
@@ -79,17 +79,15 @@ class ChickenForm extends StatelessWidget {
                     }),
                   ],
                 ),
-           showButton
-    ? Padding(
-        padding: const EdgeInsets.only(top: 17).r,
-        child: ElevatedButton(
-          onPressed: buttonOnPressed,
-          child: Text(buttonText),
-        ),
-      )
-    : SizedBox.shrink(),
-
-
+                showButton
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 17).r,
+                        child: ElevatedButton(
+                          onPressed: buttonOnPressed,
+                          child: Text(buttonText),
+                        ),
+                      )
+                    : SizedBox.shrink(),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(

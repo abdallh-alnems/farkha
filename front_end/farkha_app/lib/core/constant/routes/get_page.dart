@@ -1,16 +1,16 @@
+import '../../../view/screen/calculate/feasibility_study/how_to_do_a_feasibility_study.dart';
+import 'route.dart';
 import 'package:get/get.dart';
 import '../../../view/screen/main_page.dart';
 import '../../../view/screen/prices/main_types.dart';
-import 'route.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
 import '../../../view/screen/calculate/feed_consumption.dart';
-import '../../../view/screen/calculate/feasibility_study.dart';
+import '../../../view/screen/calculate/feasibility_study/feasibility_study.dart';
 import '../../../view/screen/follow_up_tools/broiler_chicken_requirements.dart';
 import '../../../view/screen/general/suggestion.dart';
 import '../../../view/screen/prices/last_prices.dart';
 import '../../../view/screen/follow_up_tools/articles/articles_type.dart';
 import '../../../view/screen/general/general.dart';
-import '../../../view/screen/body/mobile_body.dart';
 import '../../../view/screen/follow_up_tools/articles/article/a3rad.dart';
 import '../../../view/screen/follow_up_tools/articles/article/akhtaq.dart';
 import '../../../view/screen/follow_up_tools/articles/article/alardya.dart';
@@ -84,6 +84,19 @@ List<GetPage<dynamic>> pages = [
 
   // =============================== calculate =================================
 
+  // ! feasibility study
+  GetPage(
+    name: AppRoute.feasibilityStudy,
+    page: () => FeasibilityStudy(),
+    transition: Transition.downToUp,
+  ),
+
+   GetPage(
+    name: AppRoute.howToDoAFeasibilityStudy,
+    page: () => HowToDoAFeasibilityStudy(),
+    transition: Transition.downToUp,
+  ),
+
   GetPage(
     name: AppRoute.chickenDensity,
     page: () => ChickenDensity(),
@@ -93,12 +106,6 @@ List<GetPage<dynamic>> pages = [
   GetPage(
     name: AppRoute.feedConsumption,
     page: () => FeedConsumption(),
-    transition: Transition.downToUp,
-  ),
-
-  GetPage(
-    name: AppRoute.feasibilityStudy,
-    page: () => FeasibilityStudy(),
     transition: Transition.downToUp,
   ),
 
