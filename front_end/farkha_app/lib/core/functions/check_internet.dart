@@ -7,48 +7,77 @@ import '../../logic/controller/ad_controller/ad_native_controller.dart';
 import '../../logic/controller/price_controller/farkh_abid_controller.dart';
 import '../package/custom_snack_bar.dart';
 
-class InternetController extends GetxController {
+class InternetController extends GetxController with WidgetsBindingObserver {
   bool _wasConnected = true;
+  Timer? _timer;
 
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addObserver(this);
     startCheckingInternet();
   }
 
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      startCheckingInternet();
+    } else if (state == AppLifecycleState.paused) {
+      _timer?.cancel();
+    }
+  }
+
   void startCheckingInternet() {
-    Timer.periodic(Duration(seconds: 5), (timer) {
-      checkInternet(Get.context!);
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      checkInternetAndNotify();
     });
   }
 
-  Future<void> checkInternet(BuildContext context) async {
+  static Future<bool> checkInternet() async {
     try {
       var result = await InternetAddress.lookup("google.com");
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        if (!_wasConnected) {
-          CustomSnackbar(
-            message: "تم استعادة الاتصال",
-            icon: Icons.wifi,
-          ).show(context);
-          loadData();
-        }
-        _wasConnected = true;
-      }
-    } on SocketException catch (_) {
-      if (_wasConnected) {
-        CustomSnackbar(
-          message: "لا يوجد اتصال",
-          icon: Icons.wifi_off,
-        ).show(context);
-      }
-      _wasConnected = false;
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
     }
   }
-  
+
+  void _showSnackbar(String message, IconData icon) {
+    if (Get.context != null) {
+      CustomSnackbar(
+        message: message,
+        icon: icon,
+      ).show(Get.context!);
+    }
+  }
+
   void loadData() {
     Get.find<FarkhAbidController>().getDataFarkhAbid();
     Get.find<AdBannerController>().bannerFirstAd();
     Get.find<AdNativeController>().nativeFirstAd();
+  }
+
+  Future<void> checkInternetAndNotify() async {
+    bool isConnected = await checkInternet();
+    if (isConnected) {
+      if (!_wasConnected) {
+        _showSnackbar("تم استعادة الاتصال", Icons.wifi);
+        loadData();
+      }
+      _wasConnected = true;
+    } else {
+      if (_wasConnected) {
+        _showSnackbar("لا يوجد اتصال", Icons.wifi_off);
+      }
+      _wasConnected = false;
+    }
   }
 }

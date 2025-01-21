@@ -5,7 +5,7 @@ import '../../../../core/constant/routes/route.dart';
 import '../../../../core/shared/card_title.dart';
 import '../../../widget/app/ad/banner/ad_second_banner.dart';
 import '../../../widget/app/ad/native/ad_second_native.dart';
-import '../../../widget/bar/app_bar/custom_app_bar.dart';
+import '../../../widget/app/app_bar/custom_app_bar.dart';
 
 class ArticlesType extends StatelessWidget {
   const ArticlesType({super.key});

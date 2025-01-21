@@ -26,7 +26,7 @@ class FeedConsumptionController extends GetxController {
         selectedAge.value != null;
   }
 
-  void calculateFeedConsumption() {
+ void calculateFeedConsumption() {
     final int? count = int.tryParse(textController.text);
     double totalFeed;
 
@@ -37,16 +37,24 @@ class FeedConsumptionController extends GetxController {
       double total = count * 3.5;
       result.value =
           'استهلاك ${textController.text} فرخ للعلف طوال الدورة :\n \n'
-          'استهلاك العلف البادي : ${badi.toStringAsFixed(1)} كيلو\n \n'
-          'استهلاك العلف النامي : ${nami.toStringAsFixed(1)} كيلو\n \n'
-          'استهلاك العلف الناهي : ${nahi.toStringAsFixed(1)} كيلو\n \n'
-          'الاستهلاك الكلي للعلف طوال الدورة : ${total.toStringAsFixed(1)} كيلو';
+          'استهلاك العلف البادي : ${badi.toStringAsFixed(0)} كيلو\n \n'
+          'استهلاك العلف النامي : ${nami.toStringAsFixed(0)} كيلو\n \n'
+          'استهلاك العلف الناهي : ${nahi.toStringAsFixed(0)} كيلو\n \n'
+          'الاستهلاك الكلي للعلف طوال الدورة : ${total.toStringAsFixed(0)} كيلو';
     } else {
       totalFeed = feedConsumptions[selectedAge.value! - 1] * count!.toDouble();
-      result.value =
-          'استهلاك ${textController.text} فراخ للعلف في اليوم عند عمر ${selectedAge.value} يوم : \n${totalFeed.toStringAsFixed(0)} جرام';
+
+      if (totalFeed < 1000) {
+        result.value =
+            'استهلاك ${textController.text} فراخ للعلف في اليوم عند عمر ${selectedAge.value} يوم : \n${totalFeed.toStringAsFixed(0)} جرام';
+      } else {
+        double totalFeedInKilo = totalFeed / 1000;
+        result.value =
+            'استهلاك ${textController.text} فراخ للعلف في اليوم عند عمر ${selectedAge.value} يوم : \n${totalFeedInKilo.toStringAsFixed(1)} كيلو';
+      }
     }
   }
+
 
   void _resetResultMessage() {
     if (textController.text.isEmpty) {

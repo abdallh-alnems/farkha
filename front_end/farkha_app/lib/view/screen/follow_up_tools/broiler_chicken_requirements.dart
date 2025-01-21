@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/shared/chicken_form.dart';
-import '../../../logic/controller/follow_up_tools_controller/broiler_chicken_requirements_controller.dart';
+import '../../../logic/controller/follow_up_tools_controller/broiler_controller.dart';
 import '../../widget/app/ad/banner/ad_second_banner.dart';
-import '../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../widget/follow_up_tools/broiler_chicken_requirements/items_broiler_chicken_requirements.dart';
+import '../../widget/app/app_bar/custom_app_bar.dart';
+import '../../widget/app/follow_up_tools/broiler_chicken_requirements/items_broiler_chicken_requirements.dart';
 
 class BroilerChickenRequirements extends StatelessWidget {
   const BroilerChickenRequirements({super.key});
@@ -16,7 +16,7 @@ class BroilerChickenRequirements extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(text: "احتياجات فراخ التسمين"),
+          CustomAppBar(text: "متابعة فراخ التسمين"),
           ChickenForm(
             controller: controller.chickensCountController,
             onChanged: (newValue) {

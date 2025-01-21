@@ -1,9 +1,9 @@
-import 'package:farkha_app/core/class/handling_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../core/class/handling_data.dart';
 import '../../../logic/controller/price_controller/web_last_prices_controller.dart';
-import '../../widget/bar/web_bar/web_bar.dart';
-import '../../widget/price_card.dart';
+import '../../widget/web/web_bar/web_bar.dart';
+import '../../widget/web/price_card.dart';
 
 class WebBody extends StatelessWidget {
   const WebBody({super.key});

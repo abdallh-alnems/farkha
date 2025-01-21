@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../widget/calculate/calculate_result.dart';
+import '../../widget/app/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/chicken_density_controller.dart';
 import '../../widget/app/ad/banner/ad_second_banner.dart';
-import '../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../widget/calculate/feasibility_study_title.dart';
+import '../../widget/app/app_bar/custom_app_bar.dart';
+import '../../widget/app/calculate/feasibility_study_title.dart';
 
 class ChickenDensity extends StatelessWidget {
   const ChickenDensity({super.key});

@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/routes/route.dart';
-import '../../../widget/calculate/calculate_result.dart';
+import '../../../widget/app/calculate/calculate_result.dart';
 import '../../../../core/shared/chicken_form.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
 import '../../../widget/app/ad/banner/ad_second_banner.dart';
-import '../../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../../widget/calculate/feasibility_study_title.dart';
+import '../../../widget/app/app_bar/custom_app_bar.dart';
+import '../../../widget/app/calculate/feasibility_study_title.dart';
 
 class FeasibilityStudy extends StatelessWidget {
   FeasibilityStudy({super.key});
@@ -76,7 +76,6 @@ class FeasibilityStudy extends StatelessWidget {
   }
 
   List<Widget> _buildCostResults() {
-    // التأكد من أن القيم تظهر بشكل صحيح في واجهة المستخدم
     return [
       CalculateResult(text: controller.chickenCostText.value),
       CalculateResult(text: controller.feedCostText.value),

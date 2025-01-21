@@ -1,12 +1,15 @@
+import 'package:farkha_app/core/constant/image_asset.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/package/snackbar_utils.dart';
 import '../../../core/services/open_gmail.dart';
 import '../../widget/app/ad/banner/ad_second_banner.dart';
-import '../../widget/bar/app_bar/custom_app_bar.dart';
-import '../../widget/general/general_item.dart';
+import '../../widget/app/app_bar/custom_app_bar.dart';
+import '../../widget/app/general/general_item.dart';
 
 class General extends StatelessWidget {
   const General({super.key});
@@ -28,8 +31,8 @@ class General extends StatelessWidget {
           ),
           GeneralItem(
             onTap: () => openGmail(),
-            title: 'تواصل معنا',
-            icon: Icons.message,
+            title: 'البريد الإلكتروني',
+            icon: Icons.mail,
           ),
           GeneralItem(
             onTap: () => Get.toNamed(AppRoute.suggestion),
@@ -38,60 +41,21 @@ class General extends StatelessWidget {
           ),
           GeneralItem(
             onTap: () {
-              Get.snackbar(
-                '',
-                '',
-                titleText: const Text(
-                  '',
-                  style: TextStyle(fontSize: 0),
-                  textAlign: TextAlign.center,
-                ),
-                messageText: const Text(
-                  'قريبا',
-                  style: TextStyle(fontSize: 23),
-                  textAlign: TextAlign.center,
-                ),
-              );
+              SnackbarUtils.showSnackbar();
             },
             title: 'الموقع الالكتروني',
             icon: Icons.web_asset,
           ),
           GeneralItem(
             onTap: () {
-              Get.snackbar(
-                '',
-                '',
-                titleText: const Text(
-                  '',
-                  style: TextStyle(fontSize: 0),
-                  textAlign: TextAlign.center,
-                ),
-                messageText: const Text(
-                  'قريبا',
-                  style: TextStyle(fontSize: 23),
-                  textAlign: TextAlign.center,
-                ),
-              );
+              SnackbarUtils.showSnackbar();
             },
             title: 'من نحن',
             icon: Icons.group,
           ),
           GeneralItem(
             onTap: () {
-              Get.snackbar(
-                '',
-                '',
-                titleText: const Text(
-                  '',
-                  style: TextStyle(fontSize: 0),
-                  textAlign: TextAlign.center,
-                ),
-                messageText: const Text(
-                  'قريبا',
-                  style: TextStyle(fontSize: 23),
-                  textAlign: TextAlign.center,
-                ),
-              );
+              SnackbarUtils.showSnackbar();
             },
             title: 'مساعدة',
             icon: Icons.help,
@@ -105,6 +69,46 @@ class General extends StatelessWidget {
             icon: Icons.star,
             color: Colors.yellow,
           ),
+          SizedBox(height: 33),
+          Text("تابعنا"),
+          SizedBox(height: 17),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 79),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    launchUrl(Uri.parse(
+                        'https://www.facebook.com/share/19u7rfbpcY/'));
+                  },
+                  child: Image.asset(
+                    ImageAsset.facebook,
+                    scale: 4.5,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    launchUrl(Uri.parse('https://nims.website/'));
+                  },
+                  child: Image.asset(
+                    ImageAsset.web,
+                    scale: 4.5,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    launchUrl(Uri.parse(
+                        'https://whatsapp.com/channel/0029Vb3K1qa9xVJYrMm7fM3E'));
+                  },
+                  child: Image.asset(
+                    ImageAsset.whatsApp,
+                    scale: 4.5,
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
       bottomNavigationBar: const AdSecondBanner(),

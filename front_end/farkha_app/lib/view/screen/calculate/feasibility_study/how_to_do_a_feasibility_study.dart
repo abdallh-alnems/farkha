@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
+import '../../../../core/constant/theme/color.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
-import '../../../widget/bar/app_bar/custom_app_bar.dart';
+import '../../../widget/app/ad/banner/ad_third_banner.dart';
+import '../../../widget/app/calculate/feasibility_study_content.dart';
+import '../../../widget/app/app_bar/custom_app_bar.dart';
 
 class HowToDoAFeasibilityStudy extends StatelessWidget {
   const HowToDoAFeasibilityStudy({super.key});
@@ -10,31 +13,69 @@ class HowToDoAFeasibilityStudy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GetBuilder<FeasibilityController>(
-        builder: (controller) {
-          controller.ensureFeasibilityData();
-          return HandlingDataView(
-            statusRequest: controller.statusRequest,
-            widget: Column(
-              children: [
-                const CustomAppBar(text: "كيف تعمل دراسة الجدوي"),
-                const Text(
-                  "الاسعار المستخدمة (هذه الاسعار هي اسعار اليوم)",
-                  style: TextStyle(fontSize: 13),
+      body: Column(
+        children: [
+          CustomAppBar(text: "كيف تعمل دراسة الجدوي"),
+          GetBuilder<FeasibilityController>(
+            builder: (controller) {
+              controller.ensureFeasibilityData();
+
+              return HandlingDataView(
+                statusRequest: controller.statusRequest,
+                widget: Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 17, horizontal: 13),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              PopupMenuButton(
+                                padding: EdgeInsets.zero,
+                                tooltip: '',
+                                offset: const Offset(0, 20),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    child: SizedBox(
+                                      width: 200,
+                                      child: const Text(
+                                        "هذه الأسعار هي أسعار اليوم",
+                                        style: TextStyle(fontSize: 14),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                child: Icon(
+                                  Icons.help_outline,
+                                  size: 18,
+                                  color: AppColor.primaryColor,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              const Text(
+                                "الأسعار المستخدمة",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          FeasibilityStudyContent(controller: controller),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                Row(
-                  children: [
-                    Text(controller.feasibilityModel.chickenSalePrice
-                        .toString()),
-                    const Text(" : اللحم الابيض"),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ],
       ),
+      bottomNavigationBar: const AdThirdBanner(),
     );
   }
 }
-

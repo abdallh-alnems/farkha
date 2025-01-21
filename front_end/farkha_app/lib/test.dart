@@ -1,24 +1,25 @@
-//  if (statusRequest == StatusRequest.success) {
-//       DialogHelper.showDialog(
-//         middleText: "الأسعار المستخدمة في دراسة الجدوى \n"
-//             "سعر الكتكوت : $chickPrice ج\n"
-//             "سعر بيع الفراخ : $chickenSalePrice ج\n"
-//             "سعر علف بادي : $badiPrice ج\n"
-//             "سعر علف نامي : $namiPrice ج\n"
-//             "سعر علف ناهي : $nahiPrice ج\n\n"
-//             "طريقة حساب دراسة الجدوى\n\n"
-//             "تكلفة الكتاكيت = عدد الكتاكيت × سعر الكتكوت\n\n"
-//             "تكلفة العلف = استهلاك العلف البادي × سعر علف بادي +\n"
-//             "استهلاك العلف النامي × سعر علف نامي +\n"
-//             "استهلاك العلف الناهي × سعر علف ناهي\n\n"
-//             "النثريات = عدد الفراخ × 10ج لكل فرخة\n\n"
-//             "إجمالي التكاليف = تكلفة الكتاكيت + تكلفة العلف + النثريات\n\n"
-//             "إجمالي المبيعات = عدد الفراخ × سعر بيع الفراخ\n\n"
-//             "الربح النهائي = إجمالي المبيعات - إجمالي التكاليف",
-//       );
+// import 'dart:convert';
+// import 'package:dartz/dartz.dart';
+// import 'package:http/http.dart' as http;
+// import '../constant/headers.dart';
+// import 'status_request.dart';
+
+// class Crud {
+//   Future<Either<StatusRequest, Map>> postData(String linkUrl, Map data) async {
+//     Map<String, String> myHeaders = getMyHeaders();
+//     if (await checkInternet()) {
+//       var response =
+//           await http.post(Uri.parse(linkUrl), headers: myHeaders, body: data);
+
+//       if (response.statusCode == 200 || response.statusCode == 201) {
+//         Map responseBody = jsonDecode(response.body);
+
+//         return Right(responseBody);
+//       } else {
+//         return const Left(StatusRequest.serverFailure);
+//       }
 //     } else {
-//       DialogHelper.showDialog(
-//         middleText: "عذرًا، تعذر تحميل البيانات. حاول مرة أخرى لاحقًا.",
-//       );
+//       return const Left(StatusRequest.offlineFailure);
 //     }
 //   }
+// }

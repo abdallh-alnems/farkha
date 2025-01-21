@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../constant/theme/image_asset.dart';
+import '../constant/image_asset.dart';
 import 'status_request.dart';
 
 class HandlingDataView extends StatelessWidget {
@@ -26,6 +26,11 @@ class HandlingDataView extends StatelessWidget {
                     child: Lottie.asset(
                     ImageAsset.noData,
                   ))
-                : widget;
+                : statusRequest == StatusRequest.offlineFailure
+                    ? Center(
+                        child: Lottie.asset(
+                        ImageAsset.offline,
+                      ))
+                    : widget;
   }
 }
