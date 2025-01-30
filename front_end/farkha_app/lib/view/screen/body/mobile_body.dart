@@ -9,7 +9,7 @@ import '../../widget/app/view_widget/points_of_sale.dart';
 import '../../widget/app/view_widget/view_calculate.dart';
 import '../../widget/app/view_widget/view_follow_up_tools.dart';
 import '../../widget/app/view_widget/view_price_and_cycle.dart';
-import '../../widget/app/ad/banner/ad_first_banner.dart';
+import '../../widget/app/ad/banner/banner.dart';
 import '../../widget/app/ad/native/ad_home_native.dart';
 import '../../widget/app/app_bar/app_bar_home.dart';
 import '../../widget/app/prices/card_price_farkh_abid.dart';
@@ -24,26 +24,25 @@ class MobileBody extends StatelessWidget {
 
     return Scaffold(
       appBar: const AppBarHome(),
-      body:  SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 13).r,
-            child: TapToExit(
-              child: const Column(
-                children: [
-                  Upgrade(),
-                  CardPriceFarkhAbidHome(),
-                  ViewPricesAndCycle(),
-                  AdFirstNative(),
-                  ViewCalculate(),
-                  ViewHomeFollowUpTools(),
-                  PointsOfSale(),
-                ],
-              ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 13).r,
+          child: TapToExit(
+            child: const Column(
+              children: [
+                Upgrade(),
+                CardPriceFarkhAbidHome(),
+                ViewPricesAndCycle(),
+                AdFirstNative(),
+                ViewCalculate(),
+                ViewHomeFollowUpTools(),
+                PointsOfSale(),
+              ],
             ),
           ),
-        
+        ),
       ),
-      bottomNavigationBar: const AdFirstBanner(),
+      bottomNavigationBar: const AdBannerWidget(adIndex: 0),
     );
   }
 }

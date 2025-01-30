@@ -5,7 +5,7 @@ import '../../../../../data/data_source/static/poultry_management_data.dart';
 import '../../../../../logic/controller/articles_controller.dart';
 import '../../../../widget/app/ad/native/ad_third_native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
-import '../../../../widget/app/ad/banner/ad_third_banner.dart';
+import '../../../../widget/app/ad/banner/banner.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 
@@ -75,7 +75,7 @@ class AsthlakAl3laf extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AdThirdBanner(),
+      bottomNavigationBar: const AdBannerWidget(adIndex: 2),
     );
   }
 }

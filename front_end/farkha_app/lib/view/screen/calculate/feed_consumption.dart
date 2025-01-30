@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../widget/app/ad/banner/banner.dart';
 import '../../widget/app/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/feed_consumption_controller.dart';
-import '../../widget/app/ad/banner/ad_second_banner.dart';
 import '../../widget/app/app_bar/custom_app_bar.dart';
 import '../../widget/app/calculate/feed_toggle_button.dart';
 
@@ -54,7 +54,7 @@ class FeedConsumption extends StatelessWidget {
           )
         ],
       ),
-      bottomNavigationBar: const AdSecondBanner(),
+      bottomNavigationBar: const AdBannerWidget(adIndex: 1),
     );
   }
 }

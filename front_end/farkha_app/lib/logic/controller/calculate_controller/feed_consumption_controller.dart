@@ -26,12 +26,18 @@ class FeedConsumptionController extends GetxController {
         selectedAge.value != null;
   }
 
- void calculateFeedConsumption() {
+  void calculateFeedConsumption() {
     final int? count = int.tryParse(textController.text);
+
+    if (count == null) {
+      result.value = 'الرجاء إدخال عدد صحيح';
+      return;
+    }
+
     double totalFeed;
 
     if (isCumulative.value) {
-      double badi = count! * 0.5;
+      double badi = count * 0.5;
       double nami = count * 1.2;
       double nahi = count * 1.8;
       double total = count * 3.5;
@@ -42,7 +48,12 @@ class FeedConsumptionController extends GetxController {
           'استهلاك العلف الناهي : ${nahi.toStringAsFixed(0)} كيلو\n \n'
           'الاستهلاك الكلي للعلف طوال الدورة : ${total.toStringAsFixed(0)} كيلو';
     } else {
-      totalFeed = feedConsumptions[selectedAge.value! - 1] * count!.toDouble();
+      if (selectedAge.value == null) {
+        result.value = 'الرجاء تحديد العمر';
+        return;
+      }
+
+      totalFeed = feedConsumptions[selectedAge.value! - 1] * count.toDouble();
 
       if (totalFeed < 1000) {
         result.value =
@@ -54,7 +65,6 @@ class FeedConsumptionController extends GetxController {
       }
     }
   }
-
 
   void _resetResultMessage() {
     if (textController.text.isEmpty) {

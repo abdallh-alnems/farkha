@@ -3,7 +3,7 @@ import '../../../../widget/app/ad/native/ad_third_native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/ad_third_banner.dart';
+import '../../../../widget/app/ad/banner/banner.dart';
 
 class Alsaf extends StatelessWidget {
   const Alsaf({super.key});
@@ -72,7 +72,7 @@ class Alsaf extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const AdThirdBanner(),
+      bottomNavigationBar: const AdBannerWidget(adIndex: 2),
     );
   }
 }

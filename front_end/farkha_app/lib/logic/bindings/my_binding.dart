@@ -4,8 +4,8 @@ import '../../core/functions/check_internet.dart';
 import '../../core/package/rating_app.dart';
 import '../../core/package/upgrade/get_min_version.dart';
 import '../../core/services/permission.dart';
-import '../controller/ad_controller/ad_banner_controller.dart';
-import '../controller/ad_controller/ad_native_controller.dart';
+import '../controller/ad_controller/banner_controller.dart';
+import '../controller/ad_controller/native_controller.dart';
 import '../controller/price_controller/farkh_abid_controller.dart';
 
 class MyBindings extends Bindings {

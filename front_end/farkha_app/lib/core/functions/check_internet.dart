@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../logic/controller/ad_controller/ad_banner_controller.dart';
-import '../../logic/controller/ad_controller/ad_native_controller.dart';
+import '../../logic/controller/ad_controller/banner_controller.dart';
+import '../../logic/controller/ad_controller/native_controller.dart';
 import '../../logic/controller/price_controller/farkh_abid_controller.dart';
 import '../package/custom_snack_bar.dart';
 
@@ -61,8 +61,6 @@ class InternetController extends GetxController with WidgetsBindingObserver {
 
   void loadData() {
     Get.find<FarkhAbidController>().getDataFarkhAbid();
-    Get.find<AdBannerController>().bannerFirstAd();
-    Get.find<AdNativeController>().nativeFirstAd();
   }
 
   Future<void> checkInternetAndNotify() async {

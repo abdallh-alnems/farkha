@@ -17,7 +17,7 @@ class MyServices extends GetxService {
     await GetStorage.init();
     getStorage = GetStorage();
 
-    MobileAds.instance.initialize();
+    await MobileAds.instance.initialize();
 
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);

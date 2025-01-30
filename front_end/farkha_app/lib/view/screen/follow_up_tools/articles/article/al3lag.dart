@@ -4,7 +4,7 @@ import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/ad_third_banner.dart';
+import '../../../../widget/app/ad/banner/banner.dart';
 
 class AL3lag extends StatelessWidget {
   const AL3lag({super.key});
@@ -52,7 +52,7 @@ class AL3lag extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const AdThirdBanner(),
+      bottomNavigationBar: const AdBannerWidget(adIndex: 2),
     );
   }
 }

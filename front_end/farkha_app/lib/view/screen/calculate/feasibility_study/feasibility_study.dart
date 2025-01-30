@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/routes/route.dart';
+import '../../../widget/app/ad/banner/banner.dart';
 import '../../../widget/app/calculate/calculate_result.dart';
 import '../../../../core/shared/chicken_form.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
-import '../../../widget/app/ad/banner/ad_second_banner.dart';
 import '../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../widget/app/calculate/feasibility_study_title.dart';
 
@@ -71,7 +71,7 @@ class FeasibilityStudy extends StatelessWidget {
           SizedBox(height: 21.h)
         ],
       ),
-      bottomNavigationBar: const AdSecondBanner(),
+            bottomNavigationBar: const AdBannerWidget(adIndex: 1),
     );
   }
 
