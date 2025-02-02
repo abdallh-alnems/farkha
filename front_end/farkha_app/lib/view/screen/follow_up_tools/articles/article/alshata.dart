@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Alshata extends StatelessWidget {
   const Alshata({super.key});
@@ -23,7 +23,7 @@ class Alshata extends StatelessWidget {
                     TypeArticle(
                         type:
                             'تربية الفراخ البيضاء في الشتاء يحتاج إلى اهتمام خاص بالظروف البيئية المتغيرة وتوفير بيئة مناسبة للفراخ للحفاظ على صحتها وتحقيق أقصى قدر من الإنتاجية. إليك بعض النقاط التي يمكن توسيعها في هذا الموضوع:'),
-                    AdThirdNative(),
+                    AdNativeWidget(adIndex: 2),
                     TypeArticle(
                         type:
                             '1- توفير درجة حرارة مناسبة: يجب الحرص على توفير درجة حرارة مناسبة للفراخ في فصل الشتاء، ويمكن استخدام الأجهزة الحرارية مثل المدافئ والمراوح لتحقيق هذا الهدف.'),

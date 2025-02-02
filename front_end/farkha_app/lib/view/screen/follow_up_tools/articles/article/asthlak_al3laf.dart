@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../data/data_source/static/poultry_management_data.dart';
 import '../../../../../logic/controller/articles_controller.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 
@@ -49,7 +49,7 @@ class AsthlakAl3laf extends StatelessWidget {
                       type:
                           '5 - المراقبة: يجب مراقبة استهلاك الفراخ للعلف وزيادة وزنها بشكل منتظم، وتعديل كمية العلف وفقًا للحاجة، ومراقبة الفراخ لأي أعراض للمرض أو الوفاة المفاجئة.',
                     ),
-                    AdThirdNative(),
+                    AdNativeWidget(adIndex: 2),
                     Text(
                       'ملحوظة : الفرخ الابيض  ياكل متوسط 3.5 كيلو علف طول الدورة',
                       style: TextStyle(color: Colors.red, fontSize: 11.sp),

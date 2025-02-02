@@ -1,10 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class AL3lag extends StatelessWidget {
   const AL3lag({super.key});
@@ -25,7 +25,7 @@ class AL3lag extends StatelessWidget {
                     type:
                         'تربيه سلالات من الطيور يكون لها مقدره وراثية عاليه لمقاومه المرض.الاهتمام بتهوية وتطهير العنابر بالفورمالين 3% أو الصودا الكاوية 1% لأنهما يمكنهما القضاء على الفيروس فورا وعدم تربيه أعمار مختلفة من الكتاكيت في نفس المزرعة وأيضا عدم تذبذب درجات الحرارة بالارتفاع والانخفاض مما يسبب للطيور نزلات برد مع العوامل المجهدة الأخرى كنقص التغذية أو الزحام أو سوء التهوية مما يؤدى إلى نفوق مرتفع وعدم الاستفادة من اللقاح المستخدم.التحصين ضد المرض بلقاح الماريك وذلك بإذابة اللقاح في المحاول المذيب المرفق معه والحقن بمعدل 0.2سم / كتكوت في عضله الفخذ أو تحت جلد الرقبة وذلك عند الفقس مباشره.',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TitleArticle(title: 'النيوكاسل'),
                   TypeArticle(
                     type:

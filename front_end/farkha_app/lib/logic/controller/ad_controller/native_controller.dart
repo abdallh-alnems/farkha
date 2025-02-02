@@ -1,93 +1,73 @@
 import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../core/constant/id/ad_id.dart';
 
 class AdNativeController extends GetxController {
-  // ================================ banner ad ================================
+  final List<NativeAd?> nativeAds = [null, null, null];
+  final List<RxBool> isAdLoadedList = [false.obs, false.obs, false.obs];
 
-  NativeAd? nativeAdFirst;
-  NativeAd? nativeAdSecond;
-  NativeAd? nativeAdThird;
-
-  // ================================= loading =================================
-
-  RxBool isAdFirstLoadedNative = false.obs;
-  RxBool isAdSecondLoadedNative = false.obs;
-  RxBool isAdThirdLoadedNative = false.obs;
-
-  // ================================== ad id ==================================
-
-  final String adFirstIdNative = AdManager.nativeFirst;
-  final String adSecondIdNative = AdManager.nativeSecond;
-  final String adThirdIdNative = AdManager.nativeThird;
+  final List<String> adIds = [
+    AdManager.nativeFirst,
+    AdManager.nativeSecond,
+    AdManager.nativeThird,
+  ];
 
   @override
   void onInit() {
     super.onInit();
-    nativeFirstAd();
-    nativeSecondAd();
-    nativeThirdAd();
+    _loadAllNativeAds();
   }
 
-  // ============================== native first Ad ============================
-
-  nativeFirstAd() {
-    nativeAdFirst = NativeAd(
-        adUnitId: adFirstIdNative,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {
-            isAdFirstLoadedNative.value = true;
-            log("Ad Loaded");
-          },
-          onAdFailedToLoad: (ad, error) {
-            isAdFirstLoadedNative.value = false;
-          },
-        ),
-        request: const AdRequest(),
-        nativeTemplateStyle:
-            NativeTemplateStyle(templateType: TemplateType.small));
-    nativeAdFirst!.load();
+  @override
+  void onClose() {
+    for (var ad in nativeAds) {
+      ad?.dispose();
+    }
+    super.onClose();
   }
 
-  // ============================== native second Ad ============================
-
-  nativeSecondAd() {
-    nativeAdSecond = NativeAd(
-        adUnitId: adSecondIdNative,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {
-            isAdSecondLoadedNative.value = true;
-            log("Ad Loaded");
-          },
-          onAdFailedToLoad: (ad, error) {
-            isAdSecondLoadedNative.value = false;
-          },
-        ),
-        request: const AdRequest(),
-        nativeTemplateStyle:
-            NativeTemplateStyle(templateType: TemplateType.small));
-    nativeAdSecond!.load();
+  void _loadAllNativeAds() {
+    for (int i = 0; i < adIds.length; i++) {
+      _loadNativeAd(i);
+    }
   }
 
-  // ============================== native third Ad ============================
+  void loadAd(int index) {
+    if (nativeAds[index] == null) {
+      _loadNativeAd(index);
+    }
+  }
 
-  nativeThirdAd() {
-    nativeAdThird = NativeAd(
-        adUnitId: adThirdIdNative,
-        listener: NativeAdListener(
-          onAdLoaded: (ad) {
-            isAdThirdLoadedNative.value = true;
-            log("Ad Loaded");
-          },
-          onAdFailedToLoad: (ad, error) {
-            isAdThirdLoadedNative.value = false;
-          },
-        ),
-        request: const AdRequest(),
-        nativeTemplateStyle:
-            NativeTemplateStyle(templateType: TemplateType.small));
-    nativeAdThird!.load();
+  void disposeAd(int index) {
+    if (nativeAds[index] != null) {
+      nativeAds[index]?.dispose();
+      nativeAds[index] = null;
+      isAdLoadedList[index].value = false;
+    }
+  }
+
+  void _loadNativeAd(int index) {
+    nativeAds[index] = NativeAd(
+      adUnitId: adIds[index],
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          isAdLoadedList[index].value = true;
+          log("Native Ad Loaded: $index");
+          update();
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          isAdLoadedList[index].value = false;
+          log("Native Ad Failed to Load: $index, Error: $error");
+          Future.delayed(const Duration(seconds: 30), () {
+            _loadNativeAd(index);
+          });
+        },
+      ),
+      request: const AdRequest(),
+      nativeTemplateStyle:
+          NativeTemplateStyle(templateType: TemplateType.medium),
+    )..load();
   }
 }

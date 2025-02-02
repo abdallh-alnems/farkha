@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../core/class/handling_data.dart';
 import '../../../logic/controller/suggestion_controller.dart';
-import '../../widget/app/ad/banner/banner.dart';
-import '../../widget/app/ad/native/ad_third_native.dart';
+import '../../widget/app/ad/banner.dart';
+import '../../widget/app/ad/native.dart';
 import '../../widget/app/app_bar/custom_app_bar.dart';
 
 class Suggestion extends StatelessWidget {
@@ -33,7 +33,7 @@ class Suggestion extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 19).r,
                         child: Column(
                           children: [
-                            AdThirdNative(),
+                            AdNativeWidget(adIndex: 2),
                             SizedBox(height: 25.h),
                             Obx(() => TextField(
                                   controller: textController,

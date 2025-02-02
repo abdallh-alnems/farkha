@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/routes/route.dart';
-import '../../../widget/app/ad/banner/banner.dart';
+import '../../../widget/app/ad/banner.dart';
 import '../../../widget/app/calculate/calculate_result.dart';
 import '../../../../core/shared/chicken_form.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
@@ -65,13 +65,13 @@ class FeasibilityStudy extends StatelessWidget {
             },
             child: Text(
               "كيف يتم عمل دراسة الجدوي",
-              style: TextStyle(color: Colors.black38),
+              style: TextStyle(color: Colors.black),
             ),
           ),
-          SizedBox(height: 21.h)
+          SizedBox(height: 15.h)
         ],
       ),
-            bottomNavigationBar: const AdBannerWidget(adIndex: 1),
+      bottomNavigationBar: const AdBannerWidget(adIndex: 1),
     );
   }
 

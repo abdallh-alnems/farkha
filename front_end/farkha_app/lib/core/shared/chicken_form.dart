@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../view/widget/app/ad/native/ad_second_native.dart';
+import '../../view/widget/app/ad/native.dart';
 import '../functions/valid_input/validate_chick_input.dart';
 
 class ChickenForm extends StatelessWidget {
@@ -12,7 +12,7 @@ class ChickenForm extends StatelessWidget {
   final RxBool notShowDropdownButton;
   final List<Widget> children;
   final String buttonText;
-  final Function()? buttonOnPressed;
+  final VoidCallback? buttonOnPressed;
   final bool showButton;
 
   ChickenForm({
@@ -34,71 +34,81 @@ class ChickenForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 19).r,
+        padding: EdgeInsets.symmetric(horizontal: 19.w),
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: Form(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 9).r,
-                  child: AdSecondNative(),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: controller,
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.right,
-                        decoration: InputDecoration(
-                          labelText: 'عدد الفراخ',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          return validateChickInput(value!);
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 11.h),
-                    Obx(() {
-                      return notShowDropdownButton.value
-                          ? SizedBox.shrink()
-                          : Expanded(
-                              child: DropdownButtonFormField<dynamic>(
-                                value: selectedAge,
-                                onChanged: onChanged,
-                                decoration: InputDecoration(
-                                  labelText: 'اختار العمر',
-                                  border: const OutlineInputBorder(),
-                                ),
-                                items: items,
-                              ),
-                            );
-                    }),
-                  ],
-                ),
-                showButton
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 17).r,
-                        child: ElevatedButton(
-                          onPressed: buttonOnPressed,
-                          child: Text(buttonText),
-                        ),
-                      )
-                    : SizedBox.shrink(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: children,
-                    ),
+          child: SingleChildScrollView(
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Column(
+                children: [
+                  _buildAdWidget(),
+                  _buildInputRow(),
+                  if (showButton) _buildSubmitButton(),
+                  ...children,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 11),
+                    child: AdNativeWidget(adIndex: 2),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAdWidget() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 9.h),
+      child: AdNativeWidget(adIndex: 1),
+    );
+  }
+
+  Widget _buildInputRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.right,
+            decoration: const InputDecoration(
+              labelText: 'عدد الفراخ',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) => validateChickInput(value ?? ""),
+          ),
+        ),
+        SizedBox(width: 11.w),
+        Obx(() => notShowDropdownButton.value
+            ? const SizedBox.shrink()
+            : _buildDropdown()),
+      ],
+    );
+  }
+
+  Widget _buildDropdown() {
+    return Expanded(
+      child: DropdownButtonFormField<dynamic>(
+        value: selectedAge,
+        onChanged: onChanged,
+        decoration: const InputDecoration(
+          labelText: 'اختار العمر',
+          border: OutlineInputBorder(),
+        ),
+        items: items,
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return Padding(
+      padding: EdgeInsets.only(top: 17.h),
+      child: ElevatedButton(
+        onPressed: buttonOnPressed,
+        child: Text(buttonText),
       ),
     );
   }

@@ -15,13 +15,11 @@ class TableLastPrices extends StatelessWidget {
       builder: (controller) {
         return HandlingDataView(
           statusRequest: controller.statusRequest,
-          widget: Expanded(
-            child: Column(
-              children: [
-                _buildHeader(),
-                _buildTableBody(controller),
-              ],
-            ),
+          widget: Column(
+            children: [
+              _buildHeader(),
+              _buildTableBody(controller),
+            ],
           ),
         );
       },
@@ -57,34 +55,30 @@ class TableLastPrices extends StatelessWidget {
   }
 
   Widget _buildTableBody(LastPricesController controller) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 7).r,
-          child: Column(
-            children: [
-              Table(
-                border: const TableBorder(
-                  horizontalInside:
-                      BorderSide(color: AppColor.primaryColor, width: 1),
-                ),
-                columnWidths: const {
-                  0: FlexColumnWidth(1),
-                  1: FlexColumnWidth(1),
-                  2: FlexColumnWidth(1),
-                  3: FlexColumnWidth(2),
-                },
-                children: controller.lastPricesList
-                    .map((price) => _buildTableRow(price))
-                    .toList(),
-              ),
-              Divider(
-                color: AppColor.primaryColor,
-                thickness: 1,
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 7).r,
+      child: Column(
+        children: [
+          Table(
+            border: const TableBorder(
+              horizontalInside:
+                  BorderSide(color: AppColor.primaryColor, width: 1),
+            ),
+            columnWidths: const {
+              0: FlexColumnWidth(1),
+              1: FlexColumnWidth(1),
+              2: FlexColumnWidth(1),
+              3: FlexColumnWidth(2),
+            },
+            children: controller.lastPricesList
+                .map((price) => _buildTableRow(price))
+                .toList(),
           ),
-        ),
+          Divider(
+            color: AppColor.primaryColor,
+            thickness: 1,
+          ),
+        ],
       ),
     );
   }

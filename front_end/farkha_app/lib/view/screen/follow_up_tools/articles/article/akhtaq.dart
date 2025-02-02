@@ -1,6 +1,6 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/banner.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class Akhtaq extends StatelessWidget {
                     type:
                         'تربية الفراخ البيضاء يمكن أن تكون صعبة ومليئة بالتحديات، والتي يمكن أن تؤدي إلى ارتكاب أخطاء قد تؤثر على صحة وسلامة الفراخ. إليك  أخطاء شائعة في تربية الفراخ البيضاء :',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TypeArticle(
                     type:
                         'عدم توفير مساحة كافية للفراخ، مما يؤدي إلى الازدحام والإصابة بالأمراض.',

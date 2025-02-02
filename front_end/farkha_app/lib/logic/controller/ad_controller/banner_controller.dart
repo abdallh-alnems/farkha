@@ -58,7 +58,7 @@ class AdBannerController extends GetxController {
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
           Future.delayed(const Duration(seconds: 30), () {
-            _loadBannerAd(index); // إعادة تحميل الإعلان بعد 30 ثانية
+            _loadBannerAd(index);
           });
         },
       ),

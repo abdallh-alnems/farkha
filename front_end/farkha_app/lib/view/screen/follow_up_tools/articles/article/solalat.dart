@@ -1,10 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Solalat extends StatelessWidget {
   const Solalat({super.key});
@@ -24,7 +24,7 @@ class Solalat extends StatelessWidget {
                     type:
                         'تعتبر تربية الفراخ البيضاء أحد الأنشطة الزراعية الرئيسية في مصر، حيث تمتلك البلاد الإمكانيات الطبيعية والبشرية المناسبة لتحقيق هذا النوع من الإنتاج الداجني. وتتوفر في مصر عدة سلالات من الفراخ البيضاء والتي تختلف في مجالات مثل النمو الإنتاجية وجودة اللحم والبيض وفيما يلي نلقي نظرة على بعض السلالات الأكثر شيوعًا في مصر:',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TitleArticle(title: 'سلالة روس البيضاء (الاشهر)'),
                   TypeArticle(
                     type:

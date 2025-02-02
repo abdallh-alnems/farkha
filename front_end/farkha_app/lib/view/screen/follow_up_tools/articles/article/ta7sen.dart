@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Ta7sen extends StatelessWidget {
   const Ta7sen({super.key});
@@ -23,7 +23,7 @@ class Ta7sen extends StatelessWidget {
                     type:
                         'يتم تحصين الفراخ خلال الدورة ضد الأمراض الفيروسة مثل الجامبرو والنيوكاسل والأى بي فقط فهذه التحصينات عبارة عن فيروسات المرض يتم اعطاؤها للطائر لتكسبه مناعة ضد المرض لتلافي الاصابه به عند انتشار العدوى ويجود 3 تحصينات هامة ل 3 أمراض ويتم اعطاؤها كالتالي:',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TypeArticle(
                     type: 'عمر سبعة أيام يتم تحصين نيوكاسل أما هتشنر أو كلون .',
                   ),

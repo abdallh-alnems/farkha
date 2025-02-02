@@ -1,10 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Alardya extends StatelessWidget {
   const Alardya({super.key});
@@ -24,7 +24,7 @@ class Alardya extends StatelessWidget {
                     type:
                         'تعتبر الأرضية من أهم العوامل التي يجب الانتباه إليها في تربية الفراخ البيضاء   حيث تؤثر بشكل كبير على صحة وراحة الدجاج وإنتاجيتهم. وبالتالي، يجب اختيار الأرضية المناسبة التي تتناسب مع احتياجات الدجاج ومتطلباتهم.وفيما يلي نقاط يجب اتخاذها بعين الاعتبار عند اختيار الأرضية لتربية الفراخ البيضاء  :',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TitleArticle(title: 'نوع الأرضية'),
                   TypeArticle(
                     type:

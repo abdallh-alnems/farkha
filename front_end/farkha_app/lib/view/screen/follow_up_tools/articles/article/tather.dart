@@ -1,10 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Tather extends StatelessWidget {
   const Tather({super.key});
@@ -24,7 +24,7 @@ class Tather extends StatelessWidget {
                     type:
                         'برنامج تطهير مقترح لتنظيف وتطهير عنبر 500م2 إن تنظيف وتطهير المزرعة جيدا يعتبر أهم العوامل للحصول على نتائج   لذا يجب السماح بفترة كافية(أسبوعين على الأقل) بين انتهاء قطيع واستقبال قطيع جديد.يجب إتباع الإجراءات التالية للحصول على تنظيف وتطهير جيد للعنب',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TypeArticle(
                     type:
                         ' رش ملاثيون على الفرشة (2لتر/40 جيدة 0لتر ماء)  وذلك للقضاء على الحشرات والسوس المتواجد بالعنبر فور الإنتهاء من البيع',

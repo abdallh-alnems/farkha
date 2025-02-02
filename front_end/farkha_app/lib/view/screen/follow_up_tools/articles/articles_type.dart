@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/routes/route.dart';
 import '../../../../core/shared/card_title.dart';
-import '../../../widget/app/ad/banner/banner.dart';
-import '../../../widget/app/ad/native/ad_second_native.dart';
+import '../../../widget/app/ad/banner.dart';
+import '../../../widget/app/ad/native.dart';
 import '../../../widget/app/app_bar/custom_app_bar.dart';
 
 class ArticlesType extends StatelessWidget {
@@ -22,7 +22,7 @@ class ArticlesType extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 19).r,
-                    child: AdSecondNative(),
+                    child: AdNativeWidget(adIndex: 1),
                   ),
                   CardTitle(
                     text: "درجات الحرارة",

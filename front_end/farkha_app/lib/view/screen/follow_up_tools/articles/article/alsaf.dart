@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Alsaf extends StatelessWidget {
   const Alsaf({super.key});
@@ -24,7 +24,7 @@ class Alsaf extends StatelessWidget {
                       type:
                           'تتطلب تربية الفراخ البيضاء في فصل الصيف اهتمامًا خاصًا بسبب الظروف الجوية الحارة والجافة التي يمكن أن تؤثر على صحة ونمو الفراخ. فيما يلي نقاط مهمة حول تربية الفراخ البيضاء في الصيف:',
                     ),
-                    AdThirdNative(),
+                    AdNativeWidget(adIndex: 2),
                     TypeArticle(
                       type:
                           '1- توفير الظل: يجب توفير مكان ذي ظل للفراخ حتى يتمكنوا من الاستراحة في الأوقات الحارة من النهار.',

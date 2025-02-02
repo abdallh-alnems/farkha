@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/package/snackbar_utils.dart';
 import '../../../core/services/open_gmail.dart';
-import '../../widget/app/ad/banner/banner.dart';
+import '../../widget/app/ad/banner.dart';
 import '../../widget/app/app_bar/custom_app_bar.dart';
 import '../../widget/app/general/general_item.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class A3ard extends StatelessWidget {
   const A3ard({super.key});
@@ -25,7 +25,7 @@ class A3ard extends StatelessWidget {
                     type:
                         'تظهر أعراض المرض في شكل بطء في النمو مع شلل في الأرجل والأجنحة حيث يمشى الطائر بطريقه غير طبيعيه ثم يفقد بعد ذلك السيطرة على أرجله التي يحدث بها عرج ثم تلتوي أصابع الرجل مع تقوس مفصل الركبة وضمور عضلات الفخذ مع ظهور إسهال مائي مصفر اللون ذو رائحة كريهة مع عدم قدره الطائر على الحركة للوصول إلى المعالف والمساقي مما يحدث هزال شديد لهذه الطيور نتيجة للجوع والعطش وتموت كما انه قد تظهر الإصابة أحيانا في العين بتغير لونها إلى الرمادي مع اختفاء الخطوط الإشاعيه وتشوه القزاحيه وتقل قدرتها على الاستجابة للضوء وتضيق تدريجيا وقد يصاب الطائر بالعمى.',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TitleArticle(title: 'النيوكاسل'),
                   TypeArticle(
                     type:

@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Nasa7a extends StatelessWidget {
   const Nasa7a({super.key});
@@ -23,7 +23,7 @@ class Nasa7a extends StatelessWidget {
                     type:
                         'إذا كنت تخطط لتربية الفراخ البيضاء، فإليك بعض النصائح يمكن أن تفيدك في هذا الصدد:',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TypeArticle(
                     type:
                         'اختر مكانًا مناسبًا لتربية الفراخ البيضاء، يفضل أن يكون مكانًا نظيفًا وجافًا ومحميًا من الرياح والأمطار.',

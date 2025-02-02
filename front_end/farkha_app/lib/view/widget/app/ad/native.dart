@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../../../../logic/controller/ad_controller/banner_controller.dart';
+import '../../../../logic/controller/ad_controller/native_controller.dart';
 
-class AdBannerWidget extends StatefulWidget {
+class AdNativeWidget extends StatefulWidget {
   final int adIndex;
 
-  const AdBannerWidget({super.key, required this.adIndex});
+  const AdNativeWidget({super.key, required this.adIndex});
 
   @override
-  State<AdBannerWidget> createState() => _AdBannerWidgetState();
+  State<AdNativeWidget> createState() => _AdNativeWidgetState();
 }
 
-class _AdBannerWidgetState extends State<AdBannerWidget> {
-  late final AdBannerController adController;
+class _AdNativeWidgetState extends State<AdNativeWidget> {
+  late final AdNativeController adController;
 
   @override
   void initState() {
     super.initState();
-    adController = Get.find<AdBannerController>();
+    adController = Get.find<AdNativeController>();
     _loadAdIfNeeded();
   }
 
@@ -32,26 +32,26 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   Widget build(BuildContext context) {
     return Obx(() {
       final isAdLoaded = adController.isAdLoadedList[widget.adIndex].value;
-      final bannerAd = adController.bannerAds[widget.adIndex];
+      final nativeAd = adController.nativeAds[widget.adIndex];
 
-      return isAdLoaded && bannerAd != null
+      return isAdLoaded && nativeAd != null
           ? SizedBox(
-              height: bannerAd.size.height.toDouble(),
               width: double.infinity,
-              child: AdWidget(ad: bannerAd),
+              height: 350,
+              child: AdWidget(ad: nativeAd),
             )
           : const SizedBox();
     });
   }
 
   void _loadAdIfNeeded() {
-    if (widget.adIndex > 0 && widget.adIndex < adController.adIds.length) {
+    if (widget.adIndex >= 0 && widget.adIndex < adController.adIds.length) {
       adController.loadAd(widget.adIndex);
     }
   }
 
   void _disposeAdIfNeeded() {
-    if (widget.adIndex > 0 && widget.adIndex < adController.adIds.length) {
+    if (widget.adIndex >= 0 && widget.adIndex < adController.adIds.length) {
       adController.disposeAd(widget.adIndex);
     }
   }

@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../data/data_source/static/poultry_management_data.dart';
 import '../../../../../logic/controller/articles_controller.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Alida extends StatelessWidget {
   const Alida({super.key});
@@ -41,7 +41,7 @@ class Alida extends StatelessWidget {
                       type:
                           'يرتفع مستوى أنزيم الفوسفاتيز القاعدي في الليل ويعتبر هذا الأنزيم مهم في تطور الهيكل العظمي .دورة الظلام والضـوء سـتؤدي إلى زيـادة إفـراز هرمون ( الميلاثونين ) المهم في تطور الجهاز المناعي .تحسن نسبة التجانس تصبح الطيور متقاربة بالوزن ونسبة التجانس الجيدة هي 85% إذا انخفضت إلى 60% فتعتبر نسبة التجانس ضعيفة',
                     ),
-                    AdThirdNative(),
+                    AdNativeWidget(adIndex: 2),
                     Text(
                       'ملحوظة : يجب توزيع عدد ساعات الاظلام علي مدار اليوم بالتساوي',
                       style: TextStyle(color: Colors.red, fontSize: 11.sp),

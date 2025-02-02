@@ -1,9 +1,9 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Alrotoba extends StatelessWidget {
   const Alrotoba({
@@ -26,7 +26,7 @@ class Alrotoba extends StatelessWidget {
                       type:
                           'تربية الفراخ البيضاء تحتاج إلى اهتمام كبير بمستوى الرطوبة في البيئة التي تعيش فيها، حيث يؤثر ارتفاع أو انخفاض الرطوبة على صحة الفراخ ونموها. فيما يلي نقاط مهمة حول الرطوبة في تربية الفراخ البيضاء:',
                     ),
-                    AdThirdNative(),
+                    AdNativeWidget(adIndex: 2),
                     TypeArticle(
                       type:
                           '1- مستوى الرطوبة المناسب: يجب أن يتراوح مستوى الرطوبة في بيئة تربية الفراخ بين 50-70%، حيث إن ارتفاع الرطوبة يزيد من احتمالية ظهور الأمراض الفطرية والجراثيم، في حين يؤدي انخفاض الرطوبة إلى جفاف الجلد والأنسجة الحساسة للفراخ.',

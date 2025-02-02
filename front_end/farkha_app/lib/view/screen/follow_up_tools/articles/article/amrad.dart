@@ -1,10 +1,10 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
+import '../../../../widget/app/ad/banner.dart';
 
 class Amard extends StatelessWidget {
   const Amard({super.key});
@@ -25,7 +25,7 @@ class Amard extends StatelessWidget {
                     type:
                         'مرض الماريك هو مرض فيروسي سرطاني خبيث كابت للمناعة يصب الدواجن ابتداء من عمر 6 أسابيع ولكنه ينتشر عاده في الدجاج البالغ ما بين 12-24 أسبوع وفترة حضانة المرض حوالي 6 أسابيع والمرض وبائي شديد العدوه حيث تصل نسبه النفوق في القطعان الغير محصنه إلى حوالي 10-30% وقد تصل أحيانا إلى 80%.',
                   ),
-                  AdThirdNative(),
+                  AdNativeWidget(adIndex: 2),
                   TitleArticle(title: 'النيوكاسل'),
                   TypeArticle(
                     type:

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/follow_up_tools_controller/broiler_controller.dart';
-import '../../widget/app/ad/banner/banner.dart';
+import '../../widget/app/ad/banner.dart';
 import '../../widget/app/app_bar/custom_app_bar.dart';
 import '../../widget/app/follow_up_tools/broiler_chicken_requirements/items_broiler_chicken_requirements.dart';
 

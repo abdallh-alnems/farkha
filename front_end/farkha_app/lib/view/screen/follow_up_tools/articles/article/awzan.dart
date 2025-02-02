@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../data/data_source/static/poultry_management_data.dart';
 import '../../../../../logic/controller/articles_controller.dart';
-import '../../../../widget/app/ad/banner/banner.dart';
-import '../../../../widget/app/ad/native/ad_third_native.dart';
+import '../../../../widget/app/ad/banner.dart';
+import '../../../../widget/app/ad/native.dart';
 import '../../../../widget/app/app_bar/custom_app_bar.dart';
 import '../../../../widget/app/follow_up_tools/articles/title_article.dart';
 import '../../../../widget/app/follow_up_tools/articles/type_article.dart';
@@ -49,7 +49,7 @@ class Awzan extends StatelessWidget {
                       type:
                           '5 - التخلص من الإجهاد: يجب تقليل مصادر الضوضاء والاضطرابات في البيئة المحيطة بالفراخ، وتجنب التعرض للإجهاد بشكل عام.',
                     ),
-                    AdThirdNative(),
+                    AdNativeWidget(adIndex: 2),
                     Text(
                       'ملحوظة : يجب وزن عشر فرخات ثم القسمه علي عشره ليكون المتوسط كالتالي',
                       style: TextStyle(color: Colors.red, fontSize: 11.sp),

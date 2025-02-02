@@ -10,7 +10,7 @@ class CustomDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 13),
+      padding: const EdgeInsets.only(top: 11),
       child: Row(
         children: [
           Expanded(
