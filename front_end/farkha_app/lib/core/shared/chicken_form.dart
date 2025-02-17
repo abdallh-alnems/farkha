@@ -46,10 +46,6 @@ class ChickenForm extends StatelessWidget {
                   _buildInputRow(),
                   if (showButton) _buildSubmitButton(),
                   ...children,
-                  Padding(
-                    padding: const EdgeInsets.only(top: 11),
-                    child: AdNativeWidget(adIndex: 2),
-                  ),
                 ],
               ),
             ),
@@ -59,6 +55,7 @@ class ChickenForm extends StatelessWidget {
     );
   }
 
+  /// ويدجت الإعلان
   Widget _buildAdWidget() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 9.h),
@@ -66,6 +63,7 @@ class ChickenForm extends StatelessWidget {
     );
   }
 
+  /// ويدجت حقل الإدخال والقائمة المنسدلة
   Widget _buildInputRow() {
     return Row(
       children: [
@@ -89,6 +87,7 @@ class ChickenForm extends StatelessWidget {
     );
   }
 
+  /// ويدجت القائمة المنسدلة
   Widget _buildDropdown() {
     return Expanded(
       child: DropdownButtonFormField<dynamic>(
@@ -103,6 +102,7 @@ class ChickenForm extends StatelessWidget {
     );
   }
 
+  /// ويدجت زر الإرسال
   Widget _buildSubmitButton() {
     return Padding(
       padding: EdgeInsets.only(top: 17.h),

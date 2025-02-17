@@ -24,6 +24,7 @@ class AdManager {
 
   static String get nativeSecond =>
       _isTest ? _testNative : "ca-app-pub-8595701567488603/1075378798";
+      
 
   static String get nativeThird =>
       _isTest ? _testNative : "ca-app-pub-8595701567488603/1164528612";

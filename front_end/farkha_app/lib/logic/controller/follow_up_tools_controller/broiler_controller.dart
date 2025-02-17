@@ -7,7 +7,7 @@ import '../../../core/class/status_request.dart';
 import '../../../core/functions/handing_data_controller.dart';
 import '../../../core/services/permission.dart';
 import '../../../core/services/weather.dart';
-import '../../../data/data_source/static/poultry_management_data.dart';
+import '../../../data/data_source/static/growth_parameters.dart';
 
 class BroilerController extends GetxController {
   final TextEditingController chickensCountController = TextEditingController();

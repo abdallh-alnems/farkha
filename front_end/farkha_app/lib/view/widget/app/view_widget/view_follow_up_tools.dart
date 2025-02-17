@@ -40,9 +40,7 @@ class ViewHomeFollowUpTools extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BigCard(
-              onTap: () {
-                SnackbarUtils.showSnackbar();
-              },
+              onTap: () => Get.toNamed(AppRoute.diseases),
               image: ImageAsset.diseases,
               text: "الامراض",
             ),

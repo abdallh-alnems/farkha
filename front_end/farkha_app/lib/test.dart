@@ -1,25 +1,36 @@
-// import 'dart:convert';
-// import 'package:dartz/dartz.dart';
-// import 'package:http/http.dart' as http;
-// import '../constant/headers.dart';
-// import 'status_request.dart';
+// import 'package:flutter/material.dart';
+// import '../../../core/constant/theme/color.dart';
+// import '../../widget/app/app_bar/custom_app_bar.dart';
 
-// class Crud {
-//   Future<Either<StatusRequest, Map>> postData(String linkUrl, Map data) async {
-//     Map<String, String> myHeaders = getMyHeaders();
-//     if (await checkInternet()) {
-//       var response =
-//           await http.post(Uri.parse(linkUrl), headers: myHeaders, body: data);
+// class Diseases extends StatelessWidget {
+//   const Diseases({super.key});
 
-//       if (response.statusCode == 200 || response.statusCode == 201) {
-//         Map responseBody = jsonDecode(response.body);
-
-//         return Right(responseBody);
-//       } else {
-//         return const Left(StatusRequest.serverFailure);
-//       }
-//     } else {
-//       return const Left(StatusRequest.offlineFailure);
-//     }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Column(
+//         children: [
+//           CustomAppBar(text: "الامراض"),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 23, vertical: 23),
+//             child: Container(
+//               color: AppColor.primaryColor,
+//               height: 130,
+//               width: double.infinity,
+//               child: Column(
+//                 children: [
+//                   SizedBox(height: 7),
+//                   Text(
+//                     "الاعراض",
+//                     style: TextStyle(color: Colors.white),
+//                   )
+//                 ],
+//               ),
+//             ),
+//           )
+//         ],
+//       ),
+//     );
 //   }
 // }
+  

@@ -1,6 +1,9 @@
-import '../../../view/screen/calculate/feasibility_study/how_to_do_a_feasibility_study.dart';
+import '../../../view/screen/follow_up_tools/disease/disease_details.dart';
+import '../../../view/screen/follow_up_tools/disease/diseases.dart';
+import '../../../view/screen/follow_up_tools/disease/diagnosis_diseases.dart';
 import 'route.dart';
 import 'package:get/get.dart';
+import '../../../view/screen/calculate/feasibility_study/how_to_do_a_feasibility_study.dart';
 import '../../../view/screen/main_page.dart';
 import '../../../view/screen/prices/main_types.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
@@ -82,6 +85,26 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.downToUp,
   ),
 
+  // ! disease
+  GetPage(
+    name: AppRoute.diseases,
+    page: () => Disease(),
+    transition: Transition.downToUp,
+  ),
+
+  GetPage(
+    name: AppRoute.diseaseDetails,
+    page: () => DiseaseDetails(),
+    transition: Transition.rightToLeft,
+  ),
+
+  // ! diagnosis diseases
+  GetPage(
+    name: AppRoute.questionDisease,
+    page: () => DiagnosisDiseases(),
+    transition: Transition.rightToLeft,
+  ),
+
   // =============================== calculate =================================
 
   // ! feasibility study
@@ -91,7 +114,7 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.downToUp,
   ),
 
-   GetPage(
+  GetPage(
     name: AppRoute.howToDoAFeasibilityStudy,
     page: () => HowToDoAFeasibilityStudy(),
     transition: Transition.downToUp,

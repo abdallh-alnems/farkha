@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/follow_up_tools_controller/broiler_controller.dart';
 import '../../widget/app/ad/banner.dart';
+import '../../widget/app/ad/native.dart';
 import '../../widget/app/app_bar/custom_app_bar.dart';
 import '../../widget/app/follow_up_tools/broiler_chicken_requirements/items_broiler_chicken_requirements.dart';
 
@@ -40,6 +41,10 @@ class BroilerChickenRequirements extends StatelessWidget {
             }).toList(),
             children: const [
               ItemsBroilerChickenRequirements(),
+              Padding(
+                padding:  EdgeInsets.only(top: 11),
+                child: AdNativeWidget(adIndex: 2),
+              )
             ],
           ),
         ],

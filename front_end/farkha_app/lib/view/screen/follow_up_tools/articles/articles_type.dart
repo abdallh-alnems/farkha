@@ -20,6 +20,7 @@ class ArticlesType extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(height: 11),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 19).r,
                     child: AdNativeWidget(adIndex: 1),

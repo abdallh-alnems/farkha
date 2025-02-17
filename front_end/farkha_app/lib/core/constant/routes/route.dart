@@ -19,12 +19,19 @@ class AppRoute {
   static const String broilerChickenRequirements =
       "/broilerChickenRequirements";
 
+  // ! disease
+  static const String diseases = "/diseases";
+  static const String diseaseDetails = "/diseaseDetails";
+
+  // ! diagnosis diseases
+  static const String questionDisease = "/questionDisease";
+
   // =============================== calculate =================================
 
   // ! feasibility study
   static const String feasibilityStudy = "/feasibilityStudy";
   static const String howToDoAFeasibilityStudy = "/howToDoAFeasibilityStudy";
-  
+
   static const String chickenDensity = "/chickenDensity";
   static const String feedConsumption = "/feedConsumption";
 

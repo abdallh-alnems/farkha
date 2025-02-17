@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../data/data_source/static/poultry_management_data.dart';
+import '../../../data/data_source/static/growth_parameters.dart';
 
 class FeedConsumptionController extends GetxController {
   final TextEditingController textController = TextEditingController();

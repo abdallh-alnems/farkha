@@ -1,7 +1,6 @@
 import 'package:farkha_app/core/constant/image_asset.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:launch_review/launch_review.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constant/routes/route.dart';
@@ -63,7 +62,7 @@ class General extends StatelessWidget {
           ),
           GeneralItem(
             onTap: () {
-              LaunchReview.launch();
+            SnackbarUtils.showSnackbar();
             },
             title: 'قيمنا ',
             icon: Icons.star,
