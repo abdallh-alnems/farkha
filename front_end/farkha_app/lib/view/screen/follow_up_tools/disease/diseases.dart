@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../widget/app/ad/banner.dart';
-import '../../../widget/app/ad/native.dart';
-import '../../../widget/app/app_bar/custom_app_bar.dart';
-import '../../../widget/app/follow_up_tools/disease/disease_card.dart';
-import '../../../widget/app/follow_up_tools/disease/question_card.dart';
+import '../../../widget/ad/banner.dart';
+import '../../../widget/ad/native.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/disease/disease_card.dart';
+import '../../../widget/follow_up_tools/disease/question_card.dart';
 
 class Disease extends StatelessWidget {
   const Disease({super.key});

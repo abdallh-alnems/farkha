@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/routes/route.dart';
 import '../../../../core/shared/card_title.dart';
-import '../../../widget/app/ad/banner.dart';
-import '../../../widget/app/ad/native.dart';
-import '../../../widget/app/app_bar/custom_app_bar.dart';
+import '../../../widget/ad/banner.dart';
+import '../../../widget/ad/native.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
 
 class ArticlesType extends StatelessWidget {
   const ArticlesType({super.key});

@@ -14,23 +14,11 @@ class AdNativeController extends GetxController {
   ];
 
   @override
-  void onInit() {
-    super.onInit();
-    _loadAllNativeAds();
-  }
-
-  @override
   void onClose() {
     for (var ad in nativeAds) {
       ad?.dispose();
     }
     super.onClose();
-  }
-
-  void _loadAllNativeAds() {
-    for (int i = 0; i < adIds.length; i++) {
-      _loadNativeAd(i);
-    }
   }
 
   void loadAd(int index) {

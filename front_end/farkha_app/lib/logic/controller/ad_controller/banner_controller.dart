@@ -13,23 +13,11 @@ class AdBannerController extends GetxController {
   ];
 
   @override
-  void onInit() {
-    super.onInit();
-    _loadAllBannerAds();
-  }
-
-  @override
   void onClose() {
     for (var ad in bannerAds) {
       ad?.dispose();
     }
     super.onClose();
-  }
-
-  void _loadAllBannerAds() {
-    for (int i = 0; i < adIds.length; i++) {
-      _loadBannerAd(i);
-    }
   }
 
   void loadAd(int index) {

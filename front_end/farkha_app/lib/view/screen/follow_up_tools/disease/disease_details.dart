@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../data/model/disease_model/disease_model.dart';
-import '../../../widget/app/ad/banner.dart';
-import '../../../widget/app/ad/native.dart';
-import '../../../widget/app/app_bar/custom_app_bar.dart';
-import '../../../widget/app/follow_up_tools/disease/disease_details.dart';
+import '../../../widget/ad/banner.dart';
+import '../../../widget/ad/native.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/disease/disease_details.dart';
 
 class DiseaseDetails extends StatelessWidget {
   const DiseaseDetails({super.key});

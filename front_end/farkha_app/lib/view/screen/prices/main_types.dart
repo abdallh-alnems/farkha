@@ -5,9 +5,9 @@ import '../../../core/class/handling_data.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/shared/card_title.dart';
 import '../../../logic/controller/price_controller/main_types_controller.dart';
-import '../../widget/app/ad/banner.dart';
-import '../../widget/app/ad/native.dart';
-import '../../widget/app/app_bar/custom_app_bar.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
+import '../../widget/app_bar/custom_app_bar.dart';
 
 class MainTypes extends StatelessWidget {
   const MainTypes({super.key});

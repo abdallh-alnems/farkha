@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/theme/color.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
-import '../../../widget/app/ad/banner.dart';
-import '../../../widget/app/calculate/feasibility_study_content.dart';
-import '../../../widget/app/app_bar/custom_app_bar.dart';
+import '../../../widget/ad/banner.dart';
+import '../../../widget/calculate/feasibility_study_content.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
 
 class HowToDoAFeasibilityStudy extends StatelessWidget {
   const HowToDoAFeasibilityStudy({super.key});

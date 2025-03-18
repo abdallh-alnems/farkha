@@ -9,7 +9,6 @@ class ApiLinks {
   static String mainTypes = '$_serverName/read/main.php';
   static String lastPrices = '$_serverName/read/last_prices.php';
   static String feasibilityStudy = '$_serverName/read/feasibility_study.php';
-  static String webLastPrices = '$_serverName/read/web_last_prices.php';
 
   // =============================== suggestion ================================
   static String suggestion = '$_serverName/suggestion.php';

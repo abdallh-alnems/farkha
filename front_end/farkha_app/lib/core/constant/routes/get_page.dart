@@ -1,10 +1,12 @@
+import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/follow_up_tools/disease/disease_details.dart';
 import '../../../view/screen/follow_up_tools/disease/diseases.dart';
 import '../../../view/screen/follow_up_tools/disease/diagnosis_diseases.dart';
+import '../../../view/screen/cycle/add_cycle.dart';
+import '../../../view/screen/home.dart';
 import 'route.dart';
 import 'package:get/get.dart';
 import '../../../view/screen/calculate/feasibility_study/how_to_do_a_feasibility_study.dart';
-import '../../../view/screen/main_page.dart';
 import '../../../view/screen/prices/main_types.dart';
 import '../../../view/screen/calculate/chicken_density.dart';
 import '../../../view/screen/calculate/feed_consumption.dart';
@@ -38,7 +40,7 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(
     name: "/",
-    page: () => MainPage(),
+    page: () => Home(),
   ),
 
   // ============================== Test =======================================
@@ -51,12 +53,25 @@ List<GetPage<dynamic>> pages = [
     page: () => LastPrices(),
     transition: Transition.rightToLeft,
   ),
+  
   GetPage(
     name: AppRoute.mainTypes,
     page: () => MainTypes(),
     transition: Transition.rightToLeft,
   ),
 
+  // ! cycle
+  GetPage(
+    name: AppRoute.addCycle,
+    page: () => AddCycle(),
+    transition: Transition.rightToLeft,
+  ),
+
+  GetPage(
+    name: AppRoute.cycle,
+    page: () => Cycle(),
+    transition: Transition.rightToLeft,
+  ),
   // ================================ general ==================================
 
   GetPage(

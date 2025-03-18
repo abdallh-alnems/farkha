@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/routes/route.dart';
-import '../../../widget/app/ad/banner.dart';
-import '../../../widget/app/calculate/calculate_result.dart';
+import '../../../widget/ad/banner.dart';
+import '../../../widget/calculate/calculate_result.dart';
 import '../../../../core/shared/chicken_form.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
-import '../../../widget/app/app_bar/custom_app_bar.dart';
-import '../../../widget/app/calculate/feasibility_study_title.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/calculate/feasibility_study_title.dart';
 
 class FeasibilityStudy extends StatelessWidget {
   FeasibilityStudy({super.key});
@@ -24,17 +24,14 @@ class FeasibilityStudy extends StatelessWidget {
           ChickenForm(
             controller: controller.countController,
             notShowDropdownButton: true.obs,
+            showButton: true,
+            buttonOnPressed: () {
+              FocusScope.of(context).unfocus();
+              controller.calculateFeasibility();
+            },
+            buttonText: "احسب دراسة الجدوي",
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 19, bottom: 17).r,
-                child: ElevatedButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    controller.calculateFeasibility();
-                  },
-                  child: Text("احسب دراسة الجدوي"),
-                ),
-              ),
+             
               Obx(() {
                 if (controller.showResults.value) {
                   return HandlingDataView(
@@ -64,7 +61,7 @@ class FeasibilityStudy extends StatelessWidget {
               Get.toNamed(AppRoute.howToDoAFeasibilityStudy);
             },
             child: Text(
-              "كيف يتم عمل دراسة الجدوي",
+              "! كيف يتم عمل دراسة الجدوي",
               style: TextStyle(color: Colors.black),
             ),
           ),

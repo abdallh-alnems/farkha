@@ -8,6 +8,10 @@ class AppRoute {
   static const String lastPrices = "/lastPrices";
   static const String mainTypes = "/mainTypes";
 
+  // ! cycle
+  static const String addCycle = "/addCycle";
+  static const String cycle = "/cycle";
+
   // ================================ general ==================================
 
   static const String general = "/general";

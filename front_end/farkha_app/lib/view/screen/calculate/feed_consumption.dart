@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../widget/app/ad/banner.dart';
-import '../../widget/app/ad/native.dart';
-import '../../widget/app/calculate/calculate_result.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
+import '../../widget/calculate/calculate_result.dart';
 import '../../../core/shared/chicken_form.dart';
 import '../../../logic/controller/calculate_controller/feed_consumption_controller.dart';
-import '../../widget/app/app_bar/custom_app_bar.dart';
-import '../../widget/app/calculate/feed_toggle_button.dart';
+import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/calculate/feed_toggle_button.dart';
 
 class FeedConsumption extends StatelessWidget {
   const FeedConsumption({super.key});

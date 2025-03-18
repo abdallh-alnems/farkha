@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../logic/controller/follow_up_tools_controller/disease_controller.dart';
-import '../../../widget/app/app_bar/custom_app_bar.dart';
-import '../../../widget/app/follow_up_tools/disease/diagnosis_diseases/disease_answer.dart';
-import '../../../widget/app/follow_up_tools/disease/diagnosis_diseases/questions.dart';
-import '../../../widget/app/follow_up_tools/disease/diagnosis_diseases/symptom_selection.dart';
+import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/follow_up_tools/disease/diagnosis_diseases/disease_answer.dart';
+import '../../../widget/follow_up_tools/disease/diagnosis_diseases/questions.dart';
+import '../../../widget/follow_up_tools/disease/diagnosis_diseases/symptom_selection.dart';
 
 class DiagnosisDiseases extends StatelessWidget {
   final DiagnosisDiseasesController controller =
