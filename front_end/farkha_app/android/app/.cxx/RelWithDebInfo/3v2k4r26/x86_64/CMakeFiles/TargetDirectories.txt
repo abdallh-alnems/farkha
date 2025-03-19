@@ -1,2 +1,0 @@
-/mnt/myData/studio projects/farkha/front_end/farkha_app/android/app/.cxx/RelWithDebInfo/3v2k4r26/x86_64/CMakeFiles/rebuild_cache.dir
-/mnt/myData/studio projects/farkha/front_end/farkha_app/android/app/.cxx/RelWithDebInfo/3v2k4r26/x86_64/CMakeFiles/edit_cache.dir

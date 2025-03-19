@@ -4,18 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class GetMinVersionController extends GetxController {
   String minAppVersion = '';
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchMinAppVersion();
-  }
 
   Future<void> fetchMinAppVersion() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('app_settings')
-        .doc('min_version')
-        .get();
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('app_settings')
+            .doc('min_version')
+            .get();
 
     minAppVersion = snapshot.get('version_info');
+  
   }
 }
