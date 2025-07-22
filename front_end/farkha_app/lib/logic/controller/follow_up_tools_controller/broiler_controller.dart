@@ -29,7 +29,7 @@ class BroilerController extends GetxController {
 
   late int dailyFeedConsumption;
   late double totalFeedConsumption;
-  late String ageHumidityRange;
+  String ageHumidityRange = "";
   late int chickensPerSquareMeter;
   final RxDouble requiredArea = 0.0.obs;
   late double collegeArea;
@@ -71,12 +71,13 @@ class BroilerController extends GetxController {
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
         Position position = await Geolocator.getCurrentPosition(
-            locationSettings: LocationSettings(
-          accuracy: LocationAccuracy.high,
-        ));
+          locationSettings: LocationSettings(accuracy: LocationAccuracy.high),
+        );
 
         List<Placemark> placemarks = await placemarkFromCoordinates(
-            position.latitude, position.longitude);
+          position.latitude,
+          position.longitude,
+        );
 
         if (placemarks.isNotEmpty) {
           currentRegion.value = placemarks[0].locality!;
@@ -99,6 +100,22 @@ class BroilerController extends GetxController {
     } catch (e) {
       statusRequest = StatusRequest.failure;
     }
+  }
+
+  void reset() {
+    chickensCountController.clear();
+    selectedChickenAge.value = null;
+    statusRequest = StatusRequest.none;
+    currentTemperature.value = 0.0;
+    currentHumidity.value = 0;
+    currentWindSpeed.value = 0.0;
+    ageTemperature.value = 0;
+    // الحقول اللاحقة مجرد متغيرات عادية:
+    ageHumidityRange = '';
+    chickensPerSquareMeter = 0;
+    showData.value = false;
+    requiredArea.value = 0.0;
+    collegeArea = 0.0;
   }
 
   void ageOfChickens() {
@@ -145,8 +162,10 @@ class BroilerController extends GetxController {
   void calculateArea() {
     final int? chickens = int.tryParse(chickensCountController.text);
 
-    requiredArea.value =
-        (chickens! / chickensPerSquareMeter).clamp(1, double.infinity);
+    requiredArea.value = (chickens! / chickensPerSquareMeter).clamp(
+      1,
+      double.infinity,
+    );
 
     collegeArea = (chickens / 10).clamp(1, double.infinity);
   }

@@ -12,32 +12,39 @@ class ViewCalculate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const CustomDivider(
-          text: "احسب",
-        ),
+        const CustomDivider(text: "احسب"),
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 11),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SmallCard(
-                onTap: () => Get.toNamed(AppRoute.chickenDensity),
-                image: ImageAsset.birdDensity,
-                text: "كثافة الفراخ",
-              ),
-              SmallCard(
-                onTap: () => Get.toNamed(AppRoute.feedConsumption),
-                image: ImageAsset.feedConsumption,
-                text: "استهلاك العلف",
-              ),
-              SmallCard(
-                onTap: () {
-                  Get.toNamed(AppRoute.feasibilityStudy);
-                },
-                image: ImageAsset.feasibilityStudy,
-                text: "دراسة جدوي",
-              ),
-            ],
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                SmallCard(
+                  onTap: () {
+                    Get.toNamed(AppRoute.fcr);
+                  },
+                  image: ImageAsset.feasibilityStudy,
+                  text: "FCR",
+                ),
+                SmallCard(
+                  onTap: () => Get.toNamed(AppRoute.chickenDensity),
+                  image: ImageAsset.birdDensity,
+                  text: "كثافة الفراخ",
+                ),
+                SmallCard(
+                  onTap: () => Get.toNamed(AppRoute.feedConsumption),
+                  image: ImageAsset.feedConsumption,
+                  text: "استهلاك العلف",
+                ),
+                SmallCard(
+                  onTap: () {
+                    Get.toNamed(AppRoute.feasibilityStudy);
+                  },
+                  image: ImageAsset.feasibilityStudy,
+                  text: "دراسة جدوي",
+                ),
+              ],
+            ),
           ),
         ),
       ],

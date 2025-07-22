@@ -15,16 +15,16 @@ class General extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(
-            text: "عام",
-            arrowDirection: false,
-          ),
+          CustomAppBar(text: "عام", arrowDirection: false),
           GeneralItem(
-            onTap: () => Share.share(
-                'حمل تطبيق فرخة \n https://play.google.com/store/apps/details?id=ni.nims.frkha'),
+            onTap:
+                () => Share.share(
+                  'حمل تطبيق فرخة \n https://play.google.com/store/apps/details?id=ni.nims.frkha',
+                ),
             title: 'مشاركة التطبيق',
             icon: Icons.share,
           ),
@@ -61,8 +61,8 @@ class General extends StatelessWidget {
             color: Colors.blue,
           ),
           GeneralItem(
-            onTap: () {
-            SnackbarUtils.showSnackbar();
+            onTap: ()  {
+
             },
             title: 'قيمنا ',
             icon: Icons.star,
@@ -78,36 +78,31 @@ class General extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    launchUrl(Uri.parse(
-                        'https://www.facebook.com/share/19u7rfbpcY/'));
+                    launchUrl(
+                      Uri.parse('https://www.facebook.com/share/19u7rfbpcY/'),
+                    );
                   },
-                  child: Image.asset(
-                    ImageAsset.facebook,
-                    scale: 4.5,
-                  ),
+                  child: Image.asset(ImageAsset.facebook, scale: 4.5),
                 ),
                 GestureDetector(
                   onTap: () {
                     launchUrl(Uri.parse('https://nims.website/'));
                   },
-                  child: Image.asset(
-                    ImageAsset.web,
-                    scale: 4.5,
-                  ),
+                  child: Image.asset(ImageAsset.web, scale: 4.5),
                 ),
                 GestureDetector(
                   onTap: () {
-                    launchUrl(Uri.parse(
-                        'https://whatsapp.com/channel/0029Vb3K1qa9xVJYrMm7fM3E'));
+                    launchUrl(
+                      Uri.parse(
+                        'https://whatsapp.com/channel/0029Vb3K1qa9xVJYrMm7fM3E',
+                      ),
+                    );
                   },
-                  child: Image.asset(
-                    ImageAsset.whatsApp,
-                    scale: 4.5,
-                  ),
+                  child: Image.asset(ImageAsset.whatsApp, scale: 4.5),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
       bottomNavigationBar: const AdBannerWidget(adIndex: 1),

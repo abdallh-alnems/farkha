@@ -1,4 +1,6 @@
+import '../../../view/screen/calculate/fcr.dart';
 import '../../../view/screen/cycle/cycle.dart';
+import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
 import '../../../view/screen/follow_up_tools/disease/disease_details.dart';
 import '../../../view/screen/follow_up_tools/disease/diseases.dart';
 import '../../../view/screen/follow_up_tools/disease/diagnosis_diseases.dart';
@@ -37,11 +39,7 @@ import '../../../view/screen/follow_up_tools/articles/article/al3lag.dart';
 
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
-
-  GetPage(
-    name: "/",
-    page: () => Home(),
-  ),
+  GetPage(name: "/", page: () => Home()),
 
   // ============================== Test =======================================
 
@@ -53,14 +51,14 @@ List<GetPage<dynamic>> pages = [
     page: () => LastPrices(),
     transition: Transition.rightToLeft,
   ),
-  
+
   GetPage(
     name: AppRoute.mainTypes,
     page: () => MainTypes(),
     transition: Transition.rightToLeft,
   ),
 
-  // ! cycle
+  // ================================ cycle ====================================
   GetPage(
     name: AppRoute.addCycle,
     page: () => AddCycle(),
@@ -72,8 +70,14 @@ List<GetPage<dynamic>> pages = [
     page: () => Cycle(),
     transition: Transition.rightToLeft,
   ),
-  // ================================ general ==================================
 
+  GetPage(
+    name: AppRoute.cycleStatsBarExplanation,
+    page: () => CycleStatsBarExplanation(),
+    transition: Transition.rightToLeft,
+  ),
+
+  // ================================ general ==================================
   GetPage(
     name: AppRoute.general,
     page: () => General(),
@@ -87,7 +91,6 @@ List<GetPage<dynamic>> pages = [
   ),
 
   // ========================== view follow up tools ===========================
-
   GetPage(
     name: AppRoute.articlesType,
     page: () => ArticlesType(),
@@ -147,8 +150,13 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.downToUp,
   ),
 
-  // ================================ articles =================================
+  GetPage(
+    name: AppRoute.fcr,
+    page: () => Fcr(),
+    transition: Transition.downToUp,
+  ),
 
+  // ================================ articles =================================
   GetPage(
     name: AppRoute.dartgetAl7rara,
     page: () => const DartgetAl7rara(),

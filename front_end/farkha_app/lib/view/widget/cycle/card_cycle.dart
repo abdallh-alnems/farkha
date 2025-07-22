@@ -1,10 +1,11 @@
-import 'package:farkha_app/core/constant/routes/route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/theme/color.dart';
 import '../../../core/constant/image_asset.dart';
-import '../../../core/package/snackbar_utils.dart';
+import '../../../logic/controller/cycle_controller.dart';
 
 class CardCycle extends StatelessWidget {
   const CardCycle({super.key});
@@ -12,7 +13,22 @@ class CardCycle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.toNamed(AppRoute.addCycle),
+      onTap: () {
+        Get.put(CycleController());
+
+        final storage = GetStorage();
+
+        final storedCycles = storage.read('cycles');
+
+        if (storedCycles != null &&
+            storedCycles is List &&
+            storedCycles.isNotEmpty) {
+          Get.toNamed(AppRoute.cycle);
+        } else {
+          Get.toNamed(AppRoute.addCycle, arguments: {'fromHome': true});
+        }
+      },
+
       child: Container(
         width: 149.w,
         height: 45.h,
@@ -23,17 +39,15 @@ class CardCycle extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset(
-              ImageAsset.addCycle,
-              scale: 2.3,
-            ),
+            Image.asset(ImageAsset.addCycle, scale: 2.3),
             Text(
               "اضف دورة",
               style: TextStyle(
-                  fontSize: 17.sp,
-                  color: AppColor.primaryColor,
-                  fontWeight: FontWeight.w600),
-            )
+                fontSize: 17.sp,
+                color: AppColor.primaryColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),

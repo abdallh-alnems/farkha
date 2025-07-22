@@ -8,7 +8,7 @@ import '../../../widget/calculate/calculate_result.dart';
 import '../../../../core/shared/chicken_form.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
-import '../../../widget/calculate/feasibility_study_title.dart';
+import '../../../widget/calculate/feasibility_study/feasibility_study_title.dart';
 
 class FeasibilityStudy extends StatelessWidget {
   FeasibilityStudy({super.key});

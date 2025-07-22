@@ -5,4 +5,3 @@ class AppColor {
   static const Color secondaryColor = Color(0xffDAE2E3);
   static Color appBackGroundColor = Color(0xffF1F1F1);
 }
-

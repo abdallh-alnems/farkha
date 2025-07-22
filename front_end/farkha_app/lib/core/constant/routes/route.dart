@@ -3,14 +3,15 @@ class AppRoute {
 
   static const String test = "/test";
   static const String adad = "/adad";
-  // ================================ prices ===================================
-
+  // ================================ prices and cycle ===================================
+  // ! prices
   static const String lastPrices = "/lastPrices";
   static const String mainTypes = "/mainTypes";
 
   // ! cycle
   static const String addCycle = "/addCycle";
   static const String cycle = "/cycle";
+  static const String cycleStatsBarExplanation = "/cycleStatsBarExplanation";
 
   // ================================ general ==================================
 
@@ -38,6 +39,7 @@ class AppRoute {
 
   static const String chickenDensity = "/chickenDensity";
   static const String feedConsumption = "/feedConsumption";
+  static const String fcr = "/fcr";
 
   // ================================ articles =================================
 

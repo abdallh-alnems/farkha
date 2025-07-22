@@ -33,7 +33,7 @@ class Home extends StatelessWidget {
                 Upgrade(),
                 CardPriceFarkhAbidHome(),
                 ViewPricesAndCycle(),
-                AdNativeWidget(adIndex: 0),
+            //    AdNativeWidget(adIndex: 0),
                 ViewCalculate(),
                 ViewHomeFollowUpTools(),
                 PointsOfSale(),
@@ -43,7 +43,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const AdBannerWidget(adIndex: 0),
+   //   bottomNavigationBar: const AdBannerWidget(adIndex: 0),
     );
   }
 }

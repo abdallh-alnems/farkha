@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constant/theme/color.dart';
-import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
-import '../ad/native.dart';
+import '../../../../../core/constant/theme/color.dart';
+import '../../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
+import '../../ad/native.dart';
 import 'feasibility_study_title.dart';
 
 class FeasibilityStudyContent extends StatelessWidget {

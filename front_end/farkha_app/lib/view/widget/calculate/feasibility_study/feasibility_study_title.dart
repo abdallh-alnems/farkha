@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
+import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
 
 class ResultTitle extends GetView<FeasibilityController> {
   final String title;

@@ -4,7 +4,7 @@ import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/theme/color.dart';
 import '../../../../logic/controller/calculate_controller/feasibility_study_controller.dart';
 import '../../../widget/ad/banner.dart';
-import '../../../widget/calculate/feasibility_study_content.dart';
+import '../../../widget/calculate/feasibility_study/feasibility_study_content.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 
 class HowToDoAFeasibilityStudy extends StatelessWidget {

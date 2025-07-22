@@ -34,5 +34,4 @@ Future<void> initialServices() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
- // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }
