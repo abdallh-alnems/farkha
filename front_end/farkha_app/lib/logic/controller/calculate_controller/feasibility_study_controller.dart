@@ -39,11 +39,13 @@ class FeasibilityController extends GetxController {
       var response = await _feasibilityDataService.getData();
       statusRequest = handlingData(response);
 
-      if (statusRequest == StatusRequest.success &&
-          response['status'] == "success") {
-        feasibilityModel = FeasibilityModel.fromJson(response['data']);
-      } else {
-        statusRequest = StatusRequest.failure;
+      if (statusRequest == StatusRequest.success) {
+        final mapResponse = response as Map<String, dynamic>;
+        if (mapResponse['status'] == "success") {
+          feasibilityModel = FeasibilityModel.fromJson(mapResponse['data']);
+        } else {
+          statusRequest = StatusRequest.failure;
+        }
       }
       update();
     } catch (e) {
@@ -74,8 +76,15 @@ class FeasibilityController extends GetxController {
           remainingChickens * averageWeight * feasibilityModel.chickenSalePrice;
       double profit = totalSales - totalCost;
 
-      _updateResultText(deadChickens, totalChickenCost, totalFeedCost,
-          totalOverheadCost, totalCost, totalSales, profit);
+      _updateResultText(
+        deadChickens,
+        totalChickenCost,
+        totalFeedCost,
+        totalOverheadCost,
+        totalCost,
+        totalSales,
+        profit,
+      );
 
       update();
     } catch (e) {
@@ -96,13 +105,14 @@ class FeasibilityController extends GetxController {
   }
 
   void _updateResultText(
-      int deadChickens,
-      int totalChickenCost,
-      double totalFeedCost,
-      int totalOverheadCost,
-      double totalCost,
-      int totalSales,
-      double profit) {
+    int deadChickens,
+    int totalChickenCost,
+    double totalFeedCost,
+    int totalOverheadCost,
+    double totalCost,
+    int totalSales,
+    double profit,
+  ) {
     mortalityRateText.value = "النافق : $deadChickens فراخ";
     chickenCostText.value = "سعر الكتاكيت : $totalChickenCost ج";
     feedCostText.value = "تكلفة العلف : ${totalFeedCost.toStringAsFixed(0)} ج";
@@ -122,8 +132,9 @@ class FeasibilityController extends GetxController {
 
   void showFeasibilityGuide() {
     DialogHelper.showDialog(
-        middleText:
-            "تم إعداد هذه المعلومات لتقديم إرشادات عامة فقط، ولا يُقصد منها أن تكون بديلاً عن المشورة المتخصصة. يُرجى التحقق من التفاصيل والتأكد من مطابقتها لاحتياجاتك الخاصة قبل اتخاذ أي قرارات بناءً عليها.");
+      middleText:
+          "تم إعداد هذه المعلومات لتقديم إرشادات عامة فقط، ولا يُقصد منها أن تكون بديلاً عن المشورة المتخصصة. يُرجى التحقق من التفاصيل والتأكد من مطابقتها لاحتياجاتك الخاصة قبل اتخاذ أي قرارات بناءً عليها.",
+    );
   }
 
   void checkAndShowDialog() {
@@ -132,8 +143,6 @@ class FeasibilityController extends GetxController {
       _myServices.getStorage.write("feasibilityStudyDialog", false);
     }
   }
-
-  
 
   @override
   void onInit() {

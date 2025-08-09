@@ -13,9 +13,9 @@ class HowToDoAFeasibilityStudy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(text: 'عوامل دراسة الجدوي'),
       body: Column(
         children: [
-          CustomAppBar(text: "عوامل دراسة الجدوي"),
           GetBuilder<FeasibilityController>(
             builder: (controller) {
               controller.ensureFeasibilityData();
@@ -26,7 +26,9 @@ class HowToDoAFeasibilityStudy extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 17, horizontal: 13),
+                        vertical: 17,
+                        horizontal: 13,
+                      ),
                       child: Column(
                         children: [
                           Row(
@@ -39,18 +41,19 @@ class HowToDoAFeasibilityStudy extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    child: SizedBox(
-                                      width: 200,
-                                      child: const Text(
-                                        "هذه الأسعار هي أسعار اليوم",
-                                        style: TextStyle(fontSize: 14),
-                                        textAlign: TextAlign.center,
+                                itemBuilder:
+                                    (context) => [
+                                      PopupMenuItem(
+                                        child: SizedBox(
+                                          width: 200,
+                                          child: const Text(
+                                            "هذه الأسعار هي أسعار اليوم",
+                                            style: TextStyle(fontSize: 14),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
+                                    ],
                                 child: Icon(
                                   Icons.help_outline,
                                   size: 18,

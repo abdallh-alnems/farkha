@@ -11,9 +11,9 @@ class Akhtaq extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(text: 'اخطاء'),
       body: Column(
         children: [
-          const CustomAppBar(text: "اخطاء"),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

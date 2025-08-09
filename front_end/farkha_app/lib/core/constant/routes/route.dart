@@ -40,6 +40,20 @@ class AppRoute {
   static const String chickenDensity = "/chickenDensity";
   static const String feedConsumption = "/feedConsumption";
   static const String fcr = "/fcr";
+  static const String adg = "/adg";
+  static const String roi = "/roi";
+  static const String mortalityRate = "/mortalityRate";
+  static const String birdProductionCost = "/birdProductionCost";
+  static const String birdNetProfit = "/birdNetProfit";
+  static const String weightByAge = "/weightByAge";
+  static const String temperatureByAge = "/temperatureByAge";
+  static const String darknessLevels = '/darkness-levels';
+  static const String totalFarmWeight = '/total-farm-weight';
+  static const String totalRevenue = '/total-revenue';
+  static const String feedCostPerBird = '/feed-cost-per-bird';
+  static const String feedCostPerKilo = '/feed-cost-per-kilo';
+  static const String vaccinationSchedule = '/vaccination-schedule';
+  static const String allCalculations = '/all-calculations';
 
   // ================================ articles =================================
 

@@ -13,9 +13,9 @@ class ArticlesType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(text: 'مقالات'),
       body: Column(
         children: [
-          CustomAppBar(text: "مقالات"),
           Expanded(
             child: SingleChildScrollView(
               child: Column(

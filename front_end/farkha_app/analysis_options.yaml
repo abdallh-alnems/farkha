@@ -11,6 +11,15 @@ analyzer:
   errors:
     curly_braces_in_flow_control_structures: ignore
     library_private_types_in_public_api: ignore
+  # تحسين الأداء
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/generated_plugin_registrant.dart"
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
 include: package:flutter_lints/flutter.yaml
 
 linter:
@@ -27,6 +36,10 @@ linter:
   rules:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # تحسين الأداء
+    avoid_print: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

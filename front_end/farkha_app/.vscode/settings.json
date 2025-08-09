@@ -1,5 +1,20 @@
 {
-       "cSpell.words": [
-              "صلاحيات"
-       ]
+  "dart.flutterHotReloadOnSave": "all",
+  "dart.flutterHotRestartOnSave": "never",
+  "dart.hotReloadOnSave": "all",
+  "dart.hotRestartOnSave": "never",
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.closingLabels": true,
+  "dart.lineLength": 80,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/.flutter-plugins-dependencies": true
+  }
 }

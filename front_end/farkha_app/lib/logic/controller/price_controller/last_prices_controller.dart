@@ -8,14 +8,15 @@ class LastPricesController extends GetxController {
   LastPricesData lastPricesData = LastPricesData(Get.find());
   List<Map<String, dynamic>> lastPricesList = [];
 
-  getDataLastPrices(String mainId) async {
+  Future<void> getDataLastPrices(String mainId) async {
     statusRequest = StatusRequest.loading;
     update();
     var response = await lastPricesData.getData(mainId);
     statusRequest = handlingData(response);
     if (StatusRequest.success == statusRequest) {
-      if (response['status'] == "success") {
-        lastPricesList = List<Map<String, dynamic>>.from(response['data']);
+      final mapResponse = response as Map<String, dynamic>;
+      if (mapResponse['status'] == "success") {
+        lastPricesList = List<Map<String, dynamic>>.from(mapResponse['data']);
       } else {
         statusRequest = StatusRequest.failure;
       }

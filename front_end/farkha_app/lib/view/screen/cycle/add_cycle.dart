@@ -7,7 +7,7 @@ import '../../../core/functions/valid_input/validate_chick_input.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class AddCycle extends StatelessWidget {
-  AddCycle({Key? key}) : super(key: key);
+  AddCycle({super.key});
   final CycleController controller = Get.find<CycleController>();
   bool get fromHome => Get.arguments?['fromHome'] == true;
 

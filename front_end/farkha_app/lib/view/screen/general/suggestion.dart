@@ -16,59 +16,61 @@ class Suggestion extends StatelessWidget {
     final RxString errorMessage = ''.obs;
 
     return Scaffold(
+      appBar: CustomAppBar(text: 'الاقتراحات'),
       body: Column(
         children: [
-          CustomAppBar(
-            text: "اقتراح",
-            arrowDirection: false,
-          ),
           GetBuilder<SuggestionController>(
-              init: SuggestionController(),
-              builder: (suggestionController) {
-                return HandlingDataView(
-                  statusRequest: suggestionController.statusRequest,
-                  widget: Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 19).r,
-                        child: Column(
-                          children: [
-                            AdNativeWidget(adIndex: 2),
-                            SizedBox(height: 25.h),
-                            Obx(() => TextField(
-                                  controller: textController,
-                                  maxLength: 300,
-                                  maxLines: 11,
-                                  textAlign: TextAlign.right,
-                                  decoration: InputDecoration(
-                                    hintText: 'اكتب اقتراحك هنا',
-                                    border: OutlineInputBorder(),
-                                    errorText: errorMessage.isNotEmpty
+            init: SuggestionController(),
+            builder: (suggestionController) {
+              return HandlingDataView(
+                statusRequest: suggestionController.statusRequest,
+                widget: Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 19).r,
+                      child: Column(
+                        children: [
+                          AdNativeWidget(adIndex: 2),
+                          SizedBox(height: 25.h),
+                          Obx(
+                            () => TextField(
+                              controller: textController,
+                              maxLength: 300,
+                              maxLines: 11,
+                              textAlign: TextAlign.right,
+                              decoration: InputDecoration(
+                                hintText: 'اكتب اقتراحك هنا',
+                                border: OutlineInputBorder(),
+                                errorText:
+                                    errorMessage.isNotEmpty
                                         ? errorMessage.value
                                         : null,
-                                  ),
-                                )),
-                            SizedBox(height: 35.h),
-                            ElevatedButton(
-                              onPressed: () {
-                                if (textController.text.trim().isEmpty) {
-                                  errorMessage.value =
-                                      "لا يمكن إرسال اقتراح فارغ";
-                                } else {
-                                  errorMessage.value = '';
-                                  suggestionController
-                                      .addSuggestion(textController.text);
-                                }
-                              },
-                              child: Text("ارسال الاقتراح"),
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: 35.h),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (textController.text.trim().isEmpty) {
+                                errorMessage.value =
+                                    "لا يمكن إرسال اقتراح فارغ";
+                              } else {
+                                errorMessage.value = '';
+                                suggestionController.addSuggestion(
+                                  textController.text,
+                                );
+                              }
+                            },
+                            child: Text("ارسال الاقتراح"),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                );
-              }),
+                ),
+              );
+            },
+          ),
         ],
       ),
       bottomNavigationBar: const AdBannerWidget(adIndex: 2),

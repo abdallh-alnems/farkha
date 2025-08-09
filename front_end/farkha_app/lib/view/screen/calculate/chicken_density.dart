@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/calculate/calculate_result.dart';
-import '../../../core/shared/chicken_form.dart';
+import '../../widget/calculate/calculate_button.dart';
+import '../../../core/shared/input_fields/chicken_form.dart';
+import '../../../core/shared/input_fields/input_field.dart';
+import '../../../core/shared/bottom_message.dart';
 import '../../../logic/controller/calculate_controller/chicken_density_controller.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/calculate/feasibility_study/feasibility_study_title.dart';
@@ -14,64 +17,126 @@ class ChickenDensity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ChickenDensityController controller =
-        Get.put(ChickenDensityController());
+    final ChickenDensityController controller = Get.put(
+      ChickenDensityController(),
+    );
 
     return Scaffold(
+      appBar: CustomAppBar(text: 'كثافة الفراخ'),
       body: Column(
         children: [
-          const CustomAppBar(text: "كثافة الفراخ"),
-          ChickenForm(
-            controller: controller.chickenCountTextController,
-            selectedAge: controller.selectedAgeCategory.value,
-            onChanged: (value) {
-              controller.selectedAgeCategory.value = value!;
-              controller.calculateAreas();
-            },
-            items: [
-              'الاسبوع الاول',
-              'الاسبوع الثاني',
-              'الاسبوع الثالث',
-              'الاسبوع الرابع',
-              'الاسبوع الخامس'
-            ]
-                .map((age) => DropdownMenuItem<String>(
-                      value: age,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(age, style: TextStyle(fontSize: 13.sp)),
-                      ),
-                    ))
-                .toList(),
-            children: [
-              Obx(() {
-                if (controller.shouldDisplayResults.value) {
-                  return Column(
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
                     children: [
-                      SizedBox(height: 33),
-                      ResultTitle(title: "الارضي"),
-                      CalculateResult(
-                          text: controller.currentAgeGroundAreaResult.value),
-                      const SizedBox(height: 5),
-                      CalculateResult(
-                          text: controller.totalGroundAreaResult.value),
-                      const SizedBox(height: 13),
-                      ResultTitle(title: "البطاريات"),
-                      CalculateResult(
-                          text: controller.batteryCageAreaResult.value),
+                      Expanded(
+                        child: InputField(
+                          label: 'عدد الفراخ',
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            controller.chickenCountTextController.text = value;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 11.w),
+                      Expanded(
+                        child: Obx(
+                          () => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: controller.selectedAgeCategory.value,
+                                isExpanded: true,
+                                alignment: Alignment.centerRight,
+                                dropdownColor: Colors.white,
+                                hint: Text(
+                                  'اختر الأسبوع',
+                                  textAlign: TextAlign.right,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                items:
+                                    [
+                                      'الاسبوع الاول',
+                                      'الاسبوع الثاني',
+                                      'الاسبوع الثالث',
+                                      'الاسبوع الرابع',
+                                      'الاسبوع الخامس',
+                                    ].map((week) {
+                                      return DropdownMenuItem<String>(
+                                        value: week,
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: Directionality(
+                                            textDirection: TextDirection.rtl,
+                                            child: Text(
+                                              week,
+                                              textAlign: TextAlign.right,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    controller.selectedAgeCategory.value =
+                                        value;
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
-                  );
-                }
-                return const Padding(
-                  padding: EdgeInsets.only(top: 35),
-                  child: Text('ادخل العدد والعمر'),
-                );
-              }),
-              Padding(
-                padding: const EdgeInsets.only(top: 11),
-                child: AdNativeWidget(adIndex: 2),
-              )
-            ],
+                  ),
+                  SizedBox(height: 24.h),
+
+                  CalculateButton(
+                    text: "احسب الكثافة",
+                    onPressed: () => controller.calculateAreas(context),
+                  ),
+
+                  SizedBox(height: 32.h),
+                  Obx(() {
+                    if (controller.shouldDisplayResults.value) {
+                      return Column(
+                        children: [
+                          SizedBox(height: 33),
+                          ResultTitle(title: "الارضي"),
+                          CalculateResult(
+                            title: "المساحة الحالية",
+                            value: controller.currentAgeGroundAreaResult.value,
+                          ),
+                          const SizedBox(height: 5),
+                          CalculateResult(
+                            title: "المساحة الإجمالية",
+                            value: controller.totalGroundAreaResult.value,
+                          ),
+                          const SizedBox(height: 13),
+                          ResultTitle(title: "البطاريات"),
+                          CalculateResult(
+                            title: "مساحة البطاريات",
+                            value: controller.batteryCageAreaResult.value,
+                          ),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink(); // لا تظهر أي شيء حتى يتم الحساب
+                  }),
+                ],
+              ),
+            ),
           ),
         ],
       ),

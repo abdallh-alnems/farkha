@@ -3,23 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/package/custom_dialog.dart';
 import '../../../core/services/initialization.dart';
+import '../../../core/shared/bottom_message.dart';
 
 class ChickenDensityController extends GetxController {
   final MyServices myServices = Get.find();
-  final TextEditingController chickenCountTextController = TextEditingController();
+  final TextEditingController chickenCountTextController =
+      TextEditingController();
   final Rxn<String> selectedAgeCategory = Rxn<String>();
   final RxBool shouldDisplayResults = false.obs;
   final RxString currentAgeGroundAreaResult = ''.obs;
   final RxString totalGroundAreaResult = ''.obs;
   final RxString batteryCageAreaResult = ''.obs;
-
-  ChickenDensityController() {
-    chickenCountTextController.addListener(_onTextChanged);
-  }
-
-  void _onTextChanged() {
-    if (_areInputsValid()) calculateAreas();
-  }
 
   bool _areInputsValid() {
     return chickenCountTextController.text.isNotEmpty &&
@@ -27,19 +21,35 @@ class ChickenDensityController extends GetxController {
         selectedAgeCategory.value != null;
   }
 
-  void calculateAreas() {
-    if (!_areInputsValid()) {
+  void calculateAreas(BuildContext context) {
+    if (chickenCountTextController.text.isEmpty ||
+        int.tryParse(chickenCountTextController.text) == null) {
+      BottomMessage.show(context, 'الرجاء إدخال عدد صحيح');
       shouldDisplayResults.value = false;
       return;
     }
+
+    if (selectedAgeCategory.value == null) {
+      BottomMessage.show(context, 'الرجاء اختيار الأسبوع');
+      shouldDisplayResults.value = false;
+      return;
+    }
+
     shouldDisplayResults.value = true;
     final chickenCount = int.tryParse(chickenCountTextController.text) ?? 0;
-    final recommendedDensity = _getRecommendedDensity(selectedAgeCategory.value!);
+    final recommendedDensity = _getRecommendedDensity(
+      selectedAgeCategory.value!,
+    );
 
-    final requiredGroundArea =
-        (chickenCount / recommendedDensity).clamp(1, double.infinity);
+    final requiredGroundArea = (chickenCount / recommendedDensity).clamp(
+      1,
+      double.infinity,
+    );
     final totalArea = (chickenCount / 10).clamp(1, double.infinity);
-    final requiredBatteryCageArea = (chickenCount / 16).clamp(1, double.infinity);
+    final requiredBatteryCageArea = (chickenCount / 16).clamp(
+      1,
+      double.infinity,
+    );
 
     currentAgeGroundAreaResult.value =
         'المساحة المطلوبة في عمر $selectedAgeCategory: ${requiredGroundArea.toStringAsFixed(0)}م';

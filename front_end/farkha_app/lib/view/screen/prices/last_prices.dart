@@ -19,17 +19,19 @@ class LastPrices extends StatelessWidget {
     controller.getDataLastPrices(mainId);
 
     return Scaffold(
+      appBar: CustomAppBar(text: "اسعار $mainName"),
       body: Column(
         children: [
-          CustomAppBar(text: "اسعار $mainName"),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 9, vertical: 9)
-                            .r,
+                        const EdgeInsets.symmetric(
+                          horizontal: 9,
+                          vertical: 9,
+                        ).r,
                     child: AdNativeWidget(adIndex: 2),
                   ),
                   TableLastPrices(),

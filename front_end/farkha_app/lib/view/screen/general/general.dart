@@ -19,7 +19,7 @@ class General extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(text: "عام", arrowDirection: false),
+          CustomAppBar(text: "عام",),
           GeneralItem(
             onTap:
                 () => Share.share(

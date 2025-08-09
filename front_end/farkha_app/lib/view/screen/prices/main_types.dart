@@ -17,9 +17,9 @@ class MainTypes extends StatelessWidget {
     Get.put(MainTypesController());
 
     return Scaffold(
+      appBar: CustomAppBar(text: 'الأنواع'),
       body: Column(
         children: [
-          const CustomAppBar(text: "الأنواع"),
           Expanded(
             child: GetBuilder<MainTypesController>(
               builder: (controller) {
@@ -36,13 +36,14 @@ class MainTypes extends StatelessWidget {
                       } else {
                         final mainTypes = controller.mainTypesList[index - 1];
                         return CardTitle(
-                          onTap: () => Get.toNamed(
-                            AppRoute.lastPrices,
-                            arguments: {
-                              'main_id': mainTypes['main_id'],
-                              "main_name": mainTypes['main_name'],
-                            },
-                          ),
+                          onTap:
+                              () => Get.toNamed(
+                                AppRoute.lastPrices,
+                                arguments: {
+                                  'main_id': mainTypes['main_id'],
+                                  "main_name": mainTypes['main_name'],
+                                },
+                              ),
                           text: mainTypes['main_name'],
                         );
                       }

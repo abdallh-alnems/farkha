@@ -4,7 +4,7 @@ import '../../../../core/constant/id/link_api.dart';
 class FarkhAbidData {
   Crud crud;
   FarkhAbidData(this.crud);
-  getData() async {
+  Future<Object> getData() async {
     var response = await crud.postData(ApiLinks.farkhAbid, {});
     return response.fold((l) => l, (r) => r);
   }

@@ -9,27 +9,39 @@ class PageTurningTips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SlideTransition(
-            position: arrowAnimation,
-            child: Icon(
-              Icons.arrow_forward_ios,
-              size: 55.sp,
-              color: Colors.black,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // السهم المتحرك
+            SlideTransition(
+              position: arrowAnimation,
+              child: Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(50.r),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 24.sp,
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
-          SizedBox(height: 13.h),
-          Text(
-            'اسحب للتنقل بين الدورات',
-            style: TextStyle(
-              fontSize: 19.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
+            SizedBox(height: 16.h),
+            // النص التوضيحي
+            Text(
+              'اسحب للتنقل بين الدورات',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

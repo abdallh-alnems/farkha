@@ -10,13 +10,14 @@ class FarkhAbidController extends GetxController {
   late StatusRequest statusRequest;
   FarkhAbidData farkhAbidData = FarkhAbidData(Get.find());
 
-  getDataFarkhAbid() async {
+  Future<void> getDataFarkhAbid() async {
     statusRequest = StatusRequest.loading;
     var response = await farkhAbidData.getData();
     statusRequest = handlingData(response);
     if (StatusRequest.success == statusRequest) {
-      if (response['status'] == "success") {
-        List data = response['data'];
+      final mapResponse = response as Map<String, dynamic>;
+      if (mapResponse['status'] == "success") {
+        List data = mapResponse['data'];
         todayPrice = data[0]['price'].toString();
         yesterdayPrice = data[1]['price'].toString();
       } else {

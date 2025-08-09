@@ -9,7 +9,7 @@ class SuggestionController extends GetxController {
   late StatusRequest statusRequest = StatusRequest.none;
   SuggestionData suggestionData = SuggestionData(Get.find());
 
-  addSuggestion(String suggestionText) async {
+  Future<void> addSuggestion(String suggestionText) async {
     statusRequest = StatusRequest.loading;
     dynamic response = await suggestionData.addSuggestion(suggestionText);
     statusRequest = handlingData(response);

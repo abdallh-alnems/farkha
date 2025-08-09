@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/data_source/static/growth_parameters.dart';
+import '../../../core/shared/bottom_message.dart';
 
 class FeedConsumptionController extends GetxController {
   final TextEditingController textController = TextEditingController();
   final Rxn selectedAge = Rxn<int>();
-  final RxString result = 'ادخل العدد والعمر'.obs;
+  final RxString result = ''.obs;
   final RxBool isCumulative = false.obs;
-
-  FeedConsumptionController() {
-    textController.addListener(() {
-      if (_areInputsValid()) {
-        calculateFeedConsumption();
-      }
-    });
-  }
 
   bool _areInputsValid() {
     if (isCumulative.value) {
@@ -26,11 +19,11 @@ class FeedConsumptionController extends GetxController {
         selectedAge.value != null;
   }
 
-  void calculateFeedConsumption() {
+  void calculateFeedConsumption(BuildContext context) {
     final int? count = int.tryParse(textController.text);
 
     if (count == null) {
-      result.value = 'الرجاء إدخال عدد صحيح';
+      BottomMessage.show(context, 'الرجاء إدخال عدد صحيح');
       return;
     }
 
@@ -49,38 +42,35 @@ class FeedConsumptionController extends GetxController {
           'الاستهلاك الكلي للعلف طوال الدورة : ${total.toStringAsFixed(0)} كيلو';
     } else {
       if (selectedAge.value == null) {
-        result.value = 'الرجاء تحديد العمر';
+        BottomMessage.show(context, 'الرجاء تحديد العمر');
         return;
       }
 
       totalFeed = feedConsumptions[selectedAge.value! - 1] * count.toDouble();
 
       if (totalFeed < 1000) {
-        result.value =
-            'استهلاك ${textController.text} فراخ للعلف في اليوم عند عمر ${selectedAge.value} يوم : \n${totalFeed.toStringAsFixed(0)} جرام';
+        result.value = '${totalFeed.toStringAsFixed(0)} جرام';
       } else {
         double totalFeedInKilo = totalFeed / 1000;
-        result.value =
-            'استهلاك ${textController.text} فراخ للعلف في اليوم عند عمر ${selectedAge.value} يوم : \n${totalFeedInKilo.toStringAsFixed(1)} كيلو';
-      }
-    }
-  }
-
-  void _resetResultMessage() {
-    if (textController.text.isEmpty) {
-      if (isCumulative.value) {
-        result.value = 'ادخل العدد';
-      } else {
-        result.value = 'ادخل العدد والعمر';
+        result.value = '${totalFeedInKilo.toStringAsFixed(1)} كيلو';
       }
     }
   }
 
   void resetInputs() {
     isCumulative.value = !isCumulative.value;
-    selectedAge.value ??= 1;
-    calculateFeedConsumption();
+    // إعادة تعيين العمر إلى null عند العودة إلى الحساب اليومي
+    if (!isCumulative.value) {
+      selectedAge.value = null;
+    }
+    result.value = ''; // إلغاء النتيجة عند التبديل
     _resetResultMessage();
     FocusScope.of(Get.context!).unfocus();
+  }
+
+  void _resetResultMessage() {
+    if (textController.text.isEmpty) {
+      result.value = '';
+    }
   }
 }

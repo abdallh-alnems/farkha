@@ -6,7 +6,7 @@ import '../../../core/constant/theme/color.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarCycle({Key? key}) : super(key: key);
+  const AppBarCycle({super.key});
 
   @override
   Widget build(BuildContext context) {

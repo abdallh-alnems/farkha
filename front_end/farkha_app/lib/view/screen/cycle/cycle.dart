@@ -14,13 +14,13 @@ import '../../widget/cycle/page_turning_tips.dart';
 import '../../widget/cycle/stage_indicator.dart';
 
 class Cycle extends StatefulWidget {
-  const Cycle({Key? key}) : super(key: key);
+  const Cycle({super.key});
 
   @override
   State<Cycle> createState() => _CycleState();
 }
 
-class _CycleState extends State<Cycle> with SingleTickerProviderStateMixin {
+class _CycleState extends State<Cycle> with TickerProviderStateMixin {
   final cycleCtrl = Get.find<CycleController>();
   final broilerCtrl = Get.put(BroilerController(), permanent: true);
 
@@ -37,12 +37,12 @@ class _CycleState extends State<Cycle> with SingleTickerProviderStateMixin {
 
     _arrowController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1000),
     )..repeat(reverse: true);
 
     _arrowAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(-0.2, 0),
+      begin: const Offset(-0.2, 0),
+      end: const Offset(0.2, 0),
     ).animate(
       CurvedAnimation(parent: _arrowController, curve: Curves.easeInOut),
     );
@@ -74,9 +74,9 @@ class _CycleState extends State<Cycle> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    Future.microtask(() => broilerCtrl.reset());
     _arrowController.dispose();
     _pageController.dispose();
+    Future.microtask(() => broilerCtrl.reset());
     super.dispose();
   }
 
@@ -109,11 +109,17 @@ class _CycleState extends State<Cycle> with SingleTickerProviderStateMixin {
   }
 
   void _onPageChanged(int index) {
+    // إخفاء السهم عند التنقل
+    if (_showTutorialOverlay) {
+      setState(() {
+        _showTutorialOverlay = false;
+      });
+    }
+
     // تأخير تحديث الصفحة
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         _currentPage = index;
-        if (index == 0) _showTutorialOverlay = false;
       });
 
       final cycle = cycleCtrl.cycles[index];

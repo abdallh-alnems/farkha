@@ -36,6 +36,20 @@ import '../../../view/screen/follow_up_tools/articles/article/solalat.dart';
 import '../../../view/screen/follow_up_tools/articles/article/ta7sen.dart';
 import '../../../view/screen/follow_up_tools/articles/article/tather.dart';
 import '../../../view/screen/follow_up_tools/articles/article/al3lag.dart';
+import '../../../view/screen/calculate/adg.dart';
+import '../../../view/screen/calculate/roi.dart';
+import '../../../view/screen/calculate/mortality_rate.dart';
+import '../../../view/screen/calculate/bird_production_cost.dart';
+import '../../../view/screen/calculate/bird_net_profit.dart';
+import '../../../view/screen/calculate/weight_by_age.dart';
+import '../../../view/screen/calculate/temperature_by_age.dart';
+import '../../../view/screen/calculate/darkness_levels.dart';
+import '../../../view/screen/calculate/total_farm_weight.dart';
+import '../../../view/screen/calculate/total_revenue.dart';
+import '../../../view/screen/calculate/feed_cost_per_bird.dart';
+import '../../../view/screen/calculate/feed_cost_per_kilo.dart';
+import '../../../view/screen/calculate/vaccination_schedule.dart';
+import '../../../view/screen/calculate/all_calculations.dart';
 
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
@@ -153,6 +167,74 @@ List<GetPage<dynamic>> pages = [
   GetPage(
     name: AppRoute.fcr,
     page: () => Fcr(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.adg,
+    page: () => Adg(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.roi,
+    page: () => RoiScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.mortalityRate,
+    page: () => MortalityRateScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.birdProductionCost,
+    page: () => BirdProductionCostScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.birdNetProfit,
+    page: () => BirdNetProfitScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.weightByAge,
+    page: () => WeightByAgeScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.temperatureByAge,
+    page: () => TemperatureByAgeScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.darknessLevels,
+    page: () => const DarknessLevelsView(),
+  ),
+  GetPage(
+    name: AppRoute.totalFarmWeight,
+    page: () => const TotalFarmWeightScreen(),
+  ),
+  GetPage(
+    name: AppRoute.totalRevenue,
+    page: () => TotalRevenueScreen(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.feedCostPerBird,
+    page: () => FeedCostPerBirdScreen(),
+    transition: Transition.rightToLeft,
+  ),
+  GetPage(
+    name: AppRoute.feedCostPerKilo,
+    page: () => FeedCostPerKiloScreen(),
+    transition: Transition.rightToLeft,
+  ),
+  GetPage(
+    name: AppRoute.vaccinationSchedule,
+    page: () => const VaccinationSchedule(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.allCalculations,
+    page: () => const AllCalculations(),
     transition: Transition.downToUp,
   ),
 

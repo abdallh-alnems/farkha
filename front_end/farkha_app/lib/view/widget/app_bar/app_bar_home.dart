@@ -11,24 +11,18 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        "فرخة",
-      ),
+      title: Text("فرخة", style: TextStyle(color: Colors.black)),
       actions: [
         Text(
           '(${DateFormat('EEEE', 'ar').format(DateTime.now())})',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
-        SizedBox(
-          width: 1.w,
-        ),
+        SizedBox(width: 1.w),
         Text(
           DateFormat('MM/dd').format(DateTime.now()),
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
-        SizedBox(
-          width: 9.w,
-        ),
+        SizedBox(width: 9.w),
       ],
       leading: Padding(
         padding: const EdgeInsets.only(left: 5).r,
@@ -36,10 +30,7 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
           onTap: () {
             Get.toNamed(AppRoute.general);
           },
-          child: Image.asset(
-            ImageAsset.setting,
-            scale: 2.8,
-          ),
+          child: Image.asset(ImageAsset.setting, scale: 2.8),
         ),
       ),
     );

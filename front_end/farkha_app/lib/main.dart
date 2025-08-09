@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
 import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
-import 'logic/controller/cycle_controller.dart';
-import 'view/screen/cycle/add_cycle.dart';
-import 'view/screen/cycle/cycle.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initialServices();
   runApp(const MyApp());
 }
@@ -27,6 +26,11 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
+          // تحسين Hot Reload
+          showPerformanceOverlay: false,
+          showSemanticsDebugger: false,
+          // تحسين إدارة الحالة
+          defaultTransition: Transition.fade,
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
@@ -35,7 +39,7 @@ class MyApp extends StatelessWidget {
           initialBinding: MyBindings(),
           getPages: pages,
           theme: AppTheme().lightThemes(),
-        //  defaultTransition: Transition.downToUp,
+          //  defaultTransition: Transition.downToUp,
           //   home: Cycle(),
         );
       },

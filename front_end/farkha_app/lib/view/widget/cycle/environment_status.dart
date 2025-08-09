@@ -11,7 +11,7 @@ import '../../../logic/controller/follow_up_tools_controller/broiler_controller.
 import '../../../logic/controller/cycle_controller.dart';
 
 class EnvironmentStatus extends StatelessWidget {
-  const EnvironmentStatus({Key? key}) : super(key: key);
+  const EnvironmentStatus({super.key});
 
   @override
   Widget build(BuildContext context) {

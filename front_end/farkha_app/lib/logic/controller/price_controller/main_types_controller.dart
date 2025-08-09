@@ -4,7 +4,7 @@ import '../../../core/functions/handing_data_controller.dart';
 import '../../../data/data_source/remote/prices_data/main_types_data.dart';
 
 class MainTypesController extends GetxController {
- late StatusRequest statusRequest ;
+  late StatusRequest statusRequest;
   MainDataData mainDataData = MainDataData(Get.find());
   List<Map<String, dynamic>> mainTypesList = [];
 
@@ -14,8 +14,9 @@ class MainTypesController extends GetxController {
     var response = await mainDataData.getData();
     statusRequest = handlingData(response);
     if (statusRequest == StatusRequest.success) {
-      if (response['status'] == "success") {
-        mainTypesList = List<Map<String, dynamic>>.from(response['data']);
+      final mapResponse = response as Map<String, dynamic>;
+      if (mapResponse['status'] == "success") {
+        mainTypesList = List<Map<String, dynamic>>.from(mapResponse['data']);
       } else {
         statusRequest = StatusRequest.failure;
       }

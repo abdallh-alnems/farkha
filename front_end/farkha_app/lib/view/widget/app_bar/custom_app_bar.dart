@@ -1,66 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
 import '../../../core/constant/theme/color.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
-  final bool arrowDirection;
+  final VoidCallback? onAlertTap;
 
-  const CustomAppBar({
-    super.key,
-    this.arrowDirection = true,
-    required this.text,
-  });
+  const CustomAppBar({super.key, required this.text, this.onAlertTap});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 21).r,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  text,
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-              ),
-              Align(
-                alignment: arrowDirection
-                    ? Alignment.centerLeft
-                    : Alignment.centerRight,
-                child: Padding(
-                  padding: arrowDirection
-                      ? EdgeInsets.only(left: 23).r
-                      : EdgeInsets.only(right: 23).r,
-                  child: GestureDetector(
-                    onTap: () => Get.back(),
-                    child: ClipOval(
-                      child: Container(
-                        width: 33,
-                        height: 33,
-                        color: AppColor.primaryColor,
-                        child: Icon(
-                          arrowDirection
-                              ? Icons.arrow_back_rounded
-                              : Icons.arrow_right_alt,
-                          color: Colors.white,
-                          size: 23.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+    return AppBar(
+      centerTitle: true,
+      title: Text(
+        text,
+        style: Theme.of(
+          context,
+        ).textTheme.headlineLarge?.copyWith(color: Colors.black),
+      ),
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          color: Colors.black,
+          size: 27,
+        ),
+        onPressed: () => Get.back(),
+        splashRadius: 24,
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 17),
+          child: GestureDetector(
+            onTap: onAlertTap,
+            child: Icon(Icons.priority_high, color: Colors.black, size: 21),
           ),
         ),
-      ),
+      ],
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      foregroundColor: Colors.black,
     );
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
