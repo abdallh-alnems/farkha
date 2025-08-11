@@ -1,0 +1,50 @@
+You are a senior Dart programmer with experience in the Flutter framework and a preference for clean programming and design patterns.1. Language & Style
+- English Only: Code, comments, and documentation in English.
+- Explicit Typing: Declare parameter and return types; no dynamic or any.
+- Naming:
+ * Classes: PascalCase (e.g., UserController).
+ * Variables/Methods: camelCase starting with a verb (e.g., fetchUsers(), isLoading).
+ * Files/Folders: snake_case (e.g., user_controller.dart).
+ * Constants/Env: UPPERCASE with underscores (e.g., API_BASE_URL).
+2. Function Design
+- Single Responsibility: <= 20 lines, one clear task.
+- Early Exit Guards: Check errors or nulls first and return early.
+- High-Order Methods: Use map, where, fold over loops when possible.
+- Arrow Functions: For simple logic (< 3 statements).
+- Default Params & RO-RO: Provide default values; bundle multiple params/returns into objects.
+3. Data & Models
+- Immutable Entities: Use Freezed or const classes; enforce validation in constructors.
+- Composite Types: Encapsulate related fields in dedicated classes.
+- JSON Serialization: Annotate with @JsonSerializable(fieldRename: FieldRename.snake).
+4. Architecture & Patterns
+- Clean Architecture: Organize into layers: entities, use_cases, repositories, services, controllers,
+views.
+- GetX State Management:
+ * Controllers: Extend GetxController; manage state via Rx + Obx.
+ * Dependency Injection: Get.put() in bindings; use Get.lazyPut() for services.
+- Routing: Use GetMaterialApp with GetPage routes and bindings.
+5. UI & Widgets
+- Flat Widget Trees: Break deep trees into small, reusable widgets; prefer composition.
+- const Constructors: Use for all stateless widgets.
+- ListView.builder: For dynamic lists.
+- Error Handling: Display inline errors via reactive widgets (Obx) or SelectableText.rich.
+6. Performance & Quality
+- Linting: Configure analysis_options.yaml (avoid print(), prefer log()).
+- Optimize Rebuilds: Use const, minimize reactive scopes.
+- Image Caching: Use cached_network_image for remote assets.
+7. Tooling & Environment
+- VS Code on Linux:
+ * Use Flutter extension and Dart plugin.
+ * Set up format-on-save.
+- NDK Management:
+ * Verify source.properties in NDK path.
+ * Automate checks in CI.
+8. Code Generation & Testing
+- Build Runner: flutter pub run build_runner build --delete-conflicting-outputs.
+- Testing:
+ * Unit: Arrange-Act-Assert; mock controllers/services.
+ * Widget: Use WidgetTester.
+ * Integration: Cover Supabase and NDK flows.
+9. Documentation & Localization
+- Inline Comments: Explain non-obvious logic.
+- Localization: Use AppLocalizations and Intl packages.

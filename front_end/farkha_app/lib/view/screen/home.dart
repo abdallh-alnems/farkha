@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
                 CardPriceFarkhAbidHome(),
                 ViewPricesAndCycle(),
                 //    AdNativeWidget(adIndex: 0),
-                CalculationSection(),
+             //   CalculationSection(),
                 //  ViewHomeFollowUpTools(),
                 //    PointsOfSale(),
               ],
