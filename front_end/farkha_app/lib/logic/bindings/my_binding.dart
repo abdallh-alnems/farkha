@@ -5,6 +5,7 @@ import '../../core/functions/check_internet.dart';
 import '../../core/package/rating_app.dart';
 import '../../core/package/upgrade/get_min_version.dart';
 import '../../core/services/permission.dart';
+import '../../core/services/sse_service.dart';
 import '../controller/ad_controller/banner_controller.dart';
 import '../controller/ad_controller/native_controller.dart';
 import '../controller/calculate_controller/auto_scroll_controller.dart';
@@ -20,6 +21,9 @@ class MyBindings extends Bindings {
     Get.put(AdNativeController());
     Get.put(AdBannerController());
 
+    // ================================ SSE Service =============================
+    Get.put(SseService(), permanent: true);
+
     // ================================ price ==================================
     Get.put(FarkhAbidController());
 
@@ -28,10 +32,10 @@ class MyBindings extends Bindings {
     Get.lazyPut(() => RateMyAppController());
     Get.put(GetMinVersionController());
 
-    // =============================== permission ==============================
+    // =============================== permission =============================
     Get.put(PermissionController());
 
-    // =============================== auto scroll ==============================
+    // =============================== auto scroll =============================
     Get.put(AutoScrollController());
   }
 }

@@ -44,7 +44,7 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
                       "أسعار الفراخ البيضاء",
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 16.sp,
                       ),
                       textAlign: TextAlign.center,
@@ -110,14 +110,14 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
                 Text(
                   "التغير",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: color.withOpacity(0.7),
+                    color: Colors.black,
                     fontSize: 10.sp,
                   ),
                 ),
                 Text(
                   "${priceDifference.abs().toInt()}${priceDifference >= 0 ? '+' : '-'}",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: priceDifference >= 0 ? Colors.green : Colors.red,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 14.sp,
                   ),
@@ -132,14 +132,14 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
                 Text(
                   "أعلى",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: color.withOpacity(0.7),
+                    color: Colors.black,
                     fontSize: 10.sp,
                   ),
                 ),
                 Text(
                   higherPrice,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: color,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 14.sp,
                   ),
@@ -154,14 +154,14 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
                 Text(
                   "أدنى",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: color.withOpacity(0.7),
+                    color: Colors.black,
                     fontSize: 10.sp,
                   ),
                 ),
                 Text(
                   lowerPrice,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: color,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 14.sp,
                   ),
@@ -175,7 +175,7 @@ class CardPriceFarkhAbidHome extends StatelessWidget {
             child: Text(
               title,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: color,
+                color: Colors.black,
                 fontWeight: FontWeight.w600,
                 fontSize: 13.sp,
               ),
