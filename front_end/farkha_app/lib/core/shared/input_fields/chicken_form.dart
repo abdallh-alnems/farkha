@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'input_field.dart';
+
 import 'age_dropdown.dart';
+import 'input_field.dart';
 
 class ChickenForm extends StatefulWidget {
   final TextEditingController? controller;
@@ -46,7 +47,6 @@ class _ChickenFormState extends State<ChickenForm> {
         Expanded(
           child: InputField(
             label: 'عدد الفراخ',
-            keyboardType: TextInputType.number,
             onChanged: (value) {
               if (widget.controller != null) {
                 widget.controller!.text = value;

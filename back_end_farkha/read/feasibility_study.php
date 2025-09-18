@@ -2,11 +2,38 @@
 
 include "../connect.php";
 
-$stmt = $con->prepare("SELECT `prices`.`price` FROM `prices` 
-WHERE `prices`.`price_type` IN (1, 3, 8, 9, 10) 
-AND `prices`.`date_price` = ( SELECT MAX(`p2`.`date_price`) FROM `prices` AS `p2` 
-WHERE `p2`.`price_type` = `prices`.`price_type` ) 
-ORDER BY `prices`.`price_type`;");
+$stmt = $con->prepare("SELECT 
+    t.type_name,
+    ROUND((gp.higher_general_prices + gp.lower_general_prices) / 2, 0) AS price
+FROM general_prices gp
+INNER JOIN (
+    SELECT general_prices_type, MAX(general_prices_date) AS max_date
+    FROM general_prices
+    WHERE general_prices_type IN (1, 18)
+    GROUP BY general_prices_type
+) latest 
+    ON gp.general_prices_type = latest.general_prices_type
+   AND gp.general_prices_date = latest.max_date
+JOIN types t 
+    ON t.type_id = gp.general_prices_type
+
+UNION ALL
+
+SELECT 
+    t.type_name,
+    fp.feed_prices AS price
+FROM feed_prices fp
+INNER JOIN (
+    SELECT feed_prices_type, MAX(feed_prices_date) AS max_date
+    FROM feed_prices
+    WHERE feed_prices_type IN (50, 51, 52)
+    GROUP BY feed_prices_type
+) latest 
+    ON fp.feed_prices_type = latest.feed_prices_type
+   AND fp.feed_prices_date = latest.max_date
+JOIN types t 
+    ON t.type_id = fp.feed_prices_type;
+");
 
 $stmt->execute(array());
 

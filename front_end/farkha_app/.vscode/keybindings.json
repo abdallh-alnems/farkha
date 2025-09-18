@@ -1,0 +1,42 @@
+[
+  {
+    "key": "ctrl+shift+r",
+    "command": "dart.extractWidget",
+    "when": "editorTextFocus && editorLangId == dart"
+  },
+  {
+    "key": "ctrl+shift+w",
+    "command": "dart.wrapWithWidget",
+    "when": "editorTextFocus && editorLangId == dart"
+  },
+  {
+    "key": "ctrl+shift+c",
+    "command": "dart.addConst",
+    "when": "editorTextFocus && editorLangId == dart"
+  },
+  {
+    "key": "ctrl+shift+v",
+    "command": "dart.removeConst",
+    "when": "editorTextFocus && editorLangId == dart"
+  },
+  {
+    "key": "ctrl+shift+s",
+    "command": "dart.convertToStatelessWidget",
+    "when": "editorTextFocus && editorLangId == dart"
+  },
+  {
+    "key": "ctrl+shift+f",
+    "command": "dart.convertToStatefulWidget",
+    "when": "editorTextFocus && editorLangId == dart"
+  },
+  {
+    "key": "ctrl+.",
+    "command": "editor.action.quickFix",
+    "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+shift+.",
+    "command": "editor.action.refactor",
+    "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+  }
+]

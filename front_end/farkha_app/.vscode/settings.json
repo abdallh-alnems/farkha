@@ -7,11 +7,23 @@
   "dart.previewFlutterUiGuidesCustomTracking": true,
   "dart.closingLabels": true,
   "dart.lineLength": 80,
+  "dart.showInspectorNotificationsForWidgetErrors": true,
+  "dart.showTodos": true,
+  "dart.analyzerPath": null,
+  "dart.enableSdkFormatter": true,
+  "dart.enableCompletionCommitCharacters": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.acceptSuggestionOnCommitCharacter": true,
   "files.watcherExclude": {
     "**/build/**": true,
     "**/.dart_tool/**": true,

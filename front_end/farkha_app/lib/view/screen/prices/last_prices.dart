@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
+import '../../../logic/controller/price_controller/feed_prices_controller.dart';
 import '../../../logic/controller/price_controller/last_prices_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/prices/table/table_feed_prices.dart';
 import '../../widget/prices/table/table_last_prices.dart';
 
 class LastPrices extends StatelessWidget {
@@ -12,11 +15,19 @@ class LastPrices extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final LastPricesController controller = Get.put(LastPricesController());
     final String mainId = Get.arguments['main_id'].toString();
     final String mainName = Get.arguments['main_name'].toString();
 
-    controller.getDataLastPrices(mainId);
+    // Check if this is a feed prices request (ID 6 or 7)
+    final bool isFeedPrices = mainId == '6' || mainId == '7';
+
+    if (isFeedPrices) {
+      final FeedPricesController controller = Get.put(FeedPricesController());
+      controller.getDataFeedPrices(mainId);
+    } else {
+      final LastPricesController controller = Get.put(LastPricesController());
+      controller.getDataLastPrices(mainId);
+    }
 
     return Scaffold(
       appBar: CustomAppBar(text: "اسعار $mainName"),
@@ -32,16 +43,18 @@ class LastPrices extends StatelessWidget {
                           horizontal: 9,
                           vertical: 9,
                         ).r,
-                    child: AdNativeWidget(adIndex: 2),
+                    child: const AdNativeWidget(),
                   ),
-                  TableLastPrices(),
+                  isFeedPrices
+                      ? const TableFeedPrices()
+                      : const TableLastPrices(),
                 ],
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: const AdBannerWidget(adIndex: 2),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

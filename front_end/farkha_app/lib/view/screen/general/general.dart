@@ -15,11 +15,10 @@ class General extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(text: "عام",),
+          const CustomAppBar(text: "عام"),
           GeneralItem(
             onTap:
                 () => Share.share(
@@ -61,16 +60,14 @@ class General extends StatelessWidget {
             color: Colors.blue,
           ),
           GeneralItem(
-            onTap: ()  {
-
-            },
+            onTap: () {},
             title: 'قيمنا ',
             icon: Icons.star,
             color: Colors.yellow,
           ),
-          SizedBox(height: 33),
-          Text("تابعنا"),
-          SizedBox(height: 17),
+          const SizedBox(height: 33),
+          const Text("تابعنا"),
+          const SizedBox(height: 17),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 79),
             child: Row(
@@ -105,7 +102,7 @@ class General extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const AdBannerWidget(adIndex: 1),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

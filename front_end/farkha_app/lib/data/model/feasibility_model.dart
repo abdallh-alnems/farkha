@@ -1,9 +1,9 @@
 class FeasibilityModel {
-  int chickenSalePrice;
-  int chickPrice;
-  int badiPrice;
-  int namiPrice;
-  int nahiPrice;
+  late int chickenSalePrice;
+  late int chickPrice;
+  late int badiPrice;
+  late int namiPrice;
+  late int nahiPrice;
 
   FeasibilityModel({
     required this.chickenSalePrice,
@@ -13,10 +13,43 @@ class FeasibilityModel {
     required this.nahiPrice,
   });
 
-  FeasibilityModel.fromJson(List<dynamic> data)
-      : chickenSalePrice = data[0]['price'],
-        chickPrice = data[1]['price'],
-        badiPrice = data[2]['price'],
-        namiPrice = data[3]['price'],
-        nahiPrice = data[4]['price'];
+  FeasibilityModel.fromJson(List<dynamic> data) {
+    // تعيين قيم افتراضية
+    chickenSalePrice = 0;
+    chickPrice = 0;
+    badiPrice = 0;
+    namiPrice = 0;
+    nahiPrice = 0;
+
+    // البحث عن كل نوع حسب type_name
+    for (var item in data) {
+      switch (item['type_name']) {
+        case 'لحم ابيض':
+          chickenSalePrice = int.parse(item['price']);
+          break;
+        case 'ابيض (شركات)':
+          chickPrice = int.parse(item['price']);
+          break;
+        case 'بادي':
+          badiPrice = int.parse(item['price']);
+          break;
+        case 'نامي':
+          namiPrice = int.parse(item['price']);
+          break;
+        case 'ناهي':
+          nahiPrice = int.parse(item['price']);
+          break;
+      }
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'chickenSalePrice': chickenSalePrice,
+      'chickPrice': chickPrice,
+      'badiPrice': badiPrice,
+      'namiPrice': namiPrice,
+      'nahiPrice': nahiPrice,
+    };
+  }
 }

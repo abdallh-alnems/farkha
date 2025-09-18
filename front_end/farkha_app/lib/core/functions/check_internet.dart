@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../logic/controller/price_controller/farkh_abid_controller.dart';
-import '../package/custom_snack_bar.dart';
+
+import '../../logic/controller/price_controller/prices_stream/prices_stream_controller.dart';
+import '../package/snackbar_message.dart';
 
 class InternetController extends GetxController with WidgetsBindingObserver {
   bool _wasConnected = true;
@@ -34,7 +36,7 @@ class InternetController extends GetxController with WidgetsBindingObserver {
 
   void startCheckingInternet() {
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       checkInternetAndNotify();
     });
   }
@@ -50,15 +52,13 @@ class InternetController extends GetxController with WidgetsBindingObserver {
 
   void _showSnackbar(String message, IconData icon) {
     if (Get.context != null) {
-      CustomSnackbar(
-        message: message,
-        icon: icon,
-      ).show(Get.context!);
+      // استخدام AppColor.primaryColor مع الأيقونات المخصصة
+      SnackbarMessage.show(Get.context!, message, icon: icon);
     }
   }
 
   void loadData() {
-    Get.find<FarkhAbidController>().getDataFarkhAbid();
+    Get.find<PricesStreamController>().getDataPricesStream();
   }
 
   Future<void> checkInternetAndNotify() async {

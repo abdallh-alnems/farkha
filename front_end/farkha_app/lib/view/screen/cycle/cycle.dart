@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import '../../../data/data_source/static/growth_parameters.dart';
 import '../../../logic/controller/cycle_controller.dart';
-import '../../../logic/controller/follow_up_tools_controller/broiler_controller.dart';
+import '../../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../widget/app_bar/app_bar_cycle.dart';
 import '../../widget/cycle/cycle_stats_bar.dart';
 import '../../widget/cycle/environment_status.dart';

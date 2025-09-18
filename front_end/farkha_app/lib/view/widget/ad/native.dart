@@ -1,58 +1,122 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../../logic/controller/ad_controller/native_controller.dart';
+
+import '../../../core/constant/id/ad_id.dart';
 
 class AdNativeWidget extends StatefulWidget {
-  final int adIndex;
-
-  const AdNativeWidget({super.key, required this.adIndex});
+  const AdNativeWidget({super.key});
 
   @override
   State<AdNativeWidget> createState() => _AdNativeWidgetState();
 }
 
 class _AdNativeWidgetState extends State<AdNativeWidget> {
-  late final AdNativeController adController;
+  NativeAd? _nativeAd;
+  bool _isAdLoaded = false;
+  int _retryCount = 0;
+  final List<int> _retryDelays = [5, 10, 20, 30, 40, 50, 60];
 
   @override
   void initState() {
     super.initState();
-    adController = Get.find<AdNativeController>();
-    _loadAdIfNeeded();
+    // تحميل إعلان جديد بعد انتهاء build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadNewAd();
+    });
   }
 
   @override
   void dispose() {
-    _disposeAdIfNeeded();
+    _disposeCurrentAd();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final isAdLoaded = adController.isAdLoadedList[widget.adIndex].value;
-      final nativeAd = adController.nativeAds[widget.adIndex];
+    return _isAdLoaded && _nativeAd != null
+        ? SizedBox(
+          width: double.infinity,
+          height: 280,
+          child: AdWidget(ad: _nativeAd!),
+        )
+        : const SizedBox();
+  }
 
-      return isAdLoaded && nativeAd != null
-          ? SizedBox(
-              width: double.infinity,
-              height: 350,
-              child: AdWidget(ad: nativeAd),
-            )
-          : const SizedBox();
+  void _loadNewAd() {
+    // تحميل إعلان جديد في كل مرة
+    _disposeCurrentAd();
+
+    _nativeAd = NativeAd(
+      adUnitId: AdManager.idNative,
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          if (mounted) {
+            setState(() {
+              _isAdLoaded = true;
+              _retryCount = 0; // إعادة تعيين عداد المحاولات عند النجاح
+            });
+          }
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          _retryWithBackoff();
+        },
+      ),
+      request: const AdRequest(),
+      nativeTemplateStyle: NativeTemplateStyle(
+        templateType: TemplateType.medium,
+        mainBackgroundColor: Colors.white,
+        cornerRadius: 10.0,
+        callToActionTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.white,
+          backgroundColor: Colors.blue,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        primaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.black,
+          style: NativeTemplateFontStyle.bold,
+          size: 16.0,
+        ),
+        secondaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.grey,
+          style: NativeTemplateFontStyle.normal,
+          size: 14.0,
+        ),
+        tertiaryTextStyle: NativeTemplateTextStyle(
+          textColor: Colors.grey,
+          style: NativeTemplateFontStyle.normal,
+          size: 12.0,
+        ),
+      ),
+    )..load();
+  }
+
+  void _retryWithBackoff() {
+    if (!mounted) return;
+
+    // تحديد فترة الانتظار بناءً على عدد المحاولات
+    int delayIndex =
+        _retryCount < _retryDelays.length
+            ? _retryCount
+            : _retryDelays.length - 1;
+    int delaySeconds = _retryDelays[delayIndex];
+
+    _retryCount++;
+
+    Future.delayed(Duration(seconds: delaySeconds), () {
+      if (mounted) {
+        _loadNewAd();
+      }
     });
   }
 
-  void _loadAdIfNeeded() {
-    if (widget.adIndex >= 0 && widget.adIndex < adController.adIds.length) {
-      adController.loadAd(widget.adIndex);
-    }
-  }
-
-  void _disposeAdIfNeeded() {
-    if (widget.adIndex >= 0 && widget.adIndex < adController.adIds.length) {
-      adController.disposeAd(widget.adIndex);
+  void _disposeCurrentAd() {
+    if (_nativeAd != null) {
+      _nativeAd?.dispose();
+      _nativeAd = null;
+      _isAdLoaded = false;
+      _retryCount = 0; // إعادة تعيين عداد المحاولات
     }
   }
 }

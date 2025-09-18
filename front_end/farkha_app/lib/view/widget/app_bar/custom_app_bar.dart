@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/constant/theme/color.dart';
+
+import '../../../core/package/dialogs/tool_explanation_dialog.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String text;
   final VoidCallback? onAlertTap;
+  final bool showIcon;
+  final String? toolKey; // مفتاح الأداة لعرض الرسالة المناسبة
 
-  const CustomAppBar({super.key, required this.text, this.onAlertTap});
+  const CustomAppBar({
+    super.key,
+    required this.text,
+    this.onAlertTap,
+    this.showIcon = true,
+    this.toolKey,
+  });
+
+  // دالة عرض شرح الأداة
+  void _showToolExplanation() {
+    if (toolKey != null) {
+      ToolExplanationDialog.showDialog(toolKey: toolKey!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +43,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () => Get.back(),
         splashRadius: 24,
       ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 17),
-          child: GestureDetector(
-            onTap: onAlertTap,
-            child: Icon(Icons.priority_high, color: Colors.black, size: 21),
-          ),
-        ),
-      ],
+      actions:
+          showIcon
+              ? [
+                Padding(
+                  padding: const EdgeInsets.only(right: 17),
+                  child: GestureDetector(
+                    onTap: onAlertTap ?? _showToolExplanation,
+                    child: const Icon(
+                      Icons.priority_high,
+                      color: Colors.black,
+                      size: 21,
+                    ),
+                  ),
+                ),
+              ]
+              : null,
       elevation: 0,
       backgroundColor: Colors.transparent,
       foregroundColor: Colors.black,

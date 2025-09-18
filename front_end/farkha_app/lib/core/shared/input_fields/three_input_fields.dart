@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'input_field.dart';
 
 class ThreeInputFields extends StatelessWidget {
@@ -8,9 +9,6 @@ class ThreeInputFields extends StatelessWidget {
   final void Function(String) onFirstChanged;
   final void Function(String) onSecondChanged;
   final void Function(String) onThirdChanged;
-  final TextInputType? firstKeyboardType;
-  final TextInputType? secondKeyboardType;
-  final TextInputType? thirdKeyboardType;
 
   const ThreeInputFields({
     super.key,
@@ -20,38 +18,25 @@ class ThreeInputFields extends StatelessWidget {
     required this.onFirstChanged,
     required this.onSecondChanged,
     required this.onThirdChanged,
-    this.firstKeyboardType,
-    this.secondKeyboardType,
-    this.thirdKeyboardType,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: InputField(
-            label: firstLabel,
-            keyboardType: firstKeyboardType,
-            onChanged: onFirstChanged,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: InputField(label: firstLabel, onChanged: onFirstChanged),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: InputField(label: secondLabel, onChanged: onSecondChanged),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: InputField(
-            label: secondLabel,
-            keyboardType: secondKeyboardType,
-            onChanged: onSecondChanged,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: InputField(
-            label: thirdLabel,
-            keyboardType: thirdKeyboardType,
-            onChanged: onThirdChanged,
-          ),
-        ),
+        const SizedBox(height: 12),
+        InputField(label: thirdLabel, onChanged: onThirdChanged),
       ],
     );
   }

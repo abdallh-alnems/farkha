@@ -8,24 +8,15 @@ class AdManager {
 
   // ================================== banner =================================
 
-  static String get bannerFirst =>
+  static String get idBanner =>
       _isTest ? _testBanner : "ca-app-pub-8595701567488603/1751748833";
 
-  static String get bannerSecond =>
-      _isTest ? _testBanner : "ca-app-pub-8595701567488603/1584158060";
 
-  static String get bannerThird =>
-      _isTest ? _testBanner : "ca-app-pub-8595701567488603/8325394412";
 
   // ================================== native =================================
 
-  static String get nativeFirst =>
+  static String get idNative =>
       _isTest ? _testNative : "ca-app-pub-8595701567488603/4494984718";
 
-  static String get nativeSecond =>
-      _isTest ? _testNative : "ca-app-pub-8595701567488603/1075378798";
-      
-
-  static String get nativeThird =>
-      _isTest ? _testNative : "ca-app-pub-8595701567488603/1164528612";
+ 
 }

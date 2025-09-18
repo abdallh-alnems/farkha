@@ -13,29 +13,35 @@ class ImageAsset {
 
   static const String setting = "$_rootIcons/setting.png";
 
-  // ! calculate icons (now using SVG)
-  static const String birdDensity = "$_rootIcons/calculate/chicken_density.svg";
-  static const String feedConsumption =
-      "$_rootIcons/calculate/feed_consumption.svg";
+  // ! tools icons (now using SVG)
+  static const String birdDensity = "$_rootIcons/tools/chicken_density.svg";
+  static const String dailyFeedConsumption =
+      "$_rootIcons/tools/daily_feed_consumption.svg";
+  static const String totalFeedConsumption =
+      "$_rootIcons/tools/total_feed_consumption.svg";
   static const String feasibilityStudy =
-      "$_rootIcons/calculate/feasibility_study.svg";
-  static const String thermometer = "$_rootIcons/calculate/thermometer.svg";
-  static const String weight = "$_rootIcons/calculate/weight.svg";
-  static const String profits = "$_rootIcons/calculate/profits.svg";
-  static const String budget = "$_rootIcons/calculate/budget.svg";
-  static const String deadChickens = "$_rootIcons/calculate/dead_chickens.svg";
-  static const String totalWeight = "$_rootIcons/calculate/total_weight.svg";
-  static const String totalRevenue = "$_rootIcons/calculate/total_revenue.svg";
+      "$_rootIcons/tools/feasibility_study.svg";
+  static const String thermometer = "$_rootIcons/tools/thermometer.svg";
+  static const String weight = "$_rootIcons/tools/weight.svg";
+  static const String profits = "$_rootIcons/tools/profits.svg";
+  static const String budget = "$_rootIcons/tools/budget.svg";
+  static const String deadChickens = "$_rootIcons/tools/dead_chickens.svg";
+  static const String totalWeight = "$_rootIcons/tools/total_weight.svg";
+  static const String totalRevenue = "$_rootIcons/tools/total_revenue.svg";
   static const String feedCostPerBird =
-      "$_rootIcons/calculate/feed_cost_per_bird.svg";
+      "$_rootIcons/tools/feed_cost_per_bird.svg";
   static const String feedCostPerKilo =
-      "$_rootIcons/calculate/feed_cost_per_kilo.svg";
-  static const String darkness = "$_rootIcons/calculate/darkness.svg";
-  static const String vaccination = "$_rootIcons/calculate/vaccination.svg";
+      "$_rootIcons/tools/feed_cost_per_kilo.svg";
+  static const String darkness = "$_rootIcons/tools/darkness.svg";
+  static const String vaccination = "$_rootIcons/tools/vaccination.svg";
+  static const String fan = "$_rootIcons/tools/fan.svg";
+  static const String article = "$_rootIcons/tools/article.svg";
+  static const String diseases = "$_rootIcons/tools/diseases.svg";
+  static const String chickenRequirements =
+      "$_rootIcons/tools/chicken_requirements.svg";
 
   // ! follow up tools
   static const String chicken = "$_rootIcons/chicken.png";
-  static const String diseases = "$_rootIcons/diseases.png";
   static const String poultrySale = "$_rootIcons/poultry_sale.png";
   static const String articles = "$_rootIcons/articles.png";
 
@@ -46,6 +52,10 @@ class ImageAsset {
   // ! points of sale
   static const String price = "$_rootIcons/price_index.png";
   static const String addCycle = "$_rootIcons/add_cycle.png";
+
+  // ! prices
+  static const String settingCardPrices =
+      "$_rootIcons/prices/setting_card_prices.svg";
 
   // ! broiler chicken requirements
   static const String feed = "$_rootIcons/feed.png";

@@ -2,8 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import '../../../core/constant/theme/color.dart';
-import '../../../core/functions/valid_input/validate_chick_input.dart';
+import '../../../core/functions/input_validation.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class AddCycle extends StatelessWidget {
@@ -64,7 +65,7 @@ class AddCycle extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.manage_accounts,
                           color: Colors.white,
                           size: 17,
@@ -75,7 +76,7 @@ class AddCycle extends StatelessWidget {
                 ),
               );
             } else {
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             }
           }),
 
@@ -114,7 +115,7 @@ class AddCycle extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25.r),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
@@ -159,15 +160,14 @@ class AddCycle extends StatelessWidget {
               _buildTextField(
                 label: 'عدد الفراخ',
                 controller: controller.countController,
-                keyboardType: TextInputType.number,
-                validator: validateChickInput,
+                validator: InputValidation.validateAndFormatNumber,
                 suffix: ' فرخ',
               ),
               // حقل مساحة العنبر مع وحدة 'متر مربع'
               _buildTextField(
                 label: 'مساحة العنبر',
                 controller: controller.spaceController,
-                keyboardType: TextInputType.number,
+                validator: InputValidation.validateAndFormatNumber,
                 suffix: 'م2',
               ),
               _buildFixedField(label: 'نظام التربية', value: 'أرضي'),

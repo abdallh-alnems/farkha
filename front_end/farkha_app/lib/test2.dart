@@ -1,270 +1,417 @@
-// import 'package:farkha_app/core/constant/routes/route.dart';
+// import 'dart:convert';
+
 // import 'package:flutter/material.dart';
+// import 'package:flutter_html/flutter_html.dart';
 // import 'package:get/get.dart';
-// import 'package:get_storage/get_storage.dart';
-// import 'package:intl/intl.dart';
+// import 'package:http/http.dart' as http;
 
-// import '../../data/data_source/static/growth_parameters.dart';
+// import 'core/constant/id/link_api.dart';
 
-// class CycleController extends GetxController with GetTickerProviderStateMixin {
-//   // متحكمات الإدخال
-//   final TextEditingController nameController = TextEditingController();
-//   final TextEditingController dateController = TextEditingController();
-//   final TextEditingController countController = TextEditingController();
-//   final TextEditingController spaceController = TextEditingController();
+// // Model لمحتوى المقال
+// class ArticleContentModel {
+//   final String content;
 
-//   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-//   final GetStorage storage = GetStorage();
+//   ArticleContentModel({required this.content});
 
-//   // القوائم والمؤشرات
-//   RxList<Map<String, dynamic>> cycles = <Map<String, dynamic>>[].obs;
-//   RxInt currentIndex = 0.obs;
-//   final PageController pageController = PageController();
-//   RxBool showGestureTutorial = false.obs;
-//   RxBool shouldJumpToLast = false.obs;
-
-//   // سهم الإرشاد
-//   late AnimationController arrowController;
-//   late Animation<Offset> arrowAnimation;
-
-//   // بيانات العمر → الرطوبة → الكثافة
-//   RxInt selectedChickenAge = 0.obs;
-//   RxString ageHumidityRange = ''.obs;
-//   RxInt chickensPerSquareMeter = 0.obs;
-//   RxInt currentTemperature = 0.obs;
-
-//   // نصوص العرض لدرجة الحرارة والرطوبة
-//   RxString temperatureText = ''.obs;
-//   RxString humidityText = ''.obs;
-
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     loadCycles();
-//     if (cycles.isNotEmpty) {
-//       _updateAgeDependentValues(cycles[currentIndex.value]);
-//     }
-
-//     arrowController = AnimationController(
-//       vsync: this,
-//       duration: Duration(milliseconds: 800),
-//     );
-//     arrowAnimation = Tween<Offset>(
-//       begin: Offset(-0.2, 0),
-//       end: Offset(0.2, 0),
-//     ).animate(
-//       CurvedAnimation(parent: arrowController, curve: Curves.easeInOut),
-//     );
-//     arrowController.repeat(reverse: true);
+//   factory ArticleContentModel.fromJson(Map<String, dynamic> json) {
+//     return ArticleContentModel(content: json['content'] ?? '');
 //   }
+// }
+
+// // Controller لمحتوى المقال
+// class ArticleContentController extends GetxController {
+//   final RxString articleContent = ''.obs;
+//   final RxBool isLoading = false.obs;
+//   final RxString error = ''.obs;
+//   final TextEditingController idController = TextEditingController();
 
 //   @override
 //   void onClose() {
-//     nameController.dispose();
-//     dateController.dispose();
-//     countController.dispose();
-//     spaceController.dispose();
-//     pageController.dispose();
-//     arrowController.dispose();
+//     idController.dispose();
 //     super.onClose();
 //   }
 
-//   // تحميل الدورات من التخزين
-//   void loadCycles() {
-//     var stored = storage.read('cycles');
-//     if (stored != null) {
-//       cycles.assignAll(List<Map<String, dynamic>>.from(stored));
-//     }
-//   }
+//   Future<void> fetchArticleContent(int articleId) async {
+//     try {
+//       isLoading.value = true;
+//       error.value = '';
 
-//   // حساب عمر الدورة بالأيام (اليوم الأول = 1)
-//   int _computeAgeDays(Map<String, dynamic> cycle) {
-//     final s = cycle['startDate'] as String? ?? '';
-//     if (s.isEmpty) return 0;
-//     final start = DateTime.parse(s);
-//     final now = DateTime.now();
-//     if (now.isBefore(start)) {
-//       return 0;
-//     } else {
-//       return now.difference(start).inDays + 1;
-//     }
-//   }
+//       // استخدام الرابط من link_api.dart مع id
+//       final response = await http.get(
+//         Uri.parse('${ApiLinks.articlesContent}?id=$articleId'),
+//         headers: {'Content-Type': 'application/json'},
+//       );
 
-//   // تحديث القيم المبنية على العمر
-//   void _updateAgeDependentValues(Map<String, dynamic> cycle) {
-//     final days = _computeAgeDays(cycle);
-//     selectedChickenAge.value = days;
+//       if (response.statusCode == 200) {
+//         final data = json.decode(response.body);
 
-//     if (days == 0) {
-//       // قبل بدء الدورة
-//       temperatureText.value = 'لم تبدأ';
-//       humidityText.value = 'لم تبدأ';
-//     } else {
-//       // بعد بدء الدورة
-//       // رطوبة وكثافة
-//       if (days <= 7) {
-//         ageHumidityRange.value = '60-70%';
-//         chickensPerSquareMeter.value = 30;
-//       } else if (days <= 14) {
-//         ageHumidityRange.value = '60-70%';
-//         chickensPerSquareMeter.value = 25;
-//       } else if (days <= 21) {
-//         ageHumidityRange.value = '50-60%';
-//         chickensPerSquareMeter.value = 20;
-//       } else if (days <= 28) {
-//         ageHumidityRange.value = '50-60%';
-//         chickensPerSquareMeter.value = 15;
+//         if (data['status'] == 'success' && data['data'] != null) {
+//           final List<dynamic> contentData = data['data'];
+//           if (contentData.isNotEmpty) {
+//             final content = ArticleContentModel.fromJson(contentData[0]);
+//             articleContent.value = content.content;
+//           } else {
+//             error.value = 'لا يوجد محتوى للمقال';
+//           }
+//         } else {
+//           error.value = 'فشل في تحميل المحتوى';
+//         }
 //       } else {
-//         ageHumidityRange.value = '50-55%';
-//         chickensPerSquareMeter.value = 10;
+//         error.value = 'خطأ في الاتصال: ${response.statusCode}';
 //       }
-
-//       // درجة الحرارة من القائمة
-//       if (days - 1 < temperatureList.length) {
-//         currentTemperature.value = temperatureList[days - 1];
-//       } else {
-//         currentTemperature.value = temperatureList.last;
-//       }
-
-//       // نصوص العرض
-//       temperatureText.value = '${currentTemperature.value}°C';
-//       humidityText.value = ageHumidityRange.value;
+//     } catch (e) {
+//       error.value = 'خطأ: $e';
+//     } finally {
+//       isLoading.value = false;
 //     }
 //   }
 
-//   // حفظ دورة جديدة
-//   void saveCycleData() {
-//     final cycle = {
-//       'name': nameController.text,
-//       'startDate': dateController.text,
-//       'cycleType': 'تسمين',
-//       'chickCount': countController.text,
-//       'space': spaceController.text,
-//       'farmingSystem': 'أرضي',
-//     };
-//     cycles.add(cycle);
-//     currentIndex.value = cycles.length - 1;
-//     storage.write('cycles', cycles.toList());
-//     _updateAgeDependentValues(cycle);
+//   void clearContent() {
+//     articleContent.value = '';
+//     error.value = '';
 //   }
+// }
 
-//   // تحديث دورة قائمة
-//   void updateCycle(Map<String, dynamic> updated) {
-//     final idx = cycles.indexWhere((c) => c['name'] == currentCycle['name']);
-//     if (idx != -1) {
-//       cycles[idx] = updated;
-//       currentIndex.value = idx;
-//       storage.write('cycles', cycles.toList());
-//       _updateAgeDependentValues(updated);
-//     }
-//   }
+// // صفحة تجربة محتوى المقال
+// class ArticleContentTestPage extends StatelessWidget {
+//   const ArticleContentTestPage({super.key});
 
-//   // اختيار التاريخ
-//   void pickDate(BuildContext ctx) async {
-//     final picked = await showDatePicker(
-//       context: ctx,
-//       initialDate: DateTime.now(),
-//       firstDate: DateTime(2025),
-//       lastDate: DateTime(2030),
-//       locale: const Locale('ar'),
+//   @override
+//   Widget build(BuildContext context) {
+//     final ArticleContentController controller = Get.put(
+//       ArticleContentController(),
 //     );
-//     if (picked != null) {
-//       dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+
+//     // استقبال البيانات المرسلة من test.dart
+//     final arguments = Get.arguments as Map<String, dynamic>?;
+//     final int? articleId = arguments?['articleId'];
+//     final String? articleTitle = arguments?['articleTitle'];
+
+//     // إذا تم تمرير ID، قم بجلب المحتوى تلقائياً
+//     if (articleId != null) {
+//       WidgetsBinding.instance.addPostFrameCallback((_) {
+//         controller.idController.text = articleId.toString();
+//         controller.fetchArticleContent(articleId);
+//       });
 //     }
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(articleTitle ?? 'محتوى المقال - تجربة'),
+//         backgroundColor: Colors.green,
+//         foregroundColor: Colors.white,
+//         actions: [
+//           IconButton(
+//             onPressed: controller.clearContent,
+//             icon: const Icon(Icons.clear),
+//           ),
+//         ],
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           children: [
+//             // حقل إدخال ID
+//             Card(
+//               elevation: 2,
+//               child: Padding(
+//                 padding: const EdgeInsets.all(16.0),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     const Text(
+//                       'أدخل ID المقال:',
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                     const SizedBox(height: 12),
+//                     TextField(
+//                       controller: controller.idController,
+//                       keyboardType: TextInputType.number,
+//                       decoration: const InputDecoration(
+//                         hintText: 'مثال: 1',
+//                         border: OutlineInputBorder(),
+//                         prefixIcon: Icon(Icons.numbers),
+//                       ),
+//                     ),
+//                     const SizedBox(height: 12),
+//                     SizedBox(
+//                       width: double.infinity,
+//                       child: ElevatedButton.icon(
+//                         onPressed: () {
+//                           final id = int.tryParse(controller.idController.text);
+//                           if (id != null && id > 0) {
+//                             controller.fetchArticleContent(id);
+//                           } else {
+//                             Get.snackbar(
+//                               'خطأ',
+//                               'يرجى إدخال ID صحيح',
+//                               backgroundColor: Colors.red,
+//                               colorText: Colors.white,
+//                             );
+//                           }
+//                         },
+//                         icon: const Icon(Icons.search),
+//                         label: const Text('جلب المحتوى'),
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: Colors.green,
+//                           foregroundColor: Colors.white,
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 16),
+
+//             // عرض المحتوى
+//             Expanded(
+//               child: Obx(() {
+//                 if (controller.isLoading.value) {
+//                   return const Center(
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         CircularProgressIndicator(),
+//                         SizedBox(height: 16),
+//                         Text('جاري تحميل المحتوى...'),
+//                       ],
+//                     ),
+//                   );
+//                 }
+
+//                 if (controller.error.value.isNotEmpty) {
+//                   return Center(
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         Icon(
+//                           Icons.error_outline,
+//                           size: 64,
+//                           color: Colors.red[300],
+//                         ),
+//                         const SizedBox(height: 16),
+//                         Text(
+//                           'خطأ: ${controller.error.value}',
+//                           style: const TextStyle(fontSize: 16),
+//                           textAlign: TextAlign.center,
+//                         ),
+//                         const SizedBox(height: 16),
+//                         ElevatedButton(
+//                           onPressed: () {
+//                             final id = int.tryParse(
+//                               controller.idController.text,
+//                             );
+//                             if (id != null && id > 0) {
+//                               controller.fetchArticleContent(id);
+//                             }
+//                           },
+//                           child: const Text('إعادة المحاولة'),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 }
+
+//                 if (controller.articleContent.value.isEmpty) {
+//                   return const Center(
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         Icon(
+//                           Icons.article_outlined,
+//                           size: 64,
+//                           color: Colors.grey,
+//                         ),
+//                         SizedBox(height: 16),
+//                         Text(
+//                           'أدخل ID المقال لعرض المحتوى',
+//                           style: TextStyle(fontSize: 16),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 }
+
+//                 return Card(
+//                   elevation: 2,
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(16.0),
+//                     child: SingleChildScrollView(
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           const Row(
+//                             children: [
+//                               Icon(Icons.article, color: Colors.green),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'محتوى المقال:',
+//                                 style: TextStyle(
+//                                   fontSize: 18,
+//                                   fontWeight: FontWeight.bold,
+//                                   color: Colors.green,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                           const SizedBox(height: 12),
+//                           const Divider(),
+//                           const SizedBox(height: 12),
+//                           Container(
+//                             decoration: BoxDecoration(
+//                               border: Border.all(color: Colors.grey.shade300),
+//                               borderRadius: BorderRadius.circular(8),
+//                               color: Colors.white,
+//                             ),
+//                             child: ClipRRect(
+//                               borderRadius: BorderRadius.circular(8),
+//                               child: Html(
+//                                 data: controller.articleContent.value,
+//                                 // تفعيل دعم الجداول
+//                                 onLinkTap: (url, attributes, element) {
+//                                   // معالجة الروابط إذا لزم الأمر
+//                                 },
+//                                 // إعدادات إضافية للجداول
+//                                 shrinkWrap: true,
+//                                 style: {
+//                                   "body": Style(
+//                                     fontSize: FontSize(16), // حجم افتراضي
+//                                     lineHeight: const LineHeight(1.7),
+//                                     textAlign: TextAlign.right,
+//                                     fontFamily: 'Cairo',
+//                                     color: Colors.black87,
+//                                   ),
+//                                   "p": Style(
+//                                     fontSize: FontSize(16),
+//                                     margin: Margins.only(bottom: 12),
+//                                     textAlign: TextAlign.right,
+//                                   ),
+//                                   // إعدادات الجدول
+//                                   "table": Style(
+//                                     width: Width(100, Unit.percent),
+//                                     margin: Margins.only(bottom: 16),
+//                                     backgroundColor: Colors.white,
+//                                     border: Border.all(
+//                                       color: Colors.grey.shade400,
+//                                       width: 1,
+//                                     ),
+//                                     display: Display.table,
+//                                   ),
+//                                   "thead": Style(
+//                                     backgroundColor: Colors.grey.shade100,
+//                                     display: Display.tableHeaderGroup,
+//                                   ),
+//                                   "tbody": Style(
+//                                     backgroundColor: Colors.white,
+//                                     display: Display.tableRowGroup,
+//                                   ),
+//                                   "tr": Style(
+//                                     backgroundColor: Colors.white,
+//                                     border: Border.all(
+//                                       color: Colors.grey.shade300,
+//                                       width: 1,
+//                                     ),
+//                                     display: Display.tableRow,
+//                                   ),
+//                                   "th": Style(
+//                                     padding: HtmlPaddings.all(12),
+//                                     backgroundColor: Colors.green.shade50,
+//                                     fontSize: FontSize(14),
+//                                     fontWeight: FontWeight.bold,
+//                                     textAlign: TextAlign.center,
+//                                     fontFamily: 'Cairo',
+//                                     color: Colors.green.shade800,
+//                                     border: Border.all(
+//                                       color: Colors.grey.shade400,
+//                                       width: 1,
+//                                     ),
+//                                     display: Display.tableCell,
+//                                   ),
+//                                   "td": Style(
+//                                     padding: HtmlPaddings.all(10),
+//                                     fontSize: FontSize(14),
+//                                     textAlign: TextAlign.center,
+//                                     fontFamily: 'Cairo',
+//                                     backgroundColor: Colors.white,
+//                                     color: Colors.black87,
+//                                     border: Border.all(
+//                                       color: Colors.grey.shade300,
+//                                       width: 1,
+//                                     ),
+//                                     display: Display.tableCell,
+//                                   ),
+//                                   "h1": Style(
+//                                     fontSize: FontSize(24),
+//                                     fontWeight: FontWeight.bold,
+//                                     textAlign: TextAlign.center,
+//                                     margin: Margins.only(bottom: 16),
+//                                     fontFamily: 'Cairo',
+//                                     color: Colors.green.shade700,
+//                                   ),
+//                                   "h2": Style(
+//                                     fontSize: FontSize(20),
+//                                     fontWeight: FontWeight.bold,
+//                                     textAlign: TextAlign.center,
+//                                     margin: Margins.only(bottom: 12),
+//                                     fontFamily: 'Cairo',
+//                                     color: Colors.green.shade700,
+//                                   ),
+//                                   "h3": Style(
+//                                     fontSize: FontSize(18),
+//                                     fontWeight: FontWeight.bold,
+//                                     textAlign: TextAlign.right,
+//                                     margin: Margins.only(bottom: 10),
+//                                     fontFamily: 'Cairo',
+//                                     color: Colors.green.shade600,
+//                                   ),
+//                                   // ⚠️ مهم: احذف أو ما تكتبش style للـ "span"
+//                                   // علشان ما يطغاش على inline style من قاعدة البيانات
+//                                 },
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 );
+//               }),
+//             ),
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () {
+//           final id = int.tryParse(controller.idController.text);
+//           if (id != null && id > 0) {
+//             controller.fetchArticleContent(id);
+//           } else {
+//             Get.snackbar(
+//               'خطأ',
+//               'يرجى إدخال ID صحيح',
+//               backgroundColor: Colors.red,
+//               colorText: Colors.white,
+//             );
+//           }
+//         },
+//         backgroundColor: Colors.green,
+//         child: const Icon(Icons.refresh),
+//       ),
+//     );
 //   }
+// }
 
-//   // زر التالي (حفظ/تعديل)
-//   void onNext({bool isEdit = false}) {
-//     final stored = storage.read('cycles');
-//     if (formKey.currentState!.validate()) {
-//       final name = nameController.text.trim();
-//       if (!isEdit) {
-//         if (cycles.any((c) => c['name']?.toString().trim() == name)) {
-//           Get.snackbar(
-//             'خطأ',
-//             'اسم الدورة موجود بالفعل',
-//             backgroundColor: Colors.redAccent,
-//             colorText: Colors.white,
-//           );
-//           return;
-//         }
-//       } else {
-//         if (cycles.any(
-//           (c) => c['name']?.toString().trim() == name && c != currentCycle,
-//         )) {
-//           Get.snackbar(
-//             'تنبية',
-//             'اسم الدورة موجود بالفعل',
-//             backgroundColor: Colors.redAccent,
-//             colorText: Colors.white,
-//           );
-//           return;
-//         }
-//       }
-
-//       if (isEdit) {
-//         updateCycle({
-//           'name': nameController.text,
-//           'startDate': dateController.text,
-//           'cycleType': 'تسمين',
-//           'chickCount': countController.text,
-//           'space': spaceController.text,
-//           'farmingSystem': 'أرضي',
-//         });
-//       } else {
-//         saveCycleData();
-//       }
-
-//       nameController.clear();
-//       dateController.clear();
-//       countController.clear();
-//       spaceController.clear();
-
-//       if (cycles.length == 2) showGestureTutorial.value = true;
-//       shouldJumpToLast.value = true;
-
-//       if (stored != null && stored is List && stored.isNotEmpty) {
-//         Get.back(result: cycles.last);
-//       } else {
-//         Get.offAndToNamed(AppRoute.cycle, result: cycles.last);
-//       }
-//     }
-//   }
-
-//   // إضافة دورة (بدون onNext)
-//   void addCycle(Map<String, dynamic> newCycle) {
-//     cycles.add(newCycle);
-//     currentIndex.value = cycles.length - 1;
-//     storage.write('cycles', cycles.toList());
-//     _updateAgeDependentValues(newCycle);
-//     if (cycles.length == 2) showGestureTutorial.value = true;
-//   }
-
-//   // عند تغيير الصفحة
-//   void onPageChanged(int idx) {
-//     currentIndex.value = idx;
-//     _updateAgeDependentValues(cycles[idx]);
-//     if (showGestureTutorial.value && idx != cycles.length - 1) {
-//       showGestureTutorial.value = false;
-//     }
-//   }
-
-//   // حذف الدورة الحالية
-//   void deleteCurrentCycle() {
-//     if (cycles.isNotEmpty) {
-//       final idx = currentIndex.value;
-//       cycles.removeAt(idx);
-//       storage.write('cycles', cycles.toList());
-//       if (cycles.isEmpty) {
-//         currentIndex.value = 0;
-//       } else if (idx >= cycles.length) {
-//         currentIndex.value = cycles.length - 1;
-//       }
-//       pageController.jumpToPage(currentIndex.value);
-//     }
-//   }
-
-//   // getter للدورة الحالية
-//   Map<String, dynamic> get currentCycle =>
-//       cycles.isNotEmpty ? cycles[currentIndex.value] : {};
+// // دالة main للتجربة
+// void main() {
+//   runApp(
+//     const GetMaterialApp(
+//       title: 'تجربة محتوى المقال',
+//       home: ArticleContentTestPage(),
+//       debugShowCheckedModeBanner: false,
+//     ),
+//   );
 // }

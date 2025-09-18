@@ -5,10 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-import '../../../core/constant/theme/color.dart';
 import '../../../core/class/status_request.dart';
-import '../../../logic/controller/follow_up_tools_controller/broiler_controller.dart';
+import '../../../core/constant/theme/color.dart';
 import '../../../logic/controller/cycle_controller.dart';
+import '../../../logic/controller/tools_controller/broiler_controller.dart';
+import '../../../logic/controller/weather_controller.dart';
 
 class EnvironmentStatus extends StatelessWidget {
   const EnvironmentStatus({super.key});
@@ -16,6 +17,7 @@ class EnvironmentStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final broilerCtrl = Get.find<BroilerController>();
+    final weatherCtrl = Get.find<WeatherController>();
     final cycleCtrl = Get.find<CycleController>();
 
     return Obx(() {
@@ -23,9 +25,9 @@ class EnvironmentStatus extends StatelessWidget {
         return const SizedBox();
       }
 
-      final isLoading = broilerCtrl.statusRequest != StatusRequest.success;
-      final currTemp = broilerCtrl.currentTemperature.value;
-      final currHum = broilerCtrl.currentHumidity.value.toDouble();
+      final isLoading = weatherCtrl.statusRequest != StatusRequest.success;
+      final currTemp = weatherCtrl.currentTemperature.value;
+      final currHum = weatherCtrl.currentHumidity.value.toDouble();
       final targTemp = broilerCtrl.ageTemperature.value.toDouble();
       final parts = broilerCtrl.ageHumidityRange.split('-');
       final targHum = double.tryParse(parts.last.replaceAll('%', '')) ?? 0.0;

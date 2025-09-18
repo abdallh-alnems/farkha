@@ -7,6 +7,7 @@ class AppRoute {
   // ! prices
   static const String lastPrices = "/lastPrices";
   static const String mainTypes = "/mainTypes";
+  static const String customizePrices = "/customize-prices";
 
   // ! cycle
   static const String addCycle = "/addCycle";
@@ -31,14 +32,14 @@ class AppRoute {
   // ! diagnosis diseases
   static const String questionDisease = "/questionDisease";
 
-  // =============================== calculate =================================
+  // ================================= tools ===================================
 
   // ! feasibility study
   static const String feasibilityStudy = "/feasibilityStudy";
-  static const String howToDoAFeasibilityStudy = "/howToDoAFeasibilityStudy";
 
   static const String chickenDensity = "/chickenDensity";
-  static const String feedConsumption = "/feedConsumption";
+  static const String dailyFeedConsumption = "/dailyFeedConsumption";
+  static const String totalFeedConsumption = "/totalFeedConsumption";
   static const String fcr = "/fcr";
   static const String adg = "/adg";
   static const String roi = "/roi";
@@ -48,17 +49,18 @@ class AppRoute {
   static const String weightByAge = "/weightByAge";
   static const String temperatureByAge = "/temperatureByAge";
   static const String darknessLevels = '/darkness-levels';
+  static const String fanOperation = "/fanOperation";
   static const String totalFarmWeight = '/total-farm-weight';
   static const String totalRevenue = '/total-revenue';
   static const String feedCostPerBird = '/feed-cost-per-bird';
   static const String feedCostPerKilo = '/feed-cost-per-kilo';
   static const String vaccinationSchedule = '/vaccination-schedule';
-  static const String allCalculations = '/all-calculations';
+  static const String allTools = '/all-tools';
 
   // ================================ articles =================================
 
   static const String dartgetAl7rara = "/dartgetAl7rara";
-  static const String alida = "/alida";
+  static const String alzlam = "/alzlam";
   static const String alrotoba = "/alrotoba";
   static const String alsaf = "/alsaf";
   static const String alshata = "/alshata";

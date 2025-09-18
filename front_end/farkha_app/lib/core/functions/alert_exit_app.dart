@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../package/custom_snack_bar.dart';
+import '../package/snackbar_message.dart';
 
 class TapToExit extends StatelessWidget {
-  const TapToExit({
-    super.key,
-    required this.child,
-    this.snackBar,
-  });
+  const TapToExit({super.key, required this.child, this.snackBar});
 
   final Widget child;
   final SnackBar? snackBar;
@@ -28,11 +24,11 @@ class TapToExit extends StatelessWidget {
           if (snackBar != null) {
             ScaffoldMessenger.of(context).showSnackBar(snackBar!);
           } else {
-            CustomSnackbar(
-          message: "اضغط مرة اخري للخروج",
-          icon: Icons.logout,
-         
-        ).show(context);
+            SnackbarMessage.show(
+              context,
+              "اضغط مرة اخري للخروج",
+              icon: Icons.exit_to_app,
+            );
           }
         } else {
           SystemNavigator.pop();

@@ -7,7 +7,6 @@ import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
 import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
-import 'view/screen/prices/main_types.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +17,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override             
+  @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(360, 690),
@@ -36,10 +35,11 @@ class MyApp extends StatelessWidget {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
-          ], 
+          ],
           initialBinding: MyBindings(),
           getPages: pages,
           theme: AppTheme().lightThemes(),
+          //  home: FeasibilityStudy(),
           //  defaultTransition: Transition.downToUp,
         );
       },

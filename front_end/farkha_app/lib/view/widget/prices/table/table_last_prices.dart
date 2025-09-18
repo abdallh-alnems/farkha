@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/theme/color.dart';
-import '../../../../core/shared/price_index.dart';
 import '../../../../logic/controller/price_controller/last_prices_controller.dart';
 
 class TableLastPrices extends StatelessWidget {
@@ -16,10 +16,7 @@ class TableLastPrices extends StatelessWidget {
         return HandlingDataView(
           statusRequest: controller.statusRequest,
           widget: Column(
-            children: [
-              _buildHeader(),
-              _buildTableBody(controller),
-            ],
+            children: [_buildHeader(), _buildTableBody(controller)],
           ),
         );
       },
@@ -33,9 +30,9 @@ class TableLastPrices extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildHeaderCell("المؤشر"),
-          _buildHeaderCell("فرق"),
-          _buildHeaderCell("السعر"),
+          _buildHeaderCell("التغير"),
+          _buildHeaderCell("أعلى"),
+          _buildHeaderCell("أقل"),
           _buildHeaderCell("النوع", flex: 2),
         ],
       ),
@@ -46,10 +43,7 @@ class TableLastPrices extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: Center(
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.white),
-        ),
+        child: Text(text, style: const TextStyle(color: Colors.white)),
       ),
     );
   }
@@ -61,8 +55,10 @@ class TableLastPrices extends StatelessWidget {
         children: [
           Table(
             border: const TableBorder(
-              horizontalInside:
-                  BorderSide(color: AppColor.primaryColor, width: 1),
+              horizontalInside: BorderSide(
+                color: AppColor.primaryColor,
+                width: 1,
+              ),
             ),
             columnWidths: const {
               0: FlexColumnWidth(1),
@@ -70,51 +66,57 @@ class TableLastPrices extends StatelessWidget {
               2: FlexColumnWidth(1),
               3: FlexColumnWidth(2),
             },
-            children: controller.lastPricesList
-                .map((price) => _buildTableRow(price))
-                .toList(),
+            children:
+                controller.lastPricesList
+                    .map((price) => _buildTableRow(price))
+                    .toList(),
           ),
-          Divider(
-            color: AppColor.primaryColor,
-            thickness: 1,
-          ),
+          const Divider(color: AppColor.primaryColor, thickness: 1),
         ],
       ),
     );
   }
 
   TableRow _buildTableRow(Map<String, dynamic> price) {
-    final int latestPrice = price["price"] ?? 0;
-    final int secondLatestPrice = price["lastPrice"] ?? latestPrice;
-    final int priceDifference = latestPrice - secondLatestPrice;
+    // Extract data from new API structure
+    final int lastHigherPrice = price["last_higher_price"] ?? 0;
+    final int lastLowerPrice = price["last_lower_price"] ?? 0;
+    final int yesterdayHigherPrice = price["yesterday_higher_price"] ?? 0;
+    final int yesterdayLowerPrice = price["yesterday_lower_price"] ?? 0;
+    final String typeName = price["type_name"] ?? "";
+
+    // Calculate average prices for comparison
+    final double currentAvgPrice = (lastHigherPrice + lastLowerPrice) / 2;
+    final double yesterdayAvgPrice =
+        (yesterdayHigherPrice + yesterdayLowerPrice) / 2;
+    final double priceDifference = currentAvgPrice - yesterdayAvgPrice;
     final String differenceSign = priceDifference > 0 ? "+" : "";
 
     return TableRow(
       children: [
         _buildTableCell(
-          child: PriceIndex(
-            todayPrice: latestPrice,
-            yesterdayPrice: secondLatestPrice,
-          ),
-        ),
-        _buildTableCell(
-          child: Text(
-            "$differenceSign${priceDifference.toStringAsFixed(0)}",
-            style: TextStyle(
-              color: priceDifference > 0 ? Colors.red : Colors.green,
+          child: Center(
+            child: Text(
+              priceDifference == 0
+                  ? "0"
+                  : "${priceDifference.abs().toInt()}${priceDifference > 0 ? '+' : '-'}",
+              style: TextStyle(
+                color:
+                    priceDifference == 0
+                        ? Colors.black
+                        : (priceDifference > 0 ? Colors.red : Colors.green),
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
         _buildTableCell(
-          child: Text(
-            latestPrice.toString(),
-            textAlign: TextAlign.center,
-          ),
+          child: Text(lastHigherPrice.toString(), textAlign: TextAlign.center),
         ),
         _buildTableCell(
-          child: Center(child: Text(price["type"] ?? "")),
+          child: Text(lastLowerPrice.toString(), textAlign: TextAlign.center),
         ),
+        _buildTableCell(child: Center(child: Text(typeName))),
       ],
     );
   }

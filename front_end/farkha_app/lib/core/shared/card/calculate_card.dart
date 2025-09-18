@@ -4,12 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../constant/theme/color.dart';
 
-class CalculateCard extends StatelessWidget {
+class ToolsCard extends StatelessWidget {
   final String? image;
   final String text;
   final void Function() onTap;
 
-  const CalculateCard({
+  const ToolsCard({
     super.key,
     this.image,
     required this.text,

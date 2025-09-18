@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import '../../../core/class/handling_data.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/shared/card_title.dart';
@@ -17,7 +18,7 @@ class MainTypes extends StatelessWidget {
     Get.put(MainTypesController());
 
     return Scaffold(
-      appBar: CustomAppBar(text: 'الأنواع'),
+      appBar: const CustomAppBar(text: 'الأنواع', showIcon: false),
       body: Column(
         children: [
           Expanded(
@@ -31,7 +32,7 @@ class MainTypes extends StatelessWidget {
                       if (index == 0) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 9).r,
-                          child: const AdNativeWidget(adIndex: 1),
+                          child: const AdNativeWidget(),
                         );
                       } else {
                         final mainTypes = controller.mainTypesList[index - 1];
@@ -55,7 +56,7 @@ class MainTypes extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const AdBannerWidget(adIndex: 1),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

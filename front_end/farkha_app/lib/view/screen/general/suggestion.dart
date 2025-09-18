@@ -16,7 +16,7 @@ class Suggestion extends StatelessWidget {
     final RxString errorMessage = ''.obs;
 
     return Scaffold(
-      appBar: CustomAppBar(text: 'الاقتراحات'),
+      appBar: const CustomAppBar(text: 'الاقتراحات'),
       body: Column(
         children: [
           GetBuilder<SuggestionController>(
@@ -30,7 +30,7 @@ class Suggestion extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 19).r,
                       child: Column(
                         children: [
-                          AdNativeWidget(adIndex: 2),
+                          const AdNativeWidget(),
                           SizedBox(height: 25.h),
                           Obx(
                             () => TextField(
@@ -40,7 +40,7 @@ class Suggestion extends StatelessWidget {
                               textAlign: TextAlign.right,
                               decoration: InputDecoration(
                                 hintText: 'اكتب اقتراحك هنا',
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                                 errorText:
                                     errorMessage.isNotEmpty
                                         ? errorMessage.value
@@ -61,7 +61,7 @@ class Suggestion extends StatelessWidget {
                                 );
                               }
                             },
-                            child: Text("ارسال الاقتراح"),
+                            child: const Text("ارسال الاقتراح"),
                           ),
                         ],
                       ),
@@ -73,7 +73,7 @@ class Suggestion extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const AdBannerWidget(adIndex: 2),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

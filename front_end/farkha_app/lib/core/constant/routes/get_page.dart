@@ -1,59 +1,62 @@
-import '../../../view/screen/calculate/fcr.dart';
+import 'package:get/get.dart';
+
+import '../../../view/screen/tools/adg.dart';
+import '../../../view/screen/tools/all_tools.dart';
+import '../../../view/screen/tools/bird_net_profit.dart';
+import '../../../view/screen/tools/bird_production_cost.dart';
+import '../../../view/screen/tools/chicken_density.dart';
+import '../../../view/screen/tools/daily_feed_consumption.dart';
+import '../../../view/screen/tools/darkness_levels.dart';
+import '../../../view/screen/tools/fan_operation.dart';
+import '../../../view/screen/tools/fcr.dart';
+import '../../../view/screen/tools/feasibility_study.dart';
+import '../../../view/screen/tools/feed_cost_per_bird.dart';
+import '../../../view/screen/tools/feed_cost_per_kilo.dart';
+import '../../../view/screen/tools/mortality_rate.dart';
+import '../../../view/screen/tools/roi.dart';
+import '../../../view/screen/tools/temperature_by_age.dart';
+import '../../../view/screen/tools/total_farm_weight.dart';
+import '../../../view/screen/tools/total_feed_consumption.dart';
+import '../../../view/screen/tools/total_revenue.dart';
+import '../../../view/screen/tools/vaccination_schedule.dart';
+import '../../../view/screen/tools/weight_by_age.dart';
+import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
-import '../../../view/screen/follow_up_tools/disease/disease_details.dart';
-import '../../../view/screen/follow_up_tools/disease/diseases.dart';
-import '../../../view/screen/follow_up_tools/disease/diagnosis_diseases.dart';
-import '../../../view/screen/cycle/add_cycle.dart';
-import '../../../view/screen/home.dart';
-import 'route.dart';
-import 'package:get/get.dart';
-import '../../../view/screen/calculate/feasibility_study/how_to_do_a_feasibility_study.dart';
-import '../../../view/screen/prices/main_types.dart';
-import '../../../view/screen/calculate/chicken_density.dart';
-import '../../../view/screen/calculate/feed_consumption.dart';
-import '../../../view/screen/calculate/feasibility_study/feasibility_study.dart';
-import '../../../view/screen/follow_up_tools/broiler_chicken_requirements.dart';
-import '../../../view/screen/general/suggestion.dart';
-import '../../../view/screen/prices/last_prices.dart';
-import '../../../view/screen/follow_up_tools/articles/articles_type.dart';
+import '../../../view/screen/tools/articles/article/a3rad.dart';
+import '../../../view/screen/tools/articles/article/akhtaq.dart';
+import '../../../view/screen/tools/articles/article/al3lag.dart';
+import '../../../view/screen/tools/articles/article/alardya.dart';
+import '../../../view/screen/tools/articles/article/alzlam.dart';
+import '../../../view/screen/tools/articles/article/alrtoba.dart';
+import '../../../view/screen/tools/articles/article/alsaf.dart';
+import '../../../view/screen/tools/articles/article/alshata.dart';
+import '../../../view/screen/tools/articles/article/altaganous.dart';
+import '../../../view/screen/tools/articles/article/amrad.dart';
+import '../../../view/screen/tools/articles/article/astaqbal.dart';
+import '../../../view/screen/tools/articles/article/asthlak_al3laf.dart';
+import '../../../view/screen/tools/articles/article/awzan.dart';
+import '../../../view/screen/tools/articles/article/dargt_al7rara.dart';
+import '../../../view/screen/tools/articles/article/nasa7a.dart';
+import '../../../view/screen/tools/articles/article/solalat.dart';
+import '../../../view/screen/tools/articles/article/ta7sen.dart';
+import '../../../view/screen/tools/articles/article/tather.dart';
+import '../../../view/screen/tools/articles/articles_type.dart';
+import '../../../view/screen/tools/broiler_chicken_requirements.dart';
+import '../../../view/screen/tools/disease/diagnosis_diseases.dart';
+import '../../../view/screen/tools/disease/disease_details.dart';
+import '../../../view/screen/tools/disease/diseases.dart';
 import '../../../view/screen/general/general.dart';
-import '../../../view/screen/follow_up_tools/articles/article/a3rad.dart';
-import '../../../view/screen/follow_up_tools/articles/article/akhtaq.dart';
-import '../../../view/screen/follow_up_tools/articles/article/alardya.dart';
-import '../../../view/screen/follow_up_tools/articles/article/alida.dart';
-import '../../../view/screen/follow_up_tools/articles/article/alrtoba.dart';
-import '../../../view/screen/follow_up_tools/articles/article/alsaf.dart';
-import '../../../view/screen/follow_up_tools/articles/article/alshata.dart';
-import '../../../view/screen/follow_up_tools/articles/article/altaganous.dart';
-import '../../../view/screen/follow_up_tools/articles/article/amrad.dart';
-import '../../../view/screen/follow_up_tools/articles/article/astaqbal.dart';
-import '../../../view/screen/follow_up_tools/articles/article/asthlak_al3laf.dart';
-import '../../../view/screen/follow_up_tools/articles/article/awzan.dart';
-import '../../../view/screen/follow_up_tools/articles/article/dargt_al7rara.dart';
-import '../../../view/screen/follow_up_tools/articles/article/nasa7a.dart';
-import '../../../view/screen/follow_up_tools/articles/article/solalat.dart';
-import '../../../view/screen/follow_up_tools/articles/article/ta7sen.dart';
-import '../../../view/screen/follow_up_tools/articles/article/tather.dart';
-import '../../../view/screen/follow_up_tools/articles/article/al3lag.dart';
-import '../../../view/screen/calculate/adg.dart';
-import '../../../view/screen/calculate/roi.dart';
-import '../../../view/screen/calculate/mortality_rate.dart';
-import '../../../view/screen/calculate/bird_production_cost.dart';
-import '../../../view/screen/calculate/bird_net_profit.dart';
-import '../../../view/screen/calculate/weight_by_age.dart';
-import '../../../view/screen/calculate/temperature_by_age.dart';
-import '../../../view/screen/calculate/darkness_levels.dart';
-import '../../../view/screen/calculate/total_farm_weight.dart';
-import '../../../view/screen/calculate/total_revenue.dart';
-import '../../../view/screen/calculate/feed_cost_per_bird.dart';
-import '../../../view/screen/calculate/feed_cost_per_kilo.dart';
-import '../../../view/screen/calculate/vaccination_schedule.dart';
-import '../../../view/screen/calculate/all_calculations.dart';
+import '../../../view/screen/general/suggestion.dart';
+import '../../../view/screen/home.dart';
+import '../../../view/screen/prices/customize_prices_screen.dart';
+import '../../../view/screen/prices/last_prices.dart';
+import '../../../view/screen/prices/main_types.dart';
+import 'route.dart';
 
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
-  GetPage(name: "/", page: () => Home()),
+  GetPage(name: "/", page: () => const Home()),
 
   // ============================== Test =======================================
 
@@ -62,13 +65,19 @@ List<GetPage<dynamic>> pages = [
   // ================================ prices ===================================
   GetPage(
     name: AppRoute.lastPrices,
-    page: () => LastPrices(),
+    page: () => const LastPrices(),
     transition: Transition.rightToLeft,
   ),
 
   GetPage(
     name: AppRoute.mainTypes,
-    page: () => MainTypes(),
+    page: () => const MainTypes(),
+    transition: Transition.rightToLeft,
+  ),
+
+  GetPage(
+    name: AppRoute.customizePrices,
+    page: () => const CustomizePricesScreen(),
     transition: Transition.rightToLeft,
   ),
 
@@ -81,52 +90,52 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(
     name: AppRoute.cycle,
-    page: () => Cycle(),
+    page: () => const Cycle(),
     transition: Transition.rightToLeft,
   ),
 
   GetPage(
     name: AppRoute.cycleStatsBarExplanation,
-    page: () => CycleStatsBarExplanation(),
+    page: () => const CycleStatsBarExplanation(),
     transition: Transition.rightToLeft,
   ),
 
   // ================================ general ==================================
   GetPage(
     name: AppRoute.general,
-    page: () => General(),
+    page: () => const General(),
     transition: Transition.leftToRight,
   ),
 
   GetPage(
     name: AppRoute.suggestion,
-    page: () => Suggestion(),
+    page: () => const Suggestion(),
     transition: Transition.leftToRight,
   ),
 
   // ========================== view follow up tools ===========================
   GetPage(
     name: AppRoute.articlesType,
-    page: () => ArticlesType(),
+    page: () => const ArticlesType(),
     transition: Transition.downToUp,
   ),
 
   GetPage(
     name: AppRoute.broilerChickenRequirements,
-    page: () => BroilerChickenRequirements(),
+    page: () =>  BroilerChickenRequirements(),
     transition: Transition.downToUp,
   ),
 
   // ! disease
   GetPage(
     name: AppRoute.diseases,
-    page: () => Disease(),
+    page: () => const Disease(),
     transition: Transition.downToUp,
   ),
 
   GetPage(
     name: AppRoute.diseaseDetails,
-    page: () => DiseaseDetails(),
+    page: () => const DiseaseDetails(),
     transition: Transition.rightToLeft,
   ),
 
@@ -137,7 +146,7 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.rightToLeft,
   ),
 
-  // =============================== calculate =================================
+  // ================================= tools ===================================
 
   // ! feasibility study
   GetPage(
@@ -147,20 +156,20 @@ List<GetPage<dynamic>> pages = [
   ),
 
   GetPage(
-    name: AppRoute.howToDoAFeasibilityStudy,
-    page: () => HowToDoAFeasibilityStudy(),
-    transition: Transition.downToUp,
-  ),
-
-  GetPage(
     name: AppRoute.chickenDensity,
-    page: () => ChickenDensity(),
+    page: () => const ChickenDensity(),
     transition: Transition.downToUp,
   ),
 
   GetPage(
-    name: AppRoute.feedConsumption,
-    page: () => FeedConsumption(),
+    name: AppRoute.dailyFeedConsumption,
+    page: () => const DailyFeedConsumption(),
+    transition: Transition.downToUp,
+  ),
+
+  GetPage(
+    name: AppRoute.totalFeedConsumption,
+    page: () => const TotalFeedConsumption(),
     transition: Transition.downToUp,
   ),
 
@@ -191,27 +200,24 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.birdNetProfit,
-    page: () => BirdNetProfitScreen(),
+    page: () => const BirdNetProfitScreen(),
     transition: Transition.downToUp,
   ),
   GetPage(
     name: AppRoute.weightByAge,
-    page: () => WeightByAgeScreen(),
+    page: () => const WeightByAgeScreen(),
     transition: Transition.downToUp,
   ),
   GetPage(
     name: AppRoute.temperatureByAge,
-    page: () => TemperatureByAgeScreen(),
+    page: () => const TemperatureByAgeScreen(),
     transition: Transition.downToUp,
   ),
   GetPage(
     name: AppRoute.darknessLevels,
     page: () => const DarknessLevelsView(),
   ),
-  GetPage(
-    name: AppRoute.totalFarmWeight,
-    page: () => const TotalFarmWeightScreen(),
-  ),
+  GetPage(name: AppRoute.totalFarmWeight, page: () => TotalFarmWeightScreen()),
   GetPage(
     name: AppRoute.totalRevenue,
     page: () => TotalRevenueScreen(),
@@ -233,8 +239,13 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.downToUp,
   ),
   GetPage(
-    name: AppRoute.allCalculations,
-    page: () => const AllCalculations(),
+    name: AppRoute.allTools,
+    page: () => const AllTools(),
+    transition: Transition.downToUp,
+  ),
+  GetPage(
+    name: AppRoute.fanOperation,
+    page: () => const FanOperationScreen(),
     transition: Transition.downToUp,
   ),
 
@@ -245,8 +256,8 @@ List<GetPage<dynamic>> pages = [
     transition: Transition.downToUp,
   ),
   GetPage(
-    name: AppRoute.alida,
-    page: () => const Alida(),
+    name: AppRoute.alzlam,
+    page: () => const Alzlam(),
     transition: Transition.downToUp,
   ),
   GetPage(
@@ -276,7 +287,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.asthlakAl3laf,
-    page: () => AsthlakAl3laf(),
+    page: () => const AsthlakAl3laf(),
     transition: Transition.downToUp,
   ),
   GetPage(
@@ -316,7 +327,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.akhtaq,
-    page: () => Akhtaq(),
+    page: () => const Akhtaq(),
     transition: Transition.downToUp,
   ),
   GetPage(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
 import '../../core/constant/routes/route.dart';
 import '../../core/services/initialization.dart';
 
@@ -33,7 +34,6 @@ class CycleController extends GetxController {
       currentCycle.assignAll(cycles.first);
     }
   }
-  
 
   void prepareForEdit(Map<String, dynamic> data, int index) {
     isEdit.value = true;
@@ -53,8 +53,6 @@ class CycleController extends GetxController {
     final days = now.difference(start).inDays + 1;
     return '$days';
   }
-
-
 
   Future<void> onNext() async {
     if (!formKey.currentState!.validate()) return;

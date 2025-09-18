@@ -56,12 +56,13 @@ dependencies:
   flutter_svg: ^2.0.10+1
   # إضافة dependency للـ SSE
   sse: ^4.1.0
+  flutter_html: ^3.0.0
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-
+  
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
@@ -85,7 +86,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/icons/calculate/
+    - assets/icons/tools/
+    - assets/icons/prices/
     - assets/lottie/    
     - assets/fonts/
     - .env
