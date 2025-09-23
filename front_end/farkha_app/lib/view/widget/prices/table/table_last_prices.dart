@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/theme/color.dart';
+import '../../../../core/shared/price_change.dart';
 import '../../../../logic/controller/price_controller/last_prices_controller.dart';
 
 class TableLastPrices extends StatelessWidget {
@@ -79,10 +80,10 @@ class TableLastPrices extends StatelessWidget {
 
   TableRow _buildTableRow(Map<String, dynamic> price) {
     // Extract data from new API structure
-    final int lastHigherPrice = price["last_higher_price"] ?? 0;
-    final int lastLowerPrice = price["last_lower_price"] ?? 0;
-    final int yesterdayHigherPrice = price["yesterday_higher_price"] ?? 0;
-    final int yesterdayLowerPrice = price["yesterday_lower_price"] ?? 0;
+    final num lastHigherPrice = price["today_higher_price"] ?? 0;
+    final num lastLowerPrice = price["today_lower_price"] ?? 0;
+    final num yesterdayHigherPrice = price["yesterday_higher_price"] ?? 0;
+    final num yesterdayLowerPrice = price["yesterday_lower_price"] ?? 0;
     final String typeName = price["type_name"] ?? "";
 
     // Calculate average prices for comparison
@@ -90,24 +91,12 @@ class TableLastPrices extends StatelessWidget {
     final double yesterdayAvgPrice =
         (yesterdayHigherPrice + yesterdayLowerPrice) / 2;
     final double priceDifference = currentAvgPrice - yesterdayAvgPrice;
-    final String differenceSign = priceDifference > 0 ? "+" : "";
 
     return TableRow(
       children: [
-        _buildTableCell(
+       _buildTableCell(
           child: Center(
-            child: Text(
-              priceDifference == 0
-                  ? "0"
-                  : "${priceDifference.abs().toInt()}${priceDifference > 0 ? '+' : '-'}",
-              style: TextStyle(
-                color:
-                    priceDifference == 0
-                        ? Colors.black
-                        : (priceDifference > 0 ? Colors.red : Colors.green),
-              ),
-              textAlign: TextAlign.center,
-            ),
+            child: PriceChangeWidget(priceDifference: priceDifference),
           ),
         ),
         _buildTableCell(

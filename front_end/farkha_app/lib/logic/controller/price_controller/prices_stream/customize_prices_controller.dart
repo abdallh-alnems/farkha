@@ -48,26 +48,30 @@ class CustomizePricesController extends GetxController {
       if (StatusRequest.success == statusRequest.value) {
         final mapResponse = response as Map<String, dynamic>;
         if (mapResponse['status'] == "success") {
-          List data = mapResponse['data'];
+          Map<String, dynamic> data = mapResponse['data'];
           if (data.isNotEmpty) {
             List<int> selectedTypeIds = _loadSelectedTypes();
 
-            priceTypes.value =
-                data.map<Map<String, dynamic>>((item) {
-                  int typeId = item['type_id'] ?? 0;
-                  String typeName = item['type_name'] ?? '';
-                  String mainName = item['type_main_name'] ?? '';
+            // معالجة البيانات الجديدة حيث البيانات تأتي كـ Map بالفئات
+            List<Map<String, dynamic>> allTypes = [];
 
-                  bool isSelected = selectedTypeIds.contains(typeId);
+            data.forEach((categoryName, categoryItems) {
+              List<dynamic> items = categoryItems as List<dynamic>;
+              for (var item in items) {
+                int typeId = item['id'] ?? 0;
+                String typeName = item['name'] ?? '';
+                bool isSelected = selectedTypeIds.contains(typeId);
 
-                  return {
-                    'id': typeId,
-                    'name': typeName,
-                    'main_name': mainName,
-                    'isSelected': isSelected,
-                  };
-                }).toList();
+                allTypes.add({
+                  'id': typeId,
+                  'name': typeName,
+                  'main_name': categoryName,
+                  'isSelected': isSelected,
+                });
+              }
+            });
 
+            priceTypes.value = allTypes;
             _categorizeTypes();
             _saveTypeNames();
           }

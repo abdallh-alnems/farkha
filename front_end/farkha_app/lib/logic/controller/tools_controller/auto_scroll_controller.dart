@@ -4,127 +4,165 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AutoScrollController extends GetxController {
-  final ScrollController scrollController = ScrollController();
-  Timer? autoScrollTimer;
-  bool isUserScrolling = false;
-  double scrollOffset = 0.0;
-  bool isReversing = false;
-  bool isInitialized = false;
-  double lastScrollPosition = 0.0;
+  late ScrollController _scrollController;
+
+  Timer? _autoScrollTimer;
+  Timer? _pauseTimer;
+  Timer? _manualScrollTimer;
+
+  final RxBool _isAutoScrolling = true.obs;
+  final RxBool _isPaused = false.obs;
+  final RxBool _isReversing = false.obs;
+  final RxBool _isManualScrolling = false.obs;
+
+  static const Duration _pauseDuration = Duration(seconds: 3);
+  static const Duration _manualScrollDelay = Duration(seconds: 5);
+  static const Duration _updateInterval = Duration(milliseconds: 16);
+  static const Duration _checkInterval = Duration(milliseconds: 100);
+  static const double _scrollSpeed = 60.0;
+  static const int _maxAttempts = 30;
+
+  bool get isAutoScrolling => _isAutoScrolling.value;
+  bool get isPaused => _isPaused.value;
+  bool get isReversing => _isReversing.value;
+  bool get isManualScrolling => _isManualScrolling.value;
+  ScrollController get scrollController => _scrollController;
 
   @override
   void onInit() {
     super.onInit();
-    print("AutoScrollController initialized"); // للتأكد من التهيئة
+    _initializeControllers();
+  }
 
-    // إضافة listener للكشف عن التمرير اليدوي
-    scrollController.addListener(_onScroll);
+  void _initializeControllers() {
+    _scrollController = ScrollController();
+  }
 
-    // بدء الأسكرول التلقائي فوراً بدون تأخير
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("Post frame callback executed"); // للتأكد من تنفيذ الكولباك
-      isInitialized = true;
-      startAutoScroll();
+  void _startAutoScroll() {
+    if (_isPaused.value) return;
+
+    _autoScrollTimer?.cancel();
+
+    _autoScrollTimer = Timer.periodic(_updateInterval, (timer) {
+      if (!_shouldContinueScrolling()) return;
+
+      if (!_isScrollControllerReady()) return;
+
+      _performScroll();
     });
   }
 
-  @override
-  void onClose() {
-    autoScrollTimer?.cancel();
-    scrollController.removeListener(_onScroll);
-    scrollController.dispose();
-    super.onClose();
+  bool _shouldContinueScrolling() {
+    return _isAutoScrolling.value &&
+        !_isPaused.value &&
+        !_isManualScrolling.value;
   }
 
-  void _onScroll() {
-    if (!isInitialized) return;
+  bool _isScrollControllerReady() {
+    return _scrollController.hasClients &&
+        _scrollController.position.hasContentDimensions &&
+        _scrollController.position.maxScrollExtent > 0;
+  }
 
-    double currentPosition = scrollController.position.pixels;
+  void _performScroll() {
+    final currentOffset = _scrollController.offset;
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
 
-    // الكشف عن التمرير اليدوي
-    if ((currentPosition - lastScrollPosition).abs() > 5) {
-      // المستخدم يقوم بالتمرير يدوياً
-      if (!isUserScrolling) {
-        print("User started manual scrolling");
-        isUserScrolling = true;
-        stopAutoScroll();
-      }
+    if (currentOffset >= maxScrollExtent - 1 && !_isReversing.value) {
+      _isReversing.value = true;
+    } else if (currentOffset <= 1 && _isReversing.value) {
+      _isReversing.value = false;
+    } else {
+      final scrollStep = _scrollSpeed * (_updateInterval.inMilliseconds / 1000);
+      final newOffset =
+          _isReversing.value
+              ? currentOffset - scrollStep
+              : currentOffset + scrollStep;
+      _scrollController.jumpTo(newOffset);
     }
-
-    lastScrollPosition = currentPosition;
   }
 
-  void startAutoScroll() {
-    if (!isInitialized) return;
+  void pauseAutoScroll() {
+    _isPaused.value = true;
+    _autoScrollTimer?.cancel();
 
-    print("Starting auto scroll..."); // للتأكد من أن الدالة تعمل
-
-    autoScrollTimer?.cancel();
-    autoScrollTimer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
-      // Slower speed
-      if (!isUserScrolling && isInitialized) {
-        try {
-          if (!scrollController.hasClients) {
-            return;
-          }
-
-          final maxScroll = scrollController.position.maxScrollExtent;
-
-          // التأكد من وجود محتوى للأسكرول
-          if (maxScroll <= 0) {
-            return;
-          }
-
-          // تهيئة scrollOffset إذا كان صفر
-          if (scrollOffset == 0.0) {
-            scrollOffset = scrollController.position.pixels;
-          }
-
-          if (isReversing) {
-            // التحرك للخلف (نحو البداية)
-            scrollOffset -= 1.0; // Slower speed
-            if (scrollOffset <= 0) {
-              scrollOffset = 0.0;
-              isReversing = false;
-            }
-          } else {
-            // التحرك للأمام (نحو النهاية)
-            scrollOffset += 1.0; // Slower speed
-            if (scrollOffset >= maxScroll) {
-              scrollOffset = maxScroll;
-              isReversing = true;
-            }
-          }
-
-          // تطبيق الحركة مباشرة
-          scrollController.jumpTo(scrollOffset);
-        } catch (e) {
-          print("Error in auto scroll: $e"); // للتأكد من الأخطاء
-          return;
-        }
+    _pauseTimer?.cancel();
+    _pauseTimer = Timer(_pauseDuration, () {
+      if (_isAutoScrolling.value) {
+        _isPaused.value = false;
+        _startAutoScroll();
       }
     });
   }
 
   void stopAutoScroll() {
-    autoScrollTimer?.cancel();
-    autoScrollTimer = null;
+    _isAutoScrolling.value = false;
+    _isPaused.value = false;
+    _cancelAllTimers();
   }
 
-  void pauseAutoScroll() {
-    isUserScrolling = true;
-    stopAutoScroll();
-
-    // لا يعود الأسكرول التلقائي للعمل بعد التفاعل اليدوي
-    // Timer(const Duration(seconds: 3), () {
-    //   isUserScrolling = false;
-    //   startAutoScroll();
-    // });
-  }
-
-  // دالة لإعادة تشغيل الأسكرول التلقائي يدوياً إذا احتجت لذلك
   void resumeAutoScroll() {
-    isUserScrolling = false;
-    startAutoScroll();
+    if (!_isAutoScrolling.value) {
+      _isAutoScrolling.value = true;
+      _isPaused.value = false;
+      _startAutoScroll();
+    }
+  }
+
+  void toggleAutoScroll() {
+    if (_isAutoScrolling.value) {
+      stopAutoScroll();
+    } else {
+      resumeAutoScroll();
+    }
+  }
+
+  void startManualScroll() {
+    _isManualScrolling.value = true;
+    _autoScrollTimer?.cancel();
+
+    _manualScrollTimer?.cancel();
+    _manualScrollTimer = Timer(_manualScrollDelay, () {
+      _isManualScrolling.value = false;
+      if (_isAutoScrolling.value && !_isPaused.value) {
+        _startAutoScroll();
+      }
+    });
+  }
+
+  void stopManualScroll() {
+    _isManualScrolling.value = false;
+    _manualScrollTimer?.cancel();
+  }
+
+  void startAutoScrollWhenReady() {
+    int attempts = 0;
+
+    Timer.periodic(_checkInterval, (timer) {
+      attempts++;
+
+      if (attempts > _maxAttempts) {
+        timer.cancel();
+        return;
+      }
+
+      if (_isScrollControllerReady()) {
+        timer.cancel();
+        _startAutoScroll();
+      }
+    });
+  }
+
+  void _cancelAllTimers() {
+    _autoScrollTimer?.cancel();
+    _pauseTimer?.cancel();
+    _manualScrollTimer?.cancel();
+  }
+
+  @override
+  void onClose() {
+    _cancelAllTimers();
+    _scrollController.dispose();
+    super.onClose();
   }
 }

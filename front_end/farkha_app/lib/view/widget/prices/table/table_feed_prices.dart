@@ -5,14 +5,14 @@ import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/theme/color.dart';
 import '../../../../core/shared/price_change.dart';
-import '../../../../logic/controller/price_controller/feed_prices_controller.dart';
+import '../../../../logic/controller/price_controller/last_prices_controller.dart';
 
 class TableFeedPrices extends StatelessWidget {
   const TableFeedPrices({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FeedPricesController>(
+    return GetBuilder<LastPricesController>(
       builder: (controller) {
         return HandlingDataView(
           statusRequest: controller.statusRequest,
@@ -48,7 +48,7 @@ class TableFeedPrices extends StatelessWidget {
     );
   }
 
-  Widget _buildTableBody(FeedPricesController controller) {
+  Widget _buildTableBody(LastPricesController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7).r,
       child: Column(
@@ -66,7 +66,7 @@ class TableFeedPrices extends StatelessWidget {
               2: FlexColumnWidth(2),
             },
             children:
-                controller.feedPricesList
+                controller.lastPricesList
                     .map((price) => _buildTableRow(price))
                     .toList(),
           ),
@@ -78,8 +78,8 @@ class TableFeedPrices extends StatelessWidget {
 
   TableRow _buildTableRow(Map<String, dynamic> price) {
     // Extract data from feed prices API structure
-    final int lastPrice = price["last_price"] ?? 0;
-    final int yesterdayPrice = price["yesterday_price"] ?? 0;
+    final num lastPrice = price["today_higher_price"] ?? 0;
+    final num yesterdayPrice = price["yesterday_higher_price"] ?? 0;
     final String typeName = price["type_name"] ?? "";
 
     // Calculate price difference

@@ -125,7 +125,7 @@ class PricesStreamController extends GetxController {
 
       if (responseData.isNotEmpty) {
         for (var item in responseData) {
-          int typeId = item['type_id'] ?? 0;
+          int typeId = item['id'] ?? 0;
           if (typeId > 0) {
             pricesData[typeId] = {
               'higher_today': item['higher_today']?.toString() ?? '',
@@ -134,8 +134,8 @@ class PricesStreamController extends GetxController {
               'lower_yesterday': item['lower_yesterday']?.toString() ?? '',
             };
 
-            if (item['type_name'] != null) {
-              typeNames[typeId] = item['type_name'].toString();
+            if (item['name'] != null) {
+              typeNames[typeId] = item['name'].toString();
             }
           }
         }
@@ -160,7 +160,7 @@ class PricesStreamController extends GetxController {
           List data = mapResponse['data'];
           if (data.isNotEmpty) {
             for (var item in data) {
-              int typeId = item['type_id'] ?? 0;
+              int typeId = item['id'] ?? 0;
               if (typeId > 0) {
                 pricesData[typeId] = {
                   'higher_today': item['higher_today']?.toString() ?? '',
@@ -170,8 +170,8 @@ class PricesStreamController extends GetxController {
                   'lower_yesterday': item['lower_yesterday']?.toString() ?? '',
                 };
 
-                if (item['type_name'] != null) {
-                  typeNames[typeId] = item['type_name'].toString();
+                if (item['name'] != null) {
+                  typeNames[typeId] = item['name'].toString();
                 }
               }
             }

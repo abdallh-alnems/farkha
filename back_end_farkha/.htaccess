@@ -1,0 +1,158 @@
+# Farkha API - Apache Configuration
+# Enhanced security and performance settings
+
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always append X-Frame-Options SAMEORIGIN
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options nosniff
+    
+    # Enable XSS protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Content Security Policy - Enhanced for API
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Remove Server Information
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
+
+# CORS Headers for API
+<IfModule mod_headers.c>
+    # Allow CORS for API endpoints
+    <FilesMatch "\.(php)$">
+        Header always set Access-Control-Allow-Origin "*"
+        Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+        Header always set Access-Control-Max-Age "3600"
+    </FilesMatch>
+</IfModule>
+
+# Handle OPTIONS requests for CORS
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# API Security - Block malicious requests
+<IfModule mod_rewrite.c>
+    # Block SQL injection attempts
+    RewriteCond %{QUERY_STRING} (union|select|insert|delete|update|cast|create|char|convert|alter|declare|exec|script|drop|truncate) [NC]
+    RewriteRule .* - [F,L]
+    
+    # Block XSS attempts
+    RewriteCond %{QUERY_STRING} (javascript:|vbscript:|onload=|onerror=|onclick=|<script|</script) [NC]
+    RewriteRule .* - [F,L]
+    
+    # Block path traversal
+    RewriteCond %{QUERY_STRING} (\.\./|\.\.\\|%2e%2e%2f|%2e%2e%5c) [NC]
+    RewriteRule .* - [F,L]
+    
+    # Block common attack patterns
+    RewriteCond %{QUERY_STRING} (base64|eval|system|shell_exec|exec|passthru) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# File Access Restrictions - Protect sensitive files
+<Files "config.php">
+    Require all denied
+</Files>
+
+<Files "connect.php">
+    Require all denied
+</Files>
+
+<Files "function.php">
+    Require all denied
+</Files>
+
+<Files "*.log">
+    Require all denied
+</Files>
+
+<Files ".env*">
+    Require all denied
+</Files>
+
+# Directory Browsing - Disable directory listing
+Options -Indexes
+
+# Error Pages - Custom error handling
+ErrorDocument 400 /error.php?code=400
+ErrorDocument 401 /error.php?code=401
+ErrorDocument 403 /error.php?code=403
+ErrorDocument 404 /error.php?code=404
+ErrorDocument 429 /error.php?code=429
+ErrorDocument 500 /error.php?code=500
+
+# Compression - Improve performance
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# Browser Caching - Cache API responses
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # API JSON responses - short cache for real-time data
+    ExpiresByType application/json "access plus 5 minutes"
+    
+    # Static assets
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+</IfModule>
+
+# PHP Settings - Security and performance
+<IfModule mod_php.c>
+    # Security settings
+    php_flag display_errors Off
+    php_flag log_errors On
+    
+    # Performance settings
+    php_value memory_limit 256M
+    php_value max_execution_time 300
+    php_value max_input_time 60
+    php_value post_max_size 32M
+    php_value upload_max_filesize 32M
+    
+    # Session security
+    php_value session.cookie_httponly 1
+    php_value session.use_strict_mode 1
+    php_value session.cookie_secure 0
+    
+    # Additional security
+    php_value expose_php Off
+    php_value allow_url_fopen Off
+    php_value allow_url_include Off
+</IfModule>
+
+# Prevent access to sensitive file extensions
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql|conf)$">
+    Require all denied
+</FilesMatch>
+
+# Rate Limiting (Basic) - Limit requests per IP
+<IfModule mod_evasive.c>
+    DOSHashTableSize 4096
+    DOSPageCount 10
+    DOSSiteCount 50
+    DOSPageInterval 1
+    DOSSiteInterval 1
+    DOSBlockingPeriod 3600
+</IfModule>

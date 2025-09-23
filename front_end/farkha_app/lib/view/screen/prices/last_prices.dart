@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../logic/controller/price_controller/feed_prices_controller.dart';
 import '../../../logic/controller/price_controller/last_prices_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
@@ -21,14 +20,8 @@ class LastPrices extends StatelessWidget {
     // Check if this is a feed prices request (ID 6 or 7)
     final bool isFeedPrices = mainId == '6' || mainId == '7';
 
-    if (isFeedPrices) {
-      final FeedPricesController controller = Get.put(FeedPricesController());
-      controller.getDataFeedPrices(mainId);
-    } else {
-      final LastPricesController controller = Get.put(LastPricesController());
-      controller.getDataLastPrices(mainId);
-    }
-
+   final LastPricesController controller = Get.put(LastPricesController());
+    controller.getDataLastPrices(mainId);
     return Scaffold(
       appBar: CustomAppBar(text: "اسعار $mainName"),
       body: Column(
@@ -42,7 +35,7 @@ class LastPrices extends StatelessWidget {
                         const EdgeInsets.symmetric(
                           horizontal: 9,
                           vertical: 9,
-                        ).r,
+                        ).r,  
                     child: const AdNativeWidget(),
                   ),
                   isFeedPrices

@@ -23,7 +23,7 @@ class FeasibilityModel {
 
     // البحث عن كل نوع حسب type_name
     for (var item in data) {
-      switch (item['type_name']) {
+      switch (item['name']) {
         case 'لحم ابيض':
           chickenSalePrice = int.parse(item['price']);
           break;

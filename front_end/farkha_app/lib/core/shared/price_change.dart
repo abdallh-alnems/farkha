@@ -8,21 +8,15 @@ class PriceChangeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text("التغير", style: TextStyle(color: Colors.black, fontSize: 10.sp)),
-        SizedBox(height: 2.h),
-        Text(
-          priceDifference == 0
-              ? "0"
-              : "${priceDifference.abs().toInt()}${priceDifference > 0 ? '+' : '-'}",
-          style: TextStyle(
-            color: _getChangeColor(priceDifference),
-            fontWeight: FontWeight.bold,
-            fontSize: 14.sp,
-          ),
-        ),
-      ],
+    return Text(
+      priceDifference == 0
+          ? "0"
+          : "${priceDifference.abs().toInt()}${priceDifference > 0 ? '+' : '-'}",
+      style: TextStyle(
+        color: _getChangeColor(priceDifference),
+        fontWeight: FontWeight.bold,
+        fontSize: 14.sp,
+      ),
     );
   }
 

@@ -6,10 +6,9 @@ import '../../core/package/rating_app.dart';
 import '../../core/package/upgrade/get_min_version.dart';
 import '../../core/services/permission.dart';
 import '../../core/services/sse_service.dart';
-import '../controller/tools_controller/auto_scroll_controller.dart';
 import '../controller/price_controller/prices_stream/customize_prices_controller.dart';
-import '../controller/price_controller/feed_prices_controller.dart';
 import '../controller/price_controller/prices_stream/prices_stream_controller.dart';
+import '../controller/tools_controller/auto_scroll_controller.dart';
 
 class MyBindings extends Bindings {
   @override
@@ -23,7 +22,9 @@ class MyBindings extends Bindings {
     // ================================ price ==================================
     Get.put(PricesStreamController(), permanent: true);
     Get.put(CustomizePricesController(), permanent: true);
-    Get.put(FeedPricesController(), permanent: true);
+
+    // =========================== auto scroll tools ===========================
+    Get.put(AutoScrollController(), permanent: true);
 
     // ================================ package ================================
     Get.put(InternetController());
@@ -32,8 +33,5 @@ class MyBindings extends Bindings {
 
     // =============================== permission =============================
     Get.put(PermissionController());
-
-    // =============================== auto scroll =============================
-    Get.put(AutoScrollController());
   }
 }

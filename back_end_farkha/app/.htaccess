@@ -1,0 +1,16 @@
+# App Directory - API Protection
+# Inherits from parent .htaccess
+
+# Additional security for app directory
+<FilesMatch "\.(php)$">
+    # Allow only specific API endpoints
+    <RequireAll>
+        Require all granted
+    </RequireAll>
+</FilesMatch>
+
+# queries.php is now in the main directory and protected by parent .htaccess
+
+# Custom error handling for app directory
+ErrorDocument 404 /error.php?code=404
+ErrorDocument 500 /error.php?code=500

@@ -41,11 +41,11 @@ class MainTypes extends StatelessWidget {
                               () => Get.toNamed(
                                 AppRoute.lastPrices,
                                 arguments: {
-                                  'main_id': mainTypes['main_id'],
-                                  "main_name": mainTypes['main_name'],
+                                  'main_id': mainTypes['id'],
+                                  "main_name": mainTypes['name'],
                                 },
                               ),
-                          text: mainTypes['main_name'],
+                          text: mainTypes['name'],
                         );
                       }
                     },
