@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/total_revenue_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/tools_button.dart';
@@ -46,6 +48,8 @@ class TotalRevenueScreen extends StatelessWidget {
                 onThirdChanged: controller.updatePricePerKg,
               ),
               const SizedBox(height: 32),
+              const AdNativeWidget(),
+              const SizedBox(height: 32),
               // Calculate button
               ToolsButton(
                 text: 'احسب الإيرادات',
@@ -76,6 +80,7 @@ class TotalRevenueScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

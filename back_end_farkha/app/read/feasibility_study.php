@@ -18,13 +18,10 @@ class FeasibilityStudyAPI extends BaseAPI {
     
     public function getFeasibilityStudy() {
         try {
-            // Validate input parameters using centralized helpers
-            $generalTypes = ApiValidationHelper::validateGeneralTypes($_GET['general_types'] ?? '1,18');
-            $feedTypes = ApiValidationHelper::validateFeedTypes($_GET['feed_types'] ?? '50,51,52');
+            // Validate input parameters using unified helper
+            $types = ApiValidationHelper::validateTypes($_GET['types'] ?? '1,18,50,51,52');
             
-            $generalQuery = Queries::getFeasibilityStudyGeneralPrices($generalTypes);
-            $feedQuery = Queries::getFeasibilityStudyFeedPrices($feedTypes);
-            $query = $generalQuery . " UNION ALL " . $feedQuery;
+            $query = Queries::getFeasibilityStudyPrices($types);
             
             $data = $this->db->fetchAll($query);
             

@@ -1,10 +1,21 @@
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
+import '../tool_usage_controller.dart';
+
 class TotalRevenueController extends GetxController {
+  static const int toolId = ToolIds.totalRevenue; // Total Revenue tool ID = 22
+
   RxDouble birdsCount = 0.0.obs;
   RxDouble averageWeight = 0.0.obs;
   RxDouble pricePerKg = 0.0.obs;
   RxDouble totalRevenue = 0.0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateTotalRevenue() {
     if (birdsCount.value > 0 &&

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/age_dropdown.dart';
 import '../../../logic/controller/tools_controller/temperature_by_age_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 
 class TemperatureByAgeScreen extends StatefulWidget {
@@ -43,7 +45,9 @@ class _TemperatureByAgeScreenState extends State<TemperatureByAgeScreen> {
                 maxAge: 45,
                 hint: 'اختر اليوم',
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
+              const AdNativeWidget(),
+              const SizedBox(height: 20),
               if (showResult)
                 Obx(() {
                   final temperature = controller.temperature.value;
@@ -67,6 +71,7 @@ class _TemperatureByAgeScreenState extends State<TemperatureByAgeScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

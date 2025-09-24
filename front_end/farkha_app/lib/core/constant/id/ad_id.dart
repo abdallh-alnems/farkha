@@ -11,12 +11,8 @@ class AdManager {
   static String get idBanner =>
       _isTest ? _testBanner : "ca-app-pub-8595701567488603/1751748833";
 
-
-
   // ================================== native =================================
 
   static String get idNative =>
       _isTest ? _testNative : "ca-app-pub-8595701567488603/4494984718";
-
- 
 }

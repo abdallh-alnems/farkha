@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/age_dropdown.dart';
 import '../../../logic/controller/tools_controller/weight_by_age_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/notes_card.dart';
 
@@ -43,7 +45,9 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
                 maxAge: 45,
                 hint: 'اختر اليوم',
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
+              const AdNativeWidget(),
+              const SizedBox(height: 20),
               if (showResult)
                 Obx(() {
                   final weight = controller.weight.value;
@@ -91,6 +95,7 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

@@ -5,7 +5,7 @@ class AppRoute {
   static const String adad = "/adad";
   // ================================ prices and cycle ===================================
   // ! prices
-  static const String lastPrices = "/lastPrices";
+  static const String pricesByType = "/pricesByType";
   static const String mainTypes = "/mainTypes";
   static const String customizePrices = "/customize-prices";
 

@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../../../core/constant/theme/color.dart';
 import '../../../core/shared/input_fields/age_dropdown.dart';
 import '../../../logic/controller/tools_controller/vaccination_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 
 class VaccinationSchedule extends StatelessWidget {
@@ -35,6 +37,8 @@ class VaccinationSchedule extends StatelessWidget {
               ),
             ),
 
+            const SizedBox(height: 20),
+            const AdNativeWidget(),
             const SizedBox(height: 20),
 
             // Results Section
@@ -194,6 +198,7 @@ class VaccinationSchedule extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

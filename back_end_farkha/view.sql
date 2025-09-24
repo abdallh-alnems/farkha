@@ -28,3 +28,9 @@ WHERE
     main.main_id = 1
 GROUP BY 
     types.type_id;
+
+
+
+INSERT INTO feature_usage_daily (usage_date, feature_id, usage_count)
+VALUES (CURRENT_DATE, 5, 1)
+ON DUPLICATE KEY UPDATE usage_count = usage_count + 1;

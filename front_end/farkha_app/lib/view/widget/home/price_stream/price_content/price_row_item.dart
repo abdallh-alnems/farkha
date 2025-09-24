@@ -31,7 +31,21 @@ class PriceRowItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: PriceChangeWidget(priceDifference: priceDifference)),
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  "التغير",
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.black,
+                    fontSize: 10.sp,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                PriceChangeWidget(priceDifference: priceDifference),
+              ],
+            ),
+          ),
 
           Expanded(
             child: Column(

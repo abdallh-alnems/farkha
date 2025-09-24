@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
+import '../tool_usage_controller.dart';
 
 class RoiController extends GetxController {
+  static const int toolId = ToolIds.roi; // ROI tool ID = 19
+
   RxDouble investmentCost = 0.0.obs;
   RxDouble totalSale = 0.0.obs;
   RxDouble netProfit = 0.0.obs;
   RxDouble roi = 0.0.obs;
   RxBool hasCalculated = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateROI(BuildContext context) {
     // التحقق من صحة تكلفة الاستثمار

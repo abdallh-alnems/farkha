@@ -8,46 +8,27 @@
 class Queries {
     
     /**
-     * Get feasibility study query for general prices
+     * Get unified feasibility study query for all prices
      */
-    public static function getFeasibilityStudyGeneralPrices($generalTypes) {
+    public static function getFeasibilityStudyPrices($types) {
         return "
             SELECT 
                 t.name,
-                ROUND((gp.higher + gp.lower) / 2, 0) AS price
+                CASE 
+                    WHEN gp.type IN (50, 51, 52) THEN gp.higher
+                    ELSE ROUND((gp.higher + gp.lower) / 2, 0)
+                END AS price
             FROM prices gp
             INNER JOIN (
                 SELECT type, MAX(date) AS max_date
                 FROM prices
-                WHERE type IN ($generalTypes)
+                WHERE type IN ($types)
                 GROUP BY type
             ) latest 
                 ON gp.type = latest.type
                AND gp.date = latest.max_date
             JOIN types t 
                 ON t.id = gp.type
-        ";
-    }
-    
-    /**
-     * Get feasibility study query for feed prices
-     */
-    public static function getFeasibilityStudyFeedPrices($feedTypes) {
-        return "
-            SELECT 
-                t.name,
-                fp.prices AS price
-            FROM feed_prices fp
-            INNER JOIN (
-                SELECT type, MAX(date) AS max_date
-                FROM feed_prices
-                WHERE type IN ($feedTypes)
-                GROUP BY type
-            ) latest 
-                ON fp.type = latest.type
-               AND fp.date = latest.max_date
-            JOIN types t 
-                ON t.id = fp.type
         ";
     }
     
@@ -186,6 +167,31 @@ class Queries {
         
         $placeholders = str_repeat('?,', count($typeIds) - 1) . '?';
         return "WHERE t.id IN ($placeholders)";
+    }
+    
+    /**
+     * Get tools usage record query
+     */
+    public static function getToolsUsageRecordQuery() {
+        return "SELECT usage_count FROM tools_usage 
+                WHERE usage_date = CURRENT_DATE AND tool_id = ?";
+    }
+    
+    /**
+     * Update tools usage count query
+     */
+    public static function updateToolsUsageCountQuery() {
+        return "UPDATE tools_usage 
+                SET usage_count = usage_count + 1 
+                WHERE usage_date = CURRENT_DATE AND tool_id = ?";
+    }
+    
+    /**
+     * Insert new tools usage record query
+     */
+    public static function insertToolsUsageRecordQuery() {
+        return "INSERT INTO tools_usage (usage_date, tool_id, usage_count)
+                VALUES (CURRENT_DATE, ?, 1)";
     }
 }
 

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
+import '../tool_usage_controller.dart';
 import '../weather_controller.dart';
 
 class FanOperationController extends GetxController {
+  static const int toolId = ToolIds.fanOperation; // Fan Operation tool ID = 9
+
   // Weather controller
   WeatherController weatherController = Get.put(WeatherController());
 
@@ -166,4 +170,10 @@ class FanOperationController extends GetxController {
 
   // Getter for weather error status
   bool get hasWeatherError => weatherController.hasError;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 }

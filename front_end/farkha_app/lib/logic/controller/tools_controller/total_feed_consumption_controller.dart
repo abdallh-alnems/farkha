@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
+import '../tool_usage_controller.dart';
 
 class TotalFeedConsumptionController extends GetxController {
+  static const int toolId =
+      ToolIds.totalFeedConsumption; // Total Feed Consumption tool ID = 5
+
   final TextEditingController textController = TextEditingController();
   final RxString result = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateTotalFeedConsumption(BuildContext context) {
     // التحقق من صحة الرقم

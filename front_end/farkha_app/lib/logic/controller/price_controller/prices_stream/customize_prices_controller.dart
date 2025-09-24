@@ -41,45 +41,62 @@ class CustomizePricesController extends GetxController {
   Future<void> getTypesData() async {
     try {
       statusRequest.value = StatusRequest.loading;
+      print('🔄 Loading types data...');
 
       var response = await typesData.getTypes();
+      print('📡 API Response: $response');
       statusRequest.value = handlingData(response);
+      print('📊 Status after handling: ${statusRequest.value}');
 
       if (StatusRequest.success == statusRequest.value) {
         final mapResponse = response as Map<String, dynamic>;
         if (mapResponse['status'] == "success") {
           Map<String, dynamic> data = mapResponse['data'];
+          print('📊 Data structure: ${data.runtimeType}');
+          print('📊 Data keys: ${data.keys.toList()}');
           if (data.isNotEmpty) {
             List<int> selectedTypeIds = _loadSelectedTypes();
-
-            // معالجة البيانات الجديدة حيث البيانات تأتي كـ Map بالفئات
             List<Map<String, dynamic>> allTypes = [];
 
-            data.forEach((categoryName, categoryItems) {
-              List<dynamic> items = categoryItems as List<dynamic>;
-              for (var item in items) {
-                int typeId = item['id'] ?? 0;
-                String typeName = item['name'] ?? '';
-                bool isSelected = selectedTypeIds.contains(typeId);
+            // تحويل البيانات من Map إلى List مع إضافة main_name
+            data.forEach((categoryName, typesList) {
+              print('📊 Processing category: $categoryName');
+              print('📊 Types list type: ${typesList.runtimeType}');
+              if (typesList is List) {
+                print('📊 Types list length: ${typesList.length}');
+                for (var item in typesList) {
+                  if (item is Map<String, dynamic>) {
+                    int typeId = item['id'] ?? 0;
+                    String typeName = item['name'] ?? '';
+                    bool isSelected = selectedTypeIds.contains(typeId);
 
-                allTypes.add({
-                  'id': typeId,
-                  'name': typeName,
-                  'main_name': categoryName,
-                  'isSelected': isSelected,
-                });
+                    allTypes.add({
+                      'id': typeId,
+                      'name': typeName,
+                      'main_name': categoryName,
+                      'isSelected': isSelected,
+                    });
+                    print('📊 Added type: $typeName (ID: $typeId)');
+                  }
+                }
               }
             });
 
             priceTypes.value = allTypes;
+            print('✅ Loaded ${allTypes.length} price types');
+            print('✅ Categories: ${data.keys.toList()}');
             _categorizeTypes();
             _saveTypeNames();
           }
         } else {
+          print('❌ API returned failure status: ${mapResponse['status']}');
           statusRequest.value = StatusRequest.failure;
         }
+      } else {
+        print('❌ Status request is not success: ${statusRequest.value}');
       }
     } catch (e) {
+      print('❌ Error in getTypesData: $e');
       statusRequest.value = StatusRequest.failure;
     }
   }
@@ -94,6 +111,7 @@ class CustomizePricesController extends GetxController {
       newCategorizedTypes[category]!.add(Map.from(item));
     }
     categorizedTypes.value = newCategorizedTypes;
+    print('✅ Categorized types: ${categorizedTypes.keys.toList()}');
   }
 
   void toggleItemSelection(Map<String, dynamic> item) {

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/roi_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -50,6 +52,8 @@ class RoiScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 24),
+                const AdNativeWidget(),
+                const SizedBox(height: 24),
                 ToolsButton(
                   text: 'ROI احسب',
                   onPressed: () => _onCalculatePressed(context),
@@ -76,6 +80,7 @@ class RoiScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

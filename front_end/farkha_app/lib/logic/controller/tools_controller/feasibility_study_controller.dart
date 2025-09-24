@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/handing_data_controller.dart';
 import '../../../core/package/dialogs/usage_tips_dialog.dart';
-import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/feasibility_study_data.dart';
 import '../../../data/model/feasibility_model.dart';
+import '../tool_usage_controller.dart';
 
 class FeasibilityController extends GetxController {
-  final MyServices _myServices = Get.find();
+  static const int toolId =
+      ToolIds.feasibilityStudy; // Feasibility Study tool ID = 14
+
   late StatusRequest statusRequest = StatusRequest.none;
   Rx<StatusRequest> pricesStatusRequest = StatusRequest.none.obs;
   final TextEditingController countController = TextEditingController();
@@ -149,8 +152,6 @@ class FeasibilityController extends GetxController {
           remainingChickens * averageWeight * feasibilityModel.chickenSalePrice;
       double profit = totalSales - totalCost;
 
-     
-
       _updateResultText(
         chickenCount,
         deadChickens,
@@ -235,6 +236,7 @@ class FeasibilityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
     pricesStatusRequest.value = StatusRequest.none;
     isPricesExpanded.value = true; // إظهار حقول الأسعار عند الدخول
     WidgetsBinding.instance.addPostFrameCallback((_) {

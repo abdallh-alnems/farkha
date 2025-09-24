@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/feed_cost_per_kilo_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -55,6 +57,8 @@ class FeedCostPerKiloScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24.h),
+              const AdNativeWidget(),
+              SizedBox(height: 24.h),
               ToolsButton(
                 text: 'احسب تكلفة العلف لكل طن وزن',
                 onPressed: () => _onCalculatePressed(context),
@@ -90,6 +94,7 @@ class FeedCostPerKiloScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

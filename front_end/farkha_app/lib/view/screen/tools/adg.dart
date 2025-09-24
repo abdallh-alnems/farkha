@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/adg_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/tools_button.dart';
@@ -36,6 +38,8 @@ class Adg extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 24),
+                const AdNativeWidget(),
+                const SizedBox(height: 24),
                 ToolsButton(
                   text: 'ADG احسب',
                   onPressed: () => controller.calculateADG(context),
@@ -65,6 +69,7 @@ class Adg extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
+import '../tool_usage_controller.dart';
 
 class MortalityRateController extends GetxController {
+  static const int toolId =
+      ToolIds.mortalityRate; // Mortality Rate tool ID = 20
+
   final RxInt initialCount = 0.obs;
   final RxInt deaths = 0.obs;
   final RxDouble mortalityRate = 0.0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateMortalityRate(BuildContext context) {
     // التحقق من صحة العدد الأولي

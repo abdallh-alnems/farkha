@@ -5,18 +5,25 @@ class Api {
   static final String _serverName = EnvService.linkServerName;
 
   // ================================ API MAIN =================================
-  static final String _customListPrices = '$_serverName/read/live_prices';
-  static final String _typesPrices = '$_serverName/read/types_prices';
+  static final String _read = '$_serverName/app/read';
+  static final String _livePrices = '$_read/live_prices';
+  static final String _typesPrices = '$_read/types_prices';
 
   // ================================= prices ==================================
   static String mainTypes = '$_typesPrices/main.php';
   static String pricesByType = '$_typesPrices/prices_by_type.php';
-  static String feasibilityStudy = '$_serverName/read/feasibility_study.php';
 
-  // ! custom list prices
-  static String pricesStream = '$_customListPrices/prices_stream.php';
-  static String types = '$_customListPrices/types.php';
+  // ! feasibility study
+  static String feasibilityStudy = '$_read/feasibility_study.php';
+
+  // ! stream prices
+  static String pricesStream = '$_livePrices/prices_stream.php';
+  static String types = '$_livePrices/types.php';
 
   // =============================== suggestion ================================
-  static String suggestion = '$_serverName/suggestion.php';
+  static String suggestion = '$_serverName/app/suggestion.php';
+
+  // ============================ record tools usage ===========================
+  static String recordToolsUsage =
+      '$_serverName/analytics/record_tools_usage.php';
 }

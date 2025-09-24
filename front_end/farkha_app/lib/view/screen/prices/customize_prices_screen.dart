@@ -20,7 +20,14 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
   @override
   void initState() {
     super.initState();
+    // تسجيل الـ controller إذا لم يكن مسجلاً
+    if (!Get.isRegistered<CustomizePricesController>()) {
+      Get.put(CustomizePricesController());
+    }
     controller = Get.find<CustomizePricesController>();
+    print('✅ CustomizePricesScreen initialized');
+    print('✅ Controller status: ${controller.statusRequest.value}');
+    print('✅ Categories count: ${controller.categorizedTypes.length}');
   }
 
   @override
@@ -41,16 +48,26 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                       horizontal: 21.r,
                       vertical: 19.r,
                     ),
-                    child: ListView.builder(
-                      itemCount: controller.categorizedTypes.length,
-                      itemBuilder: (context, index) {
-                        String category = controller.categorizedTypes.keys
-                            .elementAt(index);
-                        List<Map<String, dynamic>> types =
-                            controller.categorizedTypes[category]!;
-                        return _buildCategorySection(category, types);
-                      },
-                    ),
+                    child:
+                        controller.categorizedTypes.isEmpty
+                            ? const Center(
+                              child: Text(
+                                'لا توجد بيانات للعرض',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            )
+                            : ListView.builder(
+                              itemCount: controller.categorizedTypes.length,
+                              itemBuilder: (context, index) {
+                                String category = controller
+                                    .categorizedTypes
+                                    .keys
+                                    .elementAt(index);
+                                List<Map<String, dynamic>> types =
+                                    controller.categorizedTypes[category]!;
+                                return _buildCategorySection(category, types);
+                              },
+                            ),
                   ),
                 ),
               ),

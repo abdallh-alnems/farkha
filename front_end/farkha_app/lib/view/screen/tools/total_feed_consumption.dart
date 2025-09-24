@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../core/shared/input_fields/input_field.dart';
 import '../../../logic/controller/tools_controller/total_feed_consumption_controller.dart';
 import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -37,7 +38,8 @@ class TotalFeedConsumption extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 24.h),
-
+                  const AdNativeWidget(),
+                  SizedBox(height: 24.h),
                   ToolsButton(
                     text: "احسب الاستهلاك الكلي",
                     onPressed:

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/total_farm_weight_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/tools_button.dart';
@@ -34,6 +36,8 @@ class TotalFarmWeightScreen extends StatelessWidget {
                 onFirstChanged: (val) => controller.birdsCount.value = val,
                 onSecondChanged: (val) => controller.birdWeight.value = val,
               ),
+              const SizedBox(height: 28),
+              const AdNativeWidget(),
               const SizedBox(height: 28),
               ToolsButton(
                 text: 'احسب',
@@ -92,6 +96,7 @@ class TotalFarmWeightScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

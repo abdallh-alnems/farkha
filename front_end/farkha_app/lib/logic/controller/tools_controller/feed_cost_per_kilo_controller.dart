@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
+import '../tool_usage_controller.dart';
 
 class FeedCostPerKiloController extends GetxController {
+  static const int toolId =
+      ToolIds.feedCostPerKilo; // Feed Cost per Kilo tool ID = 17
+
   RxDouble totalFeedConsumed = 0.0.obs; // كمية العلف الكلية المستهلكة (طن)
   RxDouble totalWeightSold = 0.0.obs; // الوزن الكلي المباع (طن)
   RxDouble feedPricePerTon = 0.0.obs; // سعر الطن علف (جنيه)
   RxDouble feedCostPerTon = 0.0.obs; // تكلفة العلف لكل طن وزن
   RxBool hasCalculated = false.obs; // لتتبع ما إذا تم الحساب أم لا
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateFeedCostPerKilo(BuildContext context) {
     // التحقق من صحة كمية العلف المستهلكة

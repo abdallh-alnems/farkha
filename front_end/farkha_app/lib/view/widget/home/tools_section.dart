@@ -43,7 +43,7 @@ class ToolsSection extends StatelessWidget {
                   "عرض الكل",
                   style: TextStyle(
                     color: AppColor.primaryColor,
-                    fontSize: 11.sp,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -53,8 +53,8 @@ class ToolsSection extends StatelessWidget {
                 "أدوات مساعدة",
                 style: TextStyle(
                   color: AppColor.primaryColor,
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],

@@ -50,7 +50,7 @@ import '../../../view/screen/general/general.dart';
 import '../../../view/screen/general/suggestion.dart';
 import '../../../view/screen/home.dart';
 import '../../../view/screen/prices/customize_prices_screen.dart';
-import '../../../view/screen/prices/last_prices.dart';
+import '../../../view/screen/prices/prices_by_type.dart';
 import '../../../view/screen/prices/main_types.dart';
 import 'route.dart';
 
@@ -64,8 +64,8 @@ List<GetPage<dynamic>> pages = [
 
   // ================================ prices ===================================
   GetPage(
-    name: AppRoute.lastPrices,
-    page: () => const LastPrices(),
+    name: AppRoute.pricesByType,
+    page: () => const PricesByType(),
     transition: Transition.rightToLeft,
   ),
 

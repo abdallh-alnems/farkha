@@ -39,7 +39,7 @@ class MainTypes extends StatelessWidget {
                         return CardTitle(
                           onTap:
                               () => Get.toNamed(
-                                AppRoute.lastPrices,
+                                AppRoute.pricesByType,
                                 arguments: {
                                   'main_id': mainTypes['id'],
                                   "main_name": mainTypes['name'],

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/bird_net_profit_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -66,6 +68,8 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen> {
                 },
               ),
               const SizedBox(height: 24),
+              const AdNativeWidget(),
+              const SizedBox(height: 24),
               ToolsButton(
                 text: 'احسب الربح الصافي للطائر',
                 onPressed: () => _onCalculatePressed(context),
@@ -82,6 +86,7 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

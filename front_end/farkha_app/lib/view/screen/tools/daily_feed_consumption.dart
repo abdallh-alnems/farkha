@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../core/shared/input_fields/chicken_form.dart';
 import '../../../logic/controller/tools_controller/daily_feed_consumption_controller.dart';
 import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -40,7 +41,8 @@ class DailyFeedConsumption extends StatelessWidget {
                     ageHint: 'اختر اليوم',
                   ),
                   SizedBox(height: 24.h),
-
+                  const AdNativeWidget(),
+                  SizedBox(height: 24.h),
                   ToolsButton(
                     text: "احسب الاستهلاك اليومي",
                     onPressed:

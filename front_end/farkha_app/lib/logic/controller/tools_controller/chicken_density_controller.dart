@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/package/snackbar_message.dart';
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/package/dialogs/usage_tips_dialog.dart';
+import '../../../core/package/snackbar_message.dart';
 import '../../../core/services/initialization.dart';
+import '../tool_usage_controller.dart';
 
 class ChickenDensityController extends GetxController {
+  static const int toolId =
+      ToolIds.chickenDensity; // Chicken Density tool ID = 3
+
   final MyServices myServices = Get.find();
   final TextEditingController chickenCountTextController =
       TextEditingController();
@@ -77,6 +82,7 @@ class ChickenDensityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialogChickenDensity();
     });

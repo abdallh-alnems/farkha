@@ -4,12 +4,28 @@ import 'package:get/get.dart';
 
 import '../../../../core/constant/routes/route.dart';
 import '../../../../core/shared/card_title.dart';
+import '../../../../logic/controller/tool_usage_controller.dart';
 import '../../../widget/ad/banner.dart';
 import '../../../widget/ad/native.dart';
 import '../../../widget/app_bar/custom_app_bar.dart';
 
-class ArticlesType extends StatelessWidget {
+class ArticlesType extends StatefulWidget {
   const ArticlesType({super.key});
+
+  @override
+  State<ArticlesType> createState() => _ArticlesTypeState();
+}
+
+class _ArticlesTypeState extends State<ArticlesType> {
+  late ToolUsageController toolUsageController;
+
+  @override
+  void initState() {
+    super.initState();
+    toolUsageController = Get.find<ToolUsageController>();
+    // Record tool usage when entering this page
+    toolUsageController.recordToolUsage(11); // Articles tool ID = 11
+  }
 
   @override
   Widget build(BuildContext context) {

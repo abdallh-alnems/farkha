@@ -244,27 +244,15 @@ class ApiValidationHelper {
     }
 
  
-    public static function validateGeneralTypes($input) {
-        if (empty($input)) return '1,18';
+    public static function validateTypes($input, $defaultTypes = '1,18,50,51,52') {
+        if (empty($input)) return $defaultTypes;
 
         $types = is_array($input) ? $input : explode(',', $input);
         $validTypes = array_filter(array_map('intval', $types), function($type) {
             return $type > 0;
         });
 
-        return implode(',', array_unique($validTypes)) ?: '1,18';
-    }
-
- 
-    public static function validateFeedTypes($input) {
-        if (empty($input)) return '50,51,52';
-
-        $types = is_array($input) ? $input : explode(',', $input);
-        $validTypes = array_filter(array_map('intval', $types), function($type) {
-            return $type > 0;
-        });
-
-        return implode(',', array_unique($validTypes)) ?: '50,51,52';
+        return implode(',', array_unique($validTypes)) ?: $defaultTypes;
     }
 
     public static function sanitizeTypeIds($input) {

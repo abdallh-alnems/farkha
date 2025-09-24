@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
+import '../tool_usage_controller.dart';
 
 class BirdNetProfitController extends GetxController {
+  static const int toolId =
+      ToolIds.birdNetProfit; // Bird Net Profit tool ID = 18
+
   RxDouble totalSale = 0.0.obs;
   RxDouble totalCost = 0.0.obs;
   RxInt soldBirds = 0.obs;
   RxDouble netProfit = 0.0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateNetProfit(BuildContext context) {
     // التحقق من صحة إجمالي المبيعات

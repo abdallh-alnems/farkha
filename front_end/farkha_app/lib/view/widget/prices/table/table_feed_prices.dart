@@ -5,14 +5,14 @@ import 'package:get/get.dart';
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/theme/color.dart';
 import '../../../../core/shared/price_change.dart';
-import '../../../../logic/controller/price_controller/last_prices_controller.dart';
+import '../../../../logic/controller/price_controller/prices_by_type_controller.dart';
 
 class TableFeedPrices extends StatelessWidget {
   const TableFeedPrices({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LastPricesController>(
+    return GetBuilder<PricesByTypeController>(
       builder: (controller) {
         return HandlingDataView(
           statusRequest: controller.statusRequest,
@@ -48,7 +48,7 @@ class TableFeedPrices extends StatelessWidget {
     );
   }
 
-  Widget _buildTableBody(LastPricesController controller) {
+  Widget _buildTableBody(PricesByTypeController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7).r,
       child: Column(
@@ -66,7 +66,7 @@ class TableFeedPrices extends StatelessWidget {
               2: FlexColumnWidth(2),
             },
             children:
-                controller.lastPricesList
+                controller.pricesByTypeList
                     .map((price) => _buildTableRow(price))
                     .toList(),
           ),

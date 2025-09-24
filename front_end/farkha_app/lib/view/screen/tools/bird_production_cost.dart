@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/bird_production_cost_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -53,6 +55,8 @@ class BirdProductionCostScreen extends StatelessWidget {
                         controller.liveBirds.value = int.tryParse(value) ?? 0,
               ),
               const SizedBox(height: 24),
+              const AdNativeWidget(),
+              const SizedBox(height: 24),
               ToolsButton(
                 text: 'احسب تكلفة إنتاج الفرخ',
                 onPressed: () => _onCalculatePressed(context),
@@ -73,6 +77,7 @@ class BirdProductionCostScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

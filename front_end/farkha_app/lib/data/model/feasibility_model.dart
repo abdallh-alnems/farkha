@@ -21,23 +21,23 @@ class FeasibilityModel {
     namiPrice = 0;
     nahiPrice = 0;
 
-    // البحث عن كل نوع حسب type_name
+    // البحث عن كل نوع حسب name
     for (var item in data) {
       switch (item['name']) {
         case 'لحم ابيض':
-          chickenSalePrice = int.parse(item['price']);
+          chickenSalePrice = int.tryParse(item['price'].toString()) ?? 0;
           break;
         case 'ابيض (شركات)':
-          chickPrice = int.parse(item['price']);
+          chickPrice = int.tryParse(item['price'].toString()) ?? 0;
           break;
         case 'بادي':
-          badiPrice = int.parse(item['price']);
+          badiPrice = int.tryParse(item['price'].toString()) ?? 0;
           break;
         case 'نامي':
-          namiPrice = int.parse(item['price']);
+          namiPrice = int.tryParse(item['price'].toString()) ?? 0;
           break;
         case 'ناهي':
-          nahiPrice = int.parse(item['price']);
+          nahiPrice = int.tryParse(item['price'].toString()) ?? 0;
           break;
       }
     }

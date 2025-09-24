@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../core/package/snackbar_message.dart';
 import '../../../data/data_source/static/growth_parameters.dart';
+import '../tool_usage_controller.dart';
 
 class DailyFeedConsumptionController extends GetxController {
+  static const int toolId =
+      ToolIds.dailyFeedConsumption; // Daily Feed Consumption tool ID = 4
+
   final TextEditingController textController = TextEditingController();
   final Rxn selectedAge = Rxn<int>();
   final RxString result = ''.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
+  }
 
   void calculateDailyFeedConsumption(BuildContext context) {
     // التحقق من صحة الرقم

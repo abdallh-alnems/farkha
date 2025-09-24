@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/tool_ids.dart';
 import '../../../data/data_source/static/growth_parameters.dart';
+import '../tool_usage_controller.dart';
 
 class BroilerController extends GetxController {
+  static const int toolId =
+      ToolIds
+          .broilerChickenRequirements; // Broiler Chicken Requirements tool ID = 13
+
   final TextEditingController chickensCountController = TextEditingController();
   final Rxn selectedChickenAge = Rxn();
 
@@ -101,5 +107,11 @@ class BroilerController extends GetxController {
     );
 
     collegeArea = (chickens / 10).clamp(1, double.infinity);
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
   }
 }

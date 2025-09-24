@@ -34,10 +34,13 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   @override
   Widget build(BuildContext context) {
     return _isAdLoaded && _nativeAd != null
-        ? SizedBox(
-          width: double.infinity,
-          height: 280,
-          child: AdWidget(ad: _nativeAd!),
+        ? Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 9),
+          child: SizedBox(
+            width: double.infinity,
+            height: 280,
+            child: AdWidget(ad: _nativeAd!),
+          ),
         )
         : const SizedBox();
   }

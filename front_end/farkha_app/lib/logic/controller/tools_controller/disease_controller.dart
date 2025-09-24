@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../core/constant/tool_ids.dart';
 import '../../../data/data_source/static/disease/disease_data.dart';
 import '../../../data/data_source/static/disease/question_disease_data.dart';
 import '../../../data/model/disease_model/disease_model.dart';
 import '../../../data/model/disease_model/question_disease_model.dart';
+import '../tool_usage_controller.dart';
 
 class DiagnosisDiseasesController extends GetxController {
+  static const int toolId = ToolIds.diseases; // Diseases tool ID = 12
+
   var currentStep = 0.obs;
   var selectedSymptoms = <String>[].obs;
   var answers = <String, String>{}.obs;
@@ -32,9 +37,11 @@ class DiagnosisDiseasesController extends GetxController {
           answers.remove(question.name);
         }
       } else {
-        for (int i = newCurrentQuestionIndex;
-            i < filteredQuestions.length;
-            i++) {
+        for (
+          int i = newCurrentQuestionIndex;
+          i < filteredQuestions.length;
+          i++
+        ) {
           answers.remove(filteredQuestions[i].name);
         }
       }
@@ -123,5 +130,11 @@ class DiagnosisDiseasesController extends GetxController {
           treatment: [],
           prevention: [],
         );
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    ToolUsageController.recordToolUsageFromController(toolId);
   }
 }

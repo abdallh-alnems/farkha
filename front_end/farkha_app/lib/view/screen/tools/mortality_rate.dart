@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/mortality_rate_controller.dart';
+import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -42,6 +44,8 @@ class MortalityRateScreen extends StatelessWidget {
                           controller.deaths.value = int.tryParse(value) ?? 0,
                 ),
                 const SizedBox(height: 24),
+                const AdNativeWidget(),
+                const SizedBox(height: 24),
                 ToolsButton(
                   text: 'احسب نسبة النفوق',
                   onPressed: () => _onCalculatePressed(context),
@@ -63,6 +67,7 @@ class MortalityRateScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

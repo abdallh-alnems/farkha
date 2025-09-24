@@ -49,9 +49,6 @@ class SseService extends GetxService {
     request.headers['Pragma'] = 'no-cache';
     request.headers['Expires'] = '0';
 
-    // إضافة رموز الأمان باستخدام نفس الطريقة مثل Crud
-    final authHeaders = getMyHeaders();
-    request.headers.addAll(authHeaders);
 
     final streamedResponse = await http.Client().send(request);
 
