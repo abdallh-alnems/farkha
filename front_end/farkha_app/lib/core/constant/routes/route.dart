@@ -1,8 +1,9 @@
 class AppRoute {
-  // ================================== test ===================================
 
   static const String test = "/test";
   static const String adad = "/adad";
+  static const String onBoarding = "/onboarding";
+
   // ================================ prices and cycle ===================================
   // ! prices
   static const String pricesByType = "/pricesByType";

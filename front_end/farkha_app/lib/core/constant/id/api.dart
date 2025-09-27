@@ -7,11 +7,10 @@ class Api {
   // ================================ API MAIN =================================
   static final String _read = '$_serverName/app/read';
   static final String _livePrices = '$_read/live_prices';
-  static final String _typesPrices = '$_read/types_prices';
 
   // ================================= prices ==================================
-  static String mainTypes = '$_typesPrices/main.php';
-  static String pricesByType = '$_typesPrices/prices_by_type.php';
+  static String mainTypes = '$_serverName/main.php';
+  static String pricesByType = '$_read/prices_by_type.php';
 
   // ! feasibility study
   static String feasibilityStudy = '$_read/feasibility_study.php';

@@ -49,7 +49,6 @@ class SseService extends GetxService {
     request.headers['Pragma'] = 'no-cache';
     request.headers['Expires'] = '0';
 
-
     final streamedResponse = await http.Client().send(request);
 
     if (streamedResponse.statusCode == 200) {

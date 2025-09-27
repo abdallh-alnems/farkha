@@ -1,5 +1,6 @@
 import '../../../../core/class/crud.dart';
 import '../../../../core/constant/id/api.dart';
+// Note: Crud class automatically includes headers from headers.dart for authentication
 
 class ToolUsageData {
   final Crud crud;

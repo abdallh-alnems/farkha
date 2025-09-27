@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../core/class/status_request.dart';
 import '../../core/functions/handing_data_controller.dart';
 import '../../data/data_source/remote/tool_usage_data.dart';
+// Note: ToolUsageData uses Crud class which automatically includes headers from headers.dart
 
 class ToolUsageController extends GetxController {
   late StatusRequest statusRequest = StatusRequest.none;

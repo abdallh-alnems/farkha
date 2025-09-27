@@ -25,42 +25,44 @@ class DarknessLevelsView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Obx(
-              () => AgeDropdown(
-                selectedAge: controller.selectedDay.value,
-                onAgeChanged: (value) => controller.setDay(value),
-                maxAge: controller.maxDay,
-                hint: 'اختر اليوم',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Obx(
+                () => AgeDropdown(
+                  selectedAge: controller.selectedDay.value,
+                  onAgeChanged: (value) => controller.setDay(value),
+                  maxAge: controller.maxDay,
+                  hint: 'اختر اليوم',
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            const AdNativeWidget(),
-            const SizedBox(height: 24),
-            ToolsButton(
-              text: "احسب ساعات الإظلام",
-              onPressed: () => controller.calculateDarknessLevels(),
-            ),
-            Obx(() {
-              if (controller.result.value.isNotEmpty) {
-                return ToolsResult(
-                  title: "ساعات الإظلام",
-                  value: controller.result.value,
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-            const NotesCard(
-              notes: [
-                'يتم تطبيق الإظلام تدريجياً حسب عمر الطائر.',
-                'أقصى مدة للظلام ساعتين في المرة الواحدة الباقي من ساعات الإظلام يقسم على باقي اليوم',
-                'الاظلام عملية مهمة جدا في  النمو',
-              ],
-            ),
-          ],
+              const SizedBox(height: 24),
+              const AdNativeWidget(),
+              const SizedBox(height: 24),
+              ToolsButton(
+                text: "احسب ساعات الإظلام",
+                onPressed: () => controller.calculateDarknessLevels(),
+              ),
+              Obx(() {
+                if (controller.result.value.isNotEmpty) {
+                  return ToolsResult(
+                    title: "ساعات الإظلام",
+                    value: controller.result.value,
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+              const NotesCard(
+                notes: [
+                  'يتم تطبيق الإظلام تدريجياً حسب عمر الطائر.',
+                  'أقصى مدة للظلام ساعتين في المرة الواحدة الباقي من ساعات الإظلام يقسم على باقي اليوم',
+                  'الاظلام عملية مهمة جدا في  النمو',
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: const AdBannerWidget(),

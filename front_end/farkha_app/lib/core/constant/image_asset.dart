@@ -9,6 +9,10 @@ class ImageAsset {
 
   static const String logo = "$_rootImages/logo.png";
 
+    // ! onboarding
+  static const String onboardingTools = "$_rootImages/onboarding/tools.svg";
+  static const String onboardingPrices = "$_rootImages/onboarding/prices.svg";
+
   // ================================== icons ==================================
 
   static const String setting = "$_rootIcons/setting.png";

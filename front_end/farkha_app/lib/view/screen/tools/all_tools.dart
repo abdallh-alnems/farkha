@@ -16,52 +16,56 @@ class AllTools extends StatelessWidget {
       appBar: const CustomAppBar(text: "جميع الحسابات", showIcon: false),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 15,
-            mainAxisSpacing: 19,
-            childAspectRatio: 1.33,
-          ),
-          itemCount: calculationItems.length,
-          itemBuilder: (context, index) {
-            final item = calculationItems[index];
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: InkWell(
-                onTap: item.onTap,
-                borderRadius: BorderRadius.circular(13),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (item.image != null)
-                      SvgPicture.asset(item.image!, width: 47, height: 47)
-                    else if (item.isTextIcon == true)
+        child: SingleChildScrollView(
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 19,
+              childAspectRatio: 1.33,
+            ),
+            itemCount: calculationItems.length,
+            itemBuilder: (context, index) {
+              final item = calculationItems[index];
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: InkWell(
+                  onTap: item.onTap,
+                  borderRadius: BorderRadius.circular(13),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (item.image != null)
+                        SvgPicture.asset(item.image!, width: 47, height: 47)
+                      else if (item.isTextIcon == true)
+                        Text(
+                          item.text,
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.primaryColor,
+                          ),
+                        ),
+
+                      const SizedBox(height: 19),
                       Text(
                         item.text,
                         style: const TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: AppColor.primaryColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-
-                    const SizedBox(height: 19),
-                    Text(
-                      item.text,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/image_asset.dart';
@@ -39,7 +38,7 @@ class ToolsSection extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () => Get.toNamed(AppRoute.allTools),
-                child: Text(
+                child: const Text(
                   "عرض الكل",
                   style: TextStyle(
                     color: AppColor.primaryColor,
@@ -49,7 +48,7 @@ class ToolsSection extends StatelessWidget {
                 ),
               ),
 
-              Text(
+              const Text(
                 "أدوات مساعدة",
                 style: TextStyle(
                   color: AppColor.primaryColor,

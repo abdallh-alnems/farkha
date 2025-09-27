@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AgeDropdown extends StatefulWidget {
   final int? selectedAge;
@@ -43,7 +42,7 @@ class _AgeDropdownState extends State<AgeDropdown> {
               List.generate(widget.maxAge, (index) => index + 1).map((age) {
                 return DropdownMenuItem<int>(
                   value: age,
-                  child: Container(
+                  child: SizedBox(
                     width: double.infinity,
                     child: Directionality(
                       textDirection: TextDirection.rtl,

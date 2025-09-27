@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../../view/screen/onboarding.dart';
 import '../../../view/screen/tools/adg.dart';
 import '../../../view/screen/tools/all_tools.dart';
 import '../../../view/screen/tools/bird_net_profit.dart';
@@ -52,15 +53,19 @@ import '../../../view/screen/home.dart';
 import '../../../view/screen/prices/customize_prices_screen.dart';
 import '../../../view/screen/prices/prices_by_type.dart';
 import '../../../view/screen/prices/main_types.dart';
+import '../../middleware/my_middleware.dart';
 import 'route.dart';
 
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
-  GetPage(name: "/", page: () => const Home()),
+  GetPage(name: "/", page: () => const Home(), middlewares: [MyMiddleWare()]),
 
   // ============================== Test =======================================
 
   // GetPage(name: AppRoute.test, page: () => Test()),
+  
+    GetPage(name: AppRoute.onBoarding, page: () => OnBoarding()),
+
 
   // ================================ prices ===================================
   GetPage(

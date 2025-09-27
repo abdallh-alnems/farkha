@@ -9,9 +9,8 @@ import 'core/services/initialization.dart';
 import 'logic/bindings/my_binding.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await initialServices();
-  
+
   runApp(const MyApp());
 }
 

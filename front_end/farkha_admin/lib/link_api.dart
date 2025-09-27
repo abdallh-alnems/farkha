@@ -4,10 +4,11 @@ import 'dart:convert';
 class ApiLinks {
   static String linkServerName = dotenv.get("API_HOST");
 
-  static String add = '$linkServerName/add.php';
+  static String add = '$linkServerName/admin/create/add_prices.php';
+  static String main = '$linkServerName/main.php';
+  static String getLastPrices = '$linkServerName/admin/read/today_prices.php';
+  static String toolsAnalytics = '$linkServerName/analytics/tools_analytics.php';
 
-  static String main = '$linkServerName/read/main.php';
-  static String getLastPrices = '$linkServerName/read/last_prices.php';
 }
 
 Map<String, String> getMyHeaders() {
