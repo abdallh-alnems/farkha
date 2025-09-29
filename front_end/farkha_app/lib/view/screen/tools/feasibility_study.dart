@@ -6,8 +6,7 @@ import '../../../logic/controller/tools_controller/feasibility_study_controller.
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/app_bar/custom_app_bar.dart';
-import '../../widget/tools/feasibility_study/input_section.dart';
-import '../../widget/tools/feasibility_study/prices_section.dart';
+import '../../widget/tools/feasibility_study/inputs_section.dart';
 import '../../widget/tools/feasibility_study/results_section.dart';
 
 class FeasibilityStudy extends StatelessWidget {
@@ -34,12 +33,10 @@ class FeasibilityStudy extends StatelessWidget {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
                       children: [
-                        // Input Section
-                        InputSection(),
                         AdNativeWidget(),
 
-                        // Prices Section
-                        PricesSection(),
+                        // Inputs Section (includes prices and default values)
+                        InputsSection(),
 
                         // Results Section
                         ResultsSection(),

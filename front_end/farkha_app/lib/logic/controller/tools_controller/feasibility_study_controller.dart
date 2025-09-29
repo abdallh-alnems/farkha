@@ -18,6 +18,14 @@ class FeasibilityController extends GetxController {
   final TextEditingController countController = TextEditingController();
   final TextEditingController budgetController = TextEditingController();
 
+  // Controllers for default values
+  final TextEditingController defaultWeightController = TextEditingController();
+  final TextEditingController badiRatioController = TextEditingController();
+  final TextEditingController namiRatioController = TextEditingController();
+  final TextEditingController nahiRatioController = TextEditingController();
+  final TextEditingController mortalityRateController = TextEditingController();
+  final TextEditingController overheadController = TextEditingController();
+
   // Controllers for price inputs
   final TextEditingController chickenSalePriceController =
       TextEditingController();
@@ -45,12 +53,13 @@ class FeasibilityController extends GetxController {
   RxBool showResults = false.obs;
   RxBool isPricesExpanded = true.obs;
 
-  static const double mortalityRate = 0.05;
-  static const double badiFeedConsumption = 0.5;
-  static const double namiFeedConsumption = 1.2;
-  static const double nahiFeedConsumption = 1.8;
-  static const int overheadPerChicken = 10;
-  static const int averageWeight = 2;
+  // Reactive variables for customizable values
+  RxDouble defaultWeight = 2.5.obs;
+  RxDouble badiFeedRatio = 0.5.obs;
+  RxDouble namiFeedRatio = 1.2.obs;
+  RxDouble nahiFeedRatio = 1.8.obs;
+  RxDouble mortalityRate = 5.0.obs; // 5% default mortality rate
+  RxDouble overheadPerChicken = 10.0.obs; // 10 ج per chicken default
 
   Future<void> fetchFeasibilityData() async {
     try {
@@ -95,6 +104,15 @@ class FeasibilityController extends GetxController {
     feasibilityModel.nahiPrice = int.tryParse(nahiPriceController.text) ?? 0;
   }
 
+  void updateDefaultValues() {
+    defaultWeight.value = double.tryParse(defaultWeightController.text) ?? 2.5;
+    badiFeedRatio.value = double.tryParse(badiRatioController.text) ?? 0.5;
+    namiFeedRatio.value = double.tryParse(namiRatioController.text) ?? 1.2;
+    nahiFeedRatio.value = double.tryParse(nahiRatioController.text) ?? 1.8;
+    mortalityRate.value = double.tryParse(mortalityRateController.text) ?? 5.0;
+    overheadPerChicken.value = double.tryParse(overheadController.text) ?? 10.0;
+  }
+
   void toggleCalculationMode() {
     isChickenCountMode.value = !isChickenCountMode.value;
     showResults.value = false;
@@ -119,8 +137,9 @@ class FeasibilityController extends GetxController {
         await fetchFeasibilityData();
       }
 
-      // Update prices from controllers
+      // Update prices and default values from controllers
       updatePrices();
+      updateDefaultValues();
       print(
         "Prices updated: ${feasibilityModel.chickenSalePrice}, ${feasibilityModel.chickPrice}",
       );
@@ -138,18 +157,21 @@ class FeasibilityController extends GetxController {
         print("Budget mode: $budget -> $chickenCount chickens");
       }
 
-      int deadChickens = (chickenCount * mortalityRate).round();
+      int deadChickens = (chickenCount * mortalityRate.value / 100).round();
       // ضمان أن النافق لا يقل عن 1
       deadChickens = deadChickens < 1 ? 1 : deadChickens;
       int remainingChickens = chickenCount - deadChickens;
 
       int totalChickenCost = chickenCount * feasibilityModel.chickPrice;
       double totalFeedCost = _calculateFeedCost(chickenCount);
-      int totalOverheadCost = chickenCount * overheadPerChicken;
+      double totalOverheadCost = chickenCount * overheadPerChicken.value;
       double totalCost = totalChickenCost + totalFeedCost + totalOverheadCost;
 
       int totalSales =
-          remainingChickens * averageWeight * feasibilityModel.chickenSalePrice;
+          (remainingChickens *
+                  defaultWeight.value *
+                  feasibilityModel.chickenSalePrice)
+              .round();
       double profit = totalSales - totalCost;
 
       _updateResultText(
@@ -177,7 +199,7 @@ class FeasibilityController extends GetxController {
     // We need to estimate the total cost per chicken
     double costPerChicken = feasibilityModel.chickPrice.toDouble();
     double feedCostPerChicken = _calculateFeedCost(1); // Cost for 1 chicken
-    double overheadCostPerChicken = overheadPerChicken.toDouble();
+    double overheadCostPerChicken = overheadPerChicken.value;
 
     double totalCostPerChicken =
         costPerChicken + feedCostPerChicken + overheadCostPerChicken;
@@ -187,11 +209,11 @@ class FeasibilityController extends GetxController {
 
   double _calculateFeedCost(int chickenCount) {
     double badiFeedCost =
-        badiFeedConsumption * (feasibilityModel.badiPrice / 1000);
+        badiFeedRatio.value * (feasibilityModel.badiPrice / 1000);
     double namiFeedCost =
-        namiFeedConsumption * (feasibilityModel.namiPrice / 1000);
+        namiFeedRatio.value * (feasibilityModel.namiPrice / 1000);
     double nahiFeedCost =
-        nahiFeedConsumption * (feasibilityModel.nahiPrice / 1000);
+        nahiFeedRatio.value * (feasibilityModel.nahiPrice / 1000);
 
     return (badiFeedCost + namiFeedCost + nahiFeedCost) * chickenCount;
   }
@@ -201,7 +223,7 @@ class FeasibilityController extends GetxController {
     int deadChickens,
     int totalChickenCost,
     double totalFeedCost,
-    int totalOverheadCost,
+    double totalOverheadCost,
     double totalCost,
     int totalSales,
     double profit,
@@ -217,7 +239,7 @@ class FeasibilityController extends GetxController {
     mortalityRateText.value = "$deadChickens فرخ";
     chickenCostText.value = "$totalChickenCost ج";
     feedCostText.value = "${totalFeedCost.toStringAsFixed(0)} ج";
-    overheadCostText.value = "$totalOverheadCost ج";
+    overheadCostText.value = "${totalOverheadCost.toStringAsFixed(0)} ج";
     totalCostText.value = "${totalCost.toStringAsFixed(0)} ج";
     totalSalesText.value = "${totalSales.toStringAsFixed(0)} ج";
     profitText.value = "${profit.toStringAsFixed(0)} ج";
@@ -239,6 +261,16 @@ class FeasibilityController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
     pricesStatusRequest.value = StatusRequest.none;
     isPricesExpanded.value = true; // إظهار حقول الأسعار عند الدخول
+
+    // Initialize default values in text controllers - leave empty initially
+    // Values will be loaded when user clicks "القيم الافتراضية" button
+    defaultWeightController.clear();
+    badiRatioController.clear();
+    namiRatioController.clear();
+    nahiRatioController.clear();
+    mortalityRateController.clear();
+    overheadController.clear();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showFeasibilityGuide();
     });
@@ -248,6 +280,12 @@ class FeasibilityController extends GetxController {
   void onClose() {
     countController.dispose();
     budgetController.dispose();
+    defaultWeightController.dispose();
+    badiRatioController.dispose();
+    namiRatioController.dispose();
+    nahiRatioController.dispose();
+    mortalityRateController.dispose();
+    overheadController.dispose();
     chickenSalePriceController.dispose();
     chickPriceController.dispose();
     badiPriceController.dispose();
