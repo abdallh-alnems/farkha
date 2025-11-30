@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/age_dropdown.dart';
 import '../../../logic/controller/tools_controller/darkness_levels_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/age_dropdown.dart';
 import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/tools_button.dart';
-import '../../widget/tools/tools_result.dart';
+import '../../widget/tools/tools_result_card.dart';
 
 class DarknessLevelsView extends StatelessWidget {
   const DarknessLevelsView({super.key});
@@ -19,10 +19,7 @@ class DarknessLevelsView extends StatelessWidget {
       DarknessLevelsController(),
     );
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'درجات الظلام',
-        toolKey: 'darknessLevelsDialog',
-      ),
+      appBar: const CustomAppBar(text: 'ساعات الاظلام'),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -45,14 +42,43 @@ class DarknessLevelsView extends StatelessWidget {
                 text: "احسب ساعات الإظلام",
                 onPressed: () => controller.calculateDarknessLevels(),
               ),
+              const SizedBox(height: 32),
               Obx(() {
-                if (controller.result.value.isNotEmpty) {
-                  return ToolsResult(
-                    title: "ساعات الإظلام",
-                    value: controller.result.value,
-                  );
-                }
-                return const SizedBox.shrink();
+                final hasCalculated =
+                    controller.result.value.isNotEmpty &&
+                    controller.selectedDay.value != null;
+                final darknessHours = controller.darkness;
+                final lightHours = controller.light;
+
+                return hasCalculated &&
+                        darknessHours != null &&
+                        lightHours != null
+                    ? Row(
+                      children: [
+                        Expanded(
+                          child: ToolsResultCard(
+                            title: 'ساعات الإظلام',
+                            value: '${controller.darknessHoursFormatted} ساعة',
+                            backgroundColor: Colors.blue.shade50,
+                            borderColor: Colors.blue.shade200,
+                            titleColor: Colors.blue.shade800,
+                            valueColor: Colors.blue.shade700,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ToolsResultCard(
+                            title: 'ساعات الإضاءة',
+                            value: '${controller.lightHoursFormatted} ساعة',
+                            backgroundColor: Colors.orange.shade50,
+                            borderColor: Colors.orange.shade200,
+                            titleColor: Colors.orange.shade800,
+                            valueColor: Colors.orange.shade700,
+                          ),
+                        ),
+                      ],
+                    )
+                    : const SizedBox.shrink();
               }),
               const NotesCard(
                 notes: [

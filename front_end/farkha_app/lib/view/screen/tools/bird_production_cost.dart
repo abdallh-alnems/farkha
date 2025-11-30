@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/bird_production_cost_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/two_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
+import '../../../core/shared/snackbar_message.dart';
 
 class BirdProductionCostScreen extends StatelessWidget {
   BirdProductionCostScreen({super.key});
@@ -20,11 +21,7 @@ class BirdProductionCostScreen extends StatelessWidget {
     final birds = controller.liveBirds.value;
 
     if (total <= 0 || birds <= 0) {
-      Get.snackbar(
-        'خطأ',
-        'يرجى إدخال قيم صحيحة',
-        snackPosition: SnackPosition.TOP,
-      );
+      SnackbarMessage.show(context, 'يرجى إدخال قيم صحيحة', icon: Icons.error);
       return;
     }
 
@@ -34,10 +31,7 @@ class BirdProductionCostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'تكلفة إنتاج الطائر',
-        toolKey: 'birdProductionCostDialog',
-      ),
+      appBar: const CustomAppBar(text: 'تكلفة إنتاج الطائر'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -45,7 +39,7 @@ class BirdProductionCostScreen extends StatelessWidget {
             children: [
               TwoInputFields(
                 firstLabel: 'إجمالي التكاليف',
-                secondLabel: 'عدد الطيور الحية عند التسويق',
+                secondLabel: 'عدد الفراخ',
                 onFirstChanged:
                     (value) =>
                         controller.totalCosts.value =
@@ -67,7 +61,7 @@ class BirdProductionCostScreen extends StatelessWidget {
                 return value > 0
                     ? ToolsResult(
                       title: 'تكلفة إنتاج الفرخ',
-                      value: value.toStringAsFixed(2),
+                      value: value.toStringAsFixed(1),
                       unit: 'جنيه',
                     )
                     : const SizedBox.shrink();

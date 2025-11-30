@@ -1,56 +1,45 @@
 <?php
 
-include "connect.php";
-include "cache.php";
-include "queries.php";
+require_once __DIR__ . '/core/connect.php';
+include "core/queries/queries.php";
 
 class MainCategoriesAPI extends BaseAPI {
     private $cache;
     
     public function __construct() {
         parent::__construct();
-        $this->cache = CacheManager::getInstance();             
+        $this->cache = CacheManager::getInstance();
+        $this->handleRequest();
+    }
+
+    private function handleRequest() {
+        $this->handleApiRequest(function() {
+            $this->getMainCategories();
+        }, 'main_categories');
     }
     
     public function getMainCategories() {
-        try {
-            $cacheKey = 'main_categories';
-            $cachedData = $this->cache->get($cacheKey);
-            
-            if ($cachedData !== null) {
-                $this->sendSuccess($cachedData, 'cache');
-                return;
-            }
-            
-            $query = Queries::getMainCategoriesQuery();
-            
-            $data = $this->db->fetchAll($query);
-            
-            if (empty($data)) {
-                $this->handleError(404, 'No main categories found');
-                return;
-            }
-            
-            $enhancedData = $data;
-            
-            $this->cache->set($cacheKey, $enhancedData, 86400); // 24 hours
-            
-            
-            $this->sendSuccess($enhancedData, 'database');
-            
-        } catch (Exception $e) {
-            ApiLogger::error('Failed to retrieve main categories', [
-                'error' => $e->getMessage()
-            ]);
-            handleApiError($e, ['context' => 'main_categories']);
+        $cacheKey = 'main_categories';
+        $cachedData = $this->cache->get($cacheKey);
+        if ($cachedData !== null) {
+            $this->sendSuccess($cachedData, 'cache');
+            return;
         }
+
+        $query = Queries::getMainCategoriesQuery();
+        $data = $this->db->fetchAll($query);
+        if (empty($data)) {
+            $this->handleError(404, 'No main categories found');
+            return;
+        }
+        $enhancedData = $data;
+        $this->cache->set($cacheKey, $enhancedData);
+        $this->sendSuccess($enhancedData, 'database');
     }
 }
 
-// Initialize and execute
 try {
     $api = new MainCategoriesAPI();
-    $api->getMainCategories();
 } catch (Exception $e) {
     handleApiError($e, ['context' => 'main_categories_api']);
 }

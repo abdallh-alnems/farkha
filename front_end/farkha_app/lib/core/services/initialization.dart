@@ -7,7 +7,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import '../../logic/controller/get_min_version.dart';
 import '../constant/firebase_options.dart';
+import 'analytics_service.dart';
+import 'dark_light_service.dart';
+import 'notification_service.dart';
 
 class MyServices extends GetxService {
   late GetStorage getStorage;
@@ -17,14 +21,27 @@ class MyServices extends GetxService {
 
     await GetStorage.init();
     getStorage = GetStorage();
+    Get.put<GetStorage>(getStorage, permanent: true);
+    Get.put(DarkLightService(), permanent: true);
 
-    await MobileAds.instance.initialize();
+    // Defer ads SDK initialization to after first frame to avoid blocking startup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      MobileAds.instance.initialize();
+    });
 
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
     await initializeDateFormatting('ar');
+
+    // Initialize minimum version checker early to speed update prompt
+    Get.put(GetMinVersionController(), permanent: true);
+
+    // Initialize notification service
+    await Get.putAsync(() => NotificationService().init());
+    // Initialize analytics service
+    await Get.putAsync(() => AnalyticsService().init());
 
     return this;
   }
@@ -35,4 +52,6 @@ Future<void> initialServices() async {
   await Get.putAsync(() => MyServices().init());
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // Enable modern edge-to-edge UI for Flutter
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }

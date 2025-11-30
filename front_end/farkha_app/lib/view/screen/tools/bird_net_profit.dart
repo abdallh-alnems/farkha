@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/bird_net_profit_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/three_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
 
@@ -32,10 +32,7 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'صافي ربح الطائر',
-        toolKey: 'birdNetProfitDialog',
-      ),
+      appBar: const CustomAppBar(text: 'صافي ربح الطائر'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),

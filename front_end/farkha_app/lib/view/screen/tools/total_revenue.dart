@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/total_revenue_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/three_input_fields.dart';
 import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
@@ -29,10 +29,7 @@ class TotalRevenueScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'إجمالي الإيرادات',
-        toolKey: 'totalRevenueDialog',
-      ),
+      appBar: const CustomAppBar(text: 'إجمالي الإيرادات'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -41,33 +38,32 @@ class TotalRevenueScreen extends StatelessWidget {
               // Input fields
               ThreeInputFields(
                 firstLabel: 'عدد الطيور',
-                secondLabel: 'متوسط الوزن (كجم)',
-                thirdLabel: 'سعر الكيلو (جنيه)',
+                secondLabel: 'متوسط الوزن',
+                thirdLabel: 'سعر الكيلو',
                 onFirstChanged: controller.updateBirdsCount,
                 onSecondChanged: controller.updateAverageWeight,
                 onThirdChanged: controller.updatePricePerKg,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 21),
               const AdNativeWidget(),
-              const SizedBox(height: 32),
+              const SizedBox(height: 21),
               // Calculate button
               ToolsButton(
                 text: 'احسب الإيرادات',
                 onPressed: () => _onCalculatePressed(context),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 21),
               // Result display
               Obx(() {
-                final revenue = controller.totalRevenue.value;
-                return revenue > 0
+                final formattedRevenue = controller.getFormattedRevenue();
+                return formattedRevenue.isNotEmpty
                     ? ToolsResult(
                       title: 'إجمالي الإيرادات',
-                      value: revenue.toStringAsFixed(0),
+                      value: formattedRevenue,
                       unit: 'جنيه',
                     )
                     : const SizedBox.shrink();
               }),
-              const SizedBox(height: 32),
               // Notes section
               const NotesCard(
                 notes: [

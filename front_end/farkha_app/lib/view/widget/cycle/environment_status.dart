@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../../core/class/status_request.dart';
-import '../../../core/constant/theme/color.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../../logic/controller/weather_controller.dart';
@@ -36,7 +36,7 @@ class EnvironmentStatus extends StatelessWidget {
         height: 121.h,
         padding: EdgeInsets.symmetric(vertical: 11.h),
         decoration: BoxDecoration(
-          color: AppColor.primaryColor,
+          color: AppColors.primaryColor,
           borderRadius: BorderRadius.circular(11.r),
         ),
         child: Row(

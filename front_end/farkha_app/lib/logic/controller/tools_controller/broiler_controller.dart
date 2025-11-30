@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
-import '../../../data/data_source/static/growth_parameters.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/constant/id/tool_ids.dart';
+import '../../../data/data_source/static/chicken_data.dart';
+import '../weather_controller.dart';
+import 'tool_usage_controller.dart';
 
 class BroilerController extends GetxController {
   static const int toolId =
@@ -12,6 +13,8 @@ class BroilerController extends GetxController {
 
   final TextEditingController chickensCountController = TextEditingController();
   final Rxn selectedChickenAge = Rxn();
+
+  late final WeatherController weatherController;
 
   final RxInt ageTemperature = 0.obs;
   late int ageDarkness;
@@ -109,9 +112,37 @@ class BroilerController extends GetxController {
     collegeArea = (chickens / 10).clamp(1, double.infinity);
   }
 
+  bool get hasWeatherTemperature => weatherController.hasWeatherData;
+
+  String get weatherTemperatureText {
+    final String tempText = weatherController.temperatureText;
+    if (tempText == "فعّل صلاحية الموقع") {
+      return tempText;
+    }
+    return "الخارج : $tempText";
+  }
+
+  String get weatherHumidityText {
+    final String humidityText = weatherController.humidityText;
+    if (humidityText == "فعّل صلاحية الموقع") {
+      return humidityText;
+    }
+    return "الخارج : $humidityText";
+  }
+
+  String get weatherLocationShort => weatherController.locationMessage;
+
+  void refreshWeatherTemperature() {
+    weatherController.refreshWeather();
+  }
+
   @override
   void onInit() {
     super.onInit();
+    weatherController =
+        Get.isRegistered<WeatherController>()
+            ? Get.find<WeatherController>()
+            : Get.put(WeatherController());
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 }

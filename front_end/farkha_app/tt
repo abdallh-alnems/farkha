@@ -1,0 +1,28 @@
+=== release ===
+=play stor=
+flutter build appbundle
+
+=apk=
+flutter build apk
+
+
+flutter pub upgrade --major-versions
+
+=== API_HOST ===
+=server host=
+API_HOST = "https://nims-farkha.com/backend_farkha"
+
+=local host=
+API_HOST = "http://192.168.1.4"
+
+
+=== env backend ===
+=server host=
+define('DB_NAME', "mysql:host=localhost;dbname=u869543217_farkha");
+define('DB_USER', "u869543217_NiMs_farkha");
+define('DB_PASS', "Abdallh29512A");
+
+=local host=
+define('DB_NAME', "mysql:host=localhost;dbname=farkha");
+define('DB_USER', "root");
+define('DB_PASS', "");

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/constant/id/tool_ids.dart';
+import 'tool_usage_controller.dart';
 
 class TotalFarmWeightController extends GetxController {
   static const int toolId =

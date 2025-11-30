@@ -1,4 +1,4 @@
-import '../../../core/constant/image_asset.dart';
+import '../../../core/constant/theme/images.dart';
 import '../../model/onboarding_model.dart';
 
 List<OnBoardingModel> onBoardingList = [
@@ -6,12 +6,12 @@ List<OnBoardingModel> onBoardingList = [
     title: "متابعة الاسعار",
     body:
         "احصل على أحدث أسعار الدواجن والأعلاف في السوق المحلي مع تحديثات يومية دقيقة",
-    image: ImageAsset.onboardingPrices,
+    image: AppImages.onboardingPrices,
   ),
   OnBoardingModel(
     title: "ادوات مساعدة",
     body:
         "مجموعة شاملة من الأدوات والحاسبات المتخصصة لإدارة مزرعتك بكفاءة عالية",
-    image: ImageAsset.onboardingTools,
+    image: AppImages.onboardingTools,
   ),
 ];

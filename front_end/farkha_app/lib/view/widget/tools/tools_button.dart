@@ -12,7 +12,10 @@ class ToolsButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+          onPressed();
+        },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 14.h),
           shape: RoundedRectangleBorder(

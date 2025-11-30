@@ -15,11 +15,12 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   bool _isAdLoaded = false;
   int _retryCount = 0;
   final List<int> _retryDelays = [5, 10, 20, 30, 40, 50, 60];
+  double? _adaptiveHeight;
 
   @override
   void initState() {
     super.initState();
-    // تحميل إعلان جديد بعد انتهاء build
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadNewAd();
     });
@@ -33,18 +34,26 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // Compute an adaptive height based on current width (responsive native container)
+    final double width = MediaQuery.of(context).size.width;
+    final double computedHeight = (width * 0.5).clamp(250.0, 400.0);
+    _adaptiveHeight ??= computedHeight;
+
     return _isAdLoaded && _nativeAd != null
         ? SizedBox(
           width: double.infinity,
-          height: 280,
+          height: _adaptiveHeight!,
           child: AdWidget(ad: _nativeAd!),
         )
         : const SizedBox();
   }
 
   void _loadNewAd() {
-    // تحميل إعلان جديد في كل مرة
     _disposeCurrentAd();
+
+    // Recompute height when (re)loading (handles rotations/size changes)
+    final double width = MediaQuery.of(context).size.width;
+    _adaptiveHeight = (width * 0.6).clamp(250.0, 400.0);
 
     _nativeAd = NativeAd(
       adUnitId: AdManager.idNative,
@@ -53,11 +62,12 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
           if (mounted) {
             setState(() {
               _isAdLoaded = true;
-              _retryCount = 0; // إعادة تعيين عداد المحاولات عند النجاح
+              _retryCount = 0;
             });
           }
         },
         onAdFailedToLoad: (ad, error) {
+          debugPrint('Native failed: ${error.code} - ${error.message}');
           ad.dispose();
           _retryWithBackoff();
         },
@@ -94,8 +104,9 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
 
   void _retryWithBackoff() {
     if (!mounted) return;
+    // If already loaded (race with delayed retry), do not retry
+    if (_isAdLoaded) return;
 
-    // تحديد فترة الانتظار بناءً على عدد المحاولات
     int delayIndex =
         _retryCount < _retryDelays.length
             ? _retryCount
@@ -106,6 +117,7 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
 
     Future.delayed(Duration(seconds: delaySeconds), () {
       if (mounted) {
+        if (_isAdLoaded) return;
         _loadNewAd();
       }
     });
@@ -116,7 +128,7 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
       _nativeAd?.dispose();
       _nativeAd = null;
       _isAdLoaded = false;
-      _retryCount = 0; // إعادة تعيين عداد المحاولات
+      _retryCount = 0;
     }
   }
 }

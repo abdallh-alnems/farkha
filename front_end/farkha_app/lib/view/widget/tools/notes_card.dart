@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constant/theme/colors.dart';
+
 class NotesCard extends StatelessWidget {
   final List<String> notes;
   final String? title;
@@ -12,30 +14,39 @@ class NotesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Column(
       children: [
         const SizedBox(height: 32),
         Card(
-          color: Colors.white,
-          elevation: 4,
+          color: isDark 
+              ? AppColors.darkSurfaceElevatedColor 
+              : AppColors.lightSurfaceColor,
+          elevation: isDark ? 0 : 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+              color: isDark 
+                  ? AppColors.darkOutlineColor.withOpacity(0.5)
+                  : AppColors.lightOutlineColor.withOpacity(0.3),
+              width: 1,
+            ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(15),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   title!,
-                  style: const TextStyle(
-                    fontSize: 17,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
                   ),
-                  textAlign: TextAlign.right,
                 ),
                 const SizedBox(height: 12),
-                ...notes.map((note) => _buildNoteItem(note)),
+                ...notes.map((note) => _buildNoteItem(context, note)),
               ],
             ),
           ),
@@ -45,21 +56,27 @@ class NotesCard extends StatelessWidget {
     );
   }
 
-  Widget _buildNoteItem(String text) {
+  Widget _buildNoteItem(BuildContext context, String text) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          Icon(
+            Icons.check_circle_outline,
+            size: 18,
+            color: colorScheme.primary,
+          ),
+                     const SizedBox(width: 7),
           Expanded(
             child: Text(
               text,
-              textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontSize: 14,
+                    color: colorScheme.onSurface.withOpacity(0.8),
+                  ),
             ),
           ),
-          const SizedBox(width: 8),
-          const Icon(Icons.check_circle_outline, size: 18, color: Colors.green),
         ],
       ),
     );

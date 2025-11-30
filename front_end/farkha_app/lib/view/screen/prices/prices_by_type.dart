@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../../logic/controller/price_controller/prices_by_type_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
 import '../../widget/prices/table/table_feed_prices.dart';
 import '../../widget/prices/table/table_prices_by_type.dart';
 
@@ -23,7 +23,7 @@ class PricesByType extends StatelessWidget {
    final PricesByTypeController controller = Get.put(PricesByTypeController());
     controller.getDataPricesByType(mainId);
     return Scaffold(
-      appBar: CustomAppBar(text: "اسعار $mainName"),
+      appBar: CustomAppBar(text: "اسعار $mainName" ),
       body: Column(
         children: [
           Expanded(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/mortality_rate_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/two_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
 
@@ -21,10 +21,7 @@ class MortalityRateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'معدل النفوق',
-        toolKey: 'mortalityRateDialog',
-      ),
+      appBar: const CustomAppBar(text: 'نسبة النفوق'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -33,7 +30,7 @@ class MortalityRateScreen extends StatelessWidget {
             child: Column(
               children: [
                 TwoInputFields(
-                  firstLabel: 'عدد الطيور عند البداية',
+                  firstLabel: 'عدد الفراخ الاولي',
                   secondLabel: 'عدد النافق',
                   onFirstChanged:
                       (value) =>

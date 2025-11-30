@@ -12,5 +12,5 @@
 # queries.php is now in the main directory and protected by parent .htaccess
 
 # Custom error handling for app directory
-ErrorDocument 404 /error.php?code=404
-ErrorDocument 500 /error.php?code=500
+ErrorDocument 404 /core/error.php?code=404
+ErrorDocument 500 /core/error.php?code=500

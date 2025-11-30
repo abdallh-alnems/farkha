@@ -17,16 +17,12 @@ class SymptomSelection extends StatelessWidget {
         Text(
           "اختر الأعراض",
           style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.right,
         ),
         Expanded(
           child: ListView(
             children: symptoms.map((symptom) {
               return Obx(() => CheckboxListTile(
-                    title: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(symptom),
-                    ),
+                    title: Text(symptom),
                     value: controller.selectedSymptoms.contains(symptom),
                     onChanged: (value) {
                       if (value == true) {

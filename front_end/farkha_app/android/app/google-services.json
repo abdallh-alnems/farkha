@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "159521160544",
+    "project_id": "farkha-c7248",
+    "storage_bucket": "farkha-c7248.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159521160544:android:8bb038def7e3670a21f205",
+        "android_client_info": {
+          "package_name": "ni.nims.frkha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkcXEc6ICXvD0W4GMHZ9JDZfURYJSUWLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-8595701567488603~3243480822"
+    }
+  ],
+  "configuration_version": "1"
+}

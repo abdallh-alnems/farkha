@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/feed_cost_per_kilo_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/three_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
-import '../../widget/tools/tools_result.dart';
+import '../../widget/tools/tools_result_card.dart';
 
 class FeedCostPerKiloScreen extends StatelessWidget {
   FeedCostPerKiloScreen({super.key});
@@ -24,10 +24,7 @@ class FeedCostPerKiloScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'تكلفة العلف لكل كيلو',
-        toolKey: 'feedCostPerKiloDialog',
-      ),
+      appBar: const CustomAppBar(text: 'تكلفة العلف لكل كيلو وزن '),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
@@ -36,9 +33,9 @@ class FeedCostPerKiloScreen extends StatelessWidget {
               Form(
                 key: _formKey,
                 child: ThreeInputFields(
-                  firstLabel: 'كمية العلف الكلية المستهلكة (طن)',
-                  secondLabel: 'الوزن الكلي المباع (طن)',
-                  thirdLabel: 'سعر الطن علف (جنيه)',
+                  firstLabel: 'كمية العلف (طن)',
+                  secondLabel: 'الوزن الكلي (طن)',
+                  thirdLabel: 'سعر العلف (طن)',
                   onFirstChanged: (value) {
                     controller.totalFeedConsumed.value =
                         double.tryParse(value) ?? 0.0;
@@ -60,7 +57,7 @@ class FeedCostPerKiloScreen extends StatelessWidget {
               const AdNativeWidget(),
               SizedBox(height: 24.h),
               ToolsButton(
-                text: 'احسب تكلفة العلف لكل طن وزن',
+                text: 'احسب تكلفة العلف لكل طن',
                 onPressed: () => _onCalculatePressed(context),
               ),
               SizedBox(height: 32.h),

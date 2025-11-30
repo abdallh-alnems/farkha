@@ -6,23 +6,29 @@ class Api {
 
   // ================================ API MAIN =================================
   static final String _read = '$_serverName/app/read';
-  static final String _livePrices = '$_read/live_prices';
+  static final String _cardPrices = '$_read/card_prices';
+  static final String _articles = '$_read/articles';
 
   // ================================= prices ==================================
-  static String mainTypes = '$_serverName/main.php';
+  static String mainTypes = '$_read/main_types.php';
   static String pricesByType = '$_read/prices_by_type.php';
 
   // ! feasibility study
   static String feasibilityStudy = '$_read/feasibility_study.php';
 
-  // ! stream prices
-  static String pricesStream = '$_livePrices/prices_stream.php';
-  static String types = '$_livePrices/types.php';
+  // ! card prices
+  static String pricesCard = '$_cardPrices/card_prices.php';
+  static String types = '$_cardPrices/types.php';
 
   // =============================== suggestion ================================
-  static String suggestion = '$_serverName/app/suggestion.php';
+  static String suggestion = '$_read/suggestions.php';
 
   // ============================ record tools usage ===========================
-  static String recordToolsUsage =
-      '$_serverName/analytics/record_tools_usage.php';
+  static String toolsUsage = '$_serverName/analytics/record_tools_usage.php';
+
+  // ================================ articles =================================
+  static String articleDetail = '$_articles/article_detail.php';
+  static String articlesList = '$_articles/articles_list.php';
+
+
 }

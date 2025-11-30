@@ -1,0 +1,20 @@
+# Deny access to this directory
+Order Deny,Allow
+Deny from all
+
+# Allow access to cache.php and clear_cache.php only
+<Files "cache.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+<Files "clear_cache.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Deny access to cache files
+<Files "*.cache">
+    Order Deny,Allow
+    Deny from all
+</Files>

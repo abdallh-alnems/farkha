@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../data/data_source/static/growth_parameters.dart';
+import '../../../data/data_source/static/chicken_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
-import '../../widget/app_bar/app_bar_cycle.dart';
+import '../../widget/appbar/appbar_cycle.dart';
 import '../../widget/cycle/cycle_stats_bar.dart';
 import '../../widget/cycle/environment_status.dart';
 import '../../widget/cycle/page_turning_tips.dart';

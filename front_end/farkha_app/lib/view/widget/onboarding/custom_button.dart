@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/color.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../data/data_source/static/onboarding_static.dart';
 import '../../../logic/controller/onboarding_controller.dart';
 
@@ -16,7 +16,7 @@ class CustomButtonOnBoarding extends GetView<OnBoardingControllerImp> {
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColor.primaryColor,
+              backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(

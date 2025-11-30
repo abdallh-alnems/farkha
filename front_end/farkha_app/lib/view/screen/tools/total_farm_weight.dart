@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/total_farm_weight_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/two_input_fields.dart';
 import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/tools_button.dart';
 
@@ -19,10 +19,7 @@ class TotalFarmWeightScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'إجمالي وزن المزرعة',
-        toolKey: 'totalFarmWeightDialog',
-      ),
+      appBar: const CustomAppBar(text: 'الوزن الإجمالي'),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -33,7 +30,7 @@ class TotalFarmWeightScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 TwoInputFields(
                   firstLabel: 'عدد الطيور',
-                  secondLabel: 'الوزن المتوقع للطائر (كيلو جرام)',
+                  secondLabel: 'متوسط الوزن',
                   onFirstChanged: (val) => controller.birdsCount.value = val,
                   onSecondChanged: (val) => controller.birdWeight.value = val,
                 ),

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/feed_cost_per_bird_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/three_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
 
@@ -24,10 +24,7 @@ class FeedCostPerBirdScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'تكلفة العلف لكل طائر',
-        toolKey: 'feedCostPerBirdDialog',
-      ),
+      appBar: const CustomAppBar(text: 'تكلفة العلف لكل طائر'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
@@ -36,8 +33,8 @@ class FeedCostPerBirdScreen extends StatelessWidget {
             child: Column(
               children: [
                 ThreeInputFields(
-                  firstLabel: 'إجمالي كمية العلف (طن)',
-                  secondLabel: 'سعر الطن الواحد (جنيه)',
+                  firstLabel: 'كمية العلف (بالطن)',
+                  secondLabel: 'سعر طن العلف',
                   thirdLabel: 'عدد الطيور',
                   onFirstChanged: (value) {
                     controller.totalFeedQuantity.value =

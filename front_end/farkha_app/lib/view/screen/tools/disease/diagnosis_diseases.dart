@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../logic/controller/tools_controller/disease_controller.dart';
-import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/appbar/custom_appbar.dart';
 import '../../../widget/tools/disease/diagnosis_diseases/disease_answer.dart';
 import '../../../widget/tools/disease/diagnosis_diseases/questions.dart';
 import '../../../widget/tools/disease/diagnosis_diseases/symptom_selection.dart';

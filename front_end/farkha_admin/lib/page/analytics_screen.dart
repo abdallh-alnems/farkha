@@ -172,7 +172,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 decoration: BoxDecoration(
                                   color: Theme.of(context)
                                       .primaryColor
-                                      .withOpacity(0.1),
+                                      .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
-import '../../../core/package/snackbar_message.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/shared/snackbar_message.dart';
+import 'tool_usage_controller.dart';
 
 class BirdNetProfitController extends GetxController {
   static const int toolId =

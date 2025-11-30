@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
-import '../../../core/package/snackbar_message.dart';
-import '../../../data/data_source/static/growth_parameters.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/shared/snackbar_message.dart';
+import '../../../data/data_source/static/chicken_data.dart';
+import 'tool_usage_controller.dart';
 
 class DailyFeedConsumptionController extends GetxController {
   static const int toolId =

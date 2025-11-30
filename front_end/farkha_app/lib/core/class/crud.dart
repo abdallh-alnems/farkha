@@ -4,26 +4,31 @@ import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
 import '../constant/headers.dart';
-import '../functions/check_internet.dart';
+import '../package/internet_checker.dart';
 import 'status_request.dart';
 
 class Crud {
   Future<Either<StatusRequest, Map>> postData(String linkUrl, Map data) async {
     Map<String, String> myHeaders = getMyHeaders();
 
-    bool isConnected = await InternetController.checkInternet();
+    bool isConnected = await InternetChecker.checkConnection();
     if (isConnected) {
       try {
-        var response = await http.post(
-          Uri.parse(linkUrl),
-          headers: myHeaders,
-          body: data,
-        );
+        http.Response response;
+
+        // Use GET if data is empty, otherwise use POST
+        if (data.isEmpty) {
+          response = await http.get(Uri.parse(linkUrl), headers: myHeaders);
+        } else {
+          response = await http.post(
+            Uri.parse(linkUrl),
+            headers: myHeaders,
+            body: data,
+          );
+        }
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           Map responseBody = jsonDecode(response.body);
-          print('✅ Success response: $responseBody');
-
           return Right(responseBody);
         } else {
           return const Left(StatusRequest.serverFailure);

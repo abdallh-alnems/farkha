@@ -1,39 +1,38 @@
 <?php
 
-include "../../connect.php";
-include "../../queries.php";
+require_once __DIR__ . '/../../core/connect.php';
+include "../../core/queries/queries.php";
 
 class TodayPricesAPI extends BaseAPI {
     
     public function __construct() {
         parent::__construct();
+        $this->handleRequest();
+    }
+    
+    private function handleRequest() {
+        $this->handleApiRequest(function() {
+            $this->getTodayPrices();
+        }, 'today_prices_api');
     }
     
     public function getTodayPrices() {
-        try {
-            // Validate input parameters using centralized helper
-            $type = ApiValidationHelper::validateMainType(filterRequest('type'));
-            
-            if (!$type) {
-                $this->handleError(400, 'Main type is required');
-                return;
-            }
-            
-            $data = $this->fetchTodayPrices($type);
-            
-            if (empty($data)) {
-                $this->handleError(404, 'No prices found for the specified main type');
-                return;
-            }
-            
-            $this->sendSuccess($data);
-            
-        } catch (Exception $e) {
-            ApiLogger::error('Failed to retrieve today prices', [
-                'error' => $e->getMessage()
-            ]);
-            handleApiError($e, ['context' => 'today_prices']);
+        // Validate input parameters using centralized helper
+        $type = $this->getValidatedMainType();
+        
+        if (!$type) {
+            $this->handleError(400, 'Main type is required');
+            return;
         }
+        
+        $data = $this->fetchTodayPrices($type);
+        
+        if (empty($data)) {
+            $this->handleNoData('No prices found for the specified main type');
+            return;
+        }
+        
+        $this->sendSuccess($data);
     }
     
     private function fetchTodayPrices($mainType) {
@@ -44,8 +43,7 @@ class TodayPricesAPI extends BaseAPI {
 
 // Initialize and execute
 try {
-    $api = new TodayPricesAPI();
-    $api->getTodayPrices();
+    new TodayPricesAPI();
 } catch (Exception $e) {
     handleApiError($e, ['context' => 'today_prices_api']);
 }

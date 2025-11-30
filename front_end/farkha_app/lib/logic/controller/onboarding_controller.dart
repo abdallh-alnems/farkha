@@ -13,20 +13,20 @@ abstract class OnBoardingController extends GetxController {
 class OnBoardingControllerImp extends OnBoardingController {
   late PageController pageController;
 
-  int currentPage = 0;
+  final RxInt currentPage = 0.obs;
 
   MyServices myServices = Get.find();
 
   @override
   next() {
-    currentPage++;
+    currentPage.value++;
 
-    if (currentPage > onBoardingList.length - 1) {
+    if (currentPage.value > onBoardingList.length - 1) {
       myServices.getStorage.write("step", "1");
       Get.offAllNamed("/");
     } else {
       pageController.animateToPage(
-        currentPage,
+        currentPage.value,
         duration: const Duration(milliseconds: 900),
         curve: Curves.easeInOut,
       );
@@ -45,7 +45,7 @@ class OnBoardingControllerImp extends OnBoardingController {
 
   @override
   onPageChanged(int index) {
-    currentPage = index;
+    currentPage.value = index;
     update();
   }
 

@@ -5,49 +5,40 @@
  * Enhanced with proper error handling, validation, and security
  */
 
-include "../../connect.php";
-include "../../queries.php";
+require_once __DIR__ . '/../../core/connect.php';
+include "../../core/queries/queries.php";
 
 class FeasibilityStudyAPI extends BaseAPI {
     
     public function __construct() {
         parent::__construct();
-        
-        // Authentication handled in connect.php
+        $this->handleRequest();
+    }
+    
+    private function handleRequest() {
+        $this->handleApiRequest(function() {
+            $this->getFeasibilityStudy();
+        }, 'feasibility_study_api');
     }
     
     public function getFeasibilityStudy() {
-        try {
-            // Validate input parameters using unified helper
-            $types = ApiValidationHelper::validateTypes($_GET['types'] ?? '1,18,50,51,52');
-            
-            $query = Queries::getFeasibilityStudyPrices($types);
-            
-            $data = $this->db->fetchAll($query);
-            
-            if (empty($data)) {
-                $this->handleError(404, 'No feasibility study data found');
-                return;
-            }
-            
-            
-            $this->sendSuccess($data);
-            
-        } catch (Exception $e) {
-            ApiLogger::error('Failed to retrieve feasibility study', [
-                'error' => $e->getMessage()
-            ]);
-            handleApiError($e, ['context' => 'feasibility_study']);
+        // Fixed query with predefined types: 1,18,41,42,43
+        $query = Queries::getFeasibilityStudyPrices();
+        
+        $data = $this->db->fetchAll($query);
+        
+        if (empty($data)) {
+            $this->handleError(404, 'No feasibility study data found');
+            return;
         }
+        
+        $this->sendSuccess($data);
     }
-    
-    // Validation methods removed - now using centralized ApiValidationHelper methods
 }
 
 // Initialize and execute
 try {
-    $api = new FeasibilityStudyAPI();
-    $api->getFeasibilityStudy();
+    new FeasibilityStudyAPI();
 } catch (Exception $e) {
     handleApiError($e, ['context' => 'feasibility_study_api']);
 }

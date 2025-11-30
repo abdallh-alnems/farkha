@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
-import '../../../core/package/snackbar_message.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/shared/snackbar_message.dart';
+import 'tool_usage_controller.dart';
 
 class FeedCostPerKiloController extends GetxController {
   static const int toolId =
@@ -13,7 +13,7 @@ class FeedCostPerKiloController extends GetxController {
   RxDouble totalFeedConsumed = 0.0.obs; // كمية العلف الكلية المستهلكة (طن)
   RxDouble totalWeightSold = 0.0.obs; // الوزن الكلي المباع (طن)
   RxDouble feedPricePerTon = 0.0.obs; // سعر الطن علف (جنيه)
-  RxDouble feedCostPerTon = 0.0.obs; // تكلفة العلف لكل طن وزن
+  RxDouble feedCostPerKilo = 0.0.obs; // تكلفة العلف لكل كيلو وزن
   RxBool hasCalculated = false.obs; // لتتبع ما إذا تم الحساب أم لا
 
   @override
@@ -62,11 +62,13 @@ class FeedCostPerKiloController extends GetxController {
       return;
     }
 
-    // حساب تكلفة العلف لكل طن وزن
-    // المعادلة: (كمية العلف الكلية المستهلكة / الوزن الكلي المباع) × سعر الطن علف
-    feedCostPerTon.value =
-        (totalFeedConsumed.value / totalWeightSold.value) *
-        feedPricePerTon.value;
+    // حساب تكلفة العلف لكل كيلو وزن
+    // المعادلة: (كمية العلف الكلية المستهلكة / الوزن الكلي المباع) × سعر الطن علف / 1000
+    // النتيجة بالجنيه لكل كيلو جرام
+    feedCostPerKilo.value =
+        ((totalFeedConsumed.value / totalWeightSold.value) *
+            feedPricePerTon.value) /
+        1000;
     hasCalculated.value = true;
   }
 
@@ -77,13 +79,13 @@ class FeedCostPerKiloController extends GetxController {
   String getFormattedResult() {
     if (!hasCalculated.value) return '';
 
-    return feedCostPerTon.value.toStringAsFixed(1);
+    return feedCostPerKilo.value.toStringAsFixed(1);
   }
 
   String getTotalFeedCostFormatted() {
     if (!hasCalculated.value) return '';
 
     double totalFeedCost = totalFeedConsumed.value * feedPricePerTon.value;
-    return totalFeedCost.toStringAsFixed(1);
+    return totalFeedCost.toStringAsFixed(0);
   }
 }

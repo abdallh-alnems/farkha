@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
-import '../../../core/constant/tool_ids.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/constant/id/tool_ids.dart';
+import 'tool_usage_controller.dart';
 
 class TotalRevenueController extends GetxController {
   static const int toolId = ToolIds.totalRevenue; // Total Revenue tool ID = 22
@@ -42,5 +43,11 @@ class TotalRevenueController extends GetxController {
 
   void calculate() {
     calculateTotalRevenue();
+  }
+
+  String getFormattedRevenue() {
+    if (totalRevenue.value <= 0) return '';
+    final formatter = NumberFormat('#,##0');
+    return formatter.format(totalRevenue.value.toInt());
   }
 }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/input_field.dart';
 import '../../../logic/controller/tools_controller/chicken_density_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/input_field.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
 
@@ -20,10 +20,7 @@ class ChickenDensity extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'كثافة الفراخ',
-        toolKey: 'chickenDensityDialog',
-      ),
+      appBar: const CustomAppBar(text: 'كثافة الفراخ'),
       body: Column(
         children: [
           Expanded(
@@ -34,67 +31,63 @@ class ChickenDensity extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
+                        child: Obx(() {
+                          return DropdownButtonFormField<String>(
+                            initialValue: controller.selectedAgeCategory.value,
+                            decoration: InputDecoration(
+                              labelText: 'اختر الأسبوع',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 12,
+                              ),
+                            ),
+                            dropdownColor:
+                                Theme.of(context).colorScheme.surface,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 16,
+                            ),
+                            items:
+                                [
+                                  'الاسبوع الاول',
+                                  'الاسبوع الثاني',
+                                  'الاسبوع الثالث',
+                                  'الاسبوع الرابع',
+                                  'الاسبوع الخامس',
+                                ].map((week) {
+                                  return DropdownMenuItem<String>(
+                                    value: week,
+                                    child: Text(
+                                      week,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                controller.selectedAgeCategory.value = value;
+                              }
+                            },
+                          );
+                        }),
+                      ),
+                      SizedBox(width: 11.w),
+
+                      Expanded(
                         child: InputField(
                           label: 'عدد الفراخ',
                           onChanged: (value) {
                             controller.chickenCountTextController.text = value;
                           },
-                        ),
-                      ),
-                      SizedBox(width: 11.w),
-                      Expanded(
-                        child: Obx(
-                          () => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: controller.selectedAgeCategory.value,
-                                isExpanded: true,
-                                alignment: Alignment.centerRight,
-                                dropdownColor: Colors.white,
-                                hint: const Text(
-                                  'اختر الأسبوع',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                items:
-                                    [
-                                      'الاسبوع الاول',
-                                      'الاسبوع الثاني',
-                                      'الاسبوع الثالث',
-                                      'الاسبوع الرابع',
-                                      'الاسبوع الخامس',
-                                    ].map((week) {
-                                      return DropdownMenuItem<String>(
-                                        value: week,
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Directionality(
-                                            textDirection: TextDirection.rtl,
-                                            child: Text(
-                                              week,
-                                              textAlign: TextAlign.right,
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    controller.selectedAgeCategory.value =
-                                        value;
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                     ],
@@ -112,31 +105,17 @@ class ChickenDensity extends StatelessWidget {
                     if (controller.shouldDisplayResults.value) {
                       return Column(
                         children: [
-                          const SizedBox(height: 33),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 7, bottom: 3),
-                            child: Text(
-                              "الارضي",
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                          ),
                           ToolsResult(
-                            title: "المساحة الحالية",
+                            title: "مساحة التربية الارضي",
                             value: controller.currentAgeGroundAreaResult.value,
                           ),
-                          const SizedBox(height: 5),
+                          const SizedBox(height: 11),
                           ToolsResult(
                             title: "المساحة الإجمالية",
                             value: controller.totalGroundAreaResult.value,
                           ),
-                          const SizedBox(height: 13),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 7, bottom: 3),
-                            child: Text(
-                              "البطاريات",
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                          ),
+                          const SizedBox(height: 33),
+
                           ToolsResult(
                             title: "مساحة البطاريات",
                             value: controller.batteryCageAreaResult.value,

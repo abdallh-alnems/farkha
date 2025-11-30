@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/chicken_form.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/chicken_age_count_input.dart';
 import '../../widget/tools/broiler_chicken_requirements/items_broiler_chicken_requirements.dart';
 
 class BroilerChickenRequirements extends StatelessWidget {
@@ -19,20 +19,25 @@ class BroilerChickenRequirements extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(text: "متابعة فراخ التسمين"),
+          const CustomAppBar(text: "متطلبات فراخ التسمين"),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(13),
               child: Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ChickenForm(
-                      controller: controller.chickensCountController,
-                      selectedAge: controller.selectedChickenAge.value,
-                      onAgeChanged: (newValue) {
-                        controller.selectedChickenAge.value = newValue;
-                      },
+                    const AdNativeWidget(),
+                    const SizedBox(height: 21),
+                    Obx(
+                      () => ChickenAgeCountInput(
+                        controller: controller.chickensCountController,
+                        selectedAge: controller.selectedChickenAge.value,
+                        onAgeChanged: (newValue) {
+                          controller.selectedChickenAge.value = newValue;
+                        },
+                      ),
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
@@ -49,10 +54,6 @@ class BroilerChickenRequirements extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     const ItemsBroilerChickenRequirements(),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 11),
-                      child: AdNativeWidget(),
-                    ),
                   ],
                 ),
               ),

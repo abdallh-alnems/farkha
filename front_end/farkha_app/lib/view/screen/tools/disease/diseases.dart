@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../logic/controller/tool_usage_controller.dart';
+import '../../../../logic/controller/tools_controller/tool_usage_controller.dart';
 import '../../../widget/ad/banner.dart';
 import '../../../widget/ad/native.dart';
-import '../../../widget/app_bar/custom_app_bar.dart';
+import '../../../widget/appbar/custom_appbar.dart';
 import '../../../widget/tools/disease/disease_card.dart';
 import '../../../widget/tools/disease/question_card.dart';
 
@@ -16,14 +16,11 @@ class Disease extends StatefulWidget {
 }
 
 class _DiseaseState extends State<Disease> {
-  late ToolUsageController toolUsageController;
-
   @override
   void initState() {
     super.initState();
-    toolUsageController = Get.find<ToolUsageController>();
-    // Record tool usage when entering this page
-    toolUsageController.recordToolUsage(12); // Diseases tool ID = 12
+    // Record tool usage when entering this page using static method
+    ToolUsageController.recordToolUsageFromController(12); // Diseases tool ID = 12
   }
 
   @override

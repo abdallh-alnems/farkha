@@ -1,0 +1,25 @@
+# Notification Directory - Security Protection
+# Protect sensitive notification files from direct access
+
+# Deny direct access to Firebase config (contains sensitive credentials)
+<Files "firebase_config.php">
+    Require all denied
+</Files>
+
+# Deny direct access to helper files (should only be included)
+<Files "fcm_sender.php">
+    Require all denied
+</Files>
+
+<Files "topic_manager.php">
+    Require all denied
+</Files>
+
+# Disable directory listing
+Options -Indexes
+
+# Deny access to all files by default (only allow includes from PHP)
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/age_dropdown.dart';
 import '../../../logic/controller/tools_controller/temperature_by_age_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/age_dropdown.dart';
 
 class TemperatureByAgeScreen extends StatefulWidget {
   const TemperatureByAgeScreen({super.key});
@@ -23,10 +23,7 @@ class _TemperatureByAgeScreenState extends State<TemperatureByAgeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'درجة الحرارة حسب العمر',
-        toolKey: 'temperatureByAgeDialog',
-      ),
+      appBar: const CustomAppBar(text: 'درجة الحرارة حسب العمر'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -54,14 +51,11 @@ class _TemperatureByAgeScreenState extends State<TemperatureByAgeScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: Text(
-                          'درجة الحرارة : $temperature ',
-                          style: const TextStyle(
-                            fontSize: 31,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        'درجة الحرارة : °$temperature',
+                        style: const TextStyle(
+                          fontSize: 31,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],

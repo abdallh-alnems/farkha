@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 
 import '../../../core/class/handling_data.dart';
 import '../../../core/constant/routes/route.dart';
-import '../../../core/shared/card_title.dart';
+import '../../../core/shared/action_button.dart';
 import '../../../logic/controller/price_controller/main_types_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
 
 class MainTypes extends StatelessWidget {
   const MainTypes({super.key});
@@ -18,7 +18,7 @@ class MainTypes extends StatelessWidget {
     Get.put(MainTypesController());
 
     return Scaffold(
-      appBar: const CustomAppBar(text: 'الأنواع', showIcon: false),
+      appBar: const CustomAppBar(text: 'الأنواع'),
       body: Column(
         children: [
           Expanded(
@@ -36,7 +36,7 @@ class MainTypes extends StatelessWidget {
                         );
                       } else {
                         final mainTypes = controller.mainTypesList[index - 1];
-                        return CardTitle(
+                        return ActionButton(
                           onTap:
                               () => Get.toNamed(
                                 AppRoute.pricesByType,

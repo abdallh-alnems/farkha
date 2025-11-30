@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/handling_data.dart';
-import '../../../../core/constant/theme/color.dart';
+import '../../../../core/constant/theme/colors.dart';
 import '../../../../core/shared/price_change.dart';
 import '../../../../logic/controller/price_controller/prices_by_type_controller.dart';
+import 'table_header_cell.dart';
 
 class TablePricesByType extends StatelessWidget {
   const TablePricesByType({super.key});
@@ -27,24 +28,15 @@ class TablePricesByType extends StatelessWidget {
   Widget _buildHeader() {
     return Container(
       height: 33.h,
-      color: AppColor.primaryColor,
-      child: Row(
+      color: AppColors.primaryColor,
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildHeaderCell("التغير"),
-          _buildHeaderCell("أعلى"),
-          _buildHeaderCell("أقل"),
-          _buildHeaderCell("النوع", flex: 2),
+          TableHeaderCell(text: "النوع", flex: 2),
+          TableHeaderCell(text: "أعلى"),
+          TableHeaderCell(text: "أقل"),
+          TableHeaderCell(text: "التغير"),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHeaderCell(String text, {int flex = 1}) {
-    return Expanded(
-      flex: flex,
-      child: Center(
-        child: Text(text, style: const TextStyle(color: Colors.white)),
       ),
     );
   }
@@ -57,22 +49,22 @@ class TablePricesByType extends StatelessWidget {
           Table(
             border: const TableBorder(
               horizontalInside: BorderSide(
-                color: AppColor.primaryColor,
+                color: AppColors.primaryColor,
                 width: 1,
               ),
             ),
             columnWidths: const {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(1),
-              2: FlexColumnWidth(1),
-              3: FlexColumnWidth(2),
+              0: FlexColumnWidth(2), // النوع
+              1: FlexColumnWidth(1), // أعلى
+              2: FlexColumnWidth(1), // أقل
+              3: FlexColumnWidth(1), // التغير
             },
             children:
                 controller.pricesByTypeList
                     .map((price) => _buildTableRow(price))
                     .toList(),
           ),
-          const Divider(color: AppColor.primaryColor, thickness: 1),
+          const Divider(color: AppColors.primaryColor, thickness: 1),
         ],
       ),
     );
@@ -94,18 +86,18 @@ class TablePricesByType extends StatelessWidget {
 
     return TableRow(
       children: [
-       _buildTableCell(
-          child: Center(
-            child: PriceChangeWidget(priceDifference: priceDifference),
-          ),
-        ),
+        _buildTableCell(child: Center(child: Text(typeName))),
         _buildTableCell(
           child: Text(lastHigherPrice.toString(), textAlign: TextAlign.center),
         ),
         _buildTableCell(
           child: Text(lastLowerPrice.toString(), textAlign: TextAlign.center),
         ),
-        _buildTableCell(child: Center(child: Text(typeName))),
+        _buildTableCell(
+          child: Center(
+            child: PriceChangeWidget(priceDifference: priceDifference),
+          ),
+        ),
       ],
     );
   }

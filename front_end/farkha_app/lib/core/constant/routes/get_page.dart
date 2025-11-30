@@ -1,348 +1,151 @@
 import 'package:get/get.dart';
 
+import '../../../logic/bindings/home_binding.dart';
+import '../../../test.dart';
+import '../../../test2.dart';
+import '../../../view/screen/cycle/add_cycle.dart';
+import '../../../view/screen/cycle/cycle.dart';
+import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
+import '../../../view/widget/drawer/drawer.dart';
+import '../../../view/widget/drawer/suggestion.dart';
+import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
-import '../../../view/screen/tools/adg.dart';
+import '../../../view/screen/prices/customize_prices_screen.dart';
+import '../../../view/screen/prices/main_types.dart';
+import '../../../view/screen/prices/prices_by_type.dart';
 import '../../../view/screen/tools/all_tools.dart';
+import '../../../view/screen/tools/articles/article_detail.dart';
+import '../../../view/screen/tools/articles/articles_list.dart';
+import '../../../view/screen/tools/average_daily_gain.dart';
 import '../../../view/screen/tools/bird_net_profit.dart';
 import '../../../view/screen/tools/bird_production_cost.dart';
+import '../../../view/screen/tools/broiler_chicken_requirements.dart';
 import '../../../view/screen/tools/chicken_density.dart';
 import '../../../view/screen/tools/daily_feed_consumption.dart';
 import '../../../view/screen/tools/darkness_levels.dart';
+import '../../../view/screen/tools/disease/diagnosis_diseases.dart';
+import '../../../view/screen/tools/disease/disease_details.dart';
+import '../../../view/screen/tools/disease/diseases.dart';
 import '../../../view/screen/tools/fan_operation.dart';
-import '../../../view/screen/tools/fcr.dart';
 import '../../../view/screen/tools/feasibility_study.dart';
+import '../../../view/screen/tools/feed_conversion_ratio.dart';
 import '../../../view/screen/tools/feed_cost_per_bird.dart';
 import '../../../view/screen/tools/feed_cost_per_kilo.dart';
 import '../../../view/screen/tools/mortality_rate.dart';
-import '../../../view/screen/tools/roi.dart';
+import '../../../view/screen/tools/return_on_investment.dart';
 import '../../../view/screen/tools/temperature_by_age.dart';
 import '../../../view/screen/tools/total_farm_weight.dart';
 import '../../../view/screen/tools/total_feed_consumption.dart';
 import '../../../view/screen/tools/total_revenue.dart';
 import '../../../view/screen/tools/vaccination_schedule.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
-import '../../../view/screen/cycle/add_cycle.dart';
-import '../../../view/screen/cycle/cycle.dart';
-import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
-import '../../../view/screen/tools/articles/article/a3rad.dart';
-import '../../../view/screen/tools/articles/article/akhtaq.dart';
-import '../../../view/screen/tools/articles/article/al3lag.dart';
-import '../../../view/screen/tools/articles/article/alardya.dart';
-import '../../../view/screen/tools/articles/article/alzlam.dart';
-import '../../../view/screen/tools/articles/article/alrtoba.dart';
-import '../../../view/screen/tools/articles/article/alsaf.dart';
-import '../../../view/screen/tools/articles/article/alshata.dart';
-import '../../../view/screen/tools/articles/article/altaganous.dart';
-import '../../../view/screen/tools/articles/article/amrad.dart';
-import '../../../view/screen/tools/articles/article/astaqbal.dart';
-import '../../../view/screen/tools/articles/article/asthlak_al3laf.dart';
-import '../../../view/screen/tools/articles/article/awzan.dart';
-import '../../../view/screen/tools/articles/article/dargt_al7rara.dart';
-import '../../../view/screen/tools/articles/article/nasa7a.dart';
-import '../../../view/screen/tools/articles/article/solalat.dart';
-import '../../../view/screen/tools/articles/article/ta7sen.dart';
-import '../../../view/screen/tools/articles/article/tather.dart';
-import '../../../view/screen/tools/articles/articles_type.dart';
-import '../../../view/screen/tools/broiler_chicken_requirements.dart';
-import '../../../view/screen/tools/disease/diagnosis_diseases.dart';
-import '../../../view/screen/tools/disease/disease_details.dart';
-import '../../../view/screen/tools/disease/diseases.dart';
-import '../../../view/screen/general/general.dart';
-import '../../../view/screen/general/suggestion.dart';
-import '../../../view/screen/home.dart';
-import '../../../view/screen/prices/customize_prices_screen.dart';
-import '../../../view/screen/prices/prices_by_type.dart';
-import '../../../view/screen/prices/main_types.dart';
-import '../../middleware/my_middleware.dart';
+import '../../middleware/onboarding_middleware.dart';
 import 'route.dart';
 
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
-  GetPage(name: "/", page: () => const Home(), middlewares: [MyMiddleWare()]),
+  GetPage(
+    name: "/",
+    page: () => const Home(),
+    middlewares: [OnboardingMiddleWare()],
+    binding: HomeBindings(),
+  ),
 
   // ============================== Test =======================================
-
-  // GetPage(name: AppRoute.test, page: () => Test()),
-  
-    GetPage(name: AppRoute.onBoarding, page: () => OnBoarding()),
-
+  // GetPage(name: AppRoute.test, page: () => const Test()),
+  // GetPage(name: AppRoute.test2, page: () => const Test2()),
+  GetPage(name: AppRoute.onBoarding, page: () => const OnBoarding()),
 
   // ================================ prices ===================================
-  GetPage(
-    name: AppRoute.pricesByType,
-    page: () => const PricesByType(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.pricesByType, page: () => const PricesByType()),
 
-  GetPage(
-    name: AppRoute.mainTypes,
-    page: () => const MainTypes(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.mainTypes, page: () => const MainTypes()),
 
   GetPage(
     name: AppRoute.customizePrices,
     page: () => const CustomizePricesScreen(),
-    transition: Transition.rightToLeft,
   ),
 
   // ================================ cycle ====================================
-  GetPage(
-    name: AppRoute.addCycle,
-    page: () => AddCycle(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.addCycle, page: () => AddCycle()),
 
-  GetPage(
-    name: AppRoute.cycle,
-    page: () => const Cycle(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.cycle, page: () => const Cycle()),
 
   GetPage(
     name: AppRoute.cycleStatsBarExplanation,
     page: () => const CycleStatsBarExplanation(),
-    transition: Transition.rightToLeft,
   ),
 
-  // ================================ general ==================================
-  GetPage(
-    name: AppRoute.general,
-    page: () => const General(),
-    transition: Transition.leftToRight,
-  ),
+  // ================================ drawer ==================================
 
-  GetPage(
-    name: AppRoute.suggestion,
-    page: () => const Suggestion(),
-    transition: Transition.leftToRight,
-  ),
+  GetPage(name: AppRoute.suggestion, page: () => const Suggestion()),
 
   // ========================== view follow up tools ===========================
   GetPage(
-    name: AppRoute.articlesType,
-    page: () => const ArticlesType(),
-    transition: Transition.downToUp,
-  ),
-
-  GetPage(
     name: AppRoute.broilerChickenRequirements,
-    page: () =>  BroilerChickenRequirements(),
-    transition: Transition.downToUp,
+    page: () => BroilerChickenRequirements(),
   ),
 
   // ! disease
-  GetPage(
-    name: AppRoute.diseases,
-    page: () => const Disease(),
-    transition: Transition.downToUp,
-  ),
+  GetPage(name: AppRoute.diseases, page: () => const Disease()),
 
-  GetPage(
-    name: AppRoute.diseaseDetails,
-    page: () => const DiseaseDetails(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.diseaseDetails, page: () => const DiseaseDetails()),
 
   // ! diagnosis diseases
-  GetPage(
-    name: AppRoute.questionDisease,
-    page: () => DiagnosisDiseases(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.questionDisease, page: () => DiagnosisDiseases()),
 
   // ================================= tools ===================================
 
-  // ! feasibility study
-  GetPage(
-    name: AppRoute.feasibilityStudy,
-    page: () => FeasibilityStudy(),
-    transition: Transition.downToUp,
-  ),
+  // ! articles
+  GetPage(name: AppRoute.articlesList, page: () => const ArticlesList()),
+  GetPage(name: AppRoute.articleDetail, page: () => const ArticleDetail()),
 
-  GetPage(
-    name: AppRoute.chickenDensity,
-    page: () => const ChickenDensity(),
-    transition: Transition.downToUp,
-  ),
+  // ! feasibility study
+  GetPage(name: AppRoute.feasibilityStudy, page: () => FeasibilityStudy()),
+
+  GetPage(name: AppRoute.chickenDensity, page: () => const ChickenDensity()),
 
   GetPage(
     name: AppRoute.dailyFeedConsumption,
     page: () => const DailyFeedConsumption(),
-    transition: Transition.downToUp,
   ),
 
   GetPage(
     name: AppRoute.totalFeedConsumption,
     page: () => const TotalFeedConsumption(),
-    transition: Transition.downToUp,
   ),
 
-  GetPage(
-    name: AppRoute.fcr,
-    page: () => Fcr(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.adg,
-    page: () => Adg(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.roi,
-    page: () => RoiScreen(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.mortalityRate,
-    page: () => MortalityRateScreen(),
-    transition: Transition.downToUp,
-  ),
+  GetPage(name: AppRoute.fcr, page: () => FeedConversionRatio()),
+  GetPage(name: AppRoute.adg, page: () => AverageDailyGain()),
+  GetPage(name: AppRoute.roi, page: () => ReturnOnInvestment()),
+  GetPage(name: AppRoute.mortalityRate, page: () => MortalityRateScreen()),
   GetPage(
     name: AppRoute.birdProductionCost,
     page: () => BirdProductionCostScreen(),
-    transition: Transition.downToUp,
   ),
   GetPage(
     name: AppRoute.birdNetProfit,
     page: () => const BirdNetProfitScreen(),
-    transition: Transition.downToUp,
   ),
-  GetPage(
-    name: AppRoute.weightByAge,
-    page: () => const WeightByAgeScreen(),
-    transition: Transition.downToUp,
-  ),
+  GetPage(name: AppRoute.weightByAge, page: () => const WeightByAgeScreen()),
   GetPage(
     name: AppRoute.temperatureByAge,
     page: () => const TemperatureByAgeScreen(),
-    transition: Transition.downToUp,
   ),
   GetPage(
     name: AppRoute.darknessLevels,
     page: () => const DarknessLevelsView(),
   ),
   GetPage(name: AppRoute.totalFarmWeight, page: () => TotalFarmWeightScreen()),
-  GetPage(
-    name: AppRoute.totalRevenue,
-    page: () => TotalRevenueScreen(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.feedCostPerBird,
-    page: () => FeedCostPerBirdScreen(),
-    transition: Transition.rightToLeft,
-  ),
-  GetPage(
-    name: AppRoute.feedCostPerKilo,
-    page: () => FeedCostPerKiloScreen(),
-    transition: Transition.rightToLeft,
-  ),
+  GetPage(name: AppRoute.totalRevenue, page: () => TotalRevenueScreen()),
+  GetPage(name: AppRoute.feedCostPerBird, page: () => FeedCostPerBirdScreen()),
+  GetPage(name: AppRoute.feedCostPerKilo, page: () => FeedCostPerKiloScreen()),
   GetPage(
     name: AppRoute.vaccinationSchedule,
     page: () => const VaccinationSchedule(),
-    transition: Transition.downToUp,
   ),
-  GetPage(
-    name: AppRoute.allTools,
-    page: () => const AllTools(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.fanOperation,
-    page: () => const FanOperationScreen(),
-    transition: Transition.downToUp,
-  ),
+  GetPage(name: AppRoute.allTools, page: () => const AllTools()),
+  GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
 
   // ================================ articles =================================
-  GetPage(
-    name: AppRoute.dartgetAl7rara,
-    page: () => const DartgetAl7rara(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.alzlam,
-    page: () => const Alzlam(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.alrotoba,
-    page: () => const Alrotoba(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.alsaf,
-    page: () => const Alsaf(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.alshata,
-    page: () => const Alshata(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.altaganous,
-    page: () => const Altaganous(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.awzan,
-    page: () => const Awzan(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.asthlakAl3laf,
-    page: () => const AsthlakAl3laf(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.solalat,
-    page: () => const Solalat(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.alardya,
-    page: () => const Alardya(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.amard,
-    page: () => const Amard(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.a3ard,
-    page: () => const A3ard(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.aL3lag,
-    page: () => const AL3lag(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.nasa7a,
-    page: () => const Nasa7a(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.astaqbal,
-    page: () => const Astaqbal(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.akhtaq,
-    page: () => const Akhtaq(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.tather,
-    page: () => const Tather(),
-    transition: Transition.downToUp,
-  ),
-  GetPage(
-    name: AppRoute.ta7sen,
-    page: () => const Ta7sen(),
-    transition: Transition.downToUp,
-  ),
 ];

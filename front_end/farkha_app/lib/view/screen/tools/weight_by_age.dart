@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/age_dropdown.dart';
 import '../../../logic/controller/tools_controller/weight_by_age_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/age_dropdown.dart';
 import '../../widget/tools/notes_card.dart';
 
 class WeightByAgeScreen extends StatefulWidget {
@@ -22,10 +22,7 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'الوزن حسب العمر',
-        toolKey: 'weightByAgeDialog',
-      ),
+      appBar: const CustomAppBar(text: 'الوزن حسب العمر'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
@@ -43,7 +40,7 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
                   });
                 },
                 maxAge: 45,
-                hint: 'اختر اليوم',
+                hint: 'اختر العمر',
               ),
               const SizedBox(height: 20),
               const AdNativeWidget(),
@@ -51,7 +48,9 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
               if (showResult)
                 Obx(() {
                   final weight = controller.weight.value;
+                  final colorScheme = Theme.of(context).colorScheme;
                   return Card(
+                    color: colorScheme.surface,
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -61,20 +60,23 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
                         vertical: 32,
                         horizontal: 24,
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
                         children: [
                           Text(
                             '$weight',
-                            style: const TextStyle(
-                              fontSize: 31,
+                            style: TextStyle(
+                              fontSize: 21,
                               fontWeight: FontWeight.bold,
+                              color: colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(height: 8),
                           Text(
                             'جرام',
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: colorScheme.onSurface),
                           ),
                         ],
                       ),

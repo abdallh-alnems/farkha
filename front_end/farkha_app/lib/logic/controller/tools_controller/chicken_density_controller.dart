@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
-import '../../../core/package/dialogs/usage_tips_dialog.dart';
-import '../../../core/package/snackbar_message.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/services/initialization.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/shared/snackbar_message.dart';
+import 'tool_usage_controller.dart';
 
 class ChickenDensityController extends GetxController {
   static const int toolId =
@@ -19,12 +18,6 @@ class ChickenDensityController extends GetxController {
   final RxString currentAgeGroundAreaResult = ''.obs;
   final RxString totalGroundAreaResult = ''.obs;
   final RxString batteryCageAreaResult = ''.obs;
-
-  bool _areInputsValid() {
-    return chickenCountTextController.text.isNotEmpty &&
-        int.tryParse(chickenCountTextController.text) != null &&
-        selectedAgeCategory.value != null;
-  }
 
   void calculateAreas(BuildContext context) {
     if (chickenCountTextController.text.isEmpty ||
@@ -75,17 +68,10 @@ class ChickenDensityController extends GetxController {
     return densityMap[age] ?? 0;
   }
 
-  void showDialogChickenDensity() {
-    UsageTipsDialog.showDialogIfNotShown('chickenDensityDialog');
-  }
-
   @override
   void onInit() {
     super.onInit();
     ToolUsageController.recordToolUsageFromController(toolId);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialogChickenDensity();
-    });
   }
 
   @override

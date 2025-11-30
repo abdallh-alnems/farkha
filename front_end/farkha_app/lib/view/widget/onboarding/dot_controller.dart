@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/color.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../data/data_source/static/onboarding_static.dart';
 import '../../../logic/controller/onboarding_controller.dart';
 
@@ -27,8 +27,8 @@ class CustomDotControllerOnBoarding extends GetView<OnBoardingControllerImp> {
                   decoration: BoxDecoration(
                     color:
                         controller.currentPage == index
-                            ? AppColor.primaryColor
-                            : AppColor.primaryColor.withValues(alpha: 0.3),
+                            ? AppColors.primaryColor
+                            : AppColors.primaryColor.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),

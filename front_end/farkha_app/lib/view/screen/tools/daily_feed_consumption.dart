@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/shared/input_fields/chicken_form.dart';
 import '../../../logic/controller/tools_controller/daily_feed_consumption_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/chicken_age_count_input.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
 
@@ -20,10 +20,7 @@ class DailyFeedConsumption extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'استهلاك العلف اليومي',
-        toolKey: 'feedConsumptionDialog',
-      ),
+      appBar: const CustomAppBar(text: 'استهلاك العلف اليومي'),
       body: Column(
         children: [
           Expanded(
@@ -31,7 +28,7 @@ class DailyFeedConsumption extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
               child: Column(
                 children: [
-                  ChickenForm(
+                  ChickenAgeCountInput(
                     controller: controller.textController,
                     selectedAge: controller.selectedAge.value,
                     onAgeChanged: (value) {

@@ -15,11 +15,12 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   bool _isAdLoaded = false;
   int _retryCount = 0;
   final List<int> _retryDelays = [5, 10, 20, 30, 40, 50, 60];
+  AnchoredAdaptiveBannerAdSize? _adaptiveSize;
 
   @override
   void initState() {
     super.initState();
-    // تحميل إعلان جديد بعد انتهاء build
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadNewAd();
     });
@@ -35,30 +36,43 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   Widget build(BuildContext context) {
     return _isAdLoaded && _bannerAd != null
         ? SizedBox(
-          height: _bannerAd!.size.height.toDouble(),
+          height: (_adaptiveSize?.height ?? _bannerAd!.size.height).toDouble(),
           width: double.infinity,
           child: AdWidget(ad: _bannerAd!),
         )
         : const SizedBox();
   }
 
-  void _loadNewAd() {
-    // تحميل إعلان جديد في كل مرة
+  Future<void> _loadNewAd() async {
     _disposeCurrentAd();
 
+    // Compute anchored adaptive size based on the current width in dp
+    final int adWidth = MediaQuery.of(context).size.width.truncate();
+    try {
+      _adaptiveSize =
+          await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+            adWidth,
+          );
+    } catch (_) {
+      _adaptiveSize = null;
+    }
+
+    final AdSize sizeToUse = _adaptiveSize ?? AdSize.banner;
+
     _bannerAd = BannerAd(
-      size: AdSize.banner,
+      size: sizeToUse,
       adUnitId: AdManager.idBanner,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           if (mounted) {
             setState(() {
               _isAdLoaded = true;
-              _retryCount = 0; // إعادة تعيين عداد المحاولات عند النجاح
+              _retryCount = 0;
             });
           }
         },
         onAdFailedToLoad: (ad, error) {
+          debugPrint('Banner failed: ${error.code} - ${error.message}');
           ad.dispose();
           _retryWithBackoff();
         },
@@ -69,8 +83,8 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
 
   void _retryWithBackoff() {
     if (!mounted) return;
+    if (_isAdLoaded) return;
 
-    // تحديد فترة الانتظار بناءً على عدد المحاولات
     int delayIndex =
         _retryCount < _retryDelays.length
             ? _retryCount
@@ -81,6 +95,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
 
     Future.delayed(Duration(seconds: delaySeconds), () {
       if (mounted) {
+        if (_isAdLoaded) return;
         _loadNewAd();
       }
     });
@@ -91,7 +106,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
       _bannerAd?.dispose();
       _bannerAd = null;
       _isAdLoaded = false;
-      _retryCount = 0; // إعادة تعيين عداد المحاولات
+      _retryCount = 0;
     }
   }
 }

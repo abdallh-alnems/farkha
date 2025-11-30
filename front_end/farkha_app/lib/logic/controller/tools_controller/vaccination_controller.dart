@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../data/data_source/static/vaccination_data.dart';
 import '../../../data/model/vaccination_model.dart';
-import '../tool_usage_controller.dart';
+import 'tool_usage_controller.dart';
 
 class VaccinationController extends GetxController {
   static const int toolId =

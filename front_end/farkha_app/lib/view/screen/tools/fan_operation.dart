@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-import '../../../core/shared/input_fields/two_input_fields.dart';
+import '../../../core/constant/theme/colors.dart';
+import '../../../core/shared/snackbar_message.dart';
 import '../../../logic/controller/tools_controller/fan_operation_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/input_field.dart';
+import '../../widget/input_fields/two_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
 
 class FanOperationScreen extends StatefulWidget {
@@ -18,145 +22,212 @@ class FanOperationScreen extends StatefulWidget {
 
 class _FanOperationScreenState extends State<FanOperationScreen> {
   final FanOperationController controller = Get.put(FanOperationController());
+  final TextEditingController temperatureController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool showResult = false;
+  bool _isLoadingTemperature = false;
+
+  @override
+  void dispose() {
+    temperatureController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'حساب تشغيل الشفاطات',
-        toolKey: 'fanOperationDialog',
-      ),
+      appBar: const CustomAppBar(text: 'حساب تشغيل الشفاطات'),
       body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
-              child: Directionality(
-                textDirection: TextDirection.rtl,
-                child: Form(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TwoInputFields(
-                        firstLabel: 'عدد الطيور',
-                        secondLabel: 'متوسط الوزن (كجم)',
-                        onFirstChanged: controller.updateNumberOfBirds,
-                        onSecondChanged: controller.updateAverageWeight,
-                      ),
-                      SizedBox(height: 12.h),
-                      TwoInputFields(
-                        firstLabel: 'سعة المروحة (م³/ساعة)',
-                        secondLabel: 'درجة الحرارة الحالية',
-                        onFirstChanged: controller.updateFanCapacityPerHour,
-                        onSecondChanged:
-                            (value) {}, // لا نحتاج تحديث درجة الحرارة يدوياً
-                      ),
-                      SizedBox(height: 12.h),
-                      // زر الحصول على درجة الحرارة
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            await controller.getWeatherData();
-                            if (controller.currentTemperature > 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'تم الحصول على درجة الحرارة: ${controller.currentTemperature.toStringAsFixed(1)}°C',
-                                  ),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'فشل في الحصول على درجة الحرارة',
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.location_on),
-                          label: const Text('الحصول على درجة الحرارة الحالية'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.disabled,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Ad widget
+                    const AdNativeWidget(),
+                    SizedBox(height: 21.h),
+                    TwoInputFields(
+                      firstLabel: 'عدد الطيور',
+                      secondLabel: 'متوسط الوزن (كجم)',
+                      onFirstChanged: controller.updateNumberOfBirds,
+                      onSecondChanged: controller.updateAverageWeight,
+                    ),
+                    SizedBox(height: 11.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: InputField(
+                            label: 'سعة المروحة',
+                            onChanged: controller.updateFanCapacityPerHour,
                           ),
                         ),
-                      ),
-                      SizedBox(height: 8.h),
-                      // عرض درجة الحرارة الحالية
-                      Obx(
-                        () =>
-                            controller.currentTemperature > 0
-                                ? Container(
-                                  padding: EdgeInsets.all(12.w),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green.shade50,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: Colors.green.shade300,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.thermostat,
-                                        color: Colors.green,
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        'درجة الحرارة الحالية: ${controller.currentTemperature.toStringAsFixed(1)}°C',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.green.shade800,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                                : const SizedBox.shrink(),
-                      ),
-                      SizedBox(height: 24.h),
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              InputField(
+                                label: 'درجة الحرارة',
+                                onChanged: controller.updateTemperature,
+                                controller: temperatureController,
+                                suffixText: _isLoadingTemperature ? null : '°C',
+                                suffixIcon:
+                                    _isLoadingTemperature
+                                        ? const Padding(
+                                          padding: EdgeInsets.only(left: 6),
+                                          child: SizedBox(
+                                            width: 13,
+                                            height: 13,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 1.5,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    AppColors.primaryColor,
+                                                  ),
+                                            ),
+                                          ),
+                                        )
+                                        : null,
+                                suffixIconConstraints:
+                                    _isLoadingTemperature
+                                        ? const BoxConstraints.tightFor(
+                                          width: 20,
+                                          height: 20,
+                                        )
+                                        : null,
+                              ),
+                              SizedBox(height: 7.h),
+                              FilledButton.icon(
+                                onPressed:
+                                    _isLoadingTemperature
+                                        ? null
+                                        : () async {
+                                          setState(() {
+                                            _isLoadingTemperature = true;
+                                          });
 
-                      // Calculate button
-                      ToolsButton(
-                        text: 'حساب تشغيل الشفاطات',
-                        onPressed: () {
-                          if (controller.currentTemperature > 0) {
+                                          try {
+                                            final locationStatus =
+                                                await Permission
+                                                    .location
+                                                    .status;
+
+                                            if (!locationStatus.isGranted) {
+                                              if (mounted) {
+                                                setState(() {
+                                                  _isLoadingTemperature = false;
+                                                });
+                                                SnackbarMessage.show(
+                                                  context,
+                                                  "فعّل صلاحية الموقع",
+                                                  icon: Icons.location_off,
+                                                );
+                                              }
+                                              return;
+                                            }
+
+                                            await controller.getWeatherData();
+                                            await Future.delayed(
+                                              const Duration(milliseconds: 500),
+                                            );
+
+                                            if (!mounted) return;
+
+                                            setState(() {
+                                              _isLoadingTemperature = false;
+                                            });
+
+                                            final hasData =
+                                                controller.hasWeatherData;
+                                            final temp =
+                                                controller.currentTemperature;
+
+                                            if (hasData && temp > 0) {
+                                              final temperatureValue =
+                                                  temp.round().toString();
+                                              setState(() {
+                                                temperatureController.text =
+                                                    temperatureValue;
+                                              });
+                                              controller.updateTemperature(
+                                                temperatureValue,
+                                              );
+                                            } else {
+                                              SnackbarMessage.show(
+                                                context,
+                                                "فعّل صلاحية الموقع",
+                                                icon: Icons.location_off,
+                                              );
+                                            }
+                                          } catch (e) {
+                                            if (mounted) {
+                                              setState(() {
+                                                _isLoadingTemperature = false;
+                                              });
+                                              SnackbarMessage.show(
+                                                context,
+                                                "فعّل صلاحية الموقع",
+                                                icon: Icons.error_outline,
+                                              );
+                                            }
+                                          }
+                                        },
+                                icon: Icon(Icons.thermostat, size: 13.sp),
+                                label: Text(
+                                  'الحصول على درجة الحرارة',
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.primaryColor
+                                      .withOpacity(0.12),
+                                  foregroundColor: AppColors.primaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 10.h,
+                                    horizontal: 8.w,
+                                  ),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(9.r),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 23.h),
+
+                    // Calculate button
+                    ToolsButton(
+                      text: 'حساب تشغيل الشفاطات',
+                      onPressed: () {
+                        // التحقق من صحة النموذج قبل الحساب
+                        if (_formKey.currentState?.validate() ?? false) {
+                          if (controller.temperature.value > 0) {
                             controller.calculateFanOperation(context);
                             setState(() {
                               showResult = true;
                             });
-                          } else {
-                            // إظهار رسالة للمستخدم
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'يرجى الحصول على درجة الحرارة أولاً',
-                                ),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
                           }
-                        },
-                      ),
-                      SizedBox(height: 24.h),
+                        }
+                      },
+                    ),
+                    SizedBox(height: 21.h),
 
-                      // Ad widget
-                      const AdNativeWidget(),
-                      SizedBox(height: 24.h),
-
-                      // Results section
-                      if (showResult) _buildResultsSection(),
-                    ],
-                  ),
+                    // Results section
+                    if (showResult) _buildResultsSection(),
+                  ],
                 ),
               ),
             ),
@@ -192,28 +263,16 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
             SizedBox(height: 16.h),
 
             _buildResultRow(
-              'درجة الحرارة المستخدمة',
-              '${controller.currentTemperature.toStringAsFixed(1)}°C',
-            ),
-            _buildResultRow(
-              'الوزن الكلي للطيور',
-              '${controller.totalWeight.value.toStringAsFixed(1)} كجم',
-            ),
-            _buildResultRow(
               'كمية الهواء لكل كجم',
-              '${controller.airFlowPerKg.value.toStringAsFixed(1)} م³/ساعة',
+              '${_formatNumber(controller.airFlowPerKg.value)} م³/ساعة',
             ),
             _buildResultRow(
               'كمية الهواء المطلوبة',
-              '${controller.requiredAirFlowPerHour.value.toStringAsFixed(1)} م³/ساعة',
+              '${_formatNumber(controller.requiredAirFlowPerHour.value)} م³/ساعة',
             ),
             _buildResultRow(
               'قدرة الشفاط في الدقيقة',
-              '${controller.fanCapacityPerMinute.value.toStringAsFixed(1)} م³/دقيقة',
-            ),
-            _buildResultRow(
-              'مدة التشغيل',
-              '${controller.operationDuration.value.toStringAsFixed(1)} دقيقة',
+              '${_formatNumber(controller.fanCapacityPerMinute.value)} م³/دقيقة',
             ),
 
             SizedBox(height: 16.h),
@@ -250,7 +309,6 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                       fontSize: 14.sp,
                       color: Colors.blue.shade700,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -282,5 +340,9 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
         ],
       ),
     );
+  }
+
+  String _formatNumber(double value) {
+    return value.toStringAsFixed(0);
   }
 }

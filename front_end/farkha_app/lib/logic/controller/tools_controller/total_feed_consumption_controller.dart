@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
-import '../../../core/package/snackbar_message.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/shared/snackbar_message.dart';
+import 'tool_usage_controller.dart';
 
 class TotalFeedConsumptionController extends GetxController {
   static const int toolId =
@@ -41,7 +41,7 @@ class TotalFeedConsumptionController extends GetxController {
         'استهلاك العلف البادي : ${badi.toStringAsFixed(0)} كيلو\n \n'
         'استهلاك العلف النامي : ${nami.toStringAsFixed(0)} كيلو\n \n'
         'استهلاك العلف الناهي : ${nahi.toStringAsFixed(0)} كيلو\n \n'
-        'الاستهلاك الكلي للعلف طوال الدورة : ${total.toStringAsFixed(0)} كيلو';
+        'الاستهلاك الكلي للعلف : ${total.toStringAsFixed(0)} كيلو';
   }
 
   void resetInputs() {

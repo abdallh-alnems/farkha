@@ -1,4 +1,4 @@
-import 'package:farkha_app/core/constant/theme/color.dart';
+import 'package:farkha_app/core/constant/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,13 +12,13 @@ class CycleStatsBarExplanation extends StatelessWidget {
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
-        backgroundColor: AppColor.appBackGroundColor,
+        backgroundColor: AppColors.appBackGroundColor,
         body: SafeArea(
           child: Column(
             children: [
               // Top bar: back button and tabs
               Container(
-                color: AppColor.primaryColor,
+                color: AppColors.primaryColor,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
                   children: [
@@ -60,11 +60,11 @@ class CycleStatsBarExplanation extends StatelessWidget {
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 20),
-                              Expanded(
+                              const Expanded(
                                 child: SingleChildScrollView(
                                   child: Text(
                                     'تفاصيل ومحتوى موسع يشرح هذا الجزء من الإحصائيات. يمكنك وضع نصوص طويلة أو رسوم بيانية أو حتى صور هنا حسب الحاجة.',
-                                    style: const TextStyle(fontSize: 14),
+                                    style: TextStyle(fontSize: 14),
                                   ),
                                 ),
                               ),

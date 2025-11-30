@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/color.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
@@ -14,22 +14,19 @@ class AddCycle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        body: SafeArea(
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColor.primaryColor, Colors.deepPurple.shade200],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.primaryColor, Colors.deepPurple.shade200],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            child: Column(
-              children: [_buildHeader(), Expanded(child: _buildForm())],
-            ),
+          ),
+          child: Column(
+            children: [_buildHeader(), Expanded(child: _buildForm())],
           ),
         ),
       ),
@@ -181,7 +178,7 @@ class AddCycle extends StatelessWidget {
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
                       colors: [
-                        AppColor.primaryColor,
+                        AppColors.primaryColor,
                         Colors.deepPurple.shade400,
                       ],
                       begin: Alignment.topLeft,

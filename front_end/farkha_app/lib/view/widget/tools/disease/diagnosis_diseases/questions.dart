@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/constant/theme/color.dart';
+
+import '../../../../../core/constant/theme/colors.dart';
 import '../../../../../data/model/disease_model/question_disease_model.dart';
 import '../../../../../logic/controller/tools_controller/disease_controller.dart';
 
@@ -8,8 +9,11 @@ class QuestionStep extends StatelessWidget {
   final QuestionDiseaseModel question;
   final DiagnosisDiseasesController controller;
 
-  const QuestionStep(
-      {super.key, required this.question, required this.controller});
+  const QuestionStep({
+    super.key,
+    required this.question,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,9 @@ class QuestionStep extends StatelessWidget {
                 child: Text(
                   question.name,
                   style: const TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.bold),
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -32,7 +38,7 @@ class QuestionStep extends StatelessWidget {
               child: const Icon(
                 Icons.arrow_forward_ios,
                 size: 25,
-                color: AppColor.primaryColor,
+                color: AppColors.primaryColor,
               ),
             ),
           ],
@@ -41,10 +47,7 @@ class QuestionStep extends StatelessWidget {
         ...options.map(
           (option) => Obx(
             () => RadioListTile<String>(
-              title: Text(
-                option,
-                textAlign: TextAlign.right,
-              ),
+              title: Text(option),
               value: option,
               groupValue: controller.answers[question.name] ?? "",
               onChanged: (value) {
@@ -57,7 +60,7 @@ class QuestionStep extends StatelessWidget {
               },
             ),
           ),
-        )
+        ),
       ],
     );
   }

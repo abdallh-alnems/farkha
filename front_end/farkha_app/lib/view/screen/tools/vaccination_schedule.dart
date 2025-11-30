@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/color.dart';
-import '../../../core/shared/input_fields/age_dropdown.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/tools_controller/vaccination_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
-import '../../widget/app_bar/custom_app_bar.dart';
+import '../../widget/appbar/custom_appbar.dart';
+import '../../widget/input_fields/age_dropdown.dart';
 
 class VaccinationSchedule extends StatelessWidget {
   const VaccinationSchedule({super.key});
@@ -16,10 +16,7 @@ class VaccinationSchedule extends StatelessWidget {
     final controller = Get.put(VaccinationController());
 
     return Scaffold(
-      appBar: const CustomAppBar(
-        text: 'جدول التطعيم',
-        toolKey: 'vaccinationScheduleDialog',
-      ),
+      appBar: const CustomAppBar(text: 'جدول التحصينات'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -59,9 +56,9 @@ class VaccinationSchedule extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColor.primaryColor.withOpacity(0.1),
+                          color: AppColors.primaryColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColor.primaryColor),
+                          border: Border.all(color: AppColors.primaryColor),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +67,7 @@ class VaccinationSchedule extends StatelessWidget {
                               children: [
                                 const Icon(
                                   Icons.today,
-                                  color: AppColor.primaryColor,
+                                  color: AppColors.primaryColor,
                                   size: 24,
                                 ),
                                 const SizedBox(width: 8),
@@ -79,7 +76,7 @@ class VaccinationSchedule extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColor.primaryColor,
+                                    color: AppColors.primaryColor,
                                   ),
                                 ),
                               ],

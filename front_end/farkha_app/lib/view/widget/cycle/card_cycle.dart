@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+
 import '../../../core/constant/routes/route.dart';
-import '../../../core/constant/theme/color.dart';
-import '../../../core/constant/image_asset.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class CardCycle extends StatelessWidget {
@@ -34,17 +34,17 @@ class CardCycle extends StatelessWidget {
         height: 45.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
-          color: AppColor.secondaryColor,
+          color: AppColors.secondaryColor,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset(ImageAsset.addCycle, scale: 2.3),
+            // Image.asset(AppImages.addCycle, scale: 2.3),
             Text(
               "اضف دورة",
               style: TextStyle(
                 fontSize: 17.sp,
-                color: AppColor.primaryColor,
+                color: AppColors.primaryColor,
                 fontWeight: FontWeight.w600,
               ),
             ),

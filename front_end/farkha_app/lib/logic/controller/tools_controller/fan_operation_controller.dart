@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/tool_ids.dart';
+import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/input_validation.dart';
-import '../../../core/package/snackbar_message.dart';
-import '../tool_usage_controller.dart';
+import '../../../core/shared/snackbar_message.dart';
 import '../weather_controller.dart';
+import 'tool_usage_controller.dart';
 
 class FanOperationController extends GetxController {
   static const int toolId = ToolIds.fanOperation; // Fan Operation tool ID = 9
@@ -17,6 +17,7 @@ class FanOperationController extends GetxController {
   RxInt numberOfBirds = 0.obs; // عدد الطيور
   RxDouble averageWeight = 0.0.obs; // متوسط الوزن بالكيلو
   RxDouble fanCapacityPerHour = 0.0.obs; // سعة المروحة بالمتر المكعب/ساعة
+  RxDouble temperature = 0.0.obs; // درجة الحرارة
 
   // Calculated results
   RxDouble totalWeight = 0.0.obs; // الوزن الكلي للطيور بالكيلو
@@ -98,7 +99,10 @@ class FanOperationController extends GetxController {
     totalWeight.value = numberOfBirds.value * averageWeight.value;
 
     // 2. تحديد كمية الهواء المطلوبة لكل كجم حسب درجة الحرارة
-    final currentTemp = weatherController.currentTemperature.value;
+    final currentTemp =
+        temperature.value > 0
+            ? temperature.value
+            : weatherController.currentTemperature.value;
     if (currentTemp < 10) {
       airFlowPerKg.value = 0.4; // م³/ساعة لكل كجم
     } else if (currentTemp >= 10 && currentTemp <= 20) {
@@ -138,11 +142,7 @@ class FanOperationController extends GetxController {
           'تشغيل خفيف (${operationDuration.value.toStringAsFixed(1)} دقيقة)';
     }
 
-    SnackbarMessage.show(
-      context,
-      'تم حساب تشغيل المراوح بنجاح',
-      icon: Icons.check_circle,
-    );
+    // تم إلغاء رسالة النجاح بناءً على طلب المستخدم
   }
 
   // Helper methods for updating values
@@ -158,8 +158,17 @@ class FanOperationController extends GetxController {
     fanCapacityPerHour.value = double.tryParse(value) ?? 0.0;
   }
 
+  void updateTemperature(String value) {
+    temperature.value = double.tryParse(value) ?? 0.0;
+  }
+
   Future<void> getWeatherData() async {
     await weatherController.getWeatherData();
+    // تحديث قيمة درجة الحرارة في الحقل
+    if (weatherController.hasWeatherData && currentTemperature > 0) {
+      temperature.value = currentTemperature;
+      update(); // تحديث الواجهة
+    }
   }
 
   // Getter for current temperature from weather controller
@@ -170,6 +179,12 @@ class FanOperationController extends GetxController {
 
   // Getter for weather error status
   bool get hasWeatherError => weatherController.hasError;
+
+  // Getter for location message
+  String get locationMessage => weatherController.locationMessage;
+
+  // Getter for weather data status
+  bool get hasWeatherData => weatherController.hasWeatherData;
 
   @override
   void onInit() {

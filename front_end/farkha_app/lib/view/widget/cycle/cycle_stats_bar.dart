@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../core/constant/theme/color.dart';
+
+import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class CycleStatsBar extends StatelessWidget {
@@ -27,7 +28,7 @@ class CycleStatsBar extends StatelessWidget {
           width: double.infinity,
           height: 55.h,
           decoration: BoxDecoration(
-            color: AppColor.primaryColor,
+            color: AppColors.primaryColor,
             borderRadius: BorderRadius.circular(11),
           ),
           alignment: Alignment.center,
@@ -48,7 +49,7 @@ class CycleStatsBar extends StatelessWidget {
         width: double.infinity,
         height: 55.h,
         decoration: BoxDecoration(
-          color: AppColor.primaryColor,
+          color: AppColors.primaryColor,
           borderRadius: BorderRadius.circular(11),
         ),
         child: Row(

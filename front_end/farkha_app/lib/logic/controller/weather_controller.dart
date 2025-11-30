@@ -33,6 +33,10 @@ class WeatherController extends GetxController {
 
     if (hasPermission) {
       await _fetchWeatherData();
+    } else {
+      // تحديث الحالة عند عدم وجود صلاحية
+      statusRequest = StatusRequest.failure;
+      update();
     }
   }
 
@@ -104,4 +108,32 @@ class WeatherController extends GetxController {
   bool get hasWeatherData => statusRequest == StatusRequest.success;
   bool get isLoading => statusRequest == StatusRequest.loading;
   bool get hasError => statusRequest == StatusRequest.failure;
+
+  // رسالة الموقع الموحدة
+  String get locationMessage {
+    if (hasWeatherData) {
+      final String region =
+          currentRegion.value.isEmpty ? "غير محدد" : currentRegion.value;
+      final String center =
+          currentCenter.value.isEmpty ? "غير محدد" : currentCenter.value;
+      return "$region - $center";
+    }
+    return "فعّل صلاحية الموقع";
+  }
+
+  // قيمة درجة الحرارة أو رسالة الخطأ
+  String get temperatureText {
+    if (hasWeatherData) {
+      return "°${currentTemperature.value.toStringAsFixed(0)}";
+    }
+    return "فعّل صلاحية الموقع";
+  }
+
+  // قيمة الرطوبة أو رسالة الخطأ
+  String get humidityText {
+    if (hasWeatherData) {
+      return "${currentHumidity.value}%";
+    }
+    return "فعّل صلاحية الموقع";
+  }
 }

@@ -13,7 +13,6 @@ class AutoScrollController extends GetxController {
   final RxBool _isAutoScrolling = true.obs;
   final RxBool _isPaused = false.obs;
   final RxBool _isReversing = false.obs;
-  final RxBool _isManualScrolling = false.obs;
 
   static const Duration _pauseDuration = Duration(seconds: 3);
   static const Duration _manualScrollDelay = Duration(seconds: 5);
@@ -25,7 +24,6 @@ class AutoScrollController extends GetxController {
   bool get isAutoScrolling => _isAutoScrolling.value;
   bool get isPaused => _isPaused.value;
   bool get isReversing => _isReversing.value;
-  bool get isManualScrolling => _isManualScrolling.value;
   ScrollController get scrollController => _scrollController;
 
   @override
@@ -53,9 +51,7 @@ class AutoScrollController extends GetxController {
   }
 
   bool _shouldContinueScrolling() {
-    return _isAutoScrolling.value &&
-        !_isPaused.value &&
-        !_isManualScrolling.value;
+    return _isAutoScrolling.value && !_isPaused.value;
   }
 
   bool _isScrollControllerReady() {
@@ -118,12 +114,9 @@ class AutoScrollController extends GetxController {
   }
 
   void startManualScroll() {
-    _isManualScrolling.value = true;
     _autoScrollTimer?.cancel();
-
     _manualScrollTimer?.cancel();
     _manualScrollTimer = Timer(_manualScrollDelay, () {
-      _isManualScrolling.value = false;
       if (_isAutoScrolling.value && !_isPaused.value) {
         _startAutoScroll();
       }
@@ -131,7 +124,6 @@ class AutoScrollController extends GetxController {
   }
 
   void stopManualScroll() {
-    _isManualScrolling.value = false;
     _manualScrollTimer?.cancel();
   }
 

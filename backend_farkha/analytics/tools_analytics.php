@@ -1,50 +1,48 @@
 <?php
 // Simple analytics API
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Set content type
-header('Content-Type: application/json; charset=utf-8');
 
 // Include required files
-include "../connect.php"; 
-include "../queries.php";
-
-// Check authentication
-checkAuthenticate(); 
+require_once __DIR__ . '/../core/connect.php';
+include "../core/queries/queries.php";
 
 class ToolsAnalyticsAPI extends BaseAPI {
+    private $analyticsData = null;
 
-    public function getAnalyticsData($period = '7days') {
-        $db = DatabaseConnection::getInstance();
-        
-        // Get analytics data based on period
-        $query = '';
-        switch ($period) {
-            case '7days':
-                $query = Queries::getToolsUsage7DaysQuery();
-                break;
-            case '30days':
-                $query = Queries::getToolsUsage30DaysQuery();
-                break;
-            case '1year':
-                $query = Queries::getToolsUsage1YearQuery();
-                break;
-            case 'alltime':
-                $query = Queries::getToolsUsageAllTimeQuery();
-                break;
-            default:
-                $query = Queries::getToolsUsage7DaysQuery();
+    private function getAnalyticsData() {
+        if ($this->analyticsData === null) {
+            $query = Queries::getUnifiedToolsUsageAnalyticsQuery();
+            $this->analyticsData = $this->db->fetchAll($query);
         }
+        return $this->analyticsData;
+    }
+
+    public function getAnalyticsDataForPeriod($period = '7days') {
+        $analyticsData = $this->getAnalyticsData();
         
-        $analyticsData = $db->fetchAll($query);
-        
-        // Format the results
+        // Format the results based on requested period
         $formattedData = [];
         foreach ($analyticsData as $row) {
+            $totalUsage = 0;
+            switch ($period) {
+                case '7days':
+                    $totalUsage = (int)$row['usage_7days'];
+                    break;
+                case '30days':
+                    $totalUsage = (int)$row['usage_30days'];
+                    break;
+                case '1year':
+                    $totalUsage = (int)$row['usage_1year'];
+                    break;
+                case 'alltime':
+                    $totalUsage = (int)$row['usage_alltime'];
+                    break;
+                default:
+                    $totalUsage = (int)$row['usage_7days'];
+            }
+            
             $formattedData[] = [
                 'tool_id' => $row['tool_id'],
-                'total_usage' => (int)$row['total_usage']
+                'total_usage' => $totalUsage
             ];
         }
         
@@ -54,32 +52,44 @@ class ToolsAnalyticsAPI extends BaseAPI {
             'data' => $formattedData
         ];
         
-        ApiResponse::success($response, 200);
+        $this->sendSuccess($response);
     }
     
     public function getAllAnalyticsData() {
-        $db = DatabaseConnection::getInstance();
+        $analyticsData = $this->getAnalyticsData();
         
-        $analyticsData = [
+        // Format the results for all periods
+        $formattedData = [
             '7days' => [
                 'period' => '7days',
-                'data' => $this->formatAnalyticsData($db->fetchAll(Queries::getToolsUsage7DaysQuery()))
+                'data' => $this->formatAnalyticsDataForPeriod($analyticsData, 'usage_7days')
             ],
             '30days' => [
                 'period' => '30days',
-                'data' => $this->formatAnalyticsData($db->fetchAll(Queries::getToolsUsage30DaysQuery()))
+                'data' => $this->formatAnalyticsDataForPeriod($analyticsData, 'usage_30days')
             ],
             '1year' => [
                 'period' => '1year',
-                'data' => $this->formatAnalyticsData($db->fetchAll(Queries::getToolsUsage1YearQuery()))
+                'data' => $this->formatAnalyticsDataForPeriod($analyticsData, 'usage_1year')
             ],
             'alltime' => [
                 'period' => 'alltime',
-                'data' => $this->formatAnalyticsData($db->fetchAll(Queries::getToolsUsageAllTimeQuery()))
+                'data' => $this->formatAnalyticsDataForPeriod($analyticsData, 'usage_alltime')
             ]
         ];
         
-        ApiResponse::success($analyticsData, 200);
+        $this->sendSuccess($formattedData);
+    }
+    
+    private function formatAnalyticsDataForPeriod($data, $periodColumn) {
+        $formattedData = [];
+        foreach ($data as $row) {
+            $formattedData[] = [
+                'tool_id' => $row['tool_id'],
+                'total_usage' => (int)$row[$periodColumn]
+            ];
+        }
+        return $formattedData;
     }
     
     private function formatAnalyticsData($data) {
@@ -110,18 +120,13 @@ try {
         if ($all === 'true' || $all === true) {
             $api->getAllAnalyticsData();
         } else {
-            $api->getAnalyticsData($period);
+            $api->getAnalyticsDataForPeriod($period);
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Method not allowed'], JSON_UNESCAPED_UNICODE);
+        ApiResponse::fail('Method not allowed', 405);
     }
 } catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine()
-    ], JSON_UNESCAPED_UNICODE);
+    handleApiError($e, ['context' => 'tools_analytics_api']);
 }
 
 ?>
