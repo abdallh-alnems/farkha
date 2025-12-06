@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 import '../constant/theme/colors.dart';
 
@@ -35,8 +36,16 @@ class SnackbarMessage {
                     curve: visible ? Curves.elasticOut : Curves.easeIn,
                     transform:
                         Matrix4.identity()
-                          ..scale(visible ? 1.0 : 0.8)
-                          ..translate(0.0, visible ? 0.0 : 200),
+                          ..scaleByVector3(
+                            Vector3(
+                              visible ? 1.0 : 0.8,
+                              visible ? 1.0 : 0.8,
+                              1.0,
+                            ),
+                          )
+                          ..translateByVector3(
+                            Vector3(0.0, visible ? 0.0 : 200.0, 0.0),
+                          ),
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 200),
                       opacity: visible ? 1.0 : 0.0,

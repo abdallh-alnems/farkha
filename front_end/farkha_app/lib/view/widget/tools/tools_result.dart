@@ -26,7 +26,7 @@ class ToolsResult extends StatelessWidget {
           style: TextStyle(
             fontSize: 19.sp,
             fontWeight: FontWeight.w600,
-            color: titleColor.withOpacity(0.85),
+            color: titleColor.withValues(alpha: 0.85),
           ),
           textAlign: TextAlign.center,
         ),

@@ -41,7 +41,7 @@ class ToolsCard extends StatelessWidget {
     final Color borderColor = (isDark
             ? AppColors.darkOutlineColor
             : AppColors.lightOutlineColor)
-        .withOpacity(isDark ? 0.5 : 0.3);
+        .withValues(alpha: isDark ? 0.5 : 0.3);
     final Color textColor = colorScheme.onSurface;
     final Color accentColor = colorScheme.primary;
 
@@ -60,7 +60,7 @@ class ToolsCard extends StatelessWidget {
             boxShadow: [
               if (!isDark)
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   spreadRadius: 0.5,
                   blurRadius: 4,
                   offset: const Offset(0, 2),
@@ -85,7 +85,7 @@ class ToolsCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 9.sp,
                                 fontWeight: FontWeight.w500,
-                                color: textColor.withOpacity(0.8),
+                                color: textColor.withValues(alpha: 0.8),
                                 height: 1.2,
                               ),
                               maxLines: 3,
@@ -112,7 +112,7 @@ class ToolsCard extends StatelessWidget {
                           height: 1.1,
                           shadows: [
                             Shadow(
-                              color: accentColor.withOpacity(0.2),
+                              color: accentColor.withValues(alpha: 0.2),
                               offset: const Offset(0, 1),
                               blurRadius: 3,
                             ),
@@ -131,7 +131,7 @@ class ToolsCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w500,
-                                color: textColor.withOpacity(0.8),
+                                color: textColor.withValues(alpha: 0.8),
                                 height: 1.2,
                               ),
                               maxLines: 3,

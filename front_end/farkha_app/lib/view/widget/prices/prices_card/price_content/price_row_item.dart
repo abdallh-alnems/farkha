@@ -24,14 +24,14 @@ class PriceRowItem extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final bool isDark = theme.brightness == Brightness.dark;
     final Color titleColor = colorScheme.onSurface;
-    final Color labelColor = titleColor.withOpacity(0.7);
+    final Color labelColor = titleColor.withValues(alpha: 0.7);
     final Color containerColor =
         isDark
             ? AppColors.darkSurfaceElevatedColor
             : AppColors.lightSurfaceColor;
     final Color borderColor = isDark
-        ? AppColors.darkOutlineColor.withOpacity(0.8)
-        : AppColors.lightOutlineColor.withOpacity(0.9);
+        ? AppColors.darkOutlineColor.withValues(alpha: 0.8)
+        : AppColors.lightOutlineColor.withValues(alpha: 0.9);
     // التحقق من أن lower_today يساوي null أو فارغ
     final bool showOnlyPrice = lowerPrice.isEmpty || lowerPrice == 'null';
 

@@ -22,7 +22,7 @@ class FeasibilityWidgets {
         borderRadius: BorderRadius.circular(16),
         border: isDark
             ? Border.all(
-                color: AppColors.darkOutlineColor.withOpacity(0.5),
+                color: AppColors.darkOutlineColor.withValues(alpha: 0.5),
                 width: 1,
               )
             : null,
@@ -30,7 +30,7 @@ class FeasibilityWidgets {
             ? null
             : [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.grey.withValues(alpha: 0.1),
                   spreadRadius: 1,
                   blurRadius: 8,
                   offset: const Offset(0, 2),
@@ -47,8 +47,8 @@ class FeasibilityWidgets {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  color.withOpacity(isDark ? 0.2 : 0.15),
-                  color.withOpacity(isDark ? 0.1 : 0.05),
+                  color.withValues(alpha: isDark ? 0.2 : 0.15),
+                  color.withValues(alpha: isDark ? 0.1 : 0.05),
                 ],
               ),
               borderRadius: const BorderRadius.only(
@@ -64,14 +64,14 @@ class FeasibilityWidgets {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [color, color.withOpacity(0.8)],
+                      colors: [color, color.withValues(alpha: 0.8)],
                     ),
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: isDark
                         ? null
                         : [
                             BoxShadow(
-                              color: color.withOpacity(0.3),
+                              color: color.withValues(alpha: 0.3),
                               spreadRadius: 1,
                               blurRadius: 4,
                               offset: const Offset(0, 2),
@@ -91,7 +91,7 @@ class FeasibilityWidgets {
                         ? null
                         : [
                             Shadow(
-                              color: color.withOpacity(0.2),
+                              color: color.withValues(alpha: 0.2),
                               offset: const Offset(0, 1),
                               blurRadius: 2,
                             ),
@@ -127,12 +127,12 @@ class FeasibilityWidgets {
       decoration: BoxDecoration(
         color: isDark
             ? AppColors.darkSurfaceColor
-            : color.withOpacity(0.05),
+            : color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDark
-              ? AppColors.darkOutlineColor.withOpacity(0.3)
-              : color.withOpacity(0.2),
+              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+              : color.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -144,7 +144,7 @@ class FeasibilityWidgets {
             style: TextStyle(
               fontSize: 15.sp,
               color: isDark
-                  ? colorScheme.onSurface.withOpacity(0.7)
+                  ? colorScheme.onSurface.withValues(alpha: 0.7)
                   : Colors.grey[600],
               fontWeight: FontWeight.w500,
             ),

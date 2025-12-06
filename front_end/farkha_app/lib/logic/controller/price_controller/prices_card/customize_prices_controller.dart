@@ -67,19 +67,14 @@ class CustomizePricesController extends GetxController {
   Future<void> getTypesData() async {
     try {
       statusRequest.value = StatusRequest.loading;
-      print('🔄 Loading types data...');
 
       var response = await typesData.getTypes();
-      print('📡 API Response: $response');
       statusRequest.value = handlingData(response);
-      print('📊 Status after handling: ${statusRequest.value}');
 
       if (StatusRequest.success == statusRequest.value) {
         final mapResponse = response as Map<String, dynamic>;
         if (mapResponse['status'] == "success") {
           Map<String, dynamic> data = mapResponse['data'];
-          print('📊 Data structure: ${data.runtimeType}');
-          print('📊 Data keys: ${data.keys.toList()}');
           if (data.isNotEmpty) {
             List<int> selectedTypeIds = _loadSelectedTypes();
             List<String> notificationEnabledTopics =
@@ -88,10 +83,7 @@ class CustomizePricesController extends GetxController {
 
             // تحويل البيانات من Map إلى List مع إضافة main_name
             data.forEach((categoryName, typesList) {
-              print('📊 Processing category: $categoryName');
-              print('📊 Types list type: ${typesList.runtimeType}');
               if (typesList is List) {
-                print('📊 Types list length: ${typesList.length}');
                 for (var item in typesList) {
                   if (item is Map<String, dynamic>) {
                     int typeId = item['id'] ?? 0;
@@ -112,27 +104,20 @@ class CustomizePricesController extends GetxController {
                       'isNotificationEnabled': isNotificationEnabled,
                       'topicName': topicName,
                     });
-                    print('📊 Added type: $typeName (ID: $typeId)');
                   }
                 }
               }
             });
 
             priceTypes.value = allTypes;
-            print('✅ Loaded ${allTypes.length} price types');
-            print('✅ Categories: ${data.keys.toList()}');
             _categorizeTypes();
             _saveTypeNames();
           }
         } else {
-          print('❌ API returned failure status: ${mapResponse['status']}');
           statusRequest.value = StatusRequest.failure;
         }
-      } else {
-        print('❌ Status request is not success: ${statusRequest.value}');
       }
-    } catch (e) {
-      print('❌ Error in getTypesData: $e');
+    } catch (_) {
       statusRequest.value = StatusRequest.failure;
     }
   }
@@ -147,7 +132,6 @@ class CustomizePricesController extends GetxController {
       newCategorizedTypes[category]!.add(Map.from(item));
     }
     categorizedTypes.value = newCategorizedTypes;
-    print('✅ Categorized types: ${categorizedTypes.keys.toList()}');
   }
 
   void toggleItemSelection(Map<String, dynamic> item) {
@@ -199,10 +183,8 @@ class CustomizePricesController extends GetxController {
           // Subscribe or unsubscribe from topic
           if (newNotificationState) {
             await NotificationService.instance.subscribeToTopic(topicName);
-            print('✅ Subscribed to: $topicName');
           } else {
             await NotificationService.instance.unsubscribeFromTopic(topicName);
-            print('❌ Unsubscribed from: $topicName');
           }
 
           newList.add(updatedItem);
@@ -232,7 +214,6 @@ class CustomizePricesController extends GetxController {
       _notificationTypesKey,
       notificationEnabledTopics,
     );
-    print('💾 Saved notification topics: $notificationEnabledTopics');
   }
 
   void _saveSelectedTypes() {

@@ -22,8 +22,8 @@ class DetailsBroiler extends GetView<BroilerController> {
         border: Border.all(
           color:
               isDark
-                  ? AppColors.darkOutlineColor.withOpacity(0.5)
-                  : AppColors.primaryColor.withOpacity(0.2),
+                  ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                  : AppColors.primaryColor.withValues(alpha: 0.2),
           width: 1.5,
         ),
         boxShadow:
@@ -31,7 +31,7 @@ class DetailsBroiler extends GetView<BroilerController> {
                 ? null
                 : [
                   BoxShadow(
-                    color: AppColors.primaryColor.withOpacity(0.08),
+                    color: AppColors.primaryColor.withValues(alpha: 0.08),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -86,7 +86,7 @@ class DetailsBroiler extends GetView<BroilerController> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -99,7 +99,7 @@ class DetailsBroiler extends GetView<BroilerController> {
           Text(
             label,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -134,7 +134,7 @@ class DetailsBroiler extends GetView<BroilerController> {
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(
                           context,
-                        ).colorScheme.onSurface.withOpacity(0.6),
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                         fontWeight: FontWeight.normal,
                       ),
                     ),
@@ -157,7 +157,7 @@ class DetailsBroiler extends GetView<BroilerController> {
           end: Alignment.bottomCenter,
           colors: [
             Colors.transparent,
-            Theme.of(context).colorScheme.outline.withOpacity(0.3),
+            Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
             Colors.transparent,
           ],
         ),

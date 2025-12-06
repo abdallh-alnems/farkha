@@ -50,12 +50,10 @@ class NotificationService extends GetxService {
       await subscribeToTopic('lhm_abyad');
       // حفظ الإعداد الافتراضي
       storage.write(_notificationTypesKey, ['lhm_abyad']);
-      print('✅ First time: Subscribed to default topic: lhm_abyad');
     } else {
       // الاشتراك في جميع الـ topics المحفوظة
       for (var topic in savedNotifications) {
         await subscribeToTopic(topic.toString());
-        print('✅ Restored subscription to: $topic');
       }
     }
   }
@@ -113,12 +111,6 @@ class NotificationService extends GetxService {
       _handleNotificationTap(initialMessage);
     }
 
-    // Get FCM token for debugging
-    final token = await _firebaseMessaging.getToken();
-    if (token != null) {
-      // ignore: avoid_print
-      print('FCM Token: $token');
-    }
   }
 
   Future<void> showNotification(RemoteMessage message) async {

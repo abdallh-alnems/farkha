@@ -35,13 +35,13 @@ class ResultsSection extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: isDark
-                              ? colorScheme.primary.withOpacity(0.15)
-                              : AppColors.primaryColor.withOpacity(0.1),
+                              ? colorScheme.primary.withValues(alpha: 0.15)
+                              : AppColors.primaryColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: isDark
-                                ? colorScheme.primary.withOpacity(0.4)
-                                : AppColors.primaryColor.withOpacity(0.3),
+                                ? colorScheme.primary.withValues(alpha: 0.4)
+                                : AppColors.primaryColor.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),

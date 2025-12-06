@@ -14,53 +14,59 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   BannerAd? _bannerAd;
   bool _isAdLoaded = false;
   int _retryCount = 0;
-  final List<int> _retryDelays = [5, 10, 20, 30, 40, 50, 60];
-  AnchoredAdaptiveBannerAdSize? _adaptiveSize;
+  static const int _maxRetries = 3;
+
+  // Adaptive banner height (will be set after loading)
+  double _adHeight = 60;
 
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadNewAd();
+      _loadAdaptiveAd();
     });
   }
 
   @override
   void dispose() {
-    _disposeCurrentAd();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isAdLoaded && _bannerAd != null
-        ? SizedBox(
-          height: (_adaptiveSize?.height ?? _bannerAd!.size.height).toDouble(),
-          width: double.infinity,
-          child: AdWidget(ad: _bannerAd!),
-        )
-        : const SizedBox();
-  }
-
-  Future<void> _loadNewAd() async {
-    _disposeCurrentAd();
-
-    // Compute anchored adaptive size based on the current width in dp
-    final int adWidth = MediaQuery.of(context).size.width.truncate();
-    try {
-      _adaptiveSize =
-          await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-            adWidth,
-          );
-    } catch (_) {
-      _adaptiveSize = null;
+    // لا تعرض شيء إذا الإعلان لم يُحمّل
+    if (!_isAdLoaded || _bannerAd == null) {
+      return const SizedBox.shrink();
     }
 
-    final AdSize sizeToUse = _adaptiveSize ?? AdSize.banner;
+    return SizedBox(
+      height: _adHeight,
+      width: double.infinity,
+      child: AdWidget(ad: _bannerAd!),
+    );
+  }
+
+  Future<void> _loadAdaptiveAd() async {
+    if (!mounted) return;
+
+    // Get adaptive banner size based on screen width
+    final int adWidth = MediaQuery.of(context).size.width.truncate();
+    final AnchoredAdaptiveBannerAdSize? adaptiveSize =
+        await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(adWidth);
+
+    // Fallback to standard banner if adaptive size fails
+    final AdSize adSize = adaptiveSize ?? AdSize.banner;
+
+    // Update height for adaptive size
+    if (mounted) {
+      setState(() {
+        _adHeight = (adaptiveSize?.height ?? 60).toDouble();
+      });
+    }
 
     _bannerAd = BannerAd(
-      size: sizeToUse,
+      size: adSize,
       adUnitId: AdManager.idBanner,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
@@ -74,39 +80,24 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
         onAdFailedToLoad: (ad, error) {
           debugPrint('Banner failed: ${error.code} - ${error.message}');
           ad.dispose();
-          _retryWithBackoff();
+          _bannerAd = null;
+          _scheduleRetry();
         },
       ),
       request: const AdRequest(),
     )..load();
   }
 
-  void _retryWithBackoff() {
-    if (!mounted) return;
-    if (_isAdLoaded) return;
-
-    int delayIndex =
-        _retryCount < _retryDelays.length
-            ? _retryCount
-            : _retryDelays.length - 1;
-    int delaySeconds = _retryDelays[delayIndex];
+  void _scheduleRetry() {
+    if (!mounted || _isAdLoaded || _retryCount >= _maxRetries) return;
 
     _retryCount++;
+    final int delaySeconds = _retryCount * 15;
 
     Future.delayed(Duration(seconds: delaySeconds), () {
-      if (mounted) {
-        if (_isAdLoaded) return;
-        _loadNewAd();
+      if (mounted && !_isAdLoaded) {
+        _loadAdaptiveAd();
       }
     });
-  }
-
-  void _disposeCurrentAd() {
-    if (_bannerAd != null) {
-      _bannerAd?.dispose();
-      _bannerAd = null;
-      _isAdLoaded = false;
-      _retryCount = 0;
-    }
   }
 }

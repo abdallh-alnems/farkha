@@ -8,10 +8,10 @@ import '../../core/services/test_mode_manager.dart';
 import '../widget/ad/banner.dart';
 import '../widget/ad/native.dart';
 import '../widget/appbar/appbar_home.dart';
+import '../widget/drawer/drawer.dart';
 import '../widget/home/price_card.dart';
 import '../widget/home/tools_section.dart';
 import '../widget/tutorial/home_tutorial.dart';
-import '../widget/drawer/drawer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

@@ -30,8 +30,6 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         final analytics = Get.find<AnalyticsService>().analytics;
         final themeService = Get.find<DarkLightService>();
-        // Log first app open as an initial signal
-        Get.find<AnalyticsService>().logAppOpen();
         return Obx(
           () => GetMaterialApp(
             locale: const Locale('ar'),

@@ -75,7 +75,7 @@ class AllTools extends StatelessWidget {
     final Color borderColor = (isDark
             ? AppColors.darkOutlineColor
             : AppColors.lightOutlineColor)
-        .withOpacity(isDark ? 0.5 : 0.3);
+        .withValues(alpha: isDark ? 0.5 : 0.3);
     final Color textColor = colorScheme.onSurface;
 
     return Container(

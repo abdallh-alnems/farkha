@@ -119,16 +119,16 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                                     .status;
 
                                             if (!locationStatus.isGranted) {
-                                              if (mounted) {
-                                                setState(() {
-                                                  _isLoadingTemperature = false;
-                                                });
-                                                SnackbarMessage.show(
-                                                  context,
-                                                  "فعّل صلاحية الموقع",
-                                                  icon: Icons.location_off,
-                                                );
-                                              }
+                                              if (!mounted) return;
+                                              setState(() {
+                                                _isLoadingTemperature = false;
+                                              });
+                                              SnackbarMessage.show(
+                                                // ignore: use_build_context_synchronously
+                                                context,
+                                                "فعّل صلاحية الموقع",
+                                                icon: Icons.location_off,
+                                              );
                                               return;
                                             }
 
@@ -160,22 +160,23 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                               );
                                             } else {
                                               SnackbarMessage.show(
+                                                // ignore: use_build_context_synchronously
                                                 context,
                                                 "فعّل صلاحية الموقع",
                                                 icon: Icons.location_off,
                                               );
                                             }
-                                          } catch (e) {
-                                            if (mounted) {
-                                              setState(() {
-                                                _isLoadingTemperature = false;
-                                              });
-                                              SnackbarMessage.show(
-                                                context,
-                                                "فعّل صلاحية الموقع",
-                                                icon: Icons.error_outline,
-                                              );
-                                            }
+                                          } catch (_) {
+                                            if (!mounted) return;
+                                            setState(() {
+                                              _isLoadingTemperature = false;
+                                            });
+                                            SnackbarMessage.show(
+                                              // ignore: use_build_context_synchronously
+                                              context,
+                                              "فعّل صلاحية الموقع",
+                                              icon: Icons.error_outline,
+                                            );
                                           }
                                         },
                                 icon: Icon(Icons.thermostat, size: 13.sp),
@@ -188,7 +189,7 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                 ),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: AppColors.primaryColor
-                                      .withOpacity(0.12),
+                                      .withValues(alpha: 0.12),
                                   foregroundColor: AppColors.primaryColor,
                                   padding: EdgeInsets.symmetric(
                                     vertical: 10.h,

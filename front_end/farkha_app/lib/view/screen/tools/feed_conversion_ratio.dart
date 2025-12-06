@@ -112,9 +112,11 @@ class _FeedConversionRatioState extends State<FeedConversionRatio> {
                         side: BorderSide(
                           color:
                               isDark
-                                  ? AppColors.darkOutlineColor.withOpacity(0.5)
-                                  : AppColors.lightOutlineColor.withOpacity(
-                                    0.3,
+                                  ? AppColors.darkOutlineColor.withValues(
+                                    alpha: 0.5,
+                                  )
+                                  : AppColors.lightOutlineColor.withValues(
+                                    alpha: 0.3,
                                   ),
                           width: 1,
                         ),

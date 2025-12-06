@@ -62,13 +62,13 @@ class TutorialContentCard extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: colorScheme.outline.withOpacity(isDark ? 0.3 : 0.15),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.15),
         ),
         boxShadow: isDark
             ? []
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -108,7 +108,7 @@ class TutorialContentCard extends StatelessWidget {
       style: descriptionStyle ??
           theme.textTheme.bodyMedium?.copyWith(
             fontSize: 14.sp,
-            color: colorScheme.onSurface.withOpacity(0.9),
+            color: colorScheme.onSurface.withValues(alpha: 0.9),
           ),
     );
   }

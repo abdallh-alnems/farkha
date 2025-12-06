@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../../../logic/controller/tools_controller/tool_usage_controller.dart';
 import '../../../widget/ad/banner.dart';
@@ -20,7 +19,9 @@ class _DiseaseState extends State<Disease> {
   void initState() {
     super.initState();
     // Record tool usage when entering this page using static method
-    ToolUsageController.recordToolUsageFromController(12); // Diseases tool ID = 12
+    ToolUsageController.recordToolUsageFromController(
+      12,
+    ); // Diseases tool ID = 12
   }
 
   @override

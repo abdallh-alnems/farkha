@@ -29,8 +29,8 @@ class NotesCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
               color: isDark 
-                  ? AppColors.darkOutlineColor.withOpacity(0.5)
-                  : AppColors.lightOutlineColor.withOpacity(0.3),
+                  ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                  : AppColors.lightOutlineColor.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -73,7 +73,7 @@ class NotesCard extends StatelessWidget {
               text,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withOpacity(0.8),
+                    color: colorScheme.onSurface.withValues(alpha: 0.8),
                   ),
             ),
           ),

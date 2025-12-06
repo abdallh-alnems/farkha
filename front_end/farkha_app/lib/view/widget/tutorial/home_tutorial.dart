@@ -40,7 +40,6 @@ class HomeTutorial {
         !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
 
     if (!shouldShowTutorial) {
-      print('Home tutorial already seen and not in test mode, skipping');
       return Future.value();
     }
 
@@ -61,6 +60,9 @@ class HomeTutorial {
       await _waitForUiToSettle();
       await _waitSnackbarsToClose();
 
+      // ignore: use_build_context_synchronously
+      if (!context.mounted) return;
+
       final targets = _createTargets(
         context,
         onTutorialComplete: onTutorialComplete,
@@ -69,7 +71,7 @@ class HomeTutorial {
       final bool isDark = Theme.of(context).brightness == Brightness.dark;
       _tutorial = TutorialCoachMark(
         targets: targets,
-        colorShadow: Colors.black.withOpacity(0.3),
+        colorShadow: Colors.black.withValues(alpha: 0.3),
         textSkip: "تخطي",
         textStyleSkip: TextStyle(color: isDark ? Colors.white : Colors.black),
         paddingFocus: 0, // أصغر قيمة ممكنة
@@ -223,9 +225,6 @@ class HomeTutorial {
     // حفظ حالة المشاهدة فقط إذا لم يكن في وضع الاختبار
     if (!TestModeManager.shouldShowTutorialEveryTime) {
       myServices.getStorage.write('home_tutorial_seen', true);
-      print('Home tutorial completed and saved');
-    } else {
-      print('Home tutorial completed (test mode - not saving)');
     }
 
     // استدعاء callback إذا كان موجود
@@ -236,7 +235,6 @@ class HomeTutorial {
   static void resetTutorial() {
     final myServices = Get.find<MyServices>();
     myServices.getStorage.remove('home_tutorial_seen');
-    print('Home tutorial reset - will show on next visit');
   }
 
   // دالة لإلغاء الشرح عند الخروج من الصفحة
@@ -250,10 +248,8 @@ class HomeTutorial {
           // إذا لم يعمل skip()، ببساطة نزيل المرجع
         }
         _tutorial = null;
-        print('Home tutorial cancelled');
       }
-    } catch (e) {
-      print('Error cancelling home tutorial: $e');
+    } catch (_) {
       _tutorial = null;
     }
   }

@@ -19,7 +19,7 @@ class PageTurningTips extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.7),
+                  color: Colors.black.withValues(alpha: 0.7),
                   borderRadius: BorderRadius.circular(50.r),
                 ),
                 child: Icon(

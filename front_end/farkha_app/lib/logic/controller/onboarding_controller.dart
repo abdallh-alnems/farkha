@@ -5,9 +5,9 @@ import '../../core/services/initialization.dart';
 import '../../data/data_source/static/onboarding_static.dart';
 
 abstract class OnBoardingController extends GetxController {
-  next();
-  onPageChanged(int index);
-  skip();
+  void next();
+  void onPageChanged(int index);
+  void skip();
 }
 
 class OnBoardingControllerImp extends OnBoardingController {
@@ -18,7 +18,7 @@ class OnBoardingControllerImp extends OnBoardingController {
   MyServices myServices = Get.find();
 
   @override
-  next() {
+  void next() {
     currentPage.value++;
 
     if (currentPage.value > onBoardingList.length - 1) {
@@ -30,21 +30,19 @@ class OnBoardingControllerImp extends OnBoardingController {
         duration: const Duration(milliseconds: 900),
         curve: Curves.easeInOut,
       );
-      // تحديث الـ dot_controller
       update();
     }
   }
 
   @override
-  skip() {
+  void skip() {
     myServices.getStorage.write("step", "1");
-    // تحديث الـ dot_controller قبل الانتقال
     update();
     Get.offAllNamed("/");
   }
 
   @override
-  onPageChanged(int index) {
+  void onPageChanged(int index) {
     currentPage.value = index;
     update();
   }

@@ -32,9 +32,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
       Get.put(CustomizePricesController());
     }
     controller = Get.find<CustomizePricesController>();
-    print('✅ CustomizePricesScreen initialized');
-    print('✅ Controller status: ${controller.statusRequest.value}');
-    print('✅ Categories count: ${controller.categorizedTypes.length}');
 
     // إظهار الـ tutorial بعد بناء الـ widgets
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -88,8 +85,9 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
         // إلغاء الشرح عند الضغط على زر الرجوع
         if (_isTutorialActive) {
           CustomizePricesTutorial.cancelTutorial();
@@ -97,7 +95,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
             _isTutorialActive = false;
           });
         }
-        return true; // السماح بالرجوع
       },
       child: Scaffold(
         appBar: const CustomAppBar(text: 'تخصيص الأسعار'),
@@ -215,15 +212,16 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
       curve: Curves.easeInOut,
       padding: EdgeInsets.symmetric(horizontal: 13.r, vertical: 8.r),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkSurfaceElevatedColor
-            : AppColors.lightSurfaceColor,
+        color:
+            isDark
+                ? AppColors.darkSurfaceElevatedColor
+                : AppColors.lightSurfaceColor,
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
           color:
               isDark
-                  ? AppColors.darkOutlineColor.withOpacity(0.5)
-                  : Colors.grey.withOpacity(0.3),
+                  ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                  : Colors.grey.withValues(alpha: 0.3),
           width: 1.5,
         ),
       ),
@@ -270,7 +268,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                               : FontWeight.w600,
                       color:
                           isLocked
-                              ? colorScheme.onSurface.withOpacity(0.8)
+                              ? colorScheme.onSurface.withValues(alpha: 0.8)
                               : colorScheme.onSurface,
                       letterSpacing: 0.2,
                     ),
@@ -299,8 +297,8 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                 color:
                     item['isNotificationEnabled'] == true
                         ? (isDark
-                            ? Colors.white.withOpacity(0.15)
-                            : AppColors.primaryColor.withOpacity(0.1))
+                            ? Colors.white.withValues(alpha: 0.15)
+                            : AppColors.primaryColor.withValues(alpha: 0.1))
                         : Colors.transparent,
               ),
               child: Stack(
@@ -315,11 +313,11 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                         isLocked
                             ? (isDark
                                 ? Colors.white
-                                : AppColors.primaryColor.withOpacity(0.7))
+                                : AppColors.primaryColor.withValues(alpha: 0.7))
                             : item['isNotificationEnabled'] == true
                             ? Colors.amber
                             : (isDark
-                                ? Colors.white.withOpacity(0.5)
+                                ? Colors.white.withValues(alpha: 0.5)
                                 : Colors.grey),
                   ),
                   if (isLocked)
@@ -364,24 +362,20 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                     isLocked
                         ? (isDark
                             ? Colors.white
-                            : AppColors.primaryColor.withOpacity(0.7))
+                            : AppColors.primaryColor.withValues(alpha: 0.7))
                         : item['isSelected']
-                        ? (isDark
-                            ? Colors.white
-                            : AppColors.primaryColor)
+                        ? (isDark ? Colors.white : AppColors.primaryColor)
                         : Colors.transparent,
                 border: Border.all(
                   color:
                       isLocked
                           ? (isDark
                               ? Colors.white
-                              : AppColors.primaryColor.withOpacity(0.7))
+                              : AppColors.primaryColor.withValues(alpha: 0.7))
                           : item['isSelected']
-                          ? (isDark
-                              ? Colors.white
-                              : AppColors.primaryColor)
+                          ? (isDark ? Colors.white : AppColors.primaryColor)
                           : (isDark
-                              ? Colors.white.withOpacity(0.6)
+                              ? Colors.white.withValues(alpha: 0.6)
                               : colorScheme.onSurface),
                   width: item['isSelected'] ? 0 : 2,
                 ),
@@ -391,18 +385,20 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                       ? Icon(
                         Icons.lock,
                         size: 12.sp,
-                        color: isDark
-                            ? AppColors.darkBackGroundColor
-                            : Colors.white,
+                        color:
+                            isDark
+                                ? AppColors.darkBackGroundColor
+                                : Colors.white,
                         weight: 900,
                       )
                       : item['isSelected']
                       ? Icon(
                         Icons.check,
                         size: 14.sp,
-                        color: isDark
-                            ? AppColors.darkBackGroundColor
-                            : Colors.white,
+                        color:
+                            isDark
+                                ? AppColors.darkBackGroundColor
+                                : Colors.white,
                         weight: 900,
                       )
                       : null,

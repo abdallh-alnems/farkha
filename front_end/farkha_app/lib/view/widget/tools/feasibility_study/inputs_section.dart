@@ -26,176 +26,165 @@ class InputsSection extends StatelessWidget {
           children: [
             const SizedBox(height: 5),
             // Toggle Switches Row - Combined
-            Container(
-              child: Row(
-                children: [
-                  // First Toggle: Normal/Professional Mode
-                  Expanded(
-                    child: Container(
-                      key: FeasibilityTutorial.toggleModeKey,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              child: Obx(
-                                () => Text(
-                                  'عادي',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color:
-                                        !controller.isProfessionalMode.value
-                                            ? Colors.grey[800]
-                                            : Colors.grey[500],
-                                  ),
-                                ),
+            Row(
+              children: [
+                // First Toggle: Normal/Professional Mode
+                Expanded(
+                  child: Container(
+                    key: FeasibilityTutorial.toggleModeKey,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Obx(
+                            () => Text(
+                              'عادي',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    !controller.isProfessionalMode.value
+                                        ? Colors.grey[800]
+                                        : Colors.grey[500],
                               ),
                             ),
                           ),
-                          Obx(
-                            () => Transform.scale(
-                              scale: 0.9,
-                              child: Switch(
-                                value: controller.isProfessionalMode.value,
-                                onChanged: (value) {
-                                  controller.toggleProfessionalMode();
-                                },
-                                activeThumbColor: AppColors.primaryColor,
-                                activeTrackColor: AppColors.primaryColor
-                                    .withValues(alpha: 0.3),
-                                inactiveThumbColor: AppColors.primaryColor,
-                                inactiveTrackColor: AppColors.primaryColor
-                                    .withValues(alpha: 0.3),
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                overlayColor: WidgetStateProperty.all(
-                                  Colors.transparent,
-                                ),
-                                splashRadius: 0,
-                                trackOutlineColor: WidgetStateProperty.all(
-                                  Colors.transparent,
-                                ),
-                                trackOutlineWidth: WidgetStateProperty.all(0),
-                                thumbColor: WidgetStateProperty.all(
-                                  AppColors.primaryColor,
-                                ),
-                                trackColor: WidgetStateProperty.all(
-                                  AppColors.primaryColor.withValues(alpha: 0.3),
-                                ),
+                        ),
+                        Obx(
+                          () => Transform.scale(
+                            scale: 0.9,
+                            child: Switch(
+                              value: controller.isProfessionalMode.value,
+                              onChanged: (value) {
+                                controller.toggleProfessionalMode();
+                              },
+                              activeThumbColor: AppColors.primaryColor,
+                              activeTrackColor: AppColors.primaryColor
+                                  .withValues(alpha: 0.3),
+                              inactiveThumbColor: AppColors.primaryColor,
+                              inactiveTrackColor: AppColors.primaryColor
+                                  .withValues(alpha: 0.3),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              overlayColor: WidgetStateProperty.all(
+                                Colors.transparent,
+                              ),
+                              splashRadius: 0,
+                              trackOutlineColor: WidgetStateProperty.all(
+                                Colors.transparent,
+                              ),
+                              trackOutlineWidth: WidgetStateProperty.all(0),
+                              thumbColor: WidgetStateProperty.all(
+                                AppColors.primaryColor,
+                              ),
+                              trackColor: WidgetStateProperty.all(
+                                AppColors.primaryColor.withValues(alpha: 0.3),
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              child: Obx(
-                                () => Text(
-                                  'احترافي',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color:
-                                        controller.isProfessionalMode.value
-                                            ? Colors.grey[800]
-                                            : Colors.grey[500],
-                                  ),
-                                ),
+                        ),
+                        Expanded(
+                          child: Obx(
+                            () => Text(
+                              'احترافي',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    controller.isProfessionalMode.value
+                                        ? Colors.grey[800]
+                                        : Colors.grey[500],
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  SizedBox(width: 16.w),
-
-                  // Second Toggle: Chicken Count/Financial Amount
-                  Expanded(
-                    child: Container(
-                      key: FeasibilityTutorial.defaultValuesKey,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              child: Obx(
-                                () => Text(
-                                  'عدد الفراخ',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color:
-                                        controller.isChickenCountMode.value
-                                            ? Colors.grey[800]
-                                            : Colors.grey[500],
-                                  ),
-                                ),
+                ),
+            
+                SizedBox(width: 15.w),
+            
+                // Second Toggle: Chicken Count/Financial Amount
+                Expanded(
+                  child: Container(
+                    key: FeasibilityTutorial.defaultValuesKey,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Obx(
+                            () => Text(
+                              'عدد الفراخ',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    controller.isChickenCountMode.value
+                                        ? Colors.grey[800]
+                                        : Colors.grey[500],
                               ),
                             ),
                           ),
-                          Obx(
-                            () => Transform.scale(
-                              scale: 0.9,
-                              child: Switch(
-                                value: !controller.isChickenCountMode.value,
-                                onChanged: (value) {
-                                  controller.toggleCalculationMode();
-                                },
-                                activeThumbColor: AppColors.primaryColor,
-                                activeTrackColor: AppColors.primaryColor
-                                    .withValues(alpha: 0.3),
-                                inactiveThumbColor: AppColors.primaryColor,
-                                inactiveTrackColor: AppColors.primaryColor
-                                    .withValues(alpha: 0.3),
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                overlayColor: WidgetStateProperty.all(
-                                  Colors.transparent,
-                                ),
-                                splashRadius: 0,
-                                trackOutlineColor: WidgetStateProperty.all(
-                                  Colors.transparent,
-                                ),
-                                trackOutlineWidth: WidgetStateProperty.all(0),
-                                thumbColor: WidgetStateProperty.all(
-                                  AppColors.primaryColor,
-                                ),
-                                trackColor: WidgetStateProperty.all(
-                                  AppColors.primaryColor.withValues(alpha: 0.3),
-                                ),
+                        ),
+                        Obx(
+                          () => Transform.scale(
+                            scale: 0.9,
+                            child: Switch(
+                              value: !controller.isChickenCountMode.value,
+                              onChanged: (value) {
+                                controller.toggleCalculationMode();
+                              },
+                              activeThumbColor: AppColors.primaryColor,
+                              activeTrackColor: AppColors.primaryColor
+                                  .withValues(alpha: 0.3),
+                              inactiveThumbColor: AppColors.primaryColor,
+                              inactiveTrackColor: AppColors.primaryColor
+                                  .withValues(alpha: 0.3),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              overlayColor: WidgetStateProperty.all(
+                                Colors.transparent,
+                              ),
+                              splashRadius: 0,
+                              trackOutlineColor: WidgetStateProperty.all(
+                                Colors.transparent,
+                              ),
+                              trackOutlineWidth: WidgetStateProperty.all(0),
+                              thumbColor: WidgetStateProperty.all(
+                                AppColors.primaryColor,
+                              ),
+                              trackColor: WidgetStateProperty.all(
+                                AppColors.primaryColor.withValues(alpha: 0.3),
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              child: Obx(
-                                () => Text(
-                                  'مبلغ مالي',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color:
-                                        !controller.isChickenCountMode.value
-                                            ? Colors.grey[800]
-                                            : Colors.grey[500],
-                                  ),
-                                ),
+                        ),
+                        Expanded(
+                          child: Obx(
+                            () => Text(
+                              'مبلغ مالي',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    !controller.isChickenCountMode.value
+                                        ? Colors.grey[800]
+                                        : Colors.grey[500],
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             const SizedBox(height: 21),
 
-            // الأسعار title with بورصة button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -206,7 +195,7 @@ class InputsSection extends StatelessWidget {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withOpacity(0.9)
+                        ? Colors.white.withValues(alpha: 0.9)
                         : Colors.grey[800],
                   ),
                 ),
@@ -240,7 +229,6 @@ class InputsSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // أسعار الدجاج - ثابتة في كلا الوضعين
             Row(
               children: [
                 Expanded(
@@ -260,11 +248,10 @@ class InputsSection extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // أسعار العلف - يختلف حسب الوضع
             Obx(
               () =>
                   controller.isProfessionalMode.value
-                      ? // الوضع الاحترافي: 3 مربعات منفصلة
+                      ? 
                       ThreeInputFields(
                         firstLabel: 'بادي (طن)',
                         secondLabel: 'نامي (طن)',
@@ -273,7 +260,7 @@ class InputsSection extends StatelessWidget {
                         secondController: controller.namiPriceController,
                         thirdController: controller.nahiPriceController,
                       )
-                      : // الوضع العادي: مربع واحد لمتوسط سعر العلف
+                      : 
                       InputField(
                         label: 'متوسط العلف (طن)',
                         controller: controller.averageFeedPriceController,
@@ -281,50 +268,47 @@ class InputsSection extends StatelessWidget {
             ),
             const SizedBox(height: 19),
 
-            // القيم الافتراضية title with زر
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'المدخلات',
-                    key: FeasibilityTutorial.defaultValuesTitleKey,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white.withOpacity(0.9)
-                          : Colors.grey[800],
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'المدخلات',
+                  key: FeasibilityTutorial.defaultValuesTitleKey,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withValues(alpha: 0.9)
+                        : Colors.grey[800],
                   ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      key: FeasibilityTutorial.defaultValuesButtonKey,
-                      onTap: () => _setDefaultValues(controller),
-                      borderRadius: BorderRadius.circular(8.r),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 6.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Text(
-                          'المدخلات الافتراضية',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
+                ),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    key: FeasibilityTutorial.defaultValuesButtonKey,
+                    onTap: () => _setDefaultValues(controller),
+                    borderRadius: BorderRadius.circular(8.r),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Text(
+                        'المدخلات الافتراضية',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
 

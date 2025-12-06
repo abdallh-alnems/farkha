@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class AnalyticsService extends GetxService {
@@ -6,12 +7,26 @@ class AnalyticsService extends GetxService {
 
   Future<AnalyticsService> init() async {
     analytics = FirebaseAnalytics.instance;
+
+    // Enable analytics collection
     await analytics.setAnalyticsCollectionEnabled(true);
+
+    // Log app open once during initialization
+    await analytics.logAppOpen();
+
+    // Set user properties for better tracking
+    await analytics.setUserProperty(name: 'app_version', value: '5.2.8');
+
+    debugPrint('✅ Firebase Analytics initialized');
     return this;
   }
 
-  Future<void> logAppOpen() async {
-    await analytics.logAppOpen();
+  Future<void> logEvent({
+    required String name,
+    Map<String, Object>? parameters,
+  }) async {
+    await analytics.logEvent(name: name, parameters: parameters);
+    debugPrint('📊 Analytics Event: $name');
   }
 
   Future<void> logScreenView({

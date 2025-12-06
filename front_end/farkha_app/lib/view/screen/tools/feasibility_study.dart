@@ -52,8 +52,10 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
 
       // تأخير قصير للتأكد من إخفاء الاعلانات
       Future.delayed(const Duration(milliseconds: 100), () {
+        if (!mounted) return;
         // إظهار الـ tutorial مع callback عند الانتهاء
         FeasibilityTutorial.showTutorial(
+          // ignore: use_build_context_synchronously
           context,
           onTutorialComplete: () {
             if (mounted) {
@@ -96,8 +98,9 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
         // إلغاء الشرح عند الضغط على زر الرجوع
         if (_isTutorialActive) {
           FeasibilityTutorial.cancelTutorial();
@@ -105,7 +108,6 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
             _isTutorialActive = false;
           });
         }
-        return true; // السماح بالرجوع
       },
       child: Scaffold(
         appBar: const CustomAppBar(text: 'دراسة جدوي'),

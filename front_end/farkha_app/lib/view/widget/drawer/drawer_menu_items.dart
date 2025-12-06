@@ -12,8 +12,11 @@ class DrawerMenuItems extends StatelessWidget {
 
   void _handleShareApp(BuildContext context) {
     Navigator.pop(context);
-    Share.share(
-      'حمل تطبيق فرخة \n https://play.google.com/store/apps/details?id=ni.nims.frkha',
+    SharePlus.instance.share(
+      ShareParams(
+        text:
+            'حمل تطبيق فرخة \n https://play.google.com/store/apps/details?id=ni.nims.frkha',
+      ),
     );
   }
 
@@ -41,29 +44,27 @@ class DrawerMenuItems extends StatelessWidget {
           onTap: () => _handleShareApp(context),
           title: 'مشاركة التطبيق',
           icon: Icons.share,
-          color: const Color(0xFF2196F3), // أزرق فاتح
+          color: const Color(0xFF2196F3),
         ),
         DrawerItem(
           onTap: () => _handleOpenGmail(context),
           title: 'البريد الإلكتروني',
           icon: Icons.mail,
-          color: const Color(0xFFE91E63), // وردي/أحمر فاتح
+          color: const Color(0xFFE91E63),
         ),
         DrawerItem(
           onTap: () => _handleSuggestion(context),
           title: 'اقتراح',
           icon: Icons.lightbulb,
-          color: const Color(0xFFFF9800), // برتقالي
+          color: const Color(0xFFFF9800),
         ),
         DrawerItem(
           onTap: () => _handleRateApp(context),
           title: 'قيمنا ',
           icon: Icons.star,
-          color: const Color(0xFFFFC107), // ذهبي/أصفر
+          color: const Color(0xFFFFC107),
         ),
       ],
     );
   }
 }
-
-

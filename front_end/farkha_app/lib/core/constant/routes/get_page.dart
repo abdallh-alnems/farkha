@@ -1,12 +1,9 @@
 import 'package:get/get.dart';
 
 import '../../../logic/bindings/home_binding.dart';
-import '../../../test.dart';
-import '../../../test2.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
-import '../../../view/widget/drawer/drawer.dart';
 import '../../../view/widget/drawer/suggestion.dart';
 import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
@@ -101,7 +98,7 @@ List<GetPage<dynamic>> pages = [
   GetPage(name: AppRoute.articleDetail, page: () => const ArticleDetail()),
 
   // ! feasibility study
-  GetPage(name: AppRoute.feasibilityStudy, page: () => FeasibilityStudy()),
+  GetPage(name: AppRoute.feasibilityStudy, page: () => const FeasibilityStudy()),
 
   GetPage(name: AppRoute.chickenDensity, page: () => const ChickenDensity()),
 

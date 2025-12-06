@@ -36,7 +36,7 @@ class ArticleDetailController extends GetxController {
     String text,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     List<TableRow> rows = [];
 
     rows.add(
@@ -47,16 +47,16 @@ class ArticleDetailController extends GetxController {
             child: Text(
               text,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                  ),
+                color: colorScheme.onSurface,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
           Text(
             "العمر باليوم",
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineMedium?.copyWith(color: colorScheme.onSurface),
             textAlign: TextAlign.center,
           ),
         ],
@@ -71,19 +71,13 @@ class ArticleDetailController extends GetxController {
               padding: const EdgeInsets.symmetric(vertical: 7).r,
               child: Text(
                 "${consumptions[i]}",
-                style: TextStyle(
-                  fontSize: 19.sp,
-                  color: colorScheme.onSurface,
-                ),
+                style: TextStyle(fontSize: 19.sp, color: colorScheme.onSurface),
                 textAlign: TextAlign.center,
               ),
             ),
             Text(
               '${i + 1}',
-              style: TextStyle(
-                fontSize: 19.sp,
-                color: colorScheme.onSurface,
-              ),
+              style: TextStyle(fontSize: 19.sp, color: colorScheme.onSurface),
               textAlign: TextAlign.center,
             ),
           ],
@@ -97,7 +91,7 @@ class ArticleDetailController extends GetxController {
   List<Widget> getTableWidgets(String articleId, BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     List<Widget> widgets = [];
 
     // جدول درجات الحرارة (id = 14)
@@ -108,12 +102,13 @@ class ArticleDetailController extends GetxController {
             const SizedBox(height: 7),
             Container(
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkSurfaceElevatedColor
-                    : AppColors.lightSurfaceColor,
+                color:
+                    isDark
+                        ? AppColors.darkSurfaceElevatedColor
+                        : AppColors.lightSurfaceColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: colorScheme.outline.withOpacity(0.3),
+                  color: colorScheme.outline.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -123,11 +118,11 @@ class ArticleDetailController extends GetxController {
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   border: TableBorder(
                     horizontalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                     verticalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -152,12 +147,13 @@ class ArticleDetailController extends GetxController {
             const SizedBox(height: 7),
             Container(
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkSurfaceElevatedColor
-                    : AppColors.lightSurfaceColor,
+                color:
+                    isDark
+                        ? AppColors.darkSurfaceElevatedColor
+                        : AppColors.lightSurfaceColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: colorScheme.outline.withOpacity(0.3),
+                  color: colorScheme.outline.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -167,11 +163,11 @@ class ArticleDetailController extends GetxController {
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   border: TableBorder(
                     horizontalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                     verticalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -192,12 +188,13 @@ class ArticleDetailController extends GetxController {
             const SizedBox(height: 7),
             Container(
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkSurfaceElevatedColor
-                    : AppColors.lightSurfaceColor,
+                color:
+                    isDark
+                        ? AppColors.darkSurfaceElevatedColor
+                        : AppColors.lightSurfaceColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: colorScheme.outline.withOpacity(0.3),
+                  color: colorScheme.outline.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -207,11 +204,11 @@ class ArticleDetailController extends GetxController {
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   border: TableBorder(
                     horizontalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                     verticalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),
@@ -232,12 +229,13 @@ class ArticleDetailController extends GetxController {
             const SizedBox(height: 7),
             Container(
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkSurfaceElevatedColor
-                    : AppColors.lightSurfaceColor,
+                color:
+                    isDark
+                        ? AppColors.darkSurfaceElevatedColor
+                        : AppColors.lightSurfaceColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: colorScheme.outline.withOpacity(0.3),
+                  color: colorScheme.outline.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -247,11 +245,11 @@ class ArticleDetailController extends GetxController {
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   border: TableBorder(
                     horizontalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                     verticalInside: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                       width: 1,
                     ),
                   ),

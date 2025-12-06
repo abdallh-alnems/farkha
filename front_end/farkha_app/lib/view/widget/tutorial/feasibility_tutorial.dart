@@ -54,7 +54,6 @@ class FeasibilityTutorial {
         !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
 
     if (!shouldShowTutorial) {
-      print('Tutorial already seen and not in test mode, skipping');
       return Future.value();
     }
 
@@ -67,7 +66,7 @@ class FeasibilityTutorial {
 
     _tutorial = TutorialCoachMark(
       targets: targets,
-      colorShadow: Colors.black.withOpacity(0.3), // تقليل لون الظل
+      colorShadow: Colors.black.withValues(alpha: 0.3), // تقليل لون الظل
       textSkip: "تخطي",
       textStyleSkip: TextStyle(color: isDark ? Colors.white : Colors.black),
       paddingFocus: 0, // أصغر قيمة ممكنة
@@ -200,9 +199,6 @@ class FeasibilityTutorial {
     // حفظ حالة المشاهدة فقط إذا لم يكن في وضع الاختبار
     if (!TestModeManager.shouldShowTutorialEveryTime) {
       myServices.getStorage.write('feasibility_tutorial_seen', true);
-      print('Tutorial completed and saved');
-    } else {
-      print('Tutorial completed (test mode - not saving)');
     }
 
     // استدعاء callback إذا كان موجود
@@ -213,7 +209,6 @@ class FeasibilityTutorial {
   static void resetTutorial() {
     final myServices = Get.find<MyServices>();
     myServices.getStorage.remove('feasibsility_tutorial_seen');
-    print('Tutorial reset - will show on next visit');
   }
 
   // دالة لإلغاء الشرح عند الخروج من الصفحة
@@ -227,10 +222,8 @@ class FeasibilityTutorial {
           // إذا لم يعمل skip()، ببساطة نزيل المرجع
         }
         _tutorial = null;
-        print('Feasibility tutorial cancelled');
       }
-    } catch (e) {
-      print('Error cancelling feasibility tutorial: $e');
+    } catch (_) {
       _tutorial = null;
     }
   }

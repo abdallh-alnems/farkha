@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import '../../logic/controller/get_min_version.dart';
@@ -24,14 +25,18 @@ class MyServices extends GetxService {
     Get.put<GetStorage>(getStorage, permanent: true);
     Get.put(DarkLightService(), permanent: true);
 
-    // Defer ads SDK initialization to after first frame to avoid blocking startup
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      MobileAds.instance.initialize();
-    });
+    // Initialize Firebase - handle if already initialized by native plugin
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } catch (e) {
+      // Firebase already initialized by google-services plugin, ignore
+      debugPrint('Firebase already initialized: $e');
+    }
 
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    // Initialize Crashlytics
+    await _initCrashlytics();
 
     await initializeDateFormatting('ar');
 
@@ -45,6 +50,25 @@ class MyServices extends GetxService {
 
     return this;
   }
+
+  /// Initialize Firebase Crashlytics for crash reporting
+  Future<void> _initCrashlytics() async {
+    // Disable in debug mode to avoid noise during development
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+      !kDebugMode,
+    );
+
+    // Capture Flutter framework errors
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+    // Capture async errors not caught by Flutter
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+
+    debugPrint('✅ Firebase Crashlytics initialized');
+  }
 }
 
 Future<void> initialServices() async {
@@ -52,6 +76,5 @@ Future<void> initialServices() async {
   await Get.putAsync(() => MyServices().init());
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // Enable modern edge-to-edge UI for Flutter
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // Edge-to-edge is handled by native Android styles (values-v35/styles.xml)
 }

@@ -1,9 +1,9 @@
 class TestModeManager {
   static const bool _isAppInDevelopment = false;
 
-  static const bool _isAdsInTestMode = true;
+  static const bool _isAdsInTestMode = false;
 
-  static const bool _disableToolUsageTracking = true;
+  static const bool _disableToolUsageTracking = false;
 
   static const bool _showTutorialEveryTime = false;
 

@@ -37,7 +37,7 @@ class DrawerThemeToggle extends StatelessWidget {
           children: [
             Icon(
               Icons.light_mode,
-              color: isDark ? sunColor.withOpacity(0.4) : sunColor,
+              color: isDark ? sunColor.withValues(alpha: 0.4) : sunColor,
               size: 24,
             ),
             const SizedBox(width: 12),
@@ -49,7 +49,7 @@ class DrawerThemeToggle extends StatelessWidget {
             const SizedBox(width: 12),
             Icon(
               Icons.dark_mode,
-              color: isDark ? moonColor : moonColor.withOpacity(0.4),
+              color: isDark ? moonColor : moonColor.withValues(alpha: 0.4),
               size: 24,
             ),
           ],

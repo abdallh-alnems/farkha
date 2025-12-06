@@ -35,21 +35,21 @@ class _AgeDropdownState extends State<AgeDropdown> {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.7)),
+          borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.7)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.7)),
+          borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.7)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.7)),
+          borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.7)),
         ),
       ),
       dropdownColor: colorScheme.surface,
       style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
       iconEnabledColor: colorScheme.onSurface,
-      iconDisabledColor: colorScheme.onSurface.withOpacity(0.5),
+      iconDisabledColor: colorScheme.onSurface.withValues(alpha: 0.5),
       items:
           List.generate(widget.maxAge, (index) => index + 1).map((age) {
             return DropdownMenuItem<int>(

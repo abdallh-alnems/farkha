@@ -33,9 +33,6 @@ class CustomizePricesTutorial {
         !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
 
     if (!shouldShowTutorial) {
-      print(
-        'Customize prices tutorial already seen and not in test mode, skipping',
-      );
       return Future.value();
     }
 
@@ -48,7 +45,7 @@ class CustomizePricesTutorial {
 
     _tutorial = TutorialCoachMark(
       targets: targets,
-      colorShadow: Colors.black.withOpacity(0.3),
+      colorShadow: Colors.black.withValues(alpha: 0.3),
       textSkip: "تخطي",
       textStyleSkip: TextStyle(
         color: isDark ? Colors.white : Colors.black,
@@ -128,9 +125,6 @@ class CustomizePricesTutorial {
     // حفظ حالة المشاهدة فقط إذا لم يكن في وضع الاختبار
     if (!TestModeManager.shouldShowTutorialEveryTime) {
       myServices.getStorage.write('customize_prices_tutorial_seen', true);
-      print('Customize prices tutorial completed and saved');
-    } else {
-      print('Customize prices tutorial completed (test mode - not saving)');
     }
 
     // استدعاء callback إذا كان موجود
@@ -141,7 +135,6 @@ class CustomizePricesTutorial {
   static void resetTutorial() {
     final myServices = Get.find<MyServices>();
     myServices.getStorage.remove('customize_prices_tutorial_seen');
-    print('Customize prices tutorial reset - will show on next visit');
   }
 
   // دالة لإلغاء الشرح عند الخروج من الصفحة
@@ -155,10 +148,8 @@ class CustomizePricesTutorial {
           // إذا لم يعمل skip()، ببساطة نزيل المرجع
         }
         _tutorial = null;
-        print('Customize prices tutorial cancelled');
       }
-    } catch (e) {
-      print('Error cancelling customize prices tutorial: $e');
+    } catch (_) {
       _tutorial = null;
     }
   }

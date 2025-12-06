@@ -179,21 +179,13 @@ class FeasibilityController extends GetxController {
   }
 
   void toggleInputsVisibility() {
-    print(
-      "toggleInputsVisibility called - showInputs: ${showInputs.value}, showResults: ${showResults.value}",
-    );
     showInputs.value = !showInputs.value;
     if (showInputs.value) {
       showResults.value = false; // إخفاء النتائج عند إظهار المدخلات
-      print("Hiding results, showing inputs");
     }
-    print(
-      "After toggle - showInputs: ${showInputs.value}, showResults: ${showResults.value}",
-    );
   }
 
   void calculateFeasibility() async {
-    print("Starting calculation...");
     showResults.value = true;
     showInputs.value = false; // إخفاء المدخلات عند الحساب
 
@@ -212,21 +204,16 @@ class FeasibilityController extends GetxController {
       // Update prices and default values from controllers
       updatePrices();
       updateDefaultValues();
-      print(
-        "Prices updated: ${feasibilityModel.chickenSalePrice}, ${feasibilityModel.chickPrice}",
-      );
 
       int chickenCount;
 
       if (isChickenCountMode.value) {
         // Calculate based on chicken count
         chickenCount = int.parse(countController.text);
-        print("Chicken count mode: $chickenCount");
       } else {
         // Calculate based on budget
         double budget = double.parse(budgetController.text);
         chickenCount = _calculateChickenCountFromBudget(budget);
-        print("Budget mode: $budget -> $chickenCount chickens");
       }
 
       int deadChickens = (chickenCount * mortalityRate.value / 100).round();
@@ -257,10 +244,8 @@ class FeasibilityController extends GetxController {
         profit,
       );
 
-      print("Results updated, calling update()");
       update();
-    } catch (e) {
-      print("Error in calculation: $e");
+    } catch (_) {
       statusRequest = StatusRequest.failure;
       update();
     }

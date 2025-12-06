@@ -22,11 +22,11 @@ class CustomDotControllerOnBoarding extends GetView<OnBoardingControllerImp> {
                 (index) => AnimatedContainer(
                   margin: const EdgeInsets.only(right: 7),
                   duration: const Duration(milliseconds: 500),
-                  width: controller.currentPage == index ? 23 : 7,
+                  width: controller.currentPage.value == index ? 23 : 7,
                   height: 7,
                   decoration: BoxDecoration(
                     color:
-                        controller.currentPage == index
+                        controller.currentPage.value == index
                             ? AppColors.primaryColor
                             : AppColors.primaryColor.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(5),

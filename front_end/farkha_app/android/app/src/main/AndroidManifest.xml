@@ -48,6 +48,11 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-8595701567488603~3243480822"/>
 
+        <!-- Meta (Facebook) Audience Network - for AdMob Mediation -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="952806217019252"/>
+
         <!-- Firebase Cloud Messaging -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

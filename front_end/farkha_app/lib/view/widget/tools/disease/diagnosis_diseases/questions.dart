@@ -44,20 +44,27 @@ class QuestionStep extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 39),
-        ...options.map(
-          (option) => Obx(
-            () => RadioListTile<String>(
-              title: Text(option),
-              value: option,
-              groupValue: controller.answers[question.name] ?? "",
-              onChanged: (value) {
-                if (value != null) {
-                  controller.setAnswer(question.name, value);
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    controller.nextStep();
-                  });
-                }
-              },
+        Obx(
+          () => RadioGroup<String>(
+            groupValue: controller.answers[question.name] ?? "",
+            onChanged: (value) {
+              if (value != null) {
+                controller.setAnswer(question.name, value);
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  controller.nextStep();
+                });
+              }
+            },
+            child: Column(
+              children:
+                  options
+                      .map(
+                        (option) => RadioListTile<String>(
+                          title: Text(option),
+                          value: option,
+                        ),
+                      )
+                      .toList(),
             ),
           ),
         ),

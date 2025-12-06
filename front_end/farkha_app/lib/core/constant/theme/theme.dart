@@ -41,7 +41,7 @@ class AppTheme {
     brightness: Brightness.light,
     primary: AppColors.primaryColor,
     secondary: AppColors.secondaryColor,
-    background: AppColors.appBackGroundColor,
+    surface: AppColors.appBackGroundColor,
   );
 
   ColorScheme get _darkColorScheme => ColorScheme.fromSeed(
@@ -49,7 +49,7 @@ class AppTheme {
     brightness: Brightness.dark,
     primary: AppColors.darkPrimaryColor,
     secondary: AppColors.darkSecondaryColor,
-    background: AppColors.darkBackGroundColor,
+    surface: AppColors.darkBackGroundColor,
   );
 
   AppBarTheme _appBarTheme({

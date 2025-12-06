@@ -18,7 +18,6 @@ class ArticleDetail extends StatelessWidget {
     final Map<String, dynamic> arguments =
         Get.arguments as Map<String, dynamic>;
     final String articleId = arguments['id'].toString();
-    final String articleTitle = arguments['title'] ?? 'المقال';
 
     final ArticleDetailController controller = Get.put(
       ArticleDetailController(),
@@ -26,13 +25,13 @@ class ArticleDetail extends StatelessWidget {
     controller.getArticleDetail(articleId);
 
     return Scaffold(
-      appBar: CustomAppBar(text: articleTitle),
+      appBar: CustomAppBar(text: arguments['title']),
       body: GetBuilder<ArticleDetailController>(
         builder: (controller) {
           return HandlingDataView(
             statusRequest: controller.statusRequest,
             widget: SingleChildScrollView(
-              padding: const EdgeInsets.all(17),
+              padding: const EdgeInsets.symmetric(horizontal: 13,vertical: 9),
               child: Column(
                 children: [
                   const AdNativeWidget(),

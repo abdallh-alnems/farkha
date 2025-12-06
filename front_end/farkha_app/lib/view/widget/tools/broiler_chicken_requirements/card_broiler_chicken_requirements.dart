@@ -26,8 +26,8 @@ class CardBroilerChickenRequirements extends StatelessWidget {
         gradientColors.isNotEmpty
             ? gradientColors
             : [
-              AppColors.primaryColor.withOpacity(0.8),
-              AppColors.primaryColor.withOpacity(0.5),
+              AppColors.primaryColor.withValues(alpha: 0.8),
+              AppColors.primaryColor.withValues(alpha: 0.5),
             ];
     final bool useGradient = gradientColors.isNotEmpty;
 
@@ -48,17 +48,17 @@ class CardBroilerChickenRequirements extends StatelessWidget {
         border: Border.all(
           color:
               (useGradient
-                  ? colors.last.withOpacity(0.25)
+                  ? colors.last.withValues(alpha: 0.25)
                   : (isDark 
-                      ? AppColors.darkOutlineColor.withOpacity(0.5)
-                      : AppColors.primaryColor.withOpacity(0.12))),
+                      ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                      : AppColors.primaryColor.withValues(alpha: 0.12))),
           width: 1.5,
         ),
         boxShadow: useGradient || isDark ? [
           BoxShadow(
             color:
                 (useGradient
-                    ? colors.last.withOpacity(0.2)
+                    ? colors.last.withValues(alpha: 0.2)
                     : Colors.transparent),
             blurRadius: 16,
             offset: const Offset(0, 4),
@@ -66,7 +66,7 @@ class CardBroilerChickenRequirements extends StatelessWidget {
           ),
         ] : [
           BoxShadow(
-            color: AppColors.primaryColor.withOpacity(0.08),
+            color: AppColors.primaryColor.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 4),
             spreadRadius: 0,
@@ -85,7 +85,7 @@ class CardBroilerChickenRequirements extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color:
                   useGradient
-                      ? Colors.white.withOpacity(0.95)
+                      ? Colors.white.withValues(alpha: 0.95)
                       : colorScheme.onSurface,
               fontWeight: FontWeight.w600,
               letterSpacing: 0.1,
@@ -112,8 +112,8 @@ class CardBroilerChickenRequirements extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     (useGradient
-                        ? Colors.white.withOpacity(0.18)
-                        : colorScheme.primary.withOpacity(0.1)),
+                        ? Colors.white.withValues(alpha: 0.18)
+                        : colorScheme.primary.withValues(alpha: 0.1)),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -122,8 +122,8 @@ class CardBroilerChickenRequirements extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color:
                       useGradient
-                          ? Colors.white.withOpacity(0.9)
-                          : colorScheme.onSurface.withOpacity(0.7),
+                          ? Colors.white.withValues(alpha: 0.9)
+                          : colorScheme.onSurface.withValues(alpha: 0.7),
                   fontWeight: FontWeight.w500,
                   fontSize: 11,
                 ),
@@ -150,14 +150,14 @@ class _IconBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color:
             useGradient
-                ? Colors.white.withOpacity(0.22)
-                : colorScheme.primary.withOpacity(0.1),
+                ? Colors.white.withValues(alpha: 0.22)
+                : colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color:
               useGradient
-                  ? Colors.white.withOpacity(0.28)
-                  : colorScheme.primary.withOpacity(0.18),
+                  ? Colors.white.withValues(alpha: 0.28)
+                  : colorScheme.primary.withValues(alpha: 0.18),
           width: 1.5,
         ),
       ),
