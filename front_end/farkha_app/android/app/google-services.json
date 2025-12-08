@@ -12,7 +12,20 @@
           "package_name": "ni.nims.frkha"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "159521160544-ac9jmah04pfebol1ltpqqbsa6jtgr5qo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ni.nims.frkha",
+            "certificate_hash": "d27637b4446ceedfc1beed0079e43eb86a2658d4"
+          }
+        },
+        {
+          "client_id": "159521160544-a50bd58sqojqi4gu07ejinjab17asct9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAkcXEc6ICXvD0W4GMHZ9JDZfURYJSUWLQ"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159521160544-a50bd58sqojqi4gu07ejinjab17asct9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "159521160544-nrvehq83c0ne2fsd6lvrj2502dqrrpte.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.farkhaApp"
+              }
+            }
+          ]
         }
       },
       "admob_app_id": "ca-app-pub-8595701567488603~3243480822"

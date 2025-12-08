@@ -63,8 +63,18 @@ class AppTheme {
     centerTitle: true,
     titleTextStyle: TextStyle(fontSize: 25.sp, color: titleColor),
     systemOverlayStyle: SystemUiOverlayStyle(
+      // Status bar - transparent for edge-to-edge
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: overlayBrightness,
+      statusBarBrightness:
+          overlayBrightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
+      // Navigation bar - transparent for edge-to-edge
+      systemNavigationBarColor: Colors.transparent,
       systemNavigationBarIconBrightness: overlayBrightness,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
     ),
   );
 

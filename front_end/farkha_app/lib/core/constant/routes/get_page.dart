@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 
 import '../../../logic/bindings/home_binding.dart';
+import '../../../view/screen/auth/login_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
-import '../../../view/widget/drawer/suggestion.dart';
 import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
 import '../../../view/screen/prices/customize_prices_screen.dart';
@@ -36,6 +36,7 @@ import '../../../view/screen/tools/total_feed_consumption.dart';
 import '../../../view/screen/tools/total_revenue.dart';
 import '../../../view/screen/tools/vaccination_schedule.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
+import '../../../view/widget/drawer/suggestion.dart';
 import '../../middleware/onboarding_middleware.dart';
 import 'route.dart';
 
@@ -52,6 +53,9 @@ List<GetPage<dynamic>> pages = [
   // GetPage(name: AppRoute.test, page: () => const Test()),
   // GetPage(name: AppRoute.test2, page: () => const Test2()),
   GetPage(name: AppRoute.onBoarding, page: () => const OnBoarding()),
+
+  // ================================= auth ====================================
+  GetPage(name: AppRoute.login, page: () => const LoginScreen()),
 
   // ================================ prices ===================================
   GetPage(name: AppRoute.pricesByType, page: () => const PricesByType()),
@@ -74,7 +78,6 @@ List<GetPage<dynamic>> pages = [
   ),
 
   // ================================ drawer ==================================
-
   GetPage(name: AppRoute.suggestion, page: () => const Suggestion()),
 
   // ========================== view follow up tools ===========================
@@ -98,7 +101,10 @@ List<GetPage<dynamic>> pages = [
   GetPage(name: AppRoute.articleDetail, page: () => const ArticleDetail()),
 
   // ! feasibility study
-  GetPage(name: AppRoute.feasibilityStudy, page: () => const FeasibilityStudy()),
+  GetPage(
+    name: AppRoute.feasibilityStudy,
+    page: () => const FeasibilityStudy(),
+  ),
 
   GetPage(name: AppRoute.chickenDensity, page: () => const ChickenDensity()),
 

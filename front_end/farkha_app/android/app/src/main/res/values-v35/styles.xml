@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme for Android 15+ (API 35+) - Edge-to-edge is enabled by default -->
-    <!-- Deprecated APIs removed: statusBarColor, navigationBarColor, navigationBarDividerColor, windowLayoutInDisplayCutoutMode -->
+    <!-- Theme for Android 15+ (API 35+) -->
+    <!-- Edge-to-edge is enforced automatically for apps targeting SDK 35+ -->
+    <!-- Do NOT use deprecated attributes: statusBarColor, navigationBarColor, navigationBarDividerColor -->
+    <!-- windowLayoutInDisplayCutoutMode is also deprecated in API 35 -->
+    
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">false</item>
+    </style>
+    
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
-        <!-- Only keep non-deprecated attributes -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <!-- Disable contrast enforcement to avoid forced opaque bars -->
-        <item name="android:enforceNavigationBarContrast">false</item>
-        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">false</item>
     </style>
 </resources>
-

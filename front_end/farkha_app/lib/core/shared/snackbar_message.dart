@@ -11,12 +11,18 @@ class SnackbarMessage {
     String message, {
     required IconData icon,
   }) {
+    // Ensure context is still mounted and Overlay is available
+    if (!context.mounted) return;
+
+    final overlay = Overlay.maybeOf(context);
+    if (overlay == null) return;
+
     if (_isShowing) {
       _isShowing = false;
     }
 
     _isShowing = true;
-    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
 
     OverlayEntry? overlayEntry;
     final ValueNotifier<bool> isVisible = ValueNotifier<bool>(false);
@@ -91,7 +97,7 @@ class SnackbarMessage {
           ),
     );
 
-    Overlay.of(context).insert(overlayEntry);
+    overlay.insert(overlayEntry);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       isVisible.value = true;

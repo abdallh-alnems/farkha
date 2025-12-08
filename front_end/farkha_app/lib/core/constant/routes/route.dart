@@ -4,6 +4,9 @@ class AppRoute {
   static const String adad = "/adad";
   static const String onBoarding = "/onboarding";
 
+  // ================================= auth ====================================
+  static const String login = "/login";
+
   // ============================ prices and cycle =============================
   // ! prices
   static const String pricesByType = "/pricesByType";

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/constant/routes/route.dart';
+import '../../core/constant/theme/colors.dart';
 import '../../core/package/alert_exit_app.dart';
 import '../../core/package/upgrade.dart';
 import '../../core/services/initialization.dart';
@@ -93,10 +95,59 @@ class _HomeState extends State<Home> {
               viewAllKey: HomeTutorial.viewAllKey,
               toolsScrollViewKey: HomeTutorial.toolsScrollViewKey,
             ),
+
+            // Test Login Button
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: _buildLoginTestButton(context),
+            ),
           ],
         ),
       ),
       bottomNavigationBar: _isTutorialActive ? null : const AdBannerWidget(),
+    );
+  }
+
+  Widget _buildLoginTestButton(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          colors: [AppColors.primaryColor, AppColors.oceanGradientStart],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryColor.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Get.toNamed(AppRoute.login),
+          borderRadius: BorderRadius.circular(16),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.login_rounded, color: Colors.white, size: 24),
+                SizedBox(width: 12),
+                Text(
+                  'تجربة صفحة تسجيل الدخول',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

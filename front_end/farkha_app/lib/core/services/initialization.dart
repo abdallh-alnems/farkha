@@ -76,5 +76,11 @@ Future<void> initialServices() async {
   await Get.putAsync(() => MyServices().init());
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // Edge-to-edge is handled by native Android styles (values-v35/styles.xml)
+
+  // Enable edge-to-edge mode for Android 15+ compatibility
+  // This works alongside native enableEdgeToEdge() in MainActivity.kt
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+  );
 }

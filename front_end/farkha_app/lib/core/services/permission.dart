@@ -80,16 +80,22 @@ class PermissionController extends GetxController {
   }
 
   void _showSettingsSnackbar(String title, String message) {
-    final context = Get.context;
-    if (context != null) {
-      SnackbarMessage.show(context, '$title: $message', icon: Icons.info);
-    }
+    // Delay showing snackbar until the UI is fully built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = Get.context;
+      if (context != null && context.mounted) {
+        SnackbarMessage.show(context, '$title: $message', icon: Icons.info);
+      }
+    });
   }
 
   @override
   void onInit() {
     super.onInit();
-    _initializeAllPermissions();
+    // Delay permission initialization to ensure UI is ready for snackbar display
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeAllPermissions();
+    });
   }
 
   Future<void> _initializeAllPermissions() async {
