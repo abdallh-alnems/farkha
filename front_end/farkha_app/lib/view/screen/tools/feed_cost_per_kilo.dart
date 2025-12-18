@@ -17,8 +17,8 @@ class FeedCostPerKiloScreen extends StatelessWidget {
   );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _onCalculatePressed(BuildContext context) {
-    controller.calculateFeedCostPerKilo(context);
+  void _onCalculatePressed() {
+    controller.calculateFeedCostPerKilo();
   }
 
   @override
@@ -58,7 +58,7 @@ class FeedCostPerKiloScreen extends StatelessWidget {
               SizedBox(height: 24.h),
               ToolsButton(
                 text: 'احسب تكلفة العلف لكل طن',
-                onPressed: () => _onCalculatePressed(context),
+                onPressed: _onCalculatePressed,
               ),
               SizedBox(height: 32.h),
               Obx(() {

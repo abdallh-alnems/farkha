@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/services/initialization.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class ChickenDensityController extends GetxController {
@@ -19,16 +18,14 @@ class ChickenDensityController extends GetxController {
   final RxString totalGroundAreaResult = ''.obs;
   final RxString batteryCageAreaResult = ''.obs;
 
-  void calculateAreas(BuildContext context) {
+  void calculateAreas() {
     if (chickenCountTextController.text.isEmpty ||
         int.tryParse(chickenCountTextController.text) == null) {
-      SnackbarMessage.show(context, 'الرجاء إدخال عدد صحيح', icon: Icons.error);
       shouldDisplayResults.value = false;
       return;
     }
 
     if (selectedAgeCategory.value == null) {
-      SnackbarMessage.show(context, 'الرجاء اختيار الأسبوع', icon: Icons.error);
       shouldDisplayResults.value = false;
       return;
     }

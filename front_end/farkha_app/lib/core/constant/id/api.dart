@@ -8,6 +8,7 @@ class Api {
   static final String _read = '$_serverName/app/read';
   static final String _cardPrices = '$_read/card_prices';
   static final String _articles = '$_read/articles';
+  static final String _auth = '$_serverName/app/auth';
 
   // ================================= prices ==================================
   static String mainTypes = '$_read/main_types.php';
@@ -30,5 +31,9 @@ class Api {
   static String articleDetail = '$_articles/article_detail.php';
   static String articlesList = '$_articles/articles_list.php';
 
-
+  // ============================== authentication =============================
+  static String login = '$_auth/login.php';
+  static String updateName = '$_auth/update_name.php';
+  static String updatePhone = '$_auth/update_phone.php';
+  static String deleteAccount = '$_auth/delete_account.php';
 }

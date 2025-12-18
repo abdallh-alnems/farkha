@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class FeedCostPerBirdController extends GetxController {
@@ -22,46 +19,7 @@ class FeedCostPerBirdController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateFeedCostPerBird(BuildContext context) {
-    // التحقق من صحة كمية العلف
-    final feedValidation = InputValidation.validateAndFormatNumber(
-      totalFeedQuantity.value.toString(),
-    );
-    if (feedValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'كمية العلف: $feedValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة سعر العلف
-    final priceValidation = InputValidation.validateAndFormatNumber(
-      feedPricePerTon.value.toString(),
-    );
-    if (priceValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'سعر العلف: $priceValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة عدد الطيور
-    final birdsValidation = InputValidation.validateAndFormatNumber(
-      numberOfBirds.value.toString(),
-    );
-    if (birdsValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'عدد الطيور: $birdsValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateFeedCostPerBird() {
     // حساب إجمالي تكلفة العلف
     double totalFeedCost = totalFeedQuantity.value * feedPricePerTon.value;
 

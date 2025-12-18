@@ -35,7 +35,7 @@ class MainCategoriesAPI extends BaseAPI {
         $enhancedData = $data;
         $this->cache->set($cacheKey, $enhancedData);
         $this->sendSuccess($enhancedData, 'database');
-    }
+    }   
 }
 
 try {

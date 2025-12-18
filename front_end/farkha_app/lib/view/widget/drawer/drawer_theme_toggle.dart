@@ -58,5 +58,3 @@ class DrawerThemeToggle extends StatelessWidget {
     );
   }
 }
-
-

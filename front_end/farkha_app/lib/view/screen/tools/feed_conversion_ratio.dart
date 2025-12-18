@@ -22,7 +22,7 @@ class _FeedConversionRatioState extends State<FeedConversionRatio> {
   final _formKey = GlobalKey<FormState>();
 
   void _onCalculatePressed() {
-    widget.controller.calculateFCR(context);
+    widget.controller.calculateFCR();
   }
 
   @override

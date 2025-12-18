@@ -1,7 +1,7 @@
 name: farkha_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 5.5.0+28
+version: 5.8.2+31
 
 environment:
   sdk: ^3.7.2
@@ -30,14 +30,16 @@ dependencies:
 
   # Firebase Services
   firebase_core: ^4.2.1
+  firebase_auth: ^6.1.2
   firebase_analytics: ^12.0.4
   firebase_crashlytics: ^5.0.5
   firebase_messaging: ^16.0.2
   cloud_firestore: ^6.0.0
+  google_sign_in: ^7.2.0
 
   # Ads
   google_mobile_ads: ^6.0.0
-  gma_mediation_meta: ^1.4.3
+  gma_mediation_meta: ^1.5.0
 
   # Notifications
   flutter_local_notifications: ^19.5.0

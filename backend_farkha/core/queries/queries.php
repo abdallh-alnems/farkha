@@ -5,6 +5,7 @@ include_once __DIR__ . "/type_queries.php";
 include_once __DIR__ . "/article_queries.php";
 include_once __DIR__ . "/analytics_queries.php";
 include_once __DIR__ . "/suggestion_queries.php";
+include_once __DIR__ . "/user_queries.php";
 
 final class Queries {
     public static function getFeasibilityStudyPrices(): string {
@@ -69,6 +70,27 @@ final class Queries {
 
     public static function getSuggestionsListQuery(): string {
         return SuggestionQueries::fetchList();
+    }
+
+    // User Queries
+    public static function findUserByFirebaseUidQuery(): string {
+        return UserQueries::findByFirebaseUid();
+    }
+
+    public static function insertUserQuery(): string {
+        return UserQueries::insert();
+    }
+
+    public static function updateUserNameQuery(): string {
+        return UserQueries::updateName();
+    }
+
+    public static function updateUserPhoneQuery(): string {
+        return UserQueries::updatePhone();
+    }
+
+    public static function deleteUserByFirebaseUidQuery(): string {
+        return UserQueries::deleteByFirebaseUid();
     }
 }
 

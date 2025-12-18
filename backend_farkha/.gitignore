@@ -1,3 +1,3 @@
 *env.php
-*firebase_config.php
-
+*firebase_credentials.json
+*login_errors.log

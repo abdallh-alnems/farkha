@@ -10,7 +10,14 @@ import 'package:get_storage/get_storage.dart';
 /// Must be top-level function
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await NotificationService.instance.showNotification(message);
+  // التحقق من حالة الإشعارات قبل العرض
+  final storage = GetStorage();
+  final isNotificationsEnabled =
+      storage.read<bool>('notifications_enabled') ?? true;
+
+  if (isNotificationsEnabled) {
+    await NotificationService.instance.showNotification(message);
+  }
 }
 
 class NotificationService extends GetxService {
@@ -27,6 +34,7 @@ class NotificationService extends GetxService {
       'إشعارات تحديثات أسعار الدجاج والأخبار';
 
   static const String _notificationTypesKey = 'notification_enabled_types';
+  static const String _notificationsEnabledKey = 'notifications_enabled';
 
   Future<NotificationService> init() async {
     await _initializeLocalNotifications();
@@ -40,6 +48,14 @@ class NotificationService extends GetxService {
 
   Future<void> _restoreSubscriptions() async {
     final storage = GetStorage();
+    final isNotificationsEnabled =
+        storage.read<bool>(_notificationsEnabledKey) ?? true;
+
+    // إذا كانت الإشعارات معطلة، لا نعيد الاشتراك
+    if (!isNotificationsEnabled) {
+      return;
+    }
+
     final savedNotifications = storage.read<List<dynamic>>(
       _notificationTypesKey,
     );
@@ -97,7 +113,15 @@ class NotificationService extends GetxService {
 
   Future<void> _configureFirebaseMessaging() async {
     // Handle foreground messages
-    FirebaseMessaging.onMessage.listen(showNotification);
+    FirebaseMessaging.onMessage.listen((message) {
+      // التحقق من حالة الإشعارات قبل العرض
+      final storage = GetStorage();
+      final isNotificationsEnabled =
+          storage.read<bool>(_notificationsEnabledKey) ?? true;
+      if (isNotificationsEnabled) {
+        showNotification(message);
+      }
+    });
 
     // Handle background messages
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -110,10 +134,18 @@ class NotificationService extends GetxService {
     if (initialMessage != null) {
       _handleNotificationTap(initialMessage);
     }
-
   }
 
   Future<void> showNotification(RemoteMessage message) async {
+    // التحقق من حالة الإشعارات المحلية
+    final storage = GetStorage();
+    final isNotificationsEnabled =
+        storage.read<bool>(_notificationsEnabledKey) ?? true;
+
+    if (!isNotificationsEnabled) {
+      return; // لا نعرض الإشعار إذا كانت الإشعارات معطلة
+    }
+
     final notification = message.notification;
     final android = message.notification?.android;
 
@@ -165,5 +197,45 @@ class NotificationService extends GetxService {
       // Handle notification tap with data
       // You can navigate to specific screens based on data
     }
+  }
+
+  /// إيقاف/تفعيل الإشعارات داخلياً
+  Future<void> setNotificationsEnabled(bool enabled) async {
+    final storage = GetStorage();
+    storage.write(_notificationsEnabledKey, enabled);
+
+    if (enabled) {
+      // إعادة الاشتراك في جميع Topics المحفوظة
+      final savedNotifications = storage.read<List<dynamic>>(
+        _notificationTypesKey,
+      );
+
+      if (savedNotifications != null && savedNotifications.isNotEmpty) {
+        for (var topic in savedNotifications) {
+          await subscribeToTopic(topic.toString());
+        }
+      } else {
+        // إذا لم تكن هناك topics محفوظة، الاشتراك في الافتراضي
+        await subscribeToTopic('lhm_abyad');
+        storage.write(_notificationTypesKey, ['lhm_abyad']);
+      }
+    } else {
+      // إلغاء الاشتراك من جميع Topics
+      final savedNotifications = storage.read<List<dynamic>>(
+        _notificationTypesKey,
+      );
+
+      if (savedNotifications != null && savedNotifications.isNotEmpty) {
+        for (var topic in savedNotifications) {
+          await unsubscribeFromTopic(topic.toString());
+        }
+      }
+    }
+  }
+
+  /// التحقق من حالة تفعيل الإشعارات
+  bool isNotificationsEnabled() {
+    final storage = GetStorage();
+    return storage.read<bool>(_notificationsEnabledKey) ?? true;
   }
 }

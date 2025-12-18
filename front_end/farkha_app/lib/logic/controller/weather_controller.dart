@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../core/class/status_request.dart';
 import '../../core/functions/handing_data_controller.dart';
@@ -29,6 +30,18 @@ class WeatherController extends GetxController {
   }
 
   Future<void> getWeatherData() async {
+    // التحقق من حالة الموقع المحلية (من GetStorage)
+    final storage = GetStorage();
+    final isLocationEnabledLocally =
+        storage.read<bool>('location_enabled') ?? true;
+
+    // إذا كانت الموقع معطلة محلياً، لا نستخدم الموقع
+    if (!isLocationEnabledLocally) {
+      statusRequest = StatusRequest.failure;
+      update();
+      return;
+    }
+
     final hasPermission = await permission.checkAndRequestLocationPermission();
 
     if (hasPermission) {

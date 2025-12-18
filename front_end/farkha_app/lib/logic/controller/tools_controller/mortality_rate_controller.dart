@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class MortalityRateController extends GetxController {
@@ -20,33 +17,7 @@ class MortalityRateController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateMortalityRate(BuildContext context) {
-    // التحقق من صحة العدد الأولي
-    final initialValidation = InputValidation.validateAndFormatNumber(
-      initialCount.value.toString(),
-    );
-    if (initialValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'العدد الأولي: $initialValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة عدد النفوق
-    final deathsValidation = InputValidation.validateAndFormatNumber(
-      deaths.value.toString(),
-    );
-    if (deathsValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'عدد النفوق: $deathsValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateMortalityRate() {
     if (initialCount.value > 0) {
       mortalityRate.value = (deaths.value / initialCount.value) * 100;
     } else {

@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class BirdNetProfitController extends GetxController {
@@ -21,46 +18,7 @@ class BirdNetProfitController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateNetProfit(BuildContext context) {
-    // التحقق من صحة إجمالي المبيعات
-    final saleValidation = InputValidation.validateAndFormatNumber(
-      totalSale.value.toString(),
-    );
-    if (saleValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'إجمالي المبيعات: $saleValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة إجمالي التكاليف
-    final costValidation = InputValidation.validateAndFormatNumber(
-      totalCost.value.toString(),
-    );
-    if (costValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'إجمالي التكاليف: $costValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة عدد الطيور المباعة
-    final birdsValidation = InputValidation.validateAndFormatNumber(
-      soldBirds.value.toString(),
-    );
-    if (birdsValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'عدد الطيور المباعة: $birdsValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateNetProfit() {
     if (soldBirds.value > 0) {
       final totalProfit = totalSale.value - totalCost.value;
       netProfit.value = totalProfit / soldBirds.value;
@@ -69,7 +27,7 @@ class BirdNetProfitController extends GetxController {
     }
   }
 
-  void calculate(BuildContext context) {
-    calculateNetProfit(context);
+  void calculate() {
+    calculateNetProfit();
   }
 }

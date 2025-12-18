@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(LoginController());
+    // LoginController is already registered in AppBindings
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(

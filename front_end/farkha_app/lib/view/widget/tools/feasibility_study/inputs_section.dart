@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constant/theme/colors.dart';
-import '../../../../core/shared/snackbar_message.dart';
 import '../../../../logic/controller/tools_controller/feasibility_study_controller.dart';
 import '../../input_fields/input_field.dart';
 import '../../input_fields/three_input_fields.dart';
@@ -44,8 +43,14 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     !controller.isProfessionalMode.value
-                                        ? Colors.grey[800]
-                                        : Colors.grey[500],
+                                        ? (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey[800])
+                                        : (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey[500]
+                                            : Colors.grey[500]),
                               ),
                             ),
                           ),
@@ -93,8 +98,14 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     controller.isProfessionalMode.value
-                                        ? Colors.grey[800]
-                                        : Colors.grey[500],
+                                        ? (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey[800])
+                                        : (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey[500]
+                                            : Colors.grey[500]),
                               ),
                             ),
                           ),
@@ -103,9 +114,9 @@ class InputsSection extends StatelessWidget {
                     ),
                   ),
                 ),
-            
+
                 SizedBox(width: 15.w),
-            
+
                 // Second Toggle: Chicken Count/Financial Amount
                 Expanded(
                   child: Container(
@@ -122,8 +133,14 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     controller.isChickenCountMode.value
-                                        ? Colors.grey[800]
-                                        : Colors.grey[500],
+                                        ? (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey[800])
+                                        : (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey[500]
+                                            : Colors.grey[500]),
                               ),
                             ),
                           ),
@@ -171,8 +188,14 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     !controller.isChickenCountMode.value
-                                        ? Colors.grey[800]
-                                        : Colors.grey[500],
+                                        ? (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey[800])
+                                        : (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey[500]
+                                            : Colors.grey[500]),
                               ),
                             ),
                           ),
@@ -194,9 +217,10 @@ class InputsSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withValues(alpha: 0.9)
-                        : Colors.grey[800],
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withValues(alpha: 0.9)
+                            : Colors.grey[800],
                   ),
                 ),
                 Material(
@@ -251,8 +275,7 @@ class InputsSection extends StatelessWidget {
             Obx(
               () =>
                   controller.isProfessionalMode.value
-                      ? 
-                      ThreeInputFields(
+                      ? ThreeInputFields(
                         firstLabel: 'بادي (طن)',
                         secondLabel: 'نامي (طن)',
                         thirdLabel: 'ناهي (طن)',
@@ -260,8 +283,7 @@ class InputsSection extends StatelessWidget {
                         secondController: controller.namiPriceController,
                         thirdController: controller.nahiPriceController,
                       )
-                      : 
-                      InputField(
+                      : InputField(
                         label: 'متوسط العلف (طن)',
                         controller: controller.averageFeedPriceController,
                       ),
@@ -277,9 +299,10 @@ class InputsSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withValues(alpha: 0.9)
-                        : Colors.grey[800],
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withValues(alpha: 0.9)
+                            : Colors.grey[800],
                   ),
                 ),
                 Material(
@@ -415,43 +438,8 @@ class InputsSection extends StatelessWidget {
       return;
     }
 
-    // التحقق من أن الأسعار مملوءة
-    if (controller.isProfessionalMode.value) {
-      // في الوضع الاحترافي، تحقق من الأسعار الثلاثة
-      final badiPrice = int.tryParse(controller.badiPriceController.text);
-      if (badiPrice == null || badiPrice < 0) {
-        _showError(context, 'يرجى إدخال سعر صحيح للبادي');
-        return;
-      }
-
-      final namiPrice = int.tryParse(controller.namiPriceController.text);
-      if (namiPrice == null || namiPrice < 0) {
-        _showError(context, 'يرجى إدخال سعر صحيح للنامي');
-        return;
-      }
-
-      final nahiPrice = int.tryParse(controller.nahiPriceController.text);
-      if (nahiPrice == null || nahiPrice < 0) {
-        _showError(context, 'يرجى إدخال سعر صحيح للناهي');
-        return;
-      }
-    } else {
-      // في الوضع العادي، تحقق من متوسط سعر العلف فقط
-      final averageFeedPrice = int.tryParse(
-        controller.averageFeedPriceController.text,
-      );
-      if (averageFeedPrice == null || averageFeedPrice < 0) {
-        _showError(context, 'يرجى إدخال سعر صحيح لمتوسط العلف');
-        return;
-      }
-    }
-
     FocusScope.of(context).unfocus();
     controller.calculateFeasibility();
-  }
-
-  void _showError(BuildContext context, String message) {
-    SnackbarMessage.show(context, message, icon: Icons.error);
   }
 
   void _setDefaultValues(FeasibilityController controller) {

@@ -17,8 +17,8 @@ class FeedCostPerBirdScreen extends StatelessWidget {
   );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _onCalculatePressed(BuildContext context) {
-    controller.calculateFeedCostPerBird(context);
+  void _onCalculatePressed() {
+    controller.calculateFeedCostPerBird();
   }
 
   @override
@@ -56,7 +56,7 @@ class FeedCostPerBirdScreen extends StatelessWidget {
                 SizedBox(height: 24.h),
                 ToolsButton(
                   text: 'احسب تكلفة العلف لكل طائر',
-                  onPressed: () => _onCalculatePressed(context),
+                  onPressed: _onCalculatePressed,
                 ),
                 SizedBox(height: 32.h),
                 Obx(() {

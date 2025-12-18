@@ -21,8 +21,8 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen> {
   bool showResult = false;
   double? lastValidResult;
 
-  void _onCalculatePressed(BuildContext context) {
-    controller.calculateNetProfit(context);
+  void _onCalculatePressed() {
+    controller.calculateNetProfit();
     setState(() {
       showResult = true;
       lastValidResult = controller.netProfit.value;
@@ -69,7 +69,7 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen> {
               const SizedBox(height: 24),
               ToolsButton(
                 text: 'احسب الربح الصافي للطائر',
-                onPressed: () => _onCalculatePressed(context),
+                onPressed: _onCalculatePressed,
               ),
               const SizedBox(height: 32),
               if (showResult && lastValidResult != null)

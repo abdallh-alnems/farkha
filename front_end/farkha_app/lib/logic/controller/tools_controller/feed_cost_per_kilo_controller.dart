@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class FeedCostPerKiloController extends GetxController {
@@ -22,46 +19,7 @@ class FeedCostPerKiloController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateFeedCostPerKilo(BuildContext context) {
-    // التحقق من صحة كمية العلف المستهلكة
-    final feedValidation = InputValidation.validateAndFormatNumber(
-      totalFeedConsumed.value.toString(),
-    );
-    if (feedValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'كمية العلف المستهلكة: $feedValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة الوزن المباع
-    final weightValidation = InputValidation.validateAndFormatNumber(
-      totalWeightSold.value.toString(),
-    );
-    if (weightValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'الوزن المباع: $weightValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة سعر العلف
-    final priceValidation = InputValidation.validateAndFormatNumber(
-      feedPricePerTon.value.toString(),
-    );
-    if (priceValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'سعر العلف: $priceValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateFeedCostPerKilo() {
     // حساب تكلفة العلف لكل كيلو وزن
     // المعادلة: (كمية العلف الكلية المستهلكة / الوزن الكلي المباع) × سعر الطن علف / 1000
     // النتيجة بالجنيه لكل كيلو جرام

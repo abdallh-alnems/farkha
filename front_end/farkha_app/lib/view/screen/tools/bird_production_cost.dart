@@ -8,7 +8,6 @@ import '../../widget/appbar/custom_appbar.dart';
 import '../../widget/input_fields/two_input_fields.dart';
 import '../../widget/tools/tools_button.dart';
 import '../../widget/tools/tools_result.dart';
-import '../../../core/shared/snackbar_message.dart';
 
 class BirdProductionCostScreen extends StatelessWidget {
   BirdProductionCostScreen({super.key});
@@ -16,15 +15,7 @@ class BirdProductionCostScreen extends StatelessWidget {
     BirdProductionCostController(),
   );
 
-  void _onCalculatePressed(BuildContext context) {
-    final total = controller.totalCosts.value;
-    final birds = controller.liveBirds.value;
-
-    if (total <= 0 || birds <= 0) {
-      SnackbarMessage.show(context, 'يرجى إدخال قيم صحيحة', icon: Icons.error);
-      return;
-    }
-
+  void _onCalculatePressed() {
     controller.calculateCostPerBird();
   }
 
@@ -53,7 +44,7 @@ class BirdProductionCostScreen extends StatelessWidget {
               const SizedBox(height: 24),
               ToolsButton(
                 text: 'احسب تكلفة إنتاج الفرخ',
-                onPressed: () => _onCalculatePressed(context),
+                onPressed: _onCalculatePressed,
               ),
               const SizedBox(height: 32),
               Obx(() {

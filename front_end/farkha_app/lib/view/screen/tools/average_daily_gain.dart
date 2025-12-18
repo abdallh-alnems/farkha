@@ -42,7 +42,7 @@ class AverageDailyGain extends StatelessWidget {
                 const SizedBox(height: 24),
                 ToolsButton(
                   text: 'ADG احسب',
-                  onPressed: () => controller.calculateADG(context),
+                  onPressed: () => controller.calculateADG(),
                 ),
                 const SizedBox(height: 32),
                 Obx(() {

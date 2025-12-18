@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import '../weather_controller.dart';
 import 'tool_usage_controller.dart';
 
@@ -27,74 +24,7 @@ class FanOperationController extends GetxController {
   RxDouble operationDuration = 0.0.obs; // مدة التشغيل بالدقائق
   RxString operationStatus = ''.obs; // حالة التشغيل
 
-  void calculateFanOperation(BuildContext context) {
-    // التحقق من صحة عدد الطيور
-    final birdsValidation = InputValidation.validateAndFormatNumber(
-      numberOfBirds.value.toString(),
-    );
-    if (birdsValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'عدد الطيور: $birdsValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة متوسط الوزن
-    final weightValidation = InputValidation.validateAndFormatNumber(
-      averageWeight.value.toString(),
-    );
-    if (weightValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'متوسط الوزن: $weightValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة سعة المروحة في الساعة
-    final fanCapacityValidation = InputValidation.validateAndFormatNumber(
-      fanCapacityPerHour.value.toString(),
-    );
-    if (fanCapacityValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'سعة المروحة في الساعة: $fanCapacityValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من القيم الأساسية
-    if (numberOfBirds.value <= 0) {
-      SnackbarMessage.show(
-        context,
-        'يجب إدخال عدد الطيور بشكل صحيح',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    if (averageWeight.value <= 0) {
-      SnackbarMessage.show(
-        context,
-        'يجب إدخال متوسط الوزن بشكل صحيح',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    if (fanCapacityPerHour.value <= 0) {
-      SnackbarMessage.show(
-        context,
-        'يجب إدخال سعة المروحة في الساعة بشكل صحيح',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateFanOperation() {
     // 1. حساب الوزن الكلي للطيور
     totalWeight.value = numberOfBirds.value * averageWeight.value;
 

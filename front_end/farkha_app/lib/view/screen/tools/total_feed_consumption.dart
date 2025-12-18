@@ -39,8 +39,7 @@ class TotalFeedConsumption extends StatelessWidget {
                   SizedBox(height: 24.h),
                   ToolsButton(
                     text: "احسب الاستهلاك الكلي",
-                    onPressed:
-                        () => controller.calculateTotalFeedConsumption(context),
+                    onPressed: () => controller.calculateTotalFeedConsumption(),
                   ),
 
                   SizedBox(height: 32.h),

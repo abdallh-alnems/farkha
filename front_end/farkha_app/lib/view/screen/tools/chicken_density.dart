@@ -97,7 +97,7 @@ class ChickenDensity extends StatelessWidget {
                   SizedBox(height: 24.h),
                   ToolsButton(
                     text: "احسب الكثافة",
-                    onPressed: () => controller.calculateAreas(context),
+                    onPressed: () => controller.calculateAreas(),
                   ),
 
                   SizedBox(height: 32.h),

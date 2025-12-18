@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class FcrController extends GetxController {
@@ -22,33 +19,7 @@ class FcrController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateFCR(BuildContext context) {
-    // التحقق من صحة العلف المستهلك
-    final feedValidation = InputValidation.validateAndFormatNumber(
-      feedConsumed.value.toString(),
-    );
-    if (feedValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'العلف المستهلك: $feedValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة الوزن الحالي
-    final weightValidation = InputValidation.validateAndFormatNumber(
-      currentWeight.value.toString(),
-    );
-    if (weightValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'الوزن الحالي: $weightValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateFCR() {
     double weightGain = currentWeight.value - initialWeight;
     if (weightGain > 0) {
       fcr.value = feedConsumed.value / weightGain;

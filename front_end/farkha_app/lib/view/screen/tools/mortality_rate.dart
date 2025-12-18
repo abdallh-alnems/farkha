@@ -14,8 +14,8 @@ class MortalityRateScreen extends StatelessWidget {
   final MortalityRateController controller = Get.put(MortalityRateController());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _onCalculatePressed(BuildContext context) {
-    controller.calculateMortalityRate(context);
+  void _onCalculatePressed() {
+    controller.calculateMortalityRate();
   }
 
   @override
@@ -45,7 +45,7 @@ class MortalityRateScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 ToolsButton(
                   text: 'احسب نسبة النفوق',
-                  onPressed: () => _onCalculatePressed(context),
+                  onPressed: _onCalculatePressed,
                 ),
                 const SizedBox(height: 32),
                 Obx(() {

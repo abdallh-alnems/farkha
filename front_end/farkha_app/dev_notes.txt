@@ -26,3 +26,8 @@ define('DB_PASS', "Abdallh29512A");
 define('DB_NAME', "mysql:host=localhost;dbname=farkha");
 define('DB_USER', "root");
 define('DB_PASS', "");
+
+
+
+=== mysql ===
+TRUNCATE TABLE table_name;

@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AnalyticsService extends GetxService {
   late final FirebaseAnalytics analytics;
@@ -15,7 +16,11 @@ class AnalyticsService extends GetxService {
     await analytics.logAppOpen();
 
     // Set user properties for better tracking
-    await analytics.setUserProperty(name: 'app_version', value: '5.2.8');
+    final packageInfo = await PackageInfo.fromPlatform();
+    await analytics.setUserProperty(
+      name: 'app_version',
+      value: packageInfo.version,
+    );
 
     debugPrint('✅ Firebase Analytics initialized');
     return this;

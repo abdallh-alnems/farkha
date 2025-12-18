@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/constant/theme/colors.dart';
-import '../../../core/shared/snackbar_message.dart';
 import '../../../logic/controller/tools_controller/fan_operation_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
@@ -123,12 +122,6 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                               setState(() {
                                                 _isLoadingTemperature = false;
                                               });
-                                              SnackbarMessage.show(
-                                                // ignore: use_build_context_synchronously
-                                                context,
-                                                "فعّل صلاحية الموقع",
-                                                icon: Icons.location_off,
-                                              );
                                               return;
                                             }
 
@@ -158,25 +151,12 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                               controller.updateTemperature(
                                                 temperatureValue,
                                               );
-                                            } else {
-                                              SnackbarMessage.show(
-                                                // ignore: use_build_context_synchronously
-                                                context,
-                                                "فعّل صلاحية الموقع",
-                                                icon: Icons.location_off,
-                                              );
                                             }
                                           } catch (_) {
                                             if (!mounted) return;
                                             setState(() {
                                               _isLoadingTemperature = false;
                                             });
-                                            SnackbarMessage.show(
-                                              // ignore: use_build_context_synchronously
-                                              context,
-                                              "فعّل صلاحية الموقع",
-                                              icon: Icons.error_outline,
-                                            );
                                           }
                                         },
                                 icon: Icon(Icons.thermostat, size: 13.sp),
@@ -216,7 +196,7 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                         // التحقق من صحة النموذج قبل الحساب
                         if (_formKey.currentState?.validate() ?? false) {
                           if (controller.temperature.value > 0) {
-                            controller.calculateFanOperation(context);
+                            controller.calculateFanOperation();
                             setState(() {
                               showResult = true;
                             });

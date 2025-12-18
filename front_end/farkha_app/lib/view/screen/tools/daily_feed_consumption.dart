@@ -42,8 +42,7 @@ class DailyFeedConsumption extends StatelessWidget {
                   SizedBox(height: 24.h),
                   ToolsButton(
                     text: "احسب الاستهلاك اليومي",
-                    onPressed:
-                        () => controller.calculateDailyFeedConsumption(context),
+                    onPressed: () => controller.calculateDailyFeedConsumption(),
                   ),
 
                   SizedBox(height: 32.h),

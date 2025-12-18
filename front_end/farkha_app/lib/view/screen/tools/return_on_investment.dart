@@ -16,13 +16,13 @@ class ReturnOnInvestment extends StatelessWidget {
   );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _onCalculatePressed(BuildContext context) {
+  void _onCalculatePressed() {
     final investment = controller.investmentCost.value;
     final totalSale = controller.totalSale.value;
 
     final actualProfit = totalSale - investment;
     controller.netProfit.value = actualProfit;
-    controller.calculateROI(context);
+    controller.calculateROI();
   }
 
   @override
@@ -54,7 +54,7 @@ class ReturnOnInvestment extends StatelessWidget {
                 const SizedBox(height: 24),
                 ToolsButton(
                   text: 'احسب العائد علي الاستثمار',
-                  onPressed: () => _onCalculatePressed(context),
+                  onPressed: _onCalculatePressed,
                 ),
                 const SizedBox(height: 32),
                 Obx(() {

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class TotalFeedConsumptionController extends GetxController {
@@ -19,13 +17,8 @@ class TotalFeedConsumptionController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateTotalFeedConsumption(BuildContext context) {
-    // التحقق من صحة الرقم
-    final numberValidation = InputValidation.validateAndFormatNumber(
-      textController.text,
-    );
-    if (numberValidation != null) {
-      SnackbarMessage.show(context, numberValidation, icon: Icons.error);
+  void calculateTotalFeedConsumption() {
+    if (textController.text.isEmpty) {
       return;
     }
 

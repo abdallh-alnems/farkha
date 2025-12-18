@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import 'tool_usage_controller.dart';
 
 class AdgController extends GetxController {
@@ -20,33 +17,7 @@ class AdgController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateADG(BuildContext context) {
-    // التحقق من صحة عدد الأيام
-    final daysValidation = InputValidation.validateAndFormatNumber(
-      days.value.toString(),
-    );
-    if (daysValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'عدد الأيام: $daysValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
-    // التحقق من صحة الوزن الحالي
-    final weightValidation = InputValidation.validateAndFormatNumber(
-      currentWeight.value.toString(),
-    );
-    if (weightValidation != null) {
-      SnackbarMessage.show(
-        context,
-        'الوزن الحالي: $weightValidation',
-        icon: Icons.error,
-      );
-      return;
-    }
-
+  void calculateADG() {
     if (days.value > 0 && currentWeight.value > initialWeight) {
       adg.value = (currentWeight.value - initialWeight) / days.value;
     } else {

@@ -51,9 +51,9 @@ class TopicManager {
             'sman_asmar' => 'كتكوت سمان اسمر',
             
             // Color Products (3 products)
-            'ahmar' => 'البيص احمر',
-            'abyad' => 'البيص ابيض',
-            'byd_bldy' => 'البيص بلدي',
+            'ahmar' => 'البيض احمر',
+            'abyad' => 'البيض ابيض',
+            'byd_bldy' => 'البيض بلدي',
             
             // Duck Products (8 products)
             'fransawy' => 'البط الفرنساوي',

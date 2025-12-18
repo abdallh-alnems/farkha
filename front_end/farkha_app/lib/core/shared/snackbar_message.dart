@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 import '../constant/theme/colors.dart';
 
+enum SnackbarType { error, success, info, warning }
+
 class SnackbarMessage {
   static bool _isShowing = false;
 
+  /// Show a snackbar message with custom icon and color
   static void show(
-    BuildContext context,
+    BuildContext? context,
     String message, {
     required IconData icon,
+    Color? backgroundColor,
+    Duration? duration,
   }) {
-    // Ensure context is still mounted and Overlay is available
-    if (!context.mounted) return;
+    final ctx = context ?? Get.key.currentContext ?? Get.context;
+    if (ctx == null || !ctx.mounted) return;
 
-    final overlay = Overlay.maybeOf(context);
+    final overlay = Overlay.maybeOf(ctx);
     if (overlay == null) return;
 
     if (_isShowing) {
@@ -22,7 +28,10 @@ class SnackbarMessage {
     }
 
     _isShowing = true;
-    ScaffoldMessenger.maybeOf(context)?.clearSnackBars();
+    ScaffoldMessenger.maybeOf(ctx)?.clearSnackBars();
+
+    final bgColor = backgroundColor ?? AppColors.primaryColor;
+    final snackDuration = duration ?? const Duration(seconds: 3);
 
     OverlayEntry? overlayEntry;
     final ValueNotifier<bool> isVisible = ValueNotifier<bool>(false);
@@ -63,7 +72,7 @@ class SnackbarMessage {
                             vertical: 11,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primaryColor,
+                            color: bgColor,
                             borderRadius: BorderRadius.circular(9),
                             boxShadow: [
                               BoxShadow(
@@ -103,7 +112,7 @@ class SnackbarMessage {
       isVisible.value = true;
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(snackDuration, () {
       isVisible.value = false;
 
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -111,5 +120,65 @@ class SnackbarMessage {
         _isShowing = false;
       });
     });
+  }
+
+  /// Show an error message
+  static void showError(
+    BuildContext? context,
+    String message, {
+    Duration? duration,
+  }) {
+    show(
+      context,
+      message,
+      icon: Icons.error_outline,
+      backgroundColor: Colors.red,
+      duration: duration ?? const Duration(seconds: 3),
+    );
+  }
+
+  /// Show a success message
+  static void showSuccess(
+    BuildContext? context,
+    String message, {
+    Duration? duration,
+  }) {
+    show(
+      context,
+      message,
+      icon: Icons.check_circle,
+      backgroundColor: Colors.green,
+      duration: duration ?? const Duration(seconds: 2),
+    );
+  }
+
+  /// Show an info message
+  static void showInfo(
+    BuildContext? context,
+    String message, {
+    Duration? duration,
+  }) {
+    show(
+      context,
+      message,
+      icon: Icons.info_outline,
+      backgroundColor: Colors.blue,
+      duration: duration ?? const Duration(seconds: 3),
+    );
+  }
+
+  /// Show a warning message
+  static void showWarning(
+    BuildContext? context,
+    String message, {
+    Duration? duration,
+  }) {
+    show(
+      context,
+      message,
+      icon: Icons.warning_amber_rounded,
+      backgroundColor: Colors.orange,
+      duration: duration ?? const Duration(seconds: 3),
+    );
   }
 }

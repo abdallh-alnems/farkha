@@ -19,18 +19,18 @@
  */
 function sendFCM($title, $message, $topic, $pageid, $pagename)
 {
-    // Load Firebase credentials from secure config file
-    $configPath = __DIR__ . '/firebase_config.php';
+    // Load Firebase credentials from shared credentials file
+    $credentialsPath = __DIR__ . '/../core/firebase_credentials.json';
     
-    if (!file_exists($configPath)) {
-        error_log("Firebase config file not found. Please create firebase_config.php with your Firebase credentials");
+    if (!file_exists($credentialsPath)) {
+        error_log("Firebase credentials file not found at: " . $credentialsPath);
         return json_encode([
             'error' => 'Firebase configuration not found',
             'message' => 'Server configuration error'
         ]);
     }
     
-    $serviceAccount = require $configPath;
+    $serviceAccount = json_decode(file_get_contents($credentialsPath), true);
 
     // 1️⃣ إنشاء JWT
     $jwtHeader = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
@@ -56,8 +56,7 @@ function sendFCM($title, $message, $topic, $pageid, $pagename)
     ]));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
-    $token = json_decode($response, true)['access_token'];
-    curl_close($ch);
+    $token = json_decode($response, true)['access_token'] ?? null;
 
     // 3️⃣ إرسال الإشعار
     $projectId = $serviceAccount['project_id'] ?? 'farkha-c7248';
@@ -90,7 +89,6 @@ function sendFCM($title, $message, $topic, $pageid, $pagename)
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
 
     $result = curl_exec($ch);
-    curl_close($ch);
 
     return $result;
 }

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/id/tool_ids.dart';
-import '../../../core/functions/input_validation.dart';
-import '../../../core/shared/snackbar_message.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import 'tool_usage_controller.dart';
 
@@ -21,19 +19,8 @@ class DailyFeedConsumptionController extends GetxController {
     ToolUsageController.recordToolUsageFromController(toolId);
   }
 
-  void calculateDailyFeedConsumption(BuildContext context) {
-    // التحقق من صحة الرقم
-    final numberValidation = InputValidation.validateAndFormatNumber(
-      textController.text,
-    );
-    if (numberValidation != null) {
-      SnackbarMessage.show(context, numberValidation, icon: Icons.error);
-      return;
-    }
-
-    // التحقق من تحديد العمر
-    if (selectedAge.value == null) {
-      SnackbarMessage.show(context, 'الرجاء تحديد العمر', icon: Icons.error);
+  void calculateDailyFeedConsumption() {
+    if (textController.text.isEmpty || selectedAge.value == null) {
       return;
     }
 
