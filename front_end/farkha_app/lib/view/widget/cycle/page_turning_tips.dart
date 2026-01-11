@@ -25,16 +25,16 @@ class PageTurningTips extends StatelessWidget {
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(color: accentColor.withOpacity(0.3), width: 2),
+            border: Border.all(color: accentColor.withValues(alpha: 0.3), width: 2),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.4 : 0.15),
+                color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
                 spreadRadius: 2,
               ),
               BoxShadow(
-                color: accentColor.withOpacity(0.1),
+                color: accentColor.withValues(alpha: 0.1),
                 blurRadius: 15,
                 offset: const Offset(0, 4),
               ),
@@ -51,13 +51,13 @@ class PageTurningTips extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      accentColor.withOpacity(0.2),
-                      accentColor.withOpacity(0.1),
+                      accentColor.withValues(alpha: 0.2),
+                      accentColor.withValues(alpha: 0.1),
                     ],
                   ),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: accentColor.withOpacity(0.3),
+                    color: accentColor.withValues(alpha: 0.3),
                     width: 2,
                   ),
                 ),

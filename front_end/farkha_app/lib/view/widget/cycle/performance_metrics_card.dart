@@ -212,7 +212,7 @@ class PerformanceMetricsCard extends StatelessWidget {
           border: Border.all(color: Colors.black, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 15,
               offset: const Offset(0, 5),
               spreadRadius: 0,
@@ -321,32 +321,32 @@ class PerformanceMetricsCard extends StatelessWidget {
           colors:
               isDark
                   ? [
-                    color.withOpacity(0.15),
-                    color.withOpacity(0.08),
-                    color.withOpacity(0.04),
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.08),
+                    color.withValues(alpha: 0.04),
                   ]
                   : [
-                    color.withOpacity(0.12),
-                    color.withOpacity(0.08),
-                    color.withOpacity(0.04),
+                    color.withValues(alpha: 0.12),
+                    color.withValues(alpha: 0.08),
+                    color.withValues(alpha: 0.04),
                   ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: color.withOpacity(isDark ? 0.25 : 0.2),
+          color: color.withValues(alpha: isDark ? 0.25 : 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(isDark ? 0.15 : 0.08),
+            color: color.withValues(alpha: isDark ? 0.15 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
             spreadRadius: 0,
@@ -462,32 +462,32 @@ class PerformanceMetricsCard extends StatelessWidget {
           colors:
               isDark
                   ? [
-                    color.withOpacity(0.15),
-                    color.withOpacity(0.08),
-                    color.withOpacity(0.04),
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.08),
+                    color.withValues(alpha: 0.04),
                   ]
                   : [
-                    color.withOpacity(0.12),
-                    color.withOpacity(0.08),
-                    color.withOpacity(0.04),
+                    color.withValues(alpha: 0.12),
+                    color.withValues(alpha: 0.08),
+                    color.withValues(alpha: 0.04),
                   ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: color.withOpacity(isDark ? 0.25 : 0.2),
+          color: color.withValues(alpha: isDark ? 0.25 : 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(isDark ? 0.15 : 0.08),
+            color: color.withValues(alpha: isDark ? 0.15 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
             spreadRadius: 0,
@@ -550,8 +550,8 @@ class PerformanceMetricsCard extends StatelessWidget {
             decoration: BoxDecoration(
               color:
                   isDark
-                      ? Colors.grey[800]!.withOpacity(0.5)
-                      : Colors.grey[100]!.withOpacity(0.8),
+                      ? Colors.grey[800]!.withValues(alpha: 0.5)
+                      : Colors.grey[100]!.withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(6.r),
             ),
             child: Row(
@@ -588,8 +588,8 @@ class PerformanceMetricsCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     isAboveExpected
-                        ? const Color(0xFF4CAF50).withOpacity(0.15)
-                        : const Color(0xFFFF9800).withOpacity(0.15),
+                        ? const Color(0xFF4CAF50).withValues(alpha: 0.15)
+                        : const Color(0xFFFF9800).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(4.r),
               ),
               child: Text(
@@ -628,32 +628,32 @@ class PerformanceMetricsCard extends StatelessWidget {
           colors:
               isDark
                   ? [
-                    color.withOpacity(0.15),
-                    color.withOpacity(0.08),
-                    color.withOpacity(0.04),
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.08),
+                    color.withValues(alpha: 0.04),
                   ]
                   : [
-                    color.withOpacity(0.12),
-                    color.withOpacity(0.08),
-                    color.withOpacity(0.04),
+                    color.withValues(alpha: 0.12),
+                    color.withValues(alpha: 0.08),
+                    color.withValues(alpha: 0.04),
                   ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: color.withOpacity(isDark ? 0.25 : 0.2),
+          color: color.withValues(alpha: isDark ? 0.25 : 0.2),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(isDark ? 0.15 : 0.08),
+            color: color.withValues(alpha: isDark ? 0.15 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.1 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
             spreadRadius: 0,
@@ -720,15 +720,15 @@ class PerformanceMetricsCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFFFF9800).withOpacity(0.2),
-                        const Color(0xFFFF9800).withOpacity(0.15),
+                        const Color(0xFFFF9800).withValues(alpha: 0.2),
+                        const Color(0xFFFF9800).withValues(alpha: 0.15),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(6.r),
                     border: Border.all(
-                      color: const Color(0xFFFF9800).withOpacity(0.3),
+                      color: const Color(0xFFFF9800).withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),

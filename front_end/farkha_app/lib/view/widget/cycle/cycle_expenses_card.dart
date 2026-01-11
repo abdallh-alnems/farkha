@@ -28,7 +28,7 @@ class CycleExpensesCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+                color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -67,15 +67,15 @@ class CycleExpensesCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryColor.withOpacity(0.15),
-                        AppColors.primaryColor.withOpacity(0.08),
+                        AppColors.primaryColor.withValues(alpha: 0.15),
+                        AppColors.primaryColor.withValues(alpha: 0.08),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: AppColors.primaryColor.withOpacity(0.25),
+                      color: AppColors.primaryColor.withValues(alpha: 0.25),
                       width: 1.5,
                     ),
                   ),
@@ -108,7 +108,7 @@ class CycleExpensesCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.all(12.w),
                         decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withOpacity(0.15),
+                          color: AppColors.primaryColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Icon(

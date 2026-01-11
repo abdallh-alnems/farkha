@@ -373,7 +373,7 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                       color: (isDark
                               ? AppColors.darkBackGroundColor
                               : AppColors.lightPageBackgroundColor)
-                          .withOpacity(0.7),
+                          .withValues(alpha: 0.7),
                       child: HandlingDataView(
                         statusRequest: detailsStatus,
                         widget: const SizedBox.shrink(),
@@ -400,7 +400,7 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                       color: (isDark
                               ? AppColors.darkBackGroundColor
                               : AppColors.lightPageBackgroundColor)
-                          .withOpacity(0.8),
+                          .withValues(alpha: 0.8),
                       child: HandlingDataView(
                         statusRequest: endStatus,
                         widget: const SizedBox.shrink(),
@@ -516,12 +516,12 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(25.r),
           border: Border.all(
-            color: isDark ? Colors.grey[700]! : Colors.black.withOpacity(0.1),
+            color: isDark ? Colors.grey[700]! : Colors.black.withValues(alpha: 0.1),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),

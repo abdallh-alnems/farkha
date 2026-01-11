@@ -172,7 +172,7 @@ class FinancialSummaryCard extends StatelessWidget {
           border: Border.all(color: Colors.black, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 15,
               offset: const Offset(0, 5),
               spreadRadius: 0,
@@ -202,15 +202,15 @@ class FinancialSummaryCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.primaryColor.withOpacity(0.25),
-                        AppColors.primaryColor.withOpacity(0.18),
+                        AppColors.primaryColor.withValues(alpha: 0.25),
+                        AppColors.primaryColor.withValues(alpha: 0.18),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(
-                      color: AppColors.primaryColor.withOpacity(0.6),
+                      color: AppColors.primaryColor.withValues(alpha: 0.6),
                       width: 2,
                     ),
                   ),
@@ -250,20 +250,20 @@ class FinancialSummaryCard extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    AppColors.primaryColor.withOpacity(0.25),
-                    AppColors.primaryColor.withOpacity(0.18),
+                    AppColors.primaryColor.withValues(alpha: 0.25),
+                    AppColors.primaryColor.withValues(alpha: 0.18),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: AppColors.primaryColor.withOpacity(0.6),
+                  color: AppColors.primaryColor.withValues(alpha: 0.6),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primaryColor.withOpacity(0.15),
+                    color: AppColors.primaryColor.withValues(alpha: 0.15),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                     spreadRadius: 0,
@@ -400,26 +400,26 @@ class FinancialSummaryCard extends StatelessWidget {
           colors:
               isDark
                   ? [
-                    color.withOpacity(0.18),
-                    color.withOpacity(0.12),
-                    color.withOpacity(0.06),
+                    color.withValues(alpha: 0.18),
+                    color.withValues(alpha: 0.12),
+                    color.withValues(alpha: 0.06),
                   ]
                   : [
-                    color.withOpacity(0.25),
-                    color.withOpacity(0.15),
-                    color.withOpacity(0.08),
+                    color.withValues(alpha: 0.25),
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.08),
                   ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: color.withOpacity(isDark ? 0.3 : 0.4),
+          color: color.withValues(alpha: isDark ? 0.3 : 0.4),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(isDark ? 0.1 : 0.15),
+            color: color.withValues(alpha: isDark ? 0.1 : 0.15),
             blurRadius: 8,
             offset: const Offset(0, 2),
             spreadRadius: 0,

@@ -58,7 +58,7 @@ class _CardCycleState extends State<CardCycle> {
             : (Colors.orange[600] ?? Colors.orange);
       default:
         return isDark
-            ? AppColors.darkSurfaceColor.withOpacity(0.5)
+            ? AppColors.darkSurfaceColor.withValues(alpha: 0.5)
             : Colors.grey[300]!;
     }
   }
@@ -218,10 +218,10 @@ class _CardCycleState extends State<CardCycle> {
                   decoration: BoxDecoration(
                     color:
                         isDark
-                            ? AppColors.darkSurfaceElevatedColor.withOpacity(
+                            ? AppColors.darkSurfaceElevatedColor.withValues(alpha: 
                               0.6,
                             )
-                            : AppColors.primaryColor.withOpacity(0.1),
+                            : AppColors.primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(8.r),
                       bottomRight: Radius.circular(8.r),
@@ -230,8 +230,8 @@ class _CardCycleState extends State<CardCycle> {
                       right: BorderSide(
                         color:
                             isDark
-                                ? AppColors.darkPrimaryColor.withOpacity(0.4)
-                                : AppColors.primaryColor.withOpacity(0.5),
+                                ? AppColors.darkPrimaryColor.withValues(alpha: 0.4)
+                                : AppColors.primaryColor.withValues(alpha: 0.5),
                         width: 1.5,
                       ),
                     ),
@@ -255,7 +255,6 @@ class _CardCycleState extends State<CardCycle> {
                     ),
                     onSelected: (value) async {
                       if (value == 'history') {
-                        // TODO: Navigate to history page when available
                         // Get.toNamed(AppRoute.history);
                       } else if (value == 'permissions') {
                         await openAppSettings();
@@ -441,7 +440,7 @@ class _CardCycleState extends State<CardCycle> {
                               color: (isDark
                                       ? AppColors.darkPrimaryColor
                                       : AppColors.primaryColor)
-                                  .withOpacity(0.3),
+                                  .withValues(alpha: 0.3),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -690,7 +689,7 @@ class _CardCycleState extends State<CardCycle> {
             color:
                 _currentPage == index
                     ? Colors.white
-                    : Colors.white.withOpacity(0.4),
+                    : Colors.white.withValues(alpha: 0.4),
           ),
         ),
       ),

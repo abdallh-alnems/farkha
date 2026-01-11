@@ -91,7 +91,7 @@ class FeedConsumptionCard extends StatelessWidget {
           border: Border.all(color: Colors.black, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -120,7 +120,7 @@ class FeedConsumptionCard extends StatelessWidget {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: feedTypeColor.withOpacity(isDark ? 0.2 : 0.1),
+                    color: feedTypeColor.withValues(alpha: isDark ? 0.2 : 0.1),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(color: feedTypeColor, width: 1.5),
                   ),
@@ -208,8 +208,8 @@ class FeedConsumptionCard extends StatelessWidget {
               size: 18.sp,
               color:
                   isDark
-                      ? AppColors.darkPrimaryColor.withOpacity(0.8)
-                      : AppColors.primaryColor.withOpacity(0.7),
+                      ? AppColors.darkPrimaryColor.withValues(alpha: 0.8)
+                      : AppColors.primaryColor.withValues(alpha: 0.7),
             ),
             SizedBox(width: 4.w),
             Text(

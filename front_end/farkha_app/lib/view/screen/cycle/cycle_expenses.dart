@@ -143,8 +143,8 @@ class CycleExpensesScreen extends StatelessWidget {
         border: Border.all(
           color:
               isDark
-                  ? AppColors.darkOutlineColor.withOpacity(0.3)
-                  : Colors.grey.withOpacity(0.1),
+                  ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                  : Colors.grey.withValues(alpha: 0.1),
           width: 1,
         ),
         boxShadow:
@@ -152,7 +152,7 @@ class CycleExpensesScreen extends StatelessWidget {
                 ? []
                 : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
+                    color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
                     spreadRadius: 0,
@@ -171,7 +171,7 @@ class CycleExpensesScreen extends StatelessWidget {
                       ? null
                       : LinearGradient(
                         colors: [
-                          AppColors.primaryColor.withOpacity(0.03),
+                          AppColors.primaryColor.withValues(alpha: 0.03),
                           Colors.transparent,
                         ],
                         begin: Alignment.topRight,
@@ -191,12 +191,12 @@ class CycleExpensesScreen extends StatelessWidget {
                       colors:
                           isDark
                               ? [
-                                AppColors.darkPrimaryColor.withOpacity(0.2),
-                                AppColors.darkPrimaryColor.withOpacity(0.15),
+                                AppColors.darkPrimaryColor.withValues(alpha: 0.2),
+                                AppColors.darkPrimaryColor.withValues(alpha: 0.15),
                               ]
                               : [
-                                AppColors.primaryColor.withOpacity(0.15),
-                                AppColors.primaryColor.withOpacity(0.08),
+                                AppColors.primaryColor.withValues(alpha: 0.15),
+                                AppColors.primaryColor.withValues(alpha: 0.08),
                               ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -207,7 +207,7 @@ class CycleExpensesScreen extends StatelessWidget {
                             ? []
                             : [
                               BoxShadow(
-                                color: AppColors.primaryColor.withOpacity(0.1),
+                                color: AppColors.primaryColor.withValues(alpha: 0.1),
                                 blurRadius: 3,
                                 offset: const Offset(0, 2),
                               ),
@@ -255,9 +255,9 @@ class CycleExpensesScreen extends StatelessWidget {
                                     color:
                                         isDark
                                             ? AppColors.darkPrimaryColor
-                                                .withOpacity(0.2)
+                                                .withValues(alpha: 0.2)
                                             : AppColors.primaryColor
-                                                .withOpacity(0.1),
+                                                .withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(5.r),
                                   ),
                                   child: Text(
@@ -300,18 +300,18 @@ class CycleExpensesScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color:
                                     isHistoryExpanded.value
-                                        ? AppColors.primaryColor.withOpacity(
+                                        ? AppColors.primaryColor.withValues(alpha: 
                                           0.3,
                                         )
                                         : isDark
                                         ? AppColors.darkPrimaryColor
-                                            .withOpacity(0.25)
-                                        : AppColors.primaryColor.withOpacity(
+                                            .withValues(alpha: 0.25)
+                                        : AppColors.primaryColor.withValues(alpha: 
                                           0.2,
                                         ),
                                 borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.primaryColor.withOpacity(
+                                  color: AppColors.primaryColor.withValues(alpha: 
                                     0.4,
                                   ),
                                   width: 1.5,
@@ -328,7 +328,7 @@ class CycleExpensesScreen extends StatelessWidget {
                                         : AppColors.primaryColor,
                                 shadows: [
                                   Shadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 0.1),
                                     blurRadius: 2,
                                     offset: const Offset(0, 1),
                                   ),
@@ -352,7 +352,7 @@ class CycleExpensesScreen extends StatelessWidget {
                           child: Container(
                             padding: EdgeInsets.all(8.w),
                             decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.1),
+                              color: Colors.red.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Icon(
@@ -376,8 +376,8 @@ class CycleExpensesScreen extends StatelessWidget {
             thickness: 1,
             color:
                 isDark
-                    ? AppColors.darkOutlineColor.withOpacity(0.3)
-                    : Colors.grey.withOpacity(0.15),
+                    ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                    : Colors.grey.withValues(alpha: 0.15),
           ),
 
           // Payment Section (Last Payment when collapsed, All Payments when expanded)
@@ -406,13 +406,13 @@ class CycleExpensesScreen extends StatelessWidget {
                         isDark
                             ? [
                               AppColors.darkSurfaceElevatedColor,
-                              AppColors.darkSurfaceElevatedColor.withOpacity(
+                              AppColors.darkSurfaceElevatedColor.withValues(alpha: 
                                 0.8,
                               ),
                             ]
                             : [
-                              AppColors.primaryColor.withOpacity(0.08),
-                              AppColors.primaryColor.withOpacity(0.04),
+                              AppColors.primaryColor.withValues(alpha: 0.08),
+                              AppColors.primaryColor.withValues(alpha: 0.04),
                             ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -421,8 +421,8 @@ class CycleExpensesScreen extends StatelessWidget {
                   border: Border.all(
                     color:
                         isDark
-                            ? AppColors.darkOutlineColor.withOpacity(0.3)
-                            : AppColors.primaryColor.withOpacity(0.2),
+                            ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                            : AppColors.primaryColor.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -435,7 +435,7 @@ class CycleExpensesScreen extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.primaryColor,
-                            AppColors.primaryColor.withOpacity(0.7),
+                            AppColors.primaryColor.withValues(alpha: 0.7),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -443,7 +443,7 @@ class CycleExpensesScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(2.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.3),
+                            color: AppColors.primaryColor.withValues(alpha: 0.3),
                             blurRadius: 2,
                             offset: const Offset(0, 1),
                           ),
@@ -536,7 +536,7 @@ class CycleExpensesScreen extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(6.w),
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
+                            color: Colors.red.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Icon(
@@ -560,8 +560,8 @@ class CycleExpensesScreen extends StatelessWidget {
                   thickness: 1,
                   color:
                       isDark
-                          ? AppColors.darkOutlineColor.withOpacity(0.3)
-                          : Colors.grey.withOpacity(0.15),
+                          ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                          : Colors.grey.withValues(alpha: 0.15),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(
@@ -586,13 +586,13 @@ class CycleExpensesScreen extends StatelessWidget {
                                       ? [
                                         AppColors.darkSurfaceElevatedColor,
                                         AppColors.darkSurfaceElevatedColor
-                                            .withOpacity(0.8),
+                                            .withValues(alpha: 0.8),
                                       ]
                                       : [
-                                        AppColors.primaryColor.withOpacity(
+                                        AppColors.primaryColor.withValues(alpha: 
                                           0.08,
                                         ),
-                                        AppColors.primaryColor.withOpacity(
+                                        AppColors.primaryColor.withValues(alpha: 
                                           0.04,
                                         ),
                                       ],
@@ -603,10 +603,10 @@ class CycleExpensesScreen extends StatelessWidget {
                             border: Border.all(
                               color:
                                   isDark
-                                      ? AppColors.darkOutlineColor.withOpacity(
+                                      ? AppColors.darkOutlineColor.withValues(alpha: 
                                         0.3,
                                       )
-                                      : AppColors.primaryColor.withOpacity(0.2),
+                                      : AppColors.primaryColor.withValues(alpha: 0.2),
                               width: 1,
                             ),
                           ),
@@ -619,7 +619,7 @@ class CycleExpensesScreen extends StatelessWidget {
                                   gradient: LinearGradient(
                                     colors: [
                                       AppColors.primaryColor,
-                                      AppColors.primaryColor.withOpacity(0.7),
+                                      AppColors.primaryColor.withValues(alpha: 0.7),
                                     ],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
@@ -627,7 +627,7 @@ class CycleExpensesScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(2.r),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primaryColor.withOpacity(
+                                      color: AppColors.primaryColor.withValues(alpha: 
                                         0.3,
                                       ),
                                       blurRadius: 2,
@@ -723,7 +723,7 @@ class CycleExpensesScreen extends StatelessWidget {
                                   child: Container(
                                     padding: EdgeInsets.all(6.w),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withOpacity(0.1),
+                                      color: Colors.red.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(6.r),
                                     ),
                                     child: Icon(
@@ -746,8 +746,8 @@ class CycleExpensesScreen extends StatelessWidget {
                   thickness: 1,
                   color:
                       isDark
-                          ? AppColors.darkOutlineColor.withOpacity(0.3)
-                          : Colors.grey.withOpacity(0.15),
+                          ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                          : Colors.grey.withValues(alpha: 0.15),
                 ),
               ],
             );
@@ -763,7 +763,7 @@ class CycleExpensesScreen extends StatelessWidget {
                       : LinearGradient(
                         colors: [
                           Colors.transparent,
-                          AppColors.primaryColor.withOpacity(0.02),
+                          AppColors.primaryColor.withValues(alpha: 0.02),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -851,7 +851,7 @@ class CycleExpensesScreen extends StatelessWidget {
                   color: AppColors.primaryColor,
                   borderRadius: BorderRadius.circular(10.r),
                   elevation: 2,
-                  shadowColor: AppColors.primaryColor.withOpacity(0.3),
+                  shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
                   child: InkWell(
                     onTap: () {
                       final value = textController.text;
@@ -873,7 +873,7 @@ class CycleExpensesScreen extends StatelessWidget {
                         gradient: LinearGradient(
                           colors: [
                             AppColors.primaryColor,
-                            AppColors.primaryColor.withOpacity(0.8),
+                            AppColors.primaryColor.withValues(alpha: 0.8),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -881,7 +881,7 @@ class CycleExpensesScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryColor.withOpacity(0.3),
+                            color: AppColors.primaryColor.withValues(alpha: 0.3),
                             blurRadius: 6,
                             offset: const Offset(0, 3),
                           ),
@@ -1013,8 +1013,8 @@ class CycleExpensesScreen extends StatelessWidget {
             style: TextButton.styleFrom(
               backgroundColor:
                   isDark
-                      ? AppColors.darkPrimaryColor.withOpacity(0.2)
-                      : AppColors.primaryColor.withOpacity(0.1),
+                      ? AppColors.darkPrimaryColor.withValues(alpha: 0.2)
+                      : AppColors.primaryColor.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
@@ -1075,7 +1075,7 @@ class CycleExpensesScreen extends StatelessWidget {
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withOpacity(0.1),
+              backgroundColor: Colors.red.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
@@ -1132,7 +1132,7 @@ class CycleExpensesScreen extends StatelessWidget {
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withOpacity(0.1),
+              backgroundColor: Colors.red.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),

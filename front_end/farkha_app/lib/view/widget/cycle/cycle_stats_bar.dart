@@ -43,11 +43,11 @@ class CycleStatsBar extends StatelessWidget {
           return isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
         } else if (isStageCompleted(idx)) {
           return isDark
-              ? AppColors.darkPrimaryColor.withOpacity(0.6)
-              : AppColors.primaryColor.withOpacity(0.7);
+              ? AppColors.darkPrimaryColor.withValues(alpha: 0.6)
+              : AppColors.primaryColor.withValues(alpha: 0.7);
         } else {
           return isDark
-              ? AppColors.darkSurfaceColor.withOpacity(0.5)
+              ? AppColors.darkSurfaceColor.withValues(alpha: 0.5)
               : Colors.grey[300]!;
         }
       }
@@ -67,7 +67,7 @@ class CycleStatsBar extends StatelessWidget {
           return isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
         } else {
           return isDark
-              ? AppColors.darkOutlineColor.withOpacity(0.5)
+              ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
               : Colors.grey[400]!;
         }
       }
@@ -87,7 +87,7 @@ class CycleStatsBar extends StatelessWidget {
           border: Border.all(color: Colors.black, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -128,16 +128,16 @@ class CycleStatsBar extends StatelessWidget {
                                     color:
                                         isDark
                                             ? AppColors.darkPrimaryColor
-                                                .withOpacity(0.6)
+                                                .withValues(alpha: 0.6)
                                             : AppColors.primaryColor
-                                                .withOpacity(0.5),
+                                                .withValues(alpha: 0.5),
                                     width: 1.5,
                                   )
                                   : Border.all(
                                     color:
                                         isDark
                                             ? AppColors.darkOutlineColor
-                                                .withOpacity(0.4)
+                                                .withValues(alpha: 0.4)
                                             : Colors.grey[400]!,
                                     width: 1,
                                   ),
@@ -148,7 +148,7 @@ class CycleStatsBar extends StatelessWidget {
                                       color: (isDark
                                               ? AppColors.darkPrimaryColor
                                               : AppColors.primaryColor)
-                                          .withOpacity(0.3),
+                                          .withValues(alpha: 0.3),
                                       blurRadius: 4,
                                       offset: const Offset(0, 2),
                                     ),

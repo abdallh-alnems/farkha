@@ -42,7 +42,7 @@ class AddCycle extends StatelessWidget {
   Color _getBorderColor(BuildContext context) {
     return _isDarkMode(context)
         ? AppColors.darkOutlineColor
-        : Colors.black.withOpacity(0.3);
+        : Colors.black.withValues(alpha: 0.3);
   }
 
   @override
@@ -68,7 +68,10 @@ class AddCycle extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primaryColor, Colors.deepPurple.shade200],
+                    colors: [
+                      AppColors.primaryColor,
+                      Colors.deepPurple.shade200,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -83,7 +86,7 @@ class AddCycle extends StatelessWidget {
               Obx(() {
                 final saveStatus = controller.cycleSaveStatus.value;
                 final deleteStatus = controller.cycleDeleteStatus.value;
-                
+
                 // إظهار حالة التحميل للحفظ
                 if (saveStatus == StatusRequest.loading ||
                     saveStatus == StatusRequest.serverFailure ||
@@ -95,7 +98,7 @@ class AddCycle extends StatelessWidget {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        color: Colors.black.withOpacity(0.7),
+                        color: Colors.black.withValues(alpha: 0.7),
                         child: HandlingDataView(
                           statusRequest: saveStatus,
                           widget: const SizedBox.shrink(),
@@ -104,7 +107,7 @@ class AddCycle extends StatelessWidget {
                     ),
                   );
                 }
-                
+
                 // إظهار حالة التحميل للحذف
                 if (deleteStatus == StatusRequest.loading ||
                     deleteStatus == StatusRequest.serverFailure ||
@@ -116,7 +119,7 @@ class AddCycle extends StatelessWidget {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        color: Colors.black.withOpacity(0.7),
+                        color: Colors.black.withValues(alpha: 0.7),
                         child: HandlingDataView(
                           statusRequest: deleteStatus,
                           widget: const SizedBox.shrink(),
@@ -125,7 +128,7 @@ class AddCycle extends StatelessWidget {
                     ),
                   );
                 }
-                
+
                 // إغلاق الصفحة بعد نجاح الحذف
                 if (deleteStatus == StatusRequest.success) {
                   Future.delayed(const Duration(milliseconds: 500), () {
@@ -135,7 +138,7 @@ class AddCycle extends StatelessWidget {
                     }
                   });
                 }
-                
+
                 return const SizedBox.shrink();
               }),
             ],
@@ -198,8 +201,8 @@ class AddCycle extends StatelessWidget {
           BoxShadow(
             color:
                 isDark
-                    ? Colors.black.withOpacity(0.3)
-                    : Colors.black.withOpacity(0.1),
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -311,7 +314,7 @@ class AddCycle extends StatelessWidget {
 
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: textColor.withOpacity(0.7)),
+      labelStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
       filled: true,
       fillColor: isDark ? AppColors.darkSurfaceElevatedColor : surfaceColor,
       border: OutlineInputBorder(
@@ -352,7 +355,7 @@ class AddCycle extends StatelessWidget {
                 value == null || value.isEmpty ? 'يرجى إدخال $label' : null,
         decoration: _inputDecoration(context, label).copyWith(
           suffixText: suffix,
-          suffixStyle: TextStyle(color: textColor.withOpacity(0.7)),
+          suffixStyle: TextStyle(color: textColor.withValues(alpha: 0.7)),
         ),
       ),
     );
@@ -370,7 +373,7 @@ class AddCycle extends StatelessWidget {
       child: TextFormField(
         initialValue: value,
         readOnly: true,
-        style: TextStyle(color: textColor.withOpacity(0.7)),
+        style: TextStyle(color: textColor.withValues(alpha: 0.7)),
         decoration: _inputDecoration(context, label),
       ),
     );

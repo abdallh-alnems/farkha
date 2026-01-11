@@ -258,7 +258,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                 child: IgnorePointer(
                   ignoring: deleteStatus != StatusRequest.loading,
                   child: Container(
-                    color: background.withOpacity(0.8),
+                    color: background.withValues(alpha: 0.8),
                     child: HandlingDataView(
                       statusRequest: deleteStatus,
                       widget: const SizedBox.shrink(),

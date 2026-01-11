@@ -35,7 +35,7 @@ class AreaDarknessCard extends StatelessWidget {
           border: Border.all(color: Colors.black, width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -103,26 +103,26 @@ class AreaDarknessCard extends StatelessWidget {
           colors:
               isDark
                   ? [
-                    color.withOpacity(0.18),
-                    color.withOpacity(0.12),
-                    color.withOpacity(0.06),
+                    color.withValues(alpha: 0.18),
+                    color.withValues(alpha: 0.12),
+                    color.withValues(alpha: 0.06),
                   ]
                   : [
-                    color.withOpacity(0.25),
-                    color.withOpacity(0.15),
-                    color.withOpacity(0.08),
+                    color.withValues(alpha: 0.25),
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.08),
                   ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: color.withOpacity(isDark ? 0.3 : 0.4),
+          color: color.withValues(alpha: isDark ? 0.3 : 0.4),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(isDark ? 0.1 : 0.15),
+            color: color.withValues(alpha: isDark ? 0.1 : 0.15),
             blurRadius: 8,
             offset: const Offset(0, 2),
             spreadRadius: 0,
