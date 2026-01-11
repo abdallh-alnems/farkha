@@ -4,7 +4,8 @@ import '../../../logic/bindings/home_binding.dart';
 import '../../../view/screen/auth/login_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
-import '../../../view/screen/cycle/cycle_stats_bar_explanation.dart';
+import '../../../view/screen/cycle/cycle_data.dart';
+import '../../../view/screen/cycle/cycle_expenses.dart';
 import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
 import '../../../view/screen/prices/customize_prices_screen.dart';
@@ -37,6 +38,7 @@ import '../../../view/screen/tools/total_revenue.dart';
 import '../../../view/screen/tools/vaccination_schedule.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
 import '../../../view/widget/drawer/suggestion.dart';
+import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
 import 'route.dart';
 
@@ -68,14 +70,20 @@ List<GetPage<dynamic>> pages = [
   ),
 
   // ================================ cycle ====================================
-  GetPage(name: AppRoute.addCycle, page: () => AddCycle()),
+  GetPage(
+    name: AppRoute.addCycle,
+    page: () => AddCycle(),
+    middlewares: [AuthMiddleware()],
+  ),
 
   GetPage(name: AppRoute.cycle, page: () => const Cycle()),
 
   GetPage(
-    name: AppRoute.cycleStatsBarExplanation,
-    page: () => const CycleStatsBarExplanation(),
+    name: AppRoute.cycleExpenses,
+    page: () => const CycleExpensesScreen(),
   ),
+
+  GetPage(name: AppRoute.cycleData, page: () => const CycleDataScreen()),
 
   // ================================ drawer ==================================
   GetPage(name: AppRoute.suggestion, page: () => const Suggestion()),

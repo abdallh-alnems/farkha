@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../../core/constant/theme/colors.dart';
 import '../../../../logic/controller/tools_controller/broiler_controller.dart';
-import '../../../../logic/controller/weather_controller.dart';
 import 'card_broiler_chicken_requirements.dart';
 import 'details_broiler.dart';
 
@@ -117,14 +116,10 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
     final Widget temperatureTile = _ColoredInfoTile(
       title: "درجة الحرارة المطلوبة",
       value: "°${controller.ageTemperature}",
-      trailing: GetBuilder<WeatherController>(
-        builder: (_) {
-          return _ChipInfo(
+      trailing: Obx(() => _ChipInfo(
             icon: Icons.device_thermostat,
             label: controller.weatherController.temperatureText,
-          );
-        },
-      ),
+          )),
       gradient: const [
         AppColors.sunsetGradientStart,
         AppColors.sunsetGradientEnd,
@@ -134,14 +129,10 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
     final Widget humidityTile = _ColoredInfoTile(
       title: "نسبة الرطوبة المطلوبة",
       value: controller.ageHumidityRange,
-      trailing: GetBuilder<WeatherController>(
-        builder: (_) {
-          return _ChipInfo(
+      trailing: Obx(() => _ChipInfo(
             icon: Icons.water_drop,
             label: controller.weatherController.humidityText,
-          );
-        },
-      ),
+          )),
       gradient: const [
         AppColors.oceanGradientStart,
         AppColors.oceanGradientEnd,

@@ -17,17 +17,33 @@ class SuggestionController extends GetxController {
     final dynamic response = await suggestionData.addSuggestion(
       suggestionText.trim(),
     );
-    statusRequest = handlingData(response);
-
-    if (response['status'] != "success") {
-      statusRequest = StatusRequest.failure;
+    
+    // التحقق من نوع response
+    if (response is StatusRequest) {
+      // إذا كان response هو StatusRequest (فشل الاتصال)
+      statusRequest = response;
       update();
       return;
     }
+    
+    // إذا كان response هو Map
+    if (response is Map<String, dynamic>) {
+      statusRequest = handlingData(response);
+      
+      if (response['status'] != "success") {
+        statusRequest = StatusRequest.failure;
+        update();
+        return;
+      }
 
-    isSuggestionSent = true;
-    statusRequest = StatusRequest.success;
-    update();
+      isSuggestionSent = true;
+      statusRequest = StatusRequest.success;
+      update();
+    } else {
+      // في حالة غير متوقعة
+      statusRequest = StatusRequest.failure;
+      update();
+    }
   }
 
   void resetState() {

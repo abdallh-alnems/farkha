@@ -65,3 +65,25 @@ function requireValidToken(?string $token) {
         exit;
     }
 }
+
+/**
+ * الحصول على user_id من Firebase token
+ * 
+ * @param string $token Firebase ID token
+ * @param PDO $con Database connection
+ * @return int|null User ID or null if not found
+ */
+function getUserIdFromToken(string $token, PDO $con): ?int {
+    try {
+        $verifiedToken = verifyToken($token);
+        $firebaseUid = $verifiedToken->claims()->get('sub');
+        
+        $stmt = $con->prepare("SELECT id FROM users WHERE firebase_uid = ? LIMIT 1");
+        $stmt->execute([$firebaseUid]);
+        $user = $stmt->fetch();
+        
+        return $user ? (int)$user['id'] : null;
+    } catch (Exception $e) {
+        return null;
+    }
+}

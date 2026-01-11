@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -41,7 +44,9 @@ class NotificationService extends GetxService {
     await _requestPermissions();
     await _createNotificationChannel();
     await _configureFirebaseMessaging();
-    await _restoreSubscriptions();
+
+    // تشغيل الاشتراك في background بدون انتظار لتجنب ANR
+    Future.microtask(() => _restoreSubscriptions());
 
     return this;
   }
@@ -62,14 +67,22 @@ class NotificationService extends GetxService {
 
     // إذا كانت أول مرة (لا توجد إعدادات محفوظة)
     if (savedNotifications == null || savedNotifications.isEmpty) {
-      // الاشتراك في لحم أبيض افتراضياً
-      await subscribeToTopic('lhm_abyad');
+      // الاشتراك في لحم أبيض افتراضياً بدون انتظار
+      subscribeToTopic('lhm_abyad').catchError((error) {
+        if (kDebugMode) {
+          debugPrint('Error subscribing to lhm_abyad: $error');
+        }
+      });
       // حفظ الإعداد الافتراضي
       storage.write(_notificationTypesKey, ['lhm_abyad']);
     } else {
-      // الاشتراك في جميع الـ topics المحفوظة
+      // الاشتراك في جميع الـ topics المحفوظة بدون انتظار
       for (var topic in savedNotifications) {
-        await subscribeToTopic(topic.toString());
+        subscribeToTopic(topic.toString()).catchError((error) {
+          if (kDebugMode) {
+            debugPrint('Error subscribing to $topic: $error');
+          }
+        });
       }
     }
   }
@@ -176,11 +189,49 @@ class NotificationService extends GetxService {
   }
 
   Future<void> subscribeToTopic(String topic) async {
-    await _firebaseMessaging.subscribeToTopic(topic);
+    try {
+      await _firebaseMessaging
+          .subscribeToTopic(topic)
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              if (kDebugMode) {
+                debugPrint('Timeout subscribing to topic: $topic');
+              }
+              throw TimeoutException('Subscription timeout for topic: $topic');
+            },
+          );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error subscribing to topic $topic: $e');
+      }
+      // لا نرمي الخطأ، فقط نسجله لتجنب تعطيل التطبيق
+      // الخطأ سيتم التعامل معه في catchError في الأماكن التي تستدعي هذه الدالة
+    }
   }
 
   Future<void> unsubscribeFromTopic(String topic) async {
-    await _firebaseMessaging.unsubscribeFromTopic(topic);
+    try {
+      await _firebaseMessaging
+          .unsubscribeFromTopic(topic)
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              if (kDebugMode) {
+                debugPrint('Timeout unsubscribing from topic: $topic');
+              }
+              throw TimeoutException(
+                'Unsubscription timeout for topic: $topic',
+              );
+            },
+          );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error unsubscribing from topic $topic: $e');
+      }
+      // لا نرمي الخطأ، فقط نسجله لتجنب تعطيل التطبيق
+      // الخطأ سيتم التعامل معه في catchError في الأماكن التي تستدعي هذه الدالة
+    }
   }
 
   void _onNotificationTapped(NotificationResponse response) {
@@ -197,45 +248,5 @@ class NotificationService extends GetxService {
       // Handle notification tap with data
       // You can navigate to specific screens based on data
     }
-  }
-
-  /// إيقاف/تفعيل الإشعارات داخلياً
-  Future<void> setNotificationsEnabled(bool enabled) async {
-    final storage = GetStorage();
-    storage.write(_notificationsEnabledKey, enabled);
-
-    if (enabled) {
-      // إعادة الاشتراك في جميع Topics المحفوظة
-      final savedNotifications = storage.read<List<dynamic>>(
-        _notificationTypesKey,
-      );
-
-      if (savedNotifications != null && savedNotifications.isNotEmpty) {
-        for (var topic in savedNotifications) {
-          await subscribeToTopic(topic.toString());
-        }
-      } else {
-        // إذا لم تكن هناك topics محفوظة، الاشتراك في الافتراضي
-        await subscribeToTopic('lhm_abyad');
-        storage.write(_notificationTypesKey, ['lhm_abyad']);
-      }
-    } else {
-      // إلغاء الاشتراك من جميع Topics
-      final savedNotifications = storage.read<List<dynamic>>(
-        _notificationTypesKey,
-      );
-
-      if (savedNotifications != null && savedNotifications.isNotEmpty) {
-        for (var topic in savedNotifications) {
-          await unsubscribeFromTopic(topic.toString());
-        }
-      }
-    }
-  }
-
-  /// التحقق من حالة تفعيل الإشعارات
-  bool isNotificationsEnabled() {
-    final storage = GetStorage();
-    return storage.read<bool>(_notificationsEnabledKey) ?? true;
   }
 }

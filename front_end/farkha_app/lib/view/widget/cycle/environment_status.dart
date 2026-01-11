@@ -14,10 +14,26 @@ import '../../../logic/controller/weather_controller.dart';
 class EnvironmentStatus extends StatelessWidget {
   const EnvironmentStatus({super.key});
 
+  String _getPrecipitationDescription(double precip) {
+    if (precip == 0) {
+      return 'لا أمطار';
+    } else if (precip >= 0.1 && precip <= 2.5) {
+      return 'خفيفة';
+    } else if (precip >= 2.6 && precip <= 7.5) {
+      return 'متوسطة';
+    } else if (precip >= 7.6) {
+      return 'غزيرة';
+    }
+    return 'لا أمطار';
+  }
+
   @override
   Widget build(BuildContext context) {
     final broilerCtrl = Get.find<BroilerController>();
-    final weatherCtrl = Get.find<WeatherController>();
+    final weatherCtrl =
+        Get.isRegistered<WeatherController>()
+            ? Get.find<WeatherController>()
+            : Get.put(WeatherController());
     final cycleCtrl = Get.find<CycleController>();
 
     return Obx(() {
@@ -28,16 +44,31 @@ class EnvironmentStatus extends StatelessWidget {
       final isLoading = weatherCtrl.statusRequest != StatusRequest.success;
       final currTemp = weatherCtrl.currentTemperature.value;
       final currHum = weatherCtrl.currentHumidity.value.toDouble();
+      final currPrecip = weatherCtrl.currentPrecipitation.value;
       final targTemp = broilerCtrl.ageTemperature.value.toDouble();
       final parts = broilerCtrl.ageHumidityRange.split('-');
       final targHum = double.tryParse(parts.last.replaceAll('%', '')) ?? 0.0;
+
+      final theme = Theme.of(context);
+      final isDark = theme.brightness == Brightness.dark;
 
       return Container(
         height: 121.h,
         padding: EdgeInsets.symmetric(vertical: 11.h),
         decoration: BoxDecoration(
-          color: AppColors.primaryColor,
+          color:
+              isDark
+                  ? AppColors.darkSurfaceElevatedColor
+                  : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(11.r),
+          border: Border.all(color: Colors.black, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -46,14 +77,33 @@ class EnvironmentStatus extends StatelessWidget {
               title: 'رطوبة الطقس',
               currentValue: isLoading ? '-' : '${currHum.toStringAsFixed(0)}%',
               targetValue: '${targHum.toStringAsFixed(0)}%',
+              isDark: isDark,
             ),
-            Container(width: 1.w, height: 55.h, color: Colors.white54),
+            Container(
+              width: 1.w,
+              height: 55.h,
+              color: isDark ? Colors.grey[700] : Colors.grey[300],
+            ),
             _buildSection(
               icon: WeatherIcons.thermometer,
               title: 'حرارة الطقس',
               currentValue:
                   isLoading ? '-' : '${currTemp.toStringAsFixed(0)}°C',
               targetValue: '${targTemp.toStringAsFixed(0)}°C',
+              isDark: isDark,
+            ),
+            Container(
+              width: 1.w,
+              height: 55.h,
+              color: isDark ? Colors.grey[700] : Colors.grey[300],
+            ),
+            _buildSection(
+              icon: WeatherIcons.rain,
+              title: 'الأمطار',
+              currentValue:
+                  isLoading ? '-' : _getPrecipitationDescription(currPrecip),
+              targetValue: null,
+              isDark: isDark,
             ),
           ],
         ),
@@ -65,66 +115,99 @@ class EnvironmentStatus extends StatelessWidget {
     required IconData icon,
     required String title,
     required String currentValue,
-    required String targetValue,
+    String? targetValue,
+    required bool isDark,
   }) {
+    final iconColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+    final textColor = isDark ? Colors.grey[300] : Colors.grey[700];
+    final valueColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+    final dividerColor = isDark ? Colors.grey[700] : Colors.grey[300];
+
     return Expanded(
       child: Column(
         children: [
-          BoxedIcon(icon, color: Colors.white, size: 24),
+          BoxedIcon(icon, color: iconColor, size: 24),
           SizedBox(height: 4.h),
-          Text(title, style: TextStyle(color: Colors.white, fontSize: 13.sp)),
+          Text(title, style: TextStyle(color: textColor, fontSize: 13.sp)),
           SizedBox(height: 9.h),
-          Container(height: 1.h, width: 99.w, color: Colors.white54),
+          Container(height: 1.h, width: 99.w, color: dividerColor),
           Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        currentValue,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.bold,
+            child:
+                targetValue != null
+                    ? Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                currentValue,
+                                style: TextStyle(
+                                  color: valueColor,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'الحالية',
+                                style: TextStyle(
+                                  color:
+                                      isDark
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
+                                  fontSize: 11.sp,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        'الحالية',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 11.sp,
+                        Container(
+                          width: 1.w,
+                          height: 23.h,
+                          color: dividerColor,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(width: 1.w, height: 23.h, color: Colors.white54),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        targetValue,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                targetValue,
+                                style: TextStyle(
+                                  color: valueColor,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'المطلوبة',
+                                style: TextStyle(
+                                  color:
+                                      isDark
+                                          ? Colors.grey[400]
+                                          : Colors.grey[600],
+                                  fontSize: 11.sp,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        'المطلوبة',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 11.sp,
+                      ],
+                    )
+                    : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          currentValue,
+                          style: TextStyle(
+                            color: valueColor,
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                      ],
+                    ),
           ),
         ],
       ),

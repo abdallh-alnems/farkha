@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/login_data.dart';
+import '../cycle_controller.dart';
 
 class LoginController extends GetxController {
   late final FirebaseAuth _auth;
@@ -12,6 +13,7 @@ class LoginController extends GetxController {
   late final LoginData _loginData;
 
   final isLoading = false.obs;
+  final isLoggedIn = false.obs;
   bool _isInitialized = false;
 
   @override
@@ -19,6 +21,11 @@ class LoginController extends GetxController {
     super.onInit();
     _auth = FirebaseAuth.instance;
     _loginData = LoginData();
+    // قراءة حالة تسجيل الدخول الحالية
+    if (Get.isRegistered<MyServices>()) {
+      final myServices = Get.find<MyServices>();
+      isLoggedIn.value = myServices.getStorage.read<bool>('is_logged_in') ?? false;
+    }
   }
 
   void _showSnackbar(String message, {bool isError = false}) {
@@ -147,6 +154,13 @@ class LoginController extends GetxController {
 
       if (success) {
         _showSnackbar('تم تسجيل الدخول بنجاح');
+        
+        // جلب الدورات من API بعد تسجيل الدخول الناجح
+        if (Get.isRegistered<CycleController>()) {
+          final cycleController = Get.find<CycleController>();
+          await cycleController.fetchCyclesFromServer();
+        }
+        
         // انتظار وقت كافٍ لعرض الرسالة قبل إغلاق الصفحة
         await Future.delayed(const Duration(milliseconds: 2500));
         Get.back();
@@ -182,6 +196,7 @@ class LoginController extends GetxController {
           final myServices = Get.find<MyServices>();
           myServices.getStorage.write('user_name', userData['name']);
           myServices.getStorage.write('is_logged_in', true);
+          isLoggedIn.value = true; // تحديث observable
           return true;
         }
 
@@ -203,6 +218,7 @@ class LoginController extends GetxController {
       myServices.getStorage.remove('user_name');
       myServices.getStorage.remove('user_phone');
       myServices.getStorage.write('is_logged_in', false);
+      isLoggedIn.value = false; // تحديث observable
 
       // Show success message
       _showSnackbar('تم تسجيل الخروج بنجاح');

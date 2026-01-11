@@ -21,6 +21,7 @@ class WeatherController extends GetxController {
   final RxDouble currentTemperature = 0.0.obs;
   final RxInt currentHumidity = 0.obs;
   final RxDouble currentWindSpeed = 0.0.obs;
+  final RxDouble currentPrecipitation = 0.0.obs;
 
   @override
   void onInit() {
@@ -88,6 +89,8 @@ class WeatherController extends GetxController {
             currentHumidity.value = data['current']['humidity']?.toInt() ?? 0;
             currentWindSpeed.value =
                 data['current']['wind_kph']?.toDouble() ?? 0.0;
+            currentPrecipitation.value =
+                data['current']['precip_mm']?.toDouble() ?? 0.0;
           } else {
             statusRequest = StatusRequest.failure;
           }
@@ -114,6 +117,7 @@ class WeatherController extends GetxController {
     currentTemperature.value = 0.0;
     currentHumidity.value = 0;
     currentWindSpeed.value = 0.0;
+    currentPrecipitation.value = 0.0;
     update();
   }
 

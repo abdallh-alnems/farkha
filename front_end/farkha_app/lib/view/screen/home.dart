@@ -1,3 +1,4 @@
+import 'package:farkha_app/view/widget/cycle/card_cycle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +9,6 @@ import '../../core/services/test_mode_manager.dart';
 import '../widget/ad/banner.dart';
 import '../widget/ad/native.dart';
 import '../widget/appbar/appbar_home.dart';
-import '../widget/cycle/card_cycle.dart';
 import '../widget/drawer/drawer.dart';
 import '../widget/home/price_card.dart';
 import '../widget/home/tools_section.dart';
@@ -78,16 +78,16 @@ class _HomeState extends State<Home> {
               allPricesButtonKey: HomeTutorial.allPricesButtonKey,
               settingsIconKey: HomeTutorial.settingsIconKey,
             ),
-            CardCycle(),
 
+            const CardCycle(),
             if (!_isTutorialActive) ...[
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 17, vertical: 9),
+                padding: EdgeInsets.symmetric(horizontal: 17),
                 child: AdNativeWidget(),
               ),
-              const SizedBox(height: 9),
+              const SizedBox(height: 7),
             ] else
-              const SizedBox(height: 77),
+              const SizedBox(height: 0),
 
             ToolsSection(
               toolsSectionKey: HomeTutorial.toolsSectionKey,

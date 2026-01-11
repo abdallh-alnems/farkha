@@ -3,14 +3,20 @@ import 'package:get/get.dart';
 
 import '../../../../core/constant/theme/colors.dart';
 import '../../../../logic/controller/tools_controller/broiler_controller.dart';
-import '../../../../logic/controller/weather_controller.dart';
 
-class DetailsBroiler extends GetView<BroilerController> {
+class DetailsBroiler extends StatelessWidget {
   const DetailsBroiler({super.key});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final controller = Get.isRegistered<BroilerController>()
+        ? Get.find<BroilerController>()
+        : null;
+
+    if (controller == null) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -56,16 +62,13 @@ class DetailsBroiler extends GetView<BroilerController> {
             suffix: "يوم",
           ),
           _buildVerticalDivider(context),
-          GetBuilder<WeatherController>(
-            builder:
-                (_) => _buildDetailItem(
-                  context: context,
-                  label: "الموقع",
-                  value: controller.weatherLocationShort,
-                  icon: Icons.location_on,
-                  isLocation: true,
-                ),
-          ),
+          Obx(() => _buildDetailItem(
+                context: context,
+                label: "الموقع",
+                value: controller.weatherLocationShort,
+                icon: Icons.location_on,
+                isLocation: true,
+              )),
         ],
       ),
     );

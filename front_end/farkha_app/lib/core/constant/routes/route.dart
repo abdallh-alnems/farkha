@@ -16,7 +16,8 @@ class AppRoute {
   // ! cycle
   static const String addCycle = "/addCycle";
   static const String cycle = "/cycle";
-  static const String cycleStatsBarExplanation = "/cycleStatsBarExplanation";
+  static const String cycleExpenses = "/cycleExpenses";
+  static const String cycleData = "/cycleData";
 
   // ================================ drawer ===================================
 

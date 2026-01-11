@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/class/crud.dart';
+import '../../../core/class/status_request.dart';
 import '../../../core/constant/id/tool_ids.dart';
+import '../../../core/functions/handing_data_controller.dart';
+import '../../../data/data_source/remote/prices_data/broiler_price_data.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import '../weather_controller.dart';
 import 'tool_usage_controller.dart';
@@ -17,17 +21,19 @@ class BroilerController extends GetxController {
   late final WeatherController weatherController;
 
   final RxInt ageTemperature = 0.obs;
-  late int ageDarkness;
-  late int ageWeight;
+  int ageDarkness = 0;
+  int ageWeight = 0;
 
-  late int dailyFeedConsumption;
-  late double totalFeedConsumption;
+  int dailyFeedConsumption = 0;
+  double totalFeedConsumption = 0.0;
   String ageHumidityRange = "";
-  late int chickensPerSquareMeter;
+  int chickensPerSquareMeter = 0;
   final RxDouble requiredArea = 0.0.obs;
-  late double collegeArea;
+  double collegeArea = 0.0;
 
   RxBool showData = false.obs;
+  final RxDouble broilerPrice = 35.0.obs; // قيمة افتراضية
+  late final BroilerPriceData broilerPriceData;
 
   void validateInputs() {
     final chickensText = chickensCountController.text;
@@ -58,6 +64,8 @@ class BroilerController extends GetxController {
     showData.value = false;
     requiredArea.value = 0.0;
     collegeArea = 0.0;
+    dailyFeedConsumption = 0;
+    totalFeedConsumption = 0.0;
   }
 
   void ageOfChickens() {
@@ -136,6 +144,29 @@ class BroilerController extends GetxController {
     weatherController.refreshWeather();
   }
 
+  Future<void> fetchBroilerPrice() async {
+    try {
+      var response = await broilerPriceData.getBroilerPrice();
+      final status = handlingData(response);
+
+      if (StatusRequest.success == status) {
+        final mapResponse = response as Map<String, dynamic>;
+        if (mapResponse['status'] == "success") {
+          final data = mapResponse['data'] as Map<String, dynamic>?;
+          if (data != null && data['price'] != null) {
+            final price = double.tryParse(data['price'].toString());
+            if (price != null && price > 0) {
+              broilerPrice.value = price;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // في حالة الخطأ، نستخدم القيمة الافتراضية
+      broilerPrice.value = 35.0;
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -143,6 +174,9 @@ class BroilerController extends GetxController {
         Get.isRegistered<WeatherController>()
             ? Get.find<WeatherController>()
             : Get.put(WeatherController());
+    broilerPriceData = BroilerPriceData(Get.find<Crud>());
     ToolUsageController.recordToolUsageFromController(toolId);
+    // جلب السعر عند تهيئة الـ controller
+    fetchBroilerPrice();
   }
 }

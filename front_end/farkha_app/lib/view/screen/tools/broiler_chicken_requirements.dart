@@ -14,7 +14,10 @@ class BroilerChickenRequirements extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BroilerController controller = Get.put(BroilerController());
+    final BroilerController controller =
+        Get.isRegistered<BroilerController>()
+            ? Get.find<BroilerController>()
+            : Get.put(BroilerController());
 
     return Scaffold(
       body: Column(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/class/status_request.dart';
@@ -180,11 +181,21 @@ class CustomizePricesController extends GetxController {
           bool newNotificationState = !updatedItem['isNotificationEnabled'];
           updatedItem['isNotificationEnabled'] = newNotificationState;
 
-          // Subscribe or unsubscribe from topic
+          // Subscribe or unsubscribe from topic (without await to avoid ANR)
           if (newNotificationState) {
-            await NotificationService.instance.subscribeToTopic(topicName);
+            NotificationService.instance.subscribeToTopic(topicName).catchError(
+              (error) {
+                // Log error but don't block UI
+                debugPrint('Error subscribing to $topicName: $error');
+              },
+            );
           } else {
-            await NotificationService.instance.unsubscribeFromTopic(topicName);
+            NotificationService.instance
+                .unsubscribeFromTopic(topicName)
+                .catchError((error) {
+                  // Log error but don't block UI
+                  debugPrint('Error unsubscribing from $topicName: $error');
+                });
           }
 
           newList.add(updatedItem);

@@ -9,6 +9,7 @@ class Api {
   static final String _cardPrices = '$_read/card_prices';
   static final String _articles = '$_read/articles';
   static final String _auth = '$_serverName/app/auth';
+  static final String _cycle = '$_serverName/app/cycles';
 
   // ================================= prices ==================================
   static String mainTypes = '$_read/main_types.php';
@@ -36,4 +37,15 @@ class Api {
   static String updateName = '$_auth/update_name.php';
   static String updatePhone = '$_auth/update_phone.php';
   static String deleteAccount = '$_auth/delete_account.php';
+
+  // ================================== cycle ==================================
+  static String broilerChicken = '$_cycle/broiler_chicken.php';
+  static String createCycle = '$_cycle/create.php';
+  static String deleteCycle = '$_cycle/delete.php';
+  static String addData = '$_cycle/add_data.php';
+  static String addExpense = '$_cycle/add_expense.php';
+  static String getCycles = '$_cycle/get_cycles.php';
+  static String getCycleDetails = '$_cycle/get_cycle_details.php';
+  static String deleteCycleItem = '$_cycle/delete_cycle_item.php';
+  static String updateStatus = '$_cycle/update_status.php';
 }

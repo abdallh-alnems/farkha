@@ -18,6 +18,8 @@ class AppBindings extends Bindings {
     Get.put(PricesCardController());
 
     // ================================ ads ====================================
+    // ملاحظة: gma_mediation_meta يعمل تلقائياً من خلال dependency
+    // لا حاجة لتهيئة إضافية - فقط تأكد من إضافة Facebook App ID في AndroidManifest.xml
     MobileAds.instance.initialize();
   }
 }

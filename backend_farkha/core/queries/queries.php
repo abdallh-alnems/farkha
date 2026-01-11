@@ -6,10 +6,15 @@ include_once __DIR__ . "/article_queries.php";
 include_once __DIR__ . "/analytics_queries.php";
 include_once __DIR__ . "/suggestion_queries.php";
 include_once __DIR__ . "/user_queries.php";
+include_once __DIR__ . "/cycle_queries.php";
 
 final class Queries {
     public static function getFeasibilityStudyPrices(): string {
         return PriceQueries::fetchFeasibilityStudy();
+    }
+
+    public static function getCyclePrice(): string {
+        return PriceQueries::fetchCyclePrice();
     }
 
     public static function getPricesStreamWithTypeFilterQuery(array $typeIds): string {
@@ -91,6 +96,83 @@ final class Queries {
 
     public static function deleteUserByFirebaseUidQuery(): string {
         return UserQueries::deleteByFirebaseUid();
+    }
+
+    // Cycle Queries
+    public static function insertCycleQuery(): string {
+        return CycleQueries::insert();
+    }
+
+    public static function insertCycleUserQuery(): string {
+        return CycleQueries::insertCycleUser();
+    }
+
+    public static function fetchUserCyclesQuery(): string {
+        return CycleQueries::fetchUserCycles();
+    }
+
+    public static function fetchCycleDetailsQuery(): string {
+        return CycleQueries::fetchCycleDetails();
+    }
+
+    public static function checkUserAccessQuery(): string {
+        return CycleQueries::checkUserAccess();
+    }
+
+    public static function insertCycleDataQuery(): string {
+        return CycleQueries::insertCycleData();
+    }
+
+    public static function fetchCycleDataQuery(): string {
+        return CycleQueries::fetchCycleData();
+    }
+
+    public static function insertCycleExpenseQuery(): string {
+        return CycleQueries::insertCycleExpense();
+    }
+
+    public static function fetchCycleExpensesQuery(): string {
+        return CycleQueries::fetchCycleExpenses();
+    }
+
+    public static function updateCycleQuery(): string {
+        return CycleQueries::updateCycle();
+    }
+
+    public static function updateCycleStatusQuery(): string {
+        return CycleQueries::updateCycleStatus();
+    }
+
+    public static function deleteCycleDataQuery(): string {
+        return CycleQueries::deleteCycleData();
+    }
+
+    public static function deleteCycleExpensesQuery(): string {
+        return CycleQueries::deleteCycleExpenses();
+    }
+
+    public static function deleteCycleUsersQuery(): string {
+        return CycleQueries::deleteCycleUsers();
+    }
+
+    public static function deleteCycleQuery(): string {
+        return CycleQueries::deleteCycle();
+    }
+
+    public static function deleteCycleDataByIdQuery(): string {
+        return CycleQueries::deleteCycleDataById();
+    }
+
+    public static function deleteCycleDataByLabelQuery(): string {
+        return CycleQueries::deleteCycleDataByLabel();
+    }
+
+    public static function deleteCycleExpenseByIdQuery(): string {
+        return CycleQueries::deleteCycleExpenseById();
+    }
+
+    public static function deleteCycleExpenseByLabelQuery(): string {
+        return CycleQueries::deleteCycleExpenseByLabel();
     }
 }
 

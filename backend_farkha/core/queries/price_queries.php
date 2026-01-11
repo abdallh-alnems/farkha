@@ -24,6 +24,32 @@ final class PriceQueries {
         ";
     }
 
+    public static function fetchCyclePrice(): string {
+        return "
+            SELECT 
+                t.name,
+                CASE 
+                    WHEN gp.lower IS NULL OR gp.lower = 0 THEN gp.higher
+                    ELSE ROUND((gp.higher + gp.lower) / 2, 0)
+                END AS price,
+                gp.date,
+                gp.higher,
+                gp.lower
+            FROM prices gp
+            INNER JOIN (
+                SELECT type, MAX(date) AS max_date
+                FROM prices
+                WHERE type = 1
+            ) latest 
+                ON gp.type = latest.type
+               AND gp.date = latest.max_date
+            JOIN types t 
+                ON t.id = gp.type
+            WHERE gp.type = 1
+            LIMIT 1
+        ";
+    }
+
     public static function fetchStream(array $typeIds): string {
         if (empty($typeIds)) {
             return "

@@ -1,7 +1,7 @@
 name: farkha_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 5.8.2+31
+version: 5.8.4+32
 
 environment:
   sdk: ^3.7.2
@@ -65,6 +65,8 @@ dependencies:
   rate_my_app: ^2.3.2
   upgrader: ^12.3.0
   package_info_plus: ^9.0.0
+
+
 
 dev_dependencies:
   flutter_test:

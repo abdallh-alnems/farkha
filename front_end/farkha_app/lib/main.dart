@@ -1,7 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';  
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -50,8 +50,7 @@ class MyApp extends StatelessWidget {
             theme: AppTheme().lightThemes(),
             darkTheme: AppTheme().darkThemes(),
             themeMode: themeService.themeMode.value,
-
-            //  home: BroilerChickenRequirements(),
+            // home: Cycle(),
           ),
         );
       },
