@@ -1,0 +1,29 @@
+name: Flutter CI (Lint & Test Only)
+
+on:
+  push:
+    branches: [main]   
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ استنساخ المشروع
+      - uses: actions/checkout@v3
+
+      # 2️⃣ تثبيت Flutter (أحدث نسخة مستقرة)
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      # 3️⃣ استرجاع الحزم
+      - run: flutter pub get
+
+      # 4️⃣ تشغيل Dart Linter
+      - run: flutter analyze
+
+      # 5️⃣ تشغيل الاختبارات
+      - run: flutter test
