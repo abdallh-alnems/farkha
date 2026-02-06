@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/handling_data.dart';
+import '../../../../core/constant/routes/route.dart';
 import '../../../../core/constant/theme/colors.dart';
 import '../../../../core/shared/price_change.dart';
 import '../../../../logic/controller/price_controller/prices_by_type_controller.dart';
@@ -32,10 +33,10 @@ class TablePricesByType extends StatelessWidget {
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          TableHeaderCell(text: "النوع", flex: 2),
-          TableHeaderCell(text: "أعلى"),
-          TableHeaderCell(text: "أقل"),
-          TableHeaderCell(text: "التغير"),
+          TableHeaderCell(text: 'النوع', flex: 2),
+          TableHeaderCell(text: 'أقل'),
+          TableHeaderCell(text: 'أعلى'),
+          TableHeaderCell(text: 'التغير'),
         ],
       ),
     );
@@ -48,16 +49,13 @@ class TablePricesByType extends StatelessWidget {
         children: [
           Table(
             border: const TableBorder(
-              horizontalInside: BorderSide(
-                color: AppColors.primaryColor,
-                width: 1,
-              ),
+              horizontalInside: BorderSide(color: AppColors.primaryColor),
             ),
             columnWidths: const {
-              0: FlexColumnWidth(2), // النوع
-              1: FlexColumnWidth(1), // أعلى
-              2: FlexColumnWidth(1), // أقل
-              3: FlexColumnWidth(1), // التغير
+              0: FlexColumnWidth(2),
+              1: FlexColumnWidth(),
+              2: FlexColumnWidth(),
+              3: FlexColumnWidth(),
             },
             children:
                 controller.pricesByTypeList
@@ -71,31 +69,69 @@ class TablePricesByType extends StatelessWidget {
   }
 
   TableRow _buildTableRow(Map<String, dynamic> price) {
-    // Extract data from new API structure
-    final num lastHigherPrice = price["today_higher_price"] ?? 0;
-    final num lastLowerPrice = price["today_lower_price"] ?? 0;
-    final num yesterdayHigherPrice = price["yesterday_higher_price"] ?? 0;
-    final num yesterdayLowerPrice = price["yesterday_lower_price"] ?? 0;
-    final String typeName = price["type_name"] ?? "";
+    final int typeId = (price['type_id'] as num?)?.toInt() ?? 0;
+    final num lastHigherPrice = (price['today_higher_price'] as num?) ?? 0;
+    final num lastLowerPrice = (price['today_lower_price'] as num?) ?? 0;
+    final num yesterdayHigherPrice =
+        (price['yesterday_higher_price'] as num?) ?? 0;
+    final num yesterdayLowerPrice =
+        (price['yesterday_lower_price'] as num?) ?? 0;
+    final String typeName = (price['type_name'] ?? '').toString();
 
-    // Calculate average prices for comparison
     final double currentAvgPrice = (lastHigherPrice + lastLowerPrice) / 2;
     final double yesterdayAvgPrice =
         (yesterdayHigherPrice + yesterdayLowerPrice) / 2;
     final double priceDifference = currentAvgPrice - yesterdayAvgPrice;
 
+    final VoidCallback? onTap =
+        typeId > 0
+            ? () {
+                Get.toNamed<void>(
+                  AppRoute.priceHistory,
+                  arguments: {
+                    'type_id': typeId,
+                    'type_name': typeName,
+                  },
+                );
+              }
+            : null;
+
     return TableRow(
       children: [
-        _buildTableCell(child: Center(child: Text(typeName))),
         _buildTableCell(
-          child: Text(lastHigherPrice.toString(), textAlign: TextAlign.center),
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: Center(child: Text(typeName)),
+          ),
         ),
         _buildTableCell(
-          child: Text(lastLowerPrice.toString(), textAlign: TextAlign.center),
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: Text(
+              lastLowerPrice.toString(),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         _buildTableCell(
-          child: Center(
-            child: PriceChangeWidget(priceDifference: priceDifference),
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: Text(
+              lastHigherPrice.toString(),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        _buildTableCell(
+          child: GestureDetector(
+            onTap: onTap,
+            behavior: HitTestBehavior.opaque,
+            child: Center(
+              child: PriceChangeWidget(priceDifference: priceDifference),
+            ),
           ),
         ),
       ],
