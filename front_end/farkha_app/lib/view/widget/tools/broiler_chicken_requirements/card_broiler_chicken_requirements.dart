@@ -62,14 +62,12 @@ class CardBroilerChickenRequirements extends StatelessWidget {
                     : Colors.transparent),
             blurRadius: 16,
             offset: const Offset(0, 4),
-            spreadRadius: 0,
           ),
         ] : [
           BoxShadow(
             color: AppColors.primaryColor.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 4),
-            spreadRadius: 0,
           ),
         ],
       ),

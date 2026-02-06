@@ -5,6 +5,10 @@ final class TypeQueries {
         return "SELECT * FROM `main`";
     }
 
+    public static function fetchTypeById(): string {
+        return "SELECT id, name FROM types WHERE id = ? LIMIT 1";
+    }
+
     public static function fetchTypesList(): string {
         return "
             SELECT 

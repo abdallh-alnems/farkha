@@ -5,8 +5,8 @@ class SuggestionData {
   Crud crud;
   SuggestionData(this.crud);
   Future<Object> addSuggestion(String suggestionText) async {
-    var response = await crud.postData(Api.suggestion, {
-      "suggestions_text": suggestionText,
+    final response = await crud.postData(Api.suggestion, {
+      'suggestions_text': suggestionText,
     });
     return response.fold((l) => l, (r) => r);
   }

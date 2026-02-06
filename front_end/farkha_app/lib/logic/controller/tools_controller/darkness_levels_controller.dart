@@ -1,21 +1,11 @@
 import 'package:get/get.dart';
 
-import '../../../core/constant/id/tool_ids.dart';
 import '../../../data/data_source/static/chicken_data.dart';
-import 'tool_usage_controller.dart';
 
 class DarknessLevelsController extends GetxController {
-  static const int toolId =
-      ToolIds.darknessLevels; // Darkness Levels tool ID = 8
-
   final Rx<int?> selectedDay = Rx<int?>(null);
   final RxString result = ''.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    ToolUsageController.recordToolUsageFromController(toolId);
-  }
 
   int get maxDay => darknessLevels.length;
   int? get darkness {

@@ -38,14 +38,14 @@ class MainTypes extends StatelessWidget {
                         final mainTypes = controller.mainTypesList[index - 1];
                         return ActionButton(
                           onTap:
-                              () => Get.toNamed(
+                              () => Get.toNamed<void>(
                                 AppRoute.pricesByType,
                                 arguments: {
                                   'main_id': mainTypes['id'],
-                                  "main_name": mainTypes['name'],
+                                  'main_name': (mainTypes['name'] ?? '').toString(),
                                 },
                               ),
-                          text: mainTypes['name'],
+                          text: (mainTypes['name'] ?? '').toString(),
                         );
                       }
                     },

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AgeDropdown extends StatefulWidget {
   final int? selectedAge;
-  final Function(int) onAgeChanged;
+  final void Function(int) onAgeChanged;
   final int maxAge;
   final String hint;
 

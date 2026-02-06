@@ -19,8 +19,8 @@ class UsageTipsDialog {
 
   // عرض dialog مع رسالة مباشرة
   static void showDialog({required String middleText}) {
-    Get.defaultDialog(
-      title: "تنبيه",
+    Get.defaultDialog<void>(
+      title: 'تنبيه',
       content: Container(
         constraints: BoxConstraints(maxHeight: 400.h),
         child: SingleChildScrollView(
@@ -29,21 +29,21 @@ class UsageTipsDialog {
       ),
       confirm: ElevatedButton(
         onPressed: () {
-          Get.back();
+          Get.back<void>();
           FocusScope.of(Get.context!).unfocus();
         },
-        child: const Text("فهمت ذلك"),
+        child: const Text('فهمت ذلك'),
       ),
     );
   }
 
   // عرض dialog النصائح إذا لم تكن معروضة من قبل
   static void showDialogIfNotShown(String storageKey) {
-    if (GetStorage().read(storageKey) != false) {
+    if (GetStorage().read<bool>(storageKey) != false) {
       final message = _getMessageByStorageKey(storageKey);
 
       if (message != null) {
-        showDialog(middleText: message['message']);
+        showDialog(middleText: message['message'] as String);
         GetStorage().write(storageKey, false);
       }
     }

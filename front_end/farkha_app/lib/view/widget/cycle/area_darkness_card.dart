@@ -19,8 +19,9 @@ class AreaDarknessCard extends StatelessWidget {
       final requiredArea = broilerCtrl.requiredArea.value;
       final totalArea = broilerCtrl.collegeArea;
       final selectedAge = broilerCtrl.selectedChickenAge.value;
-      final darkness = selectedAge != null && selectedAge > 0 && selectedAge <= darknessLevels.length
-          ? darknessLevels[selectedAge - 1]
+      final ageInt = (selectedAge as num?)?.toInt();
+      final darkness = ageInt != null && ageInt > 0 && ageInt <= darknessLevels.length
+          ? darknessLevels[ageInt - 1]
           : 0;
 
       return Container(
@@ -32,7 +33,7 @@ class AreaDarknessCard extends StatelessWidget {
                   ? AppColors.darkSurfaceElevatedColor
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
@@ -125,12 +126,10 @@ class AreaDarknessCard extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.1 : 0.15),
             blurRadius: 8,
             offset: const Offset(0, 2),
-            spreadRadius: 0,
           ),
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(

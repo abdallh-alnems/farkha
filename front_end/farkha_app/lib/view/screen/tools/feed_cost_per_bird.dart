@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/theme/colors.dart';
+import '../../../core/functions/tool_page_view.dart';
+import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../../logic/controller/tools_controller/feed_cost_per_bird_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
-import '../../widget/input_fields/three_input_fields.dart';
+import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tools/tools_button.dart';
-import '../../widget/tools/tools_result.dart';
 
 class FeedCostPerBirdScreen extends StatelessWidget {
   FeedCostPerBirdScreen({super.key});
@@ -18,60 +20,136 @@ class FeedCostPerBirdScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _onCalculatePressed() {
+    if (_formKey.currentState?.validate() != true) return;
     controller.calculateFeedCostPerBird();
   }
 
   @override
   Widget build(BuildContext context) {
+    logToolPageViewOnce(
+      widgetType: FeedCostPerBirdScreen,
+      toolName: 'تكلفة العلف لكل طائر',
+    );
+
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final Color resultColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
     return Scaffold(
-      appBar: const CustomAppBar(text: 'تكلفة العلف لكل طائر'),
+      appBar: const CustomAppBar(text: 'تكلفة العلف لكل طائر', favoriteToolName: 'تكلفة العلف لكل طائر'),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                ThreeInputFields(
-                  firstLabel: 'كمية العلف (بالطن)',
-                  secondLabel: 'سعر طن العلف',
-                  thirdLabel: 'عدد الطيور',
-                  onFirstChanged: (value) {
-                    controller.totalFeedQuantity.value =
-                        double.tryParse(value) ?? 0.0;
-                    controller.resetCalculation();
-                  },
-                  onSecondChanged: (value) {
-                    controller.feedPricePerTon.value =
-                        double.tryParse(value) ?? 0.0;
-                    controller.resetCalculation();
-                  },
-                  onThirdChanged: (value) {
-                    controller.numberOfBirds.value = int.tryParse(value) ?? 0;
-                    controller.resetCalculation();
-                  },
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurfaceElevatedColor
+                      : AppColors.lightSurfaceColor,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                        : AppColors.lightOutlineColor.withValues(alpha: 0.3),
+                  ),
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                 ),
-                SizedBox(height: 24.h),
-                const AdNativeWidget(),
-                SizedBox(height: 24.h),
-                ToolsButton(
-                  text: 'احسب تكلفة العلف لكل طائر',
-                  onPressed: _onCalculatePressed,
+                child: Form(
+                  key: _formKey,
+                  child: ThreeInputFields(
+                    firstLabel: 'كمية العلف (بالطن)',
+                    secondLabel: 'سعر طن العلف',
+                    thirdLabel: 'عدد الطيور',
+                    firstSuffix: 'طن',
+                    secondSuffix: 'جنيه',
+                    onFirstChanged: (value) {
+                      controller.totalFeedQuantity.value =
+                          double.tryParse(value) ?? 0.0;
+                      controller.resetCalculation();
+                    },
+                    onSecondChanged: (value) {
+                      controller.feedPricePerTon.value =
+                          double.tryParse(value) ?? 0.0;
+                      controller.resetCalculation();
+                    },
+                    onThirdChanged: (value) {
+                      controller.numberOfBirds.value =
+                          int.tryParse(value) ?? 0;
+                      controller.resetCalculation();
+                    },
+                  ),
                 ),
-                SizedBox(height: 32.h),
-                Obx(() {
-                  final hasCalculated = controller.hasCalculated.value;
+              ),
+              SizedBox(height: 12.h),
+              const AdNativeWidget(),
+              SizedBox(height: 12.h),
+              ToolsButton(
+                text: 'احسب تكلفة العلف لكل طائر',
+                onPressed: _onCalculatePressed,
+              ),
+              SizedBox(height: 14.h),
+              Obx(() {
+                final hasCalculated = controller.hasCalculated.value;
+                if (!hasCalculated) return const SizedBox.shrink();
 
-                  return hasCalculated
-                      ? ToolsResult(
-                        title: 'تكلفة العلف لكل طائر',
-                        value: controller.getFormattedResult(),
-                        unit: 'جنيه',
-                      )
-                      : const SizedBox.shrink();
-                }),
-              ],
-            ),
+                return Container(
+                  margin: EdgeInsets.only(bottom: 16.h),
+                  padding: EdgeInsets.all(18.w),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        resultColor.withValues(alpha: isDark ? 0.22 : 0.1),
+                        resultColor.withValues(alpha: isDark ? 0.12 : 0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border.all(
+                      color: resultColor.withValues(alpha: 0.45),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'تكلفة العلف لكل طائر',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurface.withValues(alpha: 0.85),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        '${controller.getFormattedResult()} جنيه',
+                        style: TextStyle(
+                          fontSize: 26.sp,
+                          fontWeight: FontWeight.bold,
+                          color: resultColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              SizedBox(height: 16.h),
+              const RelatedArticlesSection(
+                relatedArticleIds: [12],
+              ),
+            ],
           ),
         ),
       ),

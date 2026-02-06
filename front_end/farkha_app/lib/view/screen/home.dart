@@ -1,10 +1,11 @@
-import 'package:farkha_app/view/widget/cycle/card_cycle.dart';
+import 'package:farkha_app/view/widget/home/card_cycle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/package/alert_exit_app.dart';
 import '../../core/package/upgrade.dart';
 import '../../core/services/initialization.dart';
+import '../../core/services/permission.dart';
 import '../../core/services/test_mode_manager.dart';
 import '../widget/ad/banner.dart';
 import '../widget/ad/native.dart';
@@ -29,7 +30,10 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final permissionController = Get.find<PermissionController>();
+      await permissionController.showPermissionsIntroIfNeeded(context);
+      if (!mounted) return;
       _showTutorialIfNeeded();
     });
   }
@@ -66,7 +70,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarHome(),
+      appBar: AppBarHome(drawerKey: HomeTutorial.drawerKey),
       drawer: const HomeDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -79,7 +83,7 @@ class _HomeState extends State<Home> {
               settingsIconKey: HomeTutorial.settingsIconKey,
             ),
 
-            const CardCycle(),
+            CardCycle(cycleCardKey: HomeTutorial.cardCycleKey),
             if (!_isTutorialActive) ...[
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 17),

@@ -12,12 +12,13 @@ class MainTypesController extends GetxController {
   Future<void> getDataMainTypes() async {
     statusRequest = StatusRequest.loading;
     update();
-    var response = await mainDataData.getData();
+    final response = await mainDataData.getData();
     statusRequest = handlingData(response);
     if (statusRequest == StatusRequest.success) {
       final mapResponse = response as Map<String, dynamic>;
-      if (mapResponse['status'] == "success") {
-        mainTypesList = List<Map<String, dynamic>>.from(mapResponse['data']);
+      if (mapResponse['status'] == 'success') {
+        final data = mapResponse['data'] as List<dynamic>;
+        mainTypesList = data.map((item) => item as Map<String, dynamic>).toList();
       } else {
         statusRequest = StatusRequest.failure;
       }

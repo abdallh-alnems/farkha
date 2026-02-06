@@ -5,7 +5,7 @@ class MainDataData {
   Crud crud;
   MainDataData(this.crud);
   Future<Object> getData() async {
-    var response = await crud.postData(Api.mainTypes, {});
+    final response = await crud.postData(Api.mainTypes, {});
     return response.fold((l) => l, (r) => r);
   }
 }

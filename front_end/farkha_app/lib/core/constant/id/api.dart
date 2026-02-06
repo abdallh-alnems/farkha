@@ -14,6 +14,7 @@ class Api {
   // ================================= prices ==================================
   static String mainTypes = '$_read/main_types.php';
   static String pricesByType = '$_read/prices_by_type.php';
+  static String priceHistory = '$_read/price_history.php';
 
   // ! feasibility study
   static String feasibilityStudy = '$_read/feasibility_study.php';
@@ -24,9 +25,6 @@ class Api {
 
   // =============================== suggestion ================================
   static String suggestion = '$_read/suggestions.php';
-
-  // ============================ record tools usage ===========================
-  static String toolsUsage = '$_serverName/analytics/record_tools_usage.php';
 
   // ================================ articles =================================
   static String articleDetail = '$_articles/article_detail.php';

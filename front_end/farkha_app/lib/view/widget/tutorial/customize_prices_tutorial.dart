@@ -46,7 +46,7 @@ class CustomizePricesTutorial {
     _tutorial = TutorialCoachMark(
       targets: targets,
       colorShadow: Colors.black.withValues(alpha: 0.3),
-      textSkip: "تخطي",
+      textSkip: 'تخطي',
       textStyleSkip: TextStyle(
         color: isDark ? Colors.white : Colors.black,
       ),
@@ -73,7 +73,7 @@ class CustomizePricesTutorial {
   }) {
     return [
       buildTutorialTarget(
-        id: "type_name",
+        id: 'type_name',
         key: typeNameKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -87,7 +87,7 @@ class CustomizePricesTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "notification_icon",
+        id: 'notification_icon',
         key: notificationIconKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -102,7 +102,7 @@ class CustomizePricesTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "selection_indicator",
+        id: 'selection_indicator',
         key: selectionIndicatorKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(

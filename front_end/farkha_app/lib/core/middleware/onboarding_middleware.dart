@@ -9,13 +9,13 @@ class OnboardingMiddleWare extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     // إذا كان المستخدم لم يكمل الـ onboarding بعد
-    if (myServices.getStorage.read("step") != "1") {
-      return const RouteSettings(name: "/onboarding");
+    if (myServices.getStorage.read<String>('step') != '1') {
+      return const RouteSettings(name: '/onboarding');
     }
 
     // إذا كان المستخدم يحاول الوصول إلى الـ onboarding بعد إكماله
-    if (route == "/onboarding" && myServices.getStorage.read("step") == "1") {
-      return const RouteSettings(name: "/");
+    if (route == '/onboarding' && myServices.getStorage.read<String>('step') == '1') {
+      return const RouteSettings(name: '/');
     }
 
     return null;

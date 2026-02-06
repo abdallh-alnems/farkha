@@ -25,7 +25,7 @@ class ArticleDetail extends StatelessWidget {
     controller.getArticleDetail(articleId);
 
     return Scaffold(
-      appBar: CustomAppBar(text: arguments['title']),
+      appBar: CustomAppBar(text: (arguments['title'] ?? '').toString()),
       body: GetBuilder<ArticleDetailController>(
         builder: (controller) {
           return HandlingDataView(
@@ -36,7 +36,7 @@ class ArticleDetail extends StatelessWidget {
                 children: [
                   const AdNativeWidget(),
                   _buildCustomMarkdown(
-                    controller.articleData['content'] ?? '',
+                    (controller.articleData['content'] ?? '').toString(),
                     context,
                   ),
                   ...controller.getTableWidgets(articleId, context),

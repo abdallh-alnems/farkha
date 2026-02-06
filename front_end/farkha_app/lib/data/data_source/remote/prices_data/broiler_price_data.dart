@@ -7,7 +7,7 @@ class BroilerPriceData {
 
   Future<Object> getBroilerPrice() async {
     final url = Api.broilerChicken;
-    var response = await crud.postData(url, {});
+    final response = await crud.postData(url, {});
     return response.fold((l) => l, (r) => r);
   }
 }

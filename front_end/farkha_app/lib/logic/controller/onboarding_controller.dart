@@ -22,8 +22,8 @@ class OnBoardingControllerImp extends OnBoardingController {
     currentPage.value++;
 
     if (currentPage.value > onBoardingList.length - 1) {
-      myServices.getStorage.write("step", "1");
-      Get.offAllNamed("/");
+      myServices.getStorage.write('step', '1');
+      Get.offAllNamed<void>('/');
     } else {
       pageController.animateToPage(
         currentPage.value,
@@ -36,9 +36,9 @@ class OnBoardingControllerImp extends OnBoardingController {
 
   @override
   void skip() {
-    myServices.getStorage.write("step", "1");
+    myServices.getStorage.write('step', '1');
     update();
-    Get.offAllNamed("/");
+    Get.offAllNamed<void>('/');
   }
 
   @override

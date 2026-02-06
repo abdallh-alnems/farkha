@@ -1,5 +1,21 @@
 class InputValidation {
-  static String? validateAndFormatNumber(String? input) {
+  /// Converts Arabic (٠١٢٣٤٥٦٧٨٩) and Persian/Indic (۰۱۲۳۴۵۶۷۸۹) digits to English (0123456789).
+  static String normalizeToEnglishDigits(String input) {
+    const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+    const englishDigits = '0123456789';
+    String result = input;
+    for (int i = 0; i < 10; i++) {
+      result = result.replaceAll(arabicDigits[i], englishDigits[i]);
+      result = result.replaceAll(persianDigits[i], englishDigits[i]);
+    }
+    return result;
+  }
+
+  static String? validateAndFormatNumber(
+    String? input, {
+    bool allowZero = false,
+  }) {
     const double minValue = 0;
     const double maxValue = 99999999;
     const int maxDecimalPlaces = 2;
@@ -9,8 +25,9 @@ class InputValidation {
     }
 
     final trimmedInput = input.trim();
+    final normalizedInput = normalizeToEnglishDigits(trimmedInput);
 
-    String cleanInput = trimmedInput.replaceAll(RegExp(r'[^\d.]-'), '');
+    String cleanInput = normalizedInput.replaceAll(RegExp(r'[^\d.]'), '');
 
     final dots = cleanInput.split('.');
     if (dots.length > 2) {
@@ -26,7 +43,7 @@ class InputValidation {
       return 'لا يمكن استخدام أرقام سالبة';
     }
 
-    if (number == minValue) {
+    if (!allowZero && number == minValue) {
       return 'القيمة يجب أن تكون أكبر من صفر';
     }
 

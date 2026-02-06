@@ -1,11 +1,16 @@
 import 'package:get/get.dart';
 
+import '../../logic/controller/cycle_controller.dart';
 import '../../logic/controller/price_controller/main_types_controller.dart';
 import '../../logic/controller/price_controller/prices_by_type_controller.dart';
 import '../../logic/controller/price_controller/prices_card/customize_prices_controller.dart';
 import '../../logic/controller/price_controller/prices_card/prices_card_controller.dart';
+import '../../logic/controller/tools_controller/articles_controller/article_detail_controller.dart';
+import '../../logic/controller/tools_controller/articles_controller/articles_list_controller.dart';
+import '../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../logic/controller/tools_controller/feasibility_study_controller.dart';
 import '../class/status_request.dart';
+import '../constant/routes/route.dart';
 
 class InternetDataLoaderService {
   static Future<void> reloadCurrentPageData() async {
@@ -14,14 +19,26 @@ class InternetDataLoaderService {
     try {
       if (currentRoute == '/') {
         await _reloadHomePageData();
-      } else if (currentRoute == '/mainTypes') {
+      } else if (currentRoute == AppRoute.mainTypes) {
         await _reloadMainTypesData();
-      } else if (currentRoute == '/pricesByType') {
+      } else if (currentRoute == AppRoute.pricesByType) {
         await _reloadPricesByTypeData();
-      } else if (currentRoute == '/customize-prices') {
+      } else if (currentRoute == AppRoute.customizePrices) {
         await _reloadCustomizePricesData();
-      } else if (currentRoute == '/feasibilityStudy') {
+      } else if (currentRoute == AppRoute.feasibilityStudy) {
         await _reloadFeasibilityStudyData();
+      } else if (currentRoute == AppRoute.articlesList) {
+        await _reloadArticlesListData();
+      } else if (currentRoute == AppRoute.articleDetail) {
+        await _reloadArticleDetailData();
+      } else if (currentRoute == AppRoute.broilerChickenRequirements) {
+        await _reloadBroilerData();
+      } else if (currentRoute == AppRoute.cycle) {
+        await _reloadCycleList();
+        await _reloadCycleDetails();
+      } else if (currentRoute == AppRoute.cycleData ||
+          currentRoute == AppRoute.cycleExpenses) {
+        await _reloadCycleDetails();
       }
     } catch (_) {}
   }
@@ -83,6 +100,62 @@ class InternetDataLoaderService {
     final controller = Get.find<FeasibilityController>();
     if (controller.pricesStatusRequest.value != StatusRequest.success) {
       await controller.fetchFeasibilityData();
+    }
+  }
+
+  static Future<void> _reloadArticlesListData() async {
+    if (!Get.isRegistered<ArticlesListController>()) return;
+
+    final controller = Get.find<ArticlesListController>();
+    if (_shouldReloadData(
+      controller.statusRequest,
+      controller.articlesList.isEmpty,
+    )) {
+      await controller.getArticles();
+    }
+  }
+
+  static Future<void> _reloadArticleDetailData() async {
+    if (!Get.isRegistered<ArticleDetailController>()) return;
+
+    final controller = Get.find<ArticleDetailController>();
+    if (_shouldReloadData(
+      controller.statusRequest,
+      controller.articleData.isEmpty,
+    )) {
+      if (Get.arguments != null && Get.arguments['id'] != null) {
+        final String articleId = Get.arguments['id'].toString();
+        await controller.getArticleDetail(articleId);
+      }
+    }
+  }
+
+  static Future<void> _reloadBroilerData() async {
+    if (!Get.isRegistered<BroilerController>()) return;
+
+    final controller = Get.find<BroilerController>();
+    await controller.fetchBroilerPrice();
+    controller.refreshWeatherTemperature();
+  }
+
+  static Future<void> _reloadCycleList() async {
+    if (!Get.isRegistered<CycleController>()) return;
+
+    final controller = Get.find<CycleController>();
+    await controller.fetchCyclesFromServer();
+  }
+
+  static Future<void> _reloadCycleDetails() async {
+    if (!Get.isRegistered<CycleController>()) return;
+
+    final controller = Get.find<CycleController>();
+    final cycleId = controller.currentCycle['cycle_id'];
+
+    if (cycleId != null) {
+      final int? id = int.tryParse(cycleId.toString());
+      if (id != null) {
+        await controller.fetchCycleDetails(id);
+      }
     }
   }
 

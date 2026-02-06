@@ -134,6 +134,7 @@ final class PriceQueries {
     public static function fetchByType(): string {
         return "
             SELECT 
+                t.id AS type_id,
                 gp_today.higher AS today_higher_price,
                 gp_today.lower AS today_lower_price,
                 gp_yesterday.higher AS yesterday_higher_price,
@@ -211,6 +212,29 @@ final class PriceQueries {
                 SELECT 1 FROM types t 
                 WHERE t.id = :type3
             )
+        ";
+    }
+
+    /**
+     * Fetches price history for a single type with cursor pagination (infinite scroll).
+     * Returns date, higher, lower only. Ordered by date DESC (newest first).
+     * @param int $limit Page size (default 30).
+     * @param string|null $beforeDate Cursor: return rows with date < beforeDate; null = first page (latest).
+     */
+    public static function fetchPriceHistoryByType(int $limit = 30, ?string $beforeDate = null): string {
+        $limit = max(1, min(1000, (int) $limit));
+        $where = $beforeDate !== null && $beforeDate !== ''
+            ? "WHERE gp.type = ? AND gp.date < ?"
+            : "WHERE gp.type = ?";
+        return "
+            SELECT 
+                gp.date,
+                gp.higher,
+                gp.lower
+            FROM prices gp
+            " . $where . "
+            ORDER BY gp.date DESC
+            LIMIT " . $limit . "
         ";
     }
 

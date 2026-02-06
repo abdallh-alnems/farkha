@@ -21,9 +21,9 @@ class ExpensePayment {
 
   factory ExpensePayment.fromJson(Map<String, dynamic> json) {
     return ExpensePayment(
-      id: json['id'] ?? '',
-      amount: (json['amount'] ?? 0.0).toDouble(),
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      id: (json['id'] ?? '').toString(),
+      amount: ((json['amount'] ?? 0.0) as num).toDouble(),
+      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -106,8 +106,8 @@ class ExpenseItem {
     }
 
     return ExpenseItem(
-      id: json['id'] ?? '',
-      label: json['label'] ?? '',
+      id: (json['id'] ?? '').toString(),
+      label: (json['label'] ?? '').toString(),
       icon: iconData,
       payments: paymentsList,
     );
@@ -148,7 +148,7 @@ class CycleExpensesController extends GetxController {
   void _updateLastCycleId() {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
-    _lastCycleId = cycle['name'] ?? 'default';
+    _lastCycleId = (cycle['name'] ?? 'default').toString();
   }
 
   String? _lastExpensesHash;
@@ -166,7 +166,7 @@ class CycleExpensesController extends GetxController {
 
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
-    final currentCycleId = cycle['name'] ?? 'default';
+    final currentCycleId = (cycle['name'] ?? 'default').toString();
 
     // إعادة تحميل المصروفات فقط إذا تغيرت الدورة
     if (_lastCycleId != currentCycleId) {
@@ -280,7 +280,7 @@ class CycleExpensesController extends GetxController {
 
     // إذا لم تكن هناك مصروفات من API، جلب من التخزين المحلي
     // فقط إذا كانت الدورة تحتوي على cycle_id (من API) أو إذا كانت موجودة في cycles
-    final saved = _storage.read<List>(storageKey);
+    final saved = _storage.read<List<dynamic>>(storageKey);
     if (saved != null && saved.isNotEmpty && cycleExists) {
       final savedExpenses =
           saved
@@ -664,7 +664,7 @@ class CycleExpensesController extends GetxController {
         }
 
         // حفظ في GetStorage
-        final cycleStorageKey = 'cycles';
+        const cycleStorageKey = 'cycles';
         myServices.getStorage.write(cycleStorageKey, cycleCtrl.cycles.toList());
 
         // تحديث cycles لإعادة بناء الواجهة (فقط عند التغيير)

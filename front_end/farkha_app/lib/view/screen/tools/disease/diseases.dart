@@ -1,47 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../logic/controller/tools_controller/tool_usage_controller.dart';
+import '../../../../core/functions/tool_page_view.dart';
 import '../../../widget/ad/banner.dart';
 import '../../../widget/ad/native.dart';
 import '../../../widget/appbar/custom_appbar.dart';
 import '../../../widget/tools/disease/disease_card.dart';
 import '../../../widget/tools/disease/question_card.dart';
+import '../../../widget/tools/related_articles_section.dart';
 
-class Disease extends StatefulWidget {
+class Disease extends StatelessWidget {
   const Disease({super.key});
 
   @override
-  State<Disease> createState() => _DiseaseState();
-}
-
-class _DiseaseState extends State<Disease> {
-  @override
-  void initState() {
-    super.initState();
-    // Record tool usage when entering this page using static method
-    ToolUsageController.recordToolUsageFromController(
-      12,
-    ); // Diseases tool ID = 12
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    logToolPageViewOnce(widgetType: Disease, toolName: 'الأمراض');
+
+    return Scaffold(
       body: Column(
         children: [
-          CustomAppBar(text: "الامراض"),
+          const CustomAppBar(text: 'الامراض', favoriteToolName: 'الامراض'),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.only(top: 15),
                       child: AdNativeWidget(),
                     ),
-                    QuestionCard(),
-                    DiseaseCard(),
+                    const QuestionCard(),
+                    const RelatedArticlesSection(relatedArticleIds: [1, 3, 10]),
+                    SizedBox(height: 20.h),
+                    const DiseaseCard(),
                   ],
                 ),
               ),
@@ -49,7 +41,7 @@ class _DiseaseState extends State<Disease> {
           ),
         ],
       ),
-      bottomNavigationBar: AdBannerWidget(),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/routes/route.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/delete_account_data.dart';
 import '../../../data/data_source/remote/auth_data/update_name_data.dart';
@@ -11,14 +12,20 @@ import '../../../data/data_source/remote/auth_data/update_phone_data.dart';
 import '../../../logic/controller/auth/login_controller.dart';
 
 class DrawerAccountSettings extends StatefulWidget {
-  const DrawerAccountSettings({super.key});
+  final bool isExpanded;
+  final ValueChanged<bool> onExpansionChanged;
+
+  const DrawerAccountSettings({
+    super.key,
+    required this.isExpanded,
+    required this.onExpansionChanged,
+  });
 
   @override
   State<DrawerAccountSettings> createState() => _DrawerAccountSettingsState();
 }
 
 class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
-  bool _isExpanded = false;
 
   void _showSnackbar(String message, {bool isError = false}) {
     // محاولة متعددة للحصول على context صالح
@@ -40,12 +47,11 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
             isError ? Icons.error_outline : Icons.check_circle,
             color: Colors.white,
           ),
-          duration: const Duration(seconds: 3),
         );
         return;
       }
 
-      Future.delayed(Duration(milliseconds: 300 + (attempt * 200)), () {
+      Future<void>.delayed(Duration(milliseconds: 300 + (attempt * 200)), () {
         final BuildContext? currentContext =
             Get.key.currentContext ?? Get.context;
         if (currentContext != null && currentContext.mounted) {
@@ -153,7 +159,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
     }
 
     if (result != null && result.isNotEmpty) {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
       await _updateName(result);
     }
   }
@@ -182,8 +188,8 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
         (failure) {
           _showSnackbar('فشل تحديث الاسم', isError: true);
         },
-        (success) {
-          final data = success as Map<String, dynamic>;
+        (Map<String, dynamic> success) {
+          final data = success;
           if (data['success'] == true || data['status'] == 'success') {
             final myServices = Get.find<MyServices>();
             myServices.getStorage.write('user_name', name);
@@ -192,7 +198,10 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
               setState(() {});
             }
           } else {
-            _showSnackbar(data['message'] ?? 'فشل تحديث الاسم', isError: true);
+            _showSnackbar(
+              (data['message'] ?? 'فشل تحديث الاسم').toString(),
+              isError: true,
+            );
           }
         },
       );
@@ -203,7 +212,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
 
   Future<void> _handleEditPhone() async {
     final myServices = Get.find<MyServices>();
-    final currentPhone = myServices.getStorage.read<String>('user_phone');
+    final currentPhone = myServices.getStorage.read<String>('user_phone')?.toString();
     final isAdding = currentPhone == null || currentPhone.isEmpty;
 
     final phoneController = TextEditingController(text: '');
@@ -262,7 +271,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
     }
 
     if (result != null && result.isNotEmpty) {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
       await _updatePhone(result);
     }
   }
@@ -291,12 +300,12 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
         (failure) {
           _showSnackbar('فشل تحديث رقم الهاتف', isError: true);
         },
-        (success) {
-          final data = success as Map<String, dynamic>;
+        (Map<String, dynamic> success) {
+          final data = success;
           if (data['success'] == true || data['status'] == 'success') {
             final myServices = Get.find<MyServices>();
-            final wasEmpty =
-                myServices.getStorage.read<String>('user_phone') == null;
+            final val = myServices.getStorage.read<String>('user_phone');
+            final wasEmpty = val == null || val.toString().isEmpty;
             myServices.getStorage.write('user_phone', phone);
             _showSnackbar(
               'تم ${wasEmpty ? 'إضافة' : 'تحديث'} رقم الهاتف بنجاح',
@@ -306,7 +315,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
             }
           } else {
             _showSnackbar(
-              data['message'] ?? 'فشل تحديث رقم الهاتف',
+              (data['message'] ?? 'فشل تحديث رقم الهاتف').toString(),
               isError: true,
             );
           }
@@ -319,11 +328,32 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
 
   Future<void> _handleSignOut() async {
     Navigator.pop(context);
-    // LoginController is registered in AppBindings
-    final loginController = Get.find<LoginController>();
-    await loginController.signOut();
-    if (mounted) {
-      setState(() {});
+
+    final confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('تسجيل الخروج'),
+        content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('تسجيل الخروج'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // LoginController is registered in AppBindings
+      final loginController = Get.find<LoginController>();
+      await loginController.signOut();
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -371,23 +401,27 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
       final deleteAccountData = DeleteAccountData();
       final response = await deleteAccountData.deleteAccount(token: token);
 
-      response.fold(
-        (failure) {
+      await response.fold<Future<void>>(
+        (failure) async {
           if (failure == StatusRequest.offlineFailure) {
             _showSnackbar('لا يوجد اتصال بالإنترنت', isError: true);
           } else {
             _showSnackbar('فشل حذف الحساب', isError: true);
           }
         },
-        (result) {
-          final data = result as Map<String, dynamic>;
+        (Map<String, dynamic> result) async {
+          final data = result;
           if (data['status'] == 'success') {
             // Delete account locally
             final loginController = Get.find<LoginController>();
-            loginController.signOut();
+            // تسجيل الخروج (الذي يحذف جميع البيانات المحلية تلقائياً)
+            await loginController.signOut();
             _showSnackbar('تم حذف الحساب بنجاح');
           } else {
-            _showSnackbar(data['message'] ?? 'فشل حذف الحساب', isError: true);
+            _showSnackbar(
+              (data['message'] ?? 'فشل حذف الحساب').toString(),
+              isError: true,
+            );
           }
         },
       );
@@ -402,81 +436,88 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
     final isLoggedIn =
         myServices.getStorage.read<bool>('is_logged_in') ?? false;
 
-    if (!isLoggedIn) {
-      return const SizedBox.shrink();
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 13).r,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          key: ValueKey<bool>(widget.isExpanded),
           leading: Icon(
-            Icons.settings_rounded,
+            Icons.account_circle_rounded,
             size: 21.sp,
             color: Theme.of(context).colorScheme.primary,
           ),
-          title: Text('إعدادات الحساب', style: TextStyle(fontSize: 15.sp)),
+          title: Text('الحساب', style: TextStyle(fontSize: 15.sp)),
           trailing: const SizedBox.shrink(),
           tilePadding: EdgeInsets.zero,
           childrenPadding: EdgeInsets.zero,
-          initiallyExpanded: _isExpanded,
+          initiallyExpanded: widget.isExpanded,
           onExpansionChanged: (expanded) {
-            setState(() {
-              _isExpanded = expanded;
-            });
+            if (!isLoggedIn) {
+              Navigator.pop(context); // إغلاق الـ drawer
+              Get.toNamed<void>(AppRoute.login);
+              return;
+            }
+            widget.onExpansionChanged(expanded);
           },
-          children: [
-            ListTile(
-              onTap: _handleEditName,
-              title: Text('تعديل الاسم', style: TextStyle(fontSize: 15.sp)),
-              shape: const Border(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-            ),
-            Builder(
-              builder: (context) {
-                final myServices = Get.find<MyServices>();
-                final currentPhone = myServices.getStorage.read<String>(
-                  'user_phone',
-                );
-                final isAdding = currentPhone == null || currentPhone.isEmpty;
-
-                return ListTile(
-                  onTap: _handleEditPhone,
-                  title: Text(
-                    isAdding ? 'إضافة رقم الهاتف' : 'تعديل رقم الهاتف',
-                    style: TextStyle(fontSize: 15.sp),
-                  ),
-                  subtitle:
-                      currentPhone != null && currentPhone.isNotEmpty
-                          ? Text(
-                            currentPhone,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.6),
-                            ),
-                          )
-                          : null,
+          children: isLoggedIn
+              ? [
+                ListTile(
+                  onTap: _handleEditName,
+                  title: Text('تعديل الاسم', style: TextStyle(fontSize: 15.sp)),
                   shape: const Border(),
                   contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-                );
-              },
-            ),
-            ListTile(
-              onTap: _handleSignOut,
-              title: Text('تسجيل الخروج', style: TextStyle(fontSize: 15.sp)),
-              shape: const Border(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-            ),
-            ListTile(
-              onTap: _handleDeleteAccount,
-              title: Text('حذف الحساب', style: TextStyle(fontSize: 15.sp)),
-              shape: const Border(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-            ),
-          ],
+                ),
+                Builder(
+                  builder: (context) {
+                    final myServices = Get.find<MyServices>();
+                    final currentPhone =
+                        myServices.getStorage.read<String>('user_phone')?.toString();
+                    final isAdding =
+                        currentPhone == null || currentPhone.isEmpty;
+
+                    return ListTile(
+                      onTap: _handleEditPhone,
+                      title: Text(
+                        isAdding ? 'إضافة رقم الهاتف' : 'تعديل رقم الهاتف',
+                        style: TextStyle(fontSize: 15.sp),
+                      ),
+                      subtitle:
+                          currentPhone != null && currentPhone.isNotEmpty
+                              ? Text(
+                                currentPhone,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withValues(
+                                    alpha: 0.6,
+                                  ),
+                                ),
+                              )
+                              : null,
+                      shape: const Border(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                    );
+                  },
+                ),
+                ListTile(
+                  onTap: _handleSignOut,
+                  title: Text(
+                    'تسجيل الخروج',
+                    style: TextStyle(fontSize: 15.sp),
+                  ),
+                  shape: const Border(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                ),
+                ListTile(
+                  onTap: _handleDeleteAccount,
+                  title: Text('حذف الحساب', style: TextStyle(fontSize: 15.sp)),
+                  shape: const Border(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                ),
+              ]
+              : [],
         ),
       ),
     );

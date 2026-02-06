@@ -21,6 +21,10 @@ final class Queries {
         return PriceQueries::fetchStream($typeIds);
     }
 
+    public static function getPriceHistoryByTypeQuery(int $limit = 30, ?string $beforeDate = null): string {
+        return PriceQueries::fetchPriceHistoryByType($limit, $beforeDate);
+    }
+
     public static function getPricesByTypeQuery(): string {
         return PriceQueries::fetchByType();
     }
@@ -39,6 +43,10 @@ final class Queries {
 
     public static function getMainCategoriesQuery(): string {
         return TypeQueries::fetchMainCategories();
+    }
+
+    public static function getTypeByIdQuery(): string {
+        return TypeQueries::fetchTypeById();
     }
 
     public static function getTypesListQuery(): string {

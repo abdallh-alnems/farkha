@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/functions/tool_page_view.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/test_mode_manager.dart';
 import '../../../core/shared/usage_tips_dialog.dart';
@@ -10,6 +11,7 @@ import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
 import '../../widget/tools/feasibility_study/inputs_section.dart';
 import '../../widget/tools/feasibility_study/results_section.dart';
+import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tutorial/feasibility_tutorial.dart';
 
 class FeasibilityStudy extends StatefulWidget {
@@ -22,9 +24,22 @@ class FeasibilityStudy extends StatefulWidget {
 class _FeasibilityStudyState extends State<FeasibilityStudy> {
   final FeasibilityController controller = Get.put(FeasibilityController());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final ScrollController _scrollController = ScrollController();
   bool _isTutorialActive = false;
   bool _hasShownUsageTips = false;
   MyServices myServices = Get.find();
+
+  void _scrollToTop() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients && mounted) {
+        _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -84,12 +99,12 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
   // ignore: unused_element
   static void resetTutorialForTesting() {
     final myServices = Get.find<MyServices>();
-    myServices.getStorage.remove('feasibsility_tutorial_seen');
+    myServices.getStorage.remove('feasibility_tutorial_seen');
   }
 
   @override
   void dispose() {
-    // إلغاء الشرح إذا كان يعمل عند الخروج من الصفحة
+    _scrollController.dispose();
     if (_isTutorialActive) {
       FeasibilityTutorial.cancelTutorial();
     }
@@ -98,8 +113,9 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
 
   @override
   Widget build(BuildContext context) {
+    logToolPageViewOnce(widgetType: FeasibilityStudy, toolName: 'دراسة جدوي');
+
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (didPop, result) {
         // إلغاء الشرح عند الضغط على زر الرجوع
         if (_isTutorialActive) {
@@ -110,13 +126,14 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
         }
       },
       child: Scaffold(
-        appBar: const CustomAppBar(text: 'دراسة جدوي'),
+        appBar: const CustomAppBar(text: 'دراسة جدوي', favoriteToolName: 'دراسة جدوي'),
         body: Column(
           children: [
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 21),
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Form(
                     key: _formKey,
                     autovalidateMode: AutovalidateMode.disabled,
@@ -130,10 +147,16 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
                           const SizedBox(height: 19),
 
                         // Inputs Section (includes prices and default values)
-                        InputsSection(formKey: _formKey),
+                        InputsSection(
+                          formKey: _formKey,
+                          onAfterCalculate: _scrollToTop,
+                        ),
 
                         // Results Section
                         const ResultsSection(),
+
+                        const SizedBox(height: 24),
+                        const RelatedArticlesSection(relatedArticleIds: [20]),
                       ],
                     ),
                   ),

@@ -8,7 +8,7 @@ import '../constant/theme/colors.dart';
 class InternetChecker {
   static Future<bool> checkConnection() async {
     try {
-      final result = await InternetAddress.lookup("google.com");
+      final result = await InternetAddress.lookup('google.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } catch (_) {
       return false;
@@ -34,11 +34,11 @@ class InternetChecker {
   }
 
   static void _showConnectedMessage() {
-    _showMessage("تم استعادة الاتصال", Icons.wifi);
+    _showMessage('تم استعادة الاتصال', Icons.wifi);
   }
 
   static void _showDisconnectedMessage() {
-    _showMessage("لا يوجد اتصال", Icons.wifi_off);
+    _showMessage('لا يوجد اتصال', Icons.wifi_off);
   }
 
   static void _showMessage(String message, IconData icon) {

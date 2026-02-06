@@ -2,16 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
-import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/handing_data_controller.dart';
 import '../../../data/data_source/remote/tools/feasibility_study_data.dart';
 import '../../../data/model/feasibility_model.dart';
-import 'tool_usage_controller.dart';
 
 class FeasibilityController extends GetxController {
-  static const int toolId =
-      ToolIds.feasibilityStudy; // Feasibility Study tool ID = 14
-
   late StatusRequest statusRequest = StatusRequest.none;
   Rx<StatusRequest> pricesStatusRequest = StatusRequest.none.obs;
   final TextEditingController countController = TextEditingController();
@@ -48,20 +43,31 @@ class FeasibilityController extends GetxController {
   RxBool isProfessionalMode =
       false.obs; // true for professional, false for normal
 
-  RxString mortalityRateText = "".obs;
-  RxString chickenCostText = "".obs;
-  RxString feedCostText = "".obs;
-  RxString overheadCostText = "".obs;
-  RxString totalCostText = "".obs;
-  RxString totalSalesText = "".obs;
-  RxString profitText = "".obs;
-  RxString chickenCountText = "".obs; // For budget mode
+  RxString mortalityRateText = ''.obs;
+  RxString chickenCostText = ''.obs;
+  RxString feedCostText = ''.obs;
+  RxString overheadCostText = ''.obs;
+  RxString totalCostText = ''.obs;
+  RxString totalSalesText = ''.obs;
+  RxString profitText = ''.obs;
+  RxString chickenCountText = ''.obs; // For budget mode
+  RxString costPerChickenText = ''.obs;
+  RxString profitPerChickenText = ''.obs;
+  RxString profitMarginText = ''.obs;
+  RxString costPerKgText = ''.obs;
+  RxString totalKgProducedText = ''.obs;
+  RxBool isProfitNegative = false.obs;
+
+  // Raw cost values for chart
+  RxDouble totalChickenCostRaw = 0.0.obs;
+  RxDouble totalFeedCostRaw = 0.0.obs;
+  RxDouble totalOverheadCostRaw = 0.0.obs;
 
   RxBool showResults = false.obs;
   RxBool showInputs = true.obs; // إظهار المدخلات، false لإخفائها عند الحساب
 
   // Reactive variables for customizable values
-  RxDouble defaultWeight = 2.5.obs;
+  RxDouble defaultWeight = 2.1.obs;
   RxDouble badiFeedRatio = 0.5.obs;
   RxDouble namiFeedRatio = 1.2.obs;
   RxDouble nahiFeedRatio = 1.8.obs;
@@ -72,13 +78,15 @@ class FeasibilityController extends GetxController {
     try {
       pricesStatusRequest.value = StatusRequest.loading;
 
-      var response = await _feasibilityDataService.getData();
+      final response = await _feasibilityDataService.getData();
       pricesStatusRequest.value = handlingData(response);
 
       if (pricesStatusRequest.value == StatusRequest.success) {
         final mapResponse = response as Map<String, dynamic>;
-        if (mapResponse['status'] == "success") {
-          feasibilityModel = FeasibilityModel.fromJson(mapResponse['data']);
+        if (mapResponse['status'] == 'success') {
+          feasibilityModel = FeasibilityModel.fromJson(
+            mapResponse['data'] as List<dynamic>,
+          );
           _updatePriceControllers();
         } else {
           pricesStatusRequest.value = StatusRequest.failure;
@@ -132,7 +140,7 @@ class FeasibilityController extends GetxController {
 
   void updateDefaultValues() {
     // استخدم القيم من الحقول، وإذا كانت فارغة استخدم القيم الافتراضية
-    defaultWeight.value = double.tryParse(defaultWeightController.text) ?? 2.5;
+    defaultWeight.value = double.tryParse(defaultWeightController.text) ?? 2.1;
     mortalityRate.value = double.tryParse(mortalityRateController.text) ?? 5.0;
     overheadPerChicken.value = double.tryParse(overheadController.text) ?? 10.0;
 
@@ -153,29 +161,33 @@ class FeasibilityController extends GetxController {
   void toggleCalculationMode() {
     isChickenCountMode.value = !isChickenCountMode.value;
     showResults.value = false;
-    // Clear previous results
-    mortalityRateText.value = "";
-    chickenCostText.value = "";
-    feedCostText.value = "";
-    overheadCostText.value = "";
-    totalCostText.value = "";
-    totalSalesText.value = "";
-    profitText.value = "";
-    chickenCountText.value = "";
+    _clearResultTexts();
   }
 
   void toggleProfessionalMode() {
     isProfessionalMode.value = !isProfessionalMode.value;
     showResults.value = false;
-    // Clear previous results
-    mortalityRateText.value = "";
-    chickenCostText.value = "";
-    feedCostText.value = "";
-    overheadCostText.value = "";
-    totalCostText.value = "";
-    totalSalesText.value = "";
-    profitText.value = "";
-    chickenCountText.value = "";
+    _clearResultTexts();
+  }
+
+  void _clearResultTexts() {
+    mortalityRateText.value = '';
+    chickenCostText.value = '';
+    feedCostText.value = '';
+    overheadCostText.value = '';
+    totalCostText.value = '';
+    totalSalesText.value = '';
+    profitText.value = '';
+    chickenCountText.value = '';
+    costPerChickenText.value = '';
+    profitPerChickenText.value = '';
+    profitMarginText.value = '';
+    costPerKgText.value = '';
+    totalKgProducedText.value = '';
+    isProfitNegative.value = false;
+    totalChickenCostRaw.value = 0.0;
+    totalFeedCostRaw.value = 0.0;
+    totalOverheadCostRaw.value = 0.0;
   }
 
   void toggleInputsVisibility() {
@@ -185,7 +197,7 @@ class FeasibilityController extends GetxController {
     }
   }
 
-  void calculateFeasibility() async {
+  Future<void> calculateFeasibility() async {
     showResults.value = true;
     showInputs.value = false; // إخفاء المدخلات عند الحساب
 
@@ -212,30 +224,47 @@ class FeasibilityController extends GetxController {
         chickenCount = int.parse(countController.text);
       } else {
         // Calculate based on budget
-        double budget = double.parse(budgetController.text);
+        final double budget = double.parse(budgetController.text);
         chickenCount = _calculateChickenCountFromBudget(budget);
       }
 
       int deadChickens = (chickenCount * mortalityRate.value / 100).round();
-      // ضمان أن النافق لا يقل عن 1
-      deadChickens = deadChickens < 1 ? 1 : deadChickens;
-      int remainingChickens = chickenCount - deadChickens;
+      if (deadChickens > chickenCount) deadChickens = chickenCount;
+      final int remainingChickens = chickenCount - deadChickens;
 
-      int totalChickenCost = chickenCount * feasibilityModel.chickPrice;
-      double totalFeedCost = _calculateFeedCost(chickenCount);
-      double totalOverheadCost = chickenCount * overheadPerChicken.value;
-      double totalCost = totalChickenCost + totalFeedCost + totalOverheadCost;
+      final int totalChickenCost = chickenCount * feasibilityModel.chickPrice;
+      final double feedCostForAll = _calculateFeedCost(chickenCount);
+      final double feedCostPerChicken = _calculateFeedCost(1);
+      final double feedDeductionForDead =
+          deadChickens * 0.5 * feedCostPerChicken;
+      final double totalFeedCost = feedCostForAll - feedDeductionForDead;
+      final double totalOverheadCost = chickenCount * overheadPerChicken.value;
+      final double totalCost =
+          totalChickenCost + totalFeedCost + totalOverheadCost;
 
-      int totalSales =
+      final int totalSales =
           (remainingChickens *
                   defaultWeight.value *
                   feasibilityModel.chickenSalePrice)
               .round();
-      double profit = totalSales - totalCost;
+      final double profit = totalSales - totalCost;
+
+      final int deadChickenChickCost =
+          chickenCount > 0
+              ? (deadChickens * totalChickenCost / chickenCount).round()
+              : 0;
+      final double deadChickenFeedCost =
+          deadChickens * 0.5 * feedCostPerChicken;
+      final double deadChickenOverheadCost =
+          deadChickens * overheadPerChicken.value;
+      final int deadChickenTotalCost =
+          (deadChickenChickCost + deadChickenFeedCost + deadChickenOverheadCost)
+              .round();
 
       _updateResultText(
         chickenCount,
         deadChickens,
+        deadChickenTotalCost,
         totalChickenCost,
         totalFeedCost,
         totalOverheadCost,
@@ -245,20 +274,29 @@ class FeasibilityController extends GetxController {
       );
 
       update();
-    } catch (_) {
+    } catch (e, stackTrace) {
+      debugPrint('Feasibility calculation error: $e\n$stackTrace');
       statusRequest = StatusRequest.failure;
       update();
+      Get.snackbar(
+        'خطأ في الحساب',
+        'حدث خطأ أثناء الحساب. تأكد من صحة المدخلات وحاول مرة أخرى',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 4),
+      );
     }
   }
 
   int _calculateChickenCountFromBudget(double budget) {
     // Calculate how many chickens can be bought with the given budget
     // We need to estimate the total cost per chicken
-    double costPerChicken = feasibilityModel.chickPrice.toDouble();
-    double feedCostPerChicken = _calculateFeedCost(1); // Cost for 1 chicken
-    double overheadCostPerChicken = overheadPerChicken.value;
+    final double costPerChicken = feasibilityModel.chickPrice.toDouble();
+    final double feedCostPerChicken = _calculateFeedCost(
+      1,
+    ); // Cost for 1 chicken
+    final double overheadCostPerChicken = overheadPerChicken.value;
 
-    double totalCostPerChicken =
+    final double totalCostPerChicken =
         costPerChicken + feedCostPerChicken + overheadCostPerChicken;
 
     return (budget / totalCostPerChicken).floor();
@@ -267,28 +305,34 @@ class FeasibilityController extends GetxController {
   double _calculateFeedCost(int chickenCount) {
     if (isProfessionalMode.value) {
       // في الوضع الاحترافي، استخدم النسب المنفصلة
-      double badiFeedCost =
+      final double badiFeedCost =
           badiFeedRatio.value * (feasibilityModel.badiPrice / 1000);
-      double namiFeedCost =
+      final double namiFeedCost =
           namiFeedRatio.value * (feasibilityModel.namiPrice / 1000);
-      double nahiFeedCost =
+      final double nahiFeedCost =
           nahiFeedRatio.value * (feasibilityModel.nahiPrice / 1000);
 
       return (badiFeedCost + namiFeedCost + nahiFeedCost) * chickenCount;
     } else {
       // في الوضع العادي، استخدم متوسط نسبة العلف مرة واحدة
-      double avgFeedRatio =
+      final double avgFeedRatio =
           double.tryParse(averageFeedRatioController.text) ?? 3.5;
-      double avgFeedPrice =
+      final double avgFeedPrice =
           (int.tryParse(averageFeedPriceController.text) ?? 0).toDouble();
 
       return avgFeedRatio * (avgFeedPrice / 1000) * chickenCount;
     }
   }
 
+  static String _formatNoTrailingZero(double value, int decimals) {
+    final s = value.toStringAsFixed(decimals);
+    return s.replaceAll(RegExp(r'\.0+$'), '');
+  }
+
   void _updateResultText(
     int chickenCount,
     int deadChickens,
+    int deadChickenTotalCost,
     int totalChickenCost,
     double totalFeedCost,
     double totalOverheadCost,
@@ -296,24 +340,108 @@ class FeasibilityController extends GetxController {
     int totalSales,
     double profit,
   ) {
+    totalChickenCostRaw.value = totalChickenCost.toDouble();
+    totalFeedCostRaw.value = totalFeedCost;
+    totalOverheadCostRaw.value = totalOverheadCost;
+
     if (isChickenCountMode.value) {
-      // Chicken count mode
-      chickenCountText.value = "";
+      chickenCountText.value = '';
     } else {
-      // Budget mode
-      chickenCountText.value = "$chickenCount فرخ";
+      chickenCountText.value = '$chickenCount فرخ';
     }
 
-    mortalityRateText.value = "$deadChickens فرخ";
-    chickenCostText.value = "$totalChickenCost ج";
-    feedCostText.value = "${totalFeedCost.toStringAsFixed(0)} ج";
-    overheadCostText.value = "${totalOverheadCost.toStringAsFixed(0)} ج";
-    totalCostText.value = "${totalCost.toStringAsFixed(0)} ج";
-    totalSalesText.value = "${totalSales.toStringAsFixed(0)} ج";
-    profitText.value = "${profit.toStringAsFixed(0)} ج";
+    mortalityRateText.value =
+        deadChickenTotalCost > 0
+            ? '$deadChickens فرخ ($deadChickenTotalCost ج)'
+            : '$deadChickens فرخ';
+    chickenCostText.value = '$totalChickenCost ج';
+    feedCostText.value = '${totalFeedCost.toStringAsFixed(0)} ج';
+    overheadCostText.value = '${totalOverheadCost.toStringAsFixed(0)} ج';
+    totalCostText.value = '${totalCost.toStringAsFixed(0)} ج';
+    totalSalesText.value = '${totalSales.toStringAsFixed(0)} ج';
+    profitText.value = '${profit.toStringAsFixed(0)} ج';
+    isProfitNegative.value = profit < 0;
+
+    final int remainingChickens = chickenCount - deadChickens;
+    if (remainingChickens > 0) {
+      final double costPerChicken = totalCost / remainingChickens;
+      costPerChickenText.value = '${costPerChicken.toStringAsFixed(0)} ج';
+
+      final double profitPerChicken = profit / remainingChickens;
+      profitPerChickenText.value = '${profitPerChicken.toStringAsFixed(0)} ج';
+
+      final double totalKg = remainingChickens * defaultWeight.value;
+      if (totalKg > 0) {
+        final double tons = totalKg / 1000;
+        totalKgProducedText.value =
+            totalKg >= 1000
+                ? '${_formatNoTrailingZero(tons, 1)} طن'
+                : '${_formatNoTrailingZero(totalKg, 1)} كجم';
+        final double costPerKg = totalCost / totalKg;
+        costPerKgText.value = '${_formatNoTrailingZero(costPerKg, 1)} ج/كجم';
+      } else {
+        totalKgProducedText.value = '-';
+        costPerKgText.value = '-';
+      }
+      if (totalSales > 0) {
+        final double margin = (profit / totalSales) * 100;
+        profitMarginText.value = '${_formatNoTrailingZero(margin, 1)}%';
+      } else {
+        profitMarginText.value = '-';
+      }
+    } else {
+      costPerChickenText.value = '-';
+      profitPerChickenText.value = '-';
+      profitMarginText.value = '-';
+      costPerKgText.value = '-';
+      totalKgProducedText.value = '-';
+    }
   }
 
-  void ensureFeasibilityData() async {
+  String buildShareText() {
+    final buffer = StringBuffer();
+    buffer.writeln('تطبيق فَرْخة');
+    buffer.writeln('دراسة جدوى');
+    buffer.writeln();
+    if (chickenCountText.value.isNotEmpty) {
+      buffer.writeln('عدد الفراخ: ${chickenCountText.value}');
+      buffer.writeln();
+    }
+    buffer.writeln('التكاليف:');
+    buffer.writeln('• النافق: ${mortalityRateText.value}');
+    buffer.writeln('• سعر الكتاكيت: ${chickenCostText.value}');
+    buffer.writeln('• تكلفة العلف: ${feedCostText.value}');
+    buffer.writeln('• النثريات: ${overheadCostText.value}');
+    buffer.writeln('• التكلفة الإجمالية: ${totalCostText.value}');
+    if (costPerChickenText.value.isNotEmpty &&
+        costPerChickenText.value != '-') {
+      buffer.writeln('• تكلفة الفرخ الواحد: ${costPerChickenText.value}');
+    }
+    if (costPerKgText.value.isNotEmpty && costPerKgText.value != '-') {
+      buffer.writeln('• تكلفة الكيلو: ${costPerKgText.value}');
+    }
+    buffer.writeln();
+    buffer.writeln('المبيعات:');
+    if (totalKgProducedText.value.isNotEmpty &&
+        totalKgProducedText.value != '-') {
+      buffer.writeln('• الكيلوجرامات المنتجة: ${totalKgProducedText.value}');
+    }
+    buffer.writeln('• إجمالي المبيعات: ${totalSalesText.value}');
+    buffer.writeln();
+    buffer.writeln('الأرباح:');
+    final profitDisplay =
+        profitMarginText.value.isNotEmpty && profitMarginText.value != '-'
+            ? '${profitText.value} (${profitMarginText.value})'
+            : profitText.value;
+    buffer.writeln('• صافي الأرباح: $profitDisplay');
+    if (profitPerChickenText.value.isNotEmpty &&
+        profitPerChickenText.value != '-') {
+      buffer.writeln('• الربح لكل فرخ: ${profitPerChickenText.value}');
+    }
+    return buffer.toString();
+  }
+
+  Future<void> ensureFeasibilityData() async {
     if (statusRequest != StatusRequest.success) {
       await fetchFeasibilityData();
     }
@@ -322,7 +450,6 @@ class FeasibilityController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    ToolUsageController.recordToolUsageFromController(toolId);
     pricesStatusRequest.value = StatusRequest.none;
 
     // Initialize default values in text controllers - leave empty initially

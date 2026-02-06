@@ -38,7 +38,6 @@ class AppTheme {
 
   ColorScheme get _lightColorScheme => ColorScheme.fromSeed(
     seedColor: AppColors.primaryColor,
-    brightness: Brightness.light,
     primary: AppColors.primaryColor,
     secondary: AppColors.secondaryColor,
     surface: AppColors.appBackGroundColor,

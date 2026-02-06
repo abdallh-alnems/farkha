@@ -49,22 +49,22 @@ class DetailsBroiler extends StatelessWidget {
         children: [
           _buildDetailItem(
             context: context,
-            label: "العدد",
+            label: 'العدد',
             value: controller.chickensCountController.text,
             icon: Icons.numbers,
           ),
           _buildVerticalDivider(context),
           _buildDetailItem(
             context: context,
-            label: "العمر",
-            value: controller.selectedChickenAge.value?.toString() ?? "-",
+            label: 'العمر',
+            value: controller.selectedChickenAge.value?.toString() ?? '-',
             icon: Icons.calendar_today,
-            suffix: "يوم",
+            suffix: 'يوم',
           ),
           _buildVerticalDivider(context),
           Obx(() => _buildDetailItem(
                 context: context,
-                label: "الموقع",
+                label: 'الموقع',
                 value: controller.weatherLocationShort,
                 icon: Icons.location_on,
                 isLocation: true,
@@ -133,7 +133,7 @@ class DetailsBroiler extends StatelessWidget {
                   TextSpan(text: value),
                   if (suffix != null)
                     TextSpan(
-                      text: " $suffix",
+                      text: ' $suffix',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(
                           context,

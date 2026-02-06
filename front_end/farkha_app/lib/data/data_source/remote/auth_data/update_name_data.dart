@@ -9,7 +9,7 @@ import '../../../../core/constant/id/api.dart';
 import '../../../../core/package/internet_checker.dart';
 
 class UpdateNameData {
-  Future<Either<StatusRequest, Map>> updateName({
+  Future<Either<StatusRequest, Map<String, dynamic>>> updateName({
     required String token,
     required String name,
   }) async {
@@ -29,7 +29,7 @@ class UpdateNameData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);

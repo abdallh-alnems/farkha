@@ -8,10 +8,7 @@ Widget buildSection(String title, Widget content) {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 5),
         content,
@@ -27,7 +24,7 @@ Widget buildList(List<String> items) {
             .map(
               (item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text("• $item", style: const TextStyle(fontSize: 16)),
+                child: Text('• $item', style: const TextStyle(fontSize: 16)),
               ),
             )
             .toList(),
@@ -36,15 +33,20 @@ Widget buildList(List<String> items) {
 
 Widget buildCriteriaList(Map<String, List<String>> criteria) {
   return Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
     children:
         criteria.entries.map((entry) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 3),
-              child: Text(
-                "${entry.key} : ( ${entry.value.join(" , ")} )",
-                style: const TextStyle(fontSize: 16),
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  "${entry.key} : ( ${entry.value.join(" , ")} )",
+                  style: const TextStyle(fontSize: 16),
+                  textAlign: TextAlign.right,
+                ),
               ),
             ),
           );

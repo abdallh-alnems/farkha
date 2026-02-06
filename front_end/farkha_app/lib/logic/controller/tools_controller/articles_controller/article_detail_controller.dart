@@ -16,11 +16,11 @@ class ArticleDetailController extends GetxController {
   Future<void> getArticleDetail(String articleId) async {
     statusRequest = StatusRequest.loading;
     update();
-    var response = await articleDetailData.getArticleDetail(articleId);
+    final response = await articleDetailData.getArticleDetail(articleId);
     statusRequest = handlingData(response);
     if (StatusRequest.success == statusRequest) {
       final mapResponse = response as Map<String, dynamic>;
-      if (mapResponse['status'] == "success") {
+      if (mapResponse['status'] == 'success') {
         articleData = mapResponse['data'] as Map<String, dynamic>;
       } else {
         statusRequest = StatusRequest.failure;
@@ -37,7 +37,7 @@ class ArticleDetailController extends GetxController {
   ) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    List<TableRow> rows = [];
+    final List<TableRow> rows = [];
 
     rows.add(
       TableRow(
@@ -53,7 +53,7 @@ class ArticleDetailController extends GetxController {
             ),
           ),
           Text(
-            "العمر باليوم",
+            'العمر باليوم',
             style: Theme.of(
               context,
             ).textTheme.headlineMedium?.copyWith(color: colorScheme.onSurface),
@@ -70,7 +70,7 @@ class ArticleDetailController extends GetxController {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 7).r,
               child: Text(
-                "${consumptions[i]}",
+                '${consumptions[i]}',
                 style: TextStyle(fontSize: 19.sp, color: colorScheme.onSurface),
                 textAlign: TextAlign.center,
               ),
@@ -92,7 +92,7 @@ class ArticleDetailController extends GetxController {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    List<Widget> widgets = [];
+    final List<Widget> widgets = [];
 
     // جدول درجات الحرارة (id = 14)
     if (int.tryParse(articleId) == 14) {
@@ -109,7 +109,6 @@ class ArticleDetailController extends GetxController {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: 0.3),
-                  width: 1,
                 ),
               ),
               child: SizedBox(
@@ -119,17 +118,15 @@ class ArticleDetailController extends GetxController {
                   border: TableBorder(
                     horizontalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                     verticalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   children: getRows(
                     temperatureList,
                     context,
-                    "درجة الحرارة المئوية",
+                    'درجة الحرارة المئوية',
                   ),
                 ),
               ),
@@ -154,7 +151,6 @@ class ArticleDetailController extends GetxController {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: 0.3),
-                  width: 1,
                 ),
               ),
               child: SizedBox(
@@ -164,14 +160,12 @@ class ArticleDetailController extends GetxController {
                   border: TableBorder(
                     horizontalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                     verticalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
-                  children: getRows(weightsList, context, "الوزن بالجرام"),
+                  children: getRows(weightsList, context, 'الوزن بالجرام'),
                 ),
               ),
             ),
@@ -195,7 +189,6 @@ class ArticleDetailController extends GetxController {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: 0.3),
-                  width: 1,
                 ),
               ),
               child: SizedBox(
@@ -205,14 +198,12 @@ class ArticleDetailController extends GetxController {
                   border: TableBorder(
                     horizontalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                     verticalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
-                  children: getRows(darknessLevels, context, "الإظلام بالساعة"),
+                  children: getRows(darknessLevels, context, 'الإظلام بالساعة'),
                 ),
               ),
             ),
@@ -236,7 +227,6 @@ class ArticleDetailController extends GetxController {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: 0.3),
-                  width: 1,
                 ),
               ),
               child: SizedBox(
@@ -246,17 +236,15 @@ class ArticleDetailController extends GetxController {
                   border: TableBorder(
                     horizontalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                     verticalInside: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   children: getRows(
                     feedConsumptions,
                     context,
-                    "الاستهلاك بالجرام",
+                    'الاستهلاك بالجرام',
                   ),
                 ),
               ),

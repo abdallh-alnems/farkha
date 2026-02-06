@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+  <!-- Top Left: Sun -->
+  <rect x="16" y="16" width="240" height="240" rx="28" fill="#8FE3FF"/>
+  <circle cx="136" cy="136" r="42" fill="#FFE082" stroke="#000" stroke-width="12"/>
+  <g stroke="#000" stroke-width="12" stroke-linecap="round">
+    <line x1="136" y1="48" x2="136" y2="72"/>
+    <line x1="136" y1="200" x2="136" y2="224"/>
+    <line x1="48" y1="136" x2="72" y2="136"/>
+    <line x1="200" y1="136" x2="224" y2="136"/>
+    <line x1="72" y1="72" x2="88" y2="88"/>
+    <line x1="184" y1="184" x2="200" y2="200"/>
+    <line x1="72" y1="200" x2="88" y2="184"/>
+    <line x1="184" y1="88" x2="200" y2="72"/>
+  </g>
+
+  <!-- Top Right: Wind -->
+  <rect x="256" y="16" width="240" height="240" rx="28" fill="#FFE082"/>
+  <path d="M300 110 H420 Q450 110 450 90 Q450 70 420 70"
+        fill="none" stroke="#000" stroke-width="14" stroke-linecap="round"/>
+  <path d="M300 150 H400"
+        fill="none" stroke="#000" stroke-width="14" stroke-linecap="round"/>
+  <path d="M300 190 H380 Q400 190 400 210 Q400 230 380 230"
+        fill="none" stroke="#000" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Bottom Left: Two Water Drops -->
+  <rect x="16" y="256" width="240" height="240" rx="28" fill="#F5F5F5"/>
+
+  <!-- Big Drop -->
+  <path d="M120 300
+           C95 340 80 365 80 395
+           C80 430 105 450 120 450
+           C135 450 160 430 160 395
+           C160 365 145 340 120 300Z"
+        fill="#8FE3FF" stroke="#000" stroke-width="12"/>
+
+  <!-- Small Drop -->
+  <path d="M175 325
+           C160 350 150 365 150 385
+           C150 410 165 425 175 425
+           C185 425 200 410 200 385
+           C200 365 190 350 175 325Z"
+        fill="#8FE3FF" stroke="#000" stroke-width="12"/>
+
+  <!-- Bottom Right: Cloud -->
+  <rect x="256" y="256" width="240" height="240" rx="28" fill="#FF9EA1"/>
+  <path d="M300 400
+           Q300 360 340 360
+           Q350 330 380 330
+           Q420 330 430 360
+           Q460 360 460 390
+           Q460 420 430 420
+           H320
+           Q300 420 300 400Z"
+        fill="#FFFFFF" stroke="#000" stroke-width="12"/>
+
+</svg>

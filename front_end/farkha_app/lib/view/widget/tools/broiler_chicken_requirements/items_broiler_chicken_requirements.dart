@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/functions/number_format.dart';
 import '../../../../logic/controller/tools_controller/broiler_controller.dart';
 import 'card_broiler_chicken_requirements.dart';
 import 'details_broiler.dart';
@@ -21,11 +22,11 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
         children: [
           const DetailsBroiler(),
           const SizedBox(height: 15),
-          _buildSectionTitle(icon: Icons.heat_pump, title: "المناخ"),
+          _buildSectionTitle(icon: Icons.heat_pump, title: 'المناخ'),
           const SizedBox(height: 13),
           _buildClimateGrid(),
           const SizedBox(height: 21),
-          _buildSectionTitle(icon: Icons.checklist, title: "متطلبات القطيع"),
+          _buildSectionTitle(icon: Icons.checklist, title: 'متطلبات القطيع'),
           const SizedBox(height: 13),
           _buildRequirementsGrid(),
         ],
@@ -93,7 +94,6 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: colorScheme.primary.withValues(alpha: 0.2),
-                width: 1,
               ),
             ),
             padding: const EdgeInsets.all(10),
@@ -114,8 +114,8 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
 
   Widget _buildClimateGrid() {
     final Widget temperatureTile = _ColoredInfoTile(
-      title: "درجة الحرارة المطلوبة",
-      value: "°${controller.ageTemperature}",
+      title: 'درجة الحرارة المطلوبة',
+      value: '°${controller.ageTemperature}',
       trailing: Obx(() => _ChipInfo(
             icon: Icons.device_thermostat,
             label: controller.weatherController.temperatureText,
@@ -127,7 +127,7 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
     );
 
     final Widget humidityTile = _ColoredInfoTile(
-      title: "نسبة الرطوبة المطلوبة",
+      title: 'نسبة الرطوبة المطلوبة',
       value: controller.ageHumidityRange,
       trailing: Obx(() => _ChipInfo(
             icon: Icons.water_drop,
@@ -151,30 +151,30 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
   Widget _buildRequirementsGrid() {
     final List<_RequirementData> items = [
       _RequirementData(
-        title: "المساحة المطلوبة",
-        primary: "${controller.requiredArea.toStringAsFixed(0)} م²",
-        secondary: "إجمالي : ${controller.collegeArea.toStringAsFixed(0)} م²",
+        title: 'المساحة المطلوبة',
+        primary: '${formatDecimal(controller.requiredArea.value, decimals: 0)} م²',
+        secondary: 'إجمالي : ${formatDecimal(controller.collegeArea, decimals: 0)} م²',
         icon: Icons.crop_square,
       ),
       _RequirementData(
-        title: "الإضاءة",
-        primary: "اظلام : ${controller.ageDarkness} ساعة",
-        secondary: "إضاءة : ${24 - controller.ageDarkness} ساعة",
+        title: 'الإضاءة',
+        primary: 'اظلام : ${controller.ageDarkness} ساعة',
+        secondary: 'إضاءة : ${24 - controller.ageDarkness} ساعة',
         icon: Icons.light_mode,
       ),
       _RequirementData(
-        title: "متوسط الوزن",
-        primary: "${controller.ageWeight} جم",
+        title: 'متوسط الوزن',
+        primary: '${controller.ageWeight} جم',
         secondary:
             controller.selectedChickenAge.value == null
-                ? "حدد العمر لعرض تفاصيل الوزن"
-                : "لعمر يوم ${controller.selectedChickenAge.value}",
+                ? 'حدد العمر لعرض تفاصيل الوزن'
+                : 'لعمر يوم ${controller.selectedChickenAge.value}',
         icon: Icons.monitor_weight,
       ),
       _RequirementData(
-        title: "استهلاك العلف",
-        primary: "يومي : ${_formatFeed(controller.dailyFeedConsumption)}",
-        secondary: "كلي : ${_formatTotalFeed(controller.totalFeedConsumption)}",
+        title: 'استهلاك العلف',
+        primary: 'يومي : ${_formatFeed(controller.dailyFeedConsumption)}',
+        secondary: 'كلي : ${_formatTotalFeed(controller.totalFeedConsumption)}',
         icon: Icons.grain,
       ),
     ];
@@ -198,7 +198,6 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
                         value: data.primary,
                         subtitle: data.secondary,
                         icon: data.icon,
-                        gradientColors: const [],
                       ),
                     ),
                   )
@@ -210,19 +209,19 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
 
   String _formatFeed(int dailyFeed) {
     if (dailyFeed >= 1000) {
-      double dailyFeedInKg = dailyFeed / 1000;
-      return "${dailyFeedInKg.toStringAsFixed(1)} كيلو";
+      final double dailyFeedInKg = dailyFeed / 1000;
+      return '${formatDecimal(dailyFeedInKg)} كيلو';
     } else {
-      return "$dailyFeed جرام";
+      return '$dailyFeed جرام';
     }
   }
 
   String _formatTotalFeed(double totalFeed) {
     if (totalFeed >= 1000) {
-      double totalFeedInTon = totalFeed / 1000;
-      return "${totalFeedInTon.toStringAsFixed(1)} طن";
+      final double totalFeedInTon = totalFeed / 1000;
+      return '${formatDecimal(totalFeedInTon)} طن';
     } else {
-      return "${totalFeed.toStringAsFixed(0)} كيلو";
+      return '${formatDecimal(totalFeed, decimals: 0)} كيلو';
     }
   }
 }
@@ -298,7 +297,7 @@ class _ChipInfo extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.25),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
       child: Row(

@@ -24,7 +24,6 @@ class CustomSliderOnBoarding extends GetView<OnBoardingControllerImp> {
                 onBoardingList[i].image!,
                 width: 300,
                 height: 300,
-                fit: BoxFit.contain,
               ),
               const SizedBox(height: 23),
               Text(

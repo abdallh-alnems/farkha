@@ -5,41 +5,41 @@ class VaccinationData {
     const VaccinationModel(
       age: 7,
 
-      vaccineName: "لقاح B1",
+      vaccineName: 'لقاح B1',
 
-      notes: "التحصين بلقاح B1  يفضل جرعة شرب + جرعة رش",
+      notes: 'التحصين بلقاح B1  يفضل جرعة شرب + جرعة رش',
     ),
 
     const VaccinationModel(
       age: 13,
 
-      vaccineName: "تحصين جمبورو عترة خفيفة",
+      vaccineName: 'تحصين جمبورو عترة خفيفة',
 
-      notes: "في ماء الشرب (ممكن جرعة أخرى تقطير بالعين)",
+      notes: 'في ماء الشرب (ممكن جرعة أخرى تقطير بالعين)',
     ),
 
     const VaccinationModel(
       age: 18,
 
-      vaccineName: "تحصين ضد نيوكاسل",
+      vaccineName: 'تحصين ضد نيوكاسل',
 
-      notes: "جرعة مزدوجة شراب أو جرعة شراب + جرعة رش",
+      notes: 'جرعة مزدوجة شراب أو جرعة شراب + جرعة رش',
     ),
 
     const VaccinationModel(
       age: 22,
 
-      vaccineName: "تحصين كوكسيديا وكولسترديا ",
+      vaccineName: 'تحصين كوكسيديا وكولسترديا ',
 
-      notes: "في ماء الشرب",
+      notes: 'في ماء الشرب',
     ),
 
     const VaccinationModel(
       age: 28,
 
-      vaccineName: "لقاح لاسوتا",
+      vaccineName: 'لقاح لاسوتا',
 
-      notes: "في ماء الشرب (أو بلقاح أفينيو) يفضل جرعة مزدوجة",
+      notes: 'في ماء الشرب (أو بلقاح أفينيو) يفضل جرعة مزدوجة',
     ),
   ];
 

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constant/theme/colors.dart';
+import '../../../logic/controller/tools_controller/favorite_tools_controller.dart';
 
 class ToolsCard extends StatelessWidget {
   final String? image;
   final String text;
   final void Function() onTap;
+  final bool showFavorite;
 
   const ToolsCard({
     super.key,
     this.image,
     required this.text,
     required this.onTap,
+    this.showFavorite = false,
   });
 
   Widget _buildImage(String imagePath) {
@@ -22,7 +26,6 @@ class ToolsCard extends StatelessWidget {
         imagePath,
         width: 28.w,
         height: 28.h,
-        fit: BoxFit.contain,
       );
     } else {
       return Image.asset(imagePath, scale: 3.5);
@@ -31,6 +34,7 @@ class ToolsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final favoriteController = Get.find<FavoriteToolsController>();
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final bool isDark = theme.brightness == Brightness.dark;
@@ -47,27 +51,30 @@ class ToolsCard extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 4.w),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10).r,
-        child: Container(
-          width: 75.w,
-          height: 68.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10).r,
-            color: cardColor,
-            border: Border.all(color: borderColor, width: 0.8),
-            boxShadow: [
-              if (!isDark)
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  spreadRadius: 0.5,
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-            ],
-          ),
-          child:
+      child: Container(
+        width: 75.w,
+        height: 68.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10).r,
+          color: cardColor,
+          border: Border.all(color: borderColor, width: 0.8),
+          boxShadow: [
+            if (!isDark)
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                spreadRadius: 0.5,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(10).r,
+                child:
               image != null
                   ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -143,6 +150,31 @@ class ToolsCard extends StatelessWidget {
                       SizedBox(height: 5.h),
                     ],
                   ),
+              ),
+            ),
+            if (showFavorite)
+              Positioned(
+                top: 2,
+                right: 2,
+                child: Obx(
+                  () {
+                    final isFavorite = favoriteController.isFavorite(text);
+                    return InkWell(
+                      onTap: () => favoriteController.toggleFavorite(text),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        child: Icon(
+                          isFavorite ? Icons.star : Icons.star_border,
+                          color: isFavorite ? Colors.amber : Colors.grey,
+                          size: 14,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+          ],
         ),
       ),
     );

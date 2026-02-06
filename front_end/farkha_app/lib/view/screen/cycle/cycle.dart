@@ -10,7 +10,9 @@ import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
+import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
+import '../../../logic/controller/weather_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/appbar_cycle.dart';
@@ -30,7 +32,7 @@ class Cycle extends StatefulWidget {
 }
 
 class _CycleState extends State<Cycle> with TickerProviderStateMixin {
-  final cycleCtrl = Get.find<CycleController>();
+  late final CycleController cycleCtrl;
   late final BroilerController broilerCtrl;
 
   late final PageController _pageController;
@@ -47,11 +49,19 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    // تهيئة BroilerController بشكل آمن
-    broilerCtrl =
-        Get.isRegistered<BroilerController>()
-            ? Get.find<BroilerController>()
-            : Get.put(BroilerController());
+    // Use put when not registered so we never call find on a missing controller (avoids "not found" crash)
+    cycleCtrl = Get.isRegistered<CycleController>()
+        ? Get.find<CycleController>()
+        : Get.put(CycleController());
+    broilerCtrl = Get.isRegistered<BroilerController>()
+        ? Get.find<BroilerController>()
+        : Get.put(BroilerController());
+    if (!Get.isRegistered<CycleExpensesController>()) {
+      Get.put(CycleExpensesController());
+    }
+    if (!Get.isRegistered<WeatherController>()) {
+      Get.put(WeatherController(), permanent: true);
+    }
 
     _arrowController = AnimationController(
       vsync: this,
@@ -419,7 +429,7 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                     cycleCtrl.cycleEndStatus.value = StatusRequest.none;
                     // الرجوع إلى الصفحة الرئيسية مباشرة بعد إنهاء الدورة
                     if (mounted) {
-                      Get.offAllNamed("/");
+                      Get.offAllNamed<void>('/');
                     }
                   });
                 });
@@ -454,24 +464,24 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     _buildFabOption(
-                      heroTag: "expenses_fab",
+                      heroTag: 'expenses_fab',
                       label: 'المصروفات',
                       color: AppColors.primaryColor,
                       isDark: isDark,
                       onTap: () {
                         _toggleFab();
-                        Get.toNamed(AppRoute.cycleExpenses);
+                        Get.toNamed<void>(AppRoute.cycleExpenses);
                       },
                     ),
                     SizedBox(height: 12.h),
                     _buildFabOption(
-                      heroTag: "data_fab",
+                      heroTag: 'data_fab',
                       label: 'البيانات',
                       color: AppColors.primaryColor,
                       isDark: isDark,
                       onTap: () {
                         _toggleFab();
-                        Get.toNamed(AppRoute.cycleData);
+                        Get.toNamed<void>(AppRoute.cycleData);
                       },
                     ),
                     SizedBox(height: 12.h),
@@ -482,7 +492,7 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
           },
         ),
         FloatingActionButton(
-          heroTag: "main_fab",
+          heroTag: 'main_fab',
           onPressed: _toggleFab,
           backgroundColor: AppColors.primaryColor,
           child: AnimatedRotation(
@@ -517,7 +527,6 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(25.r),
           border: Border.all(
             color: isDark ? Colors.grey[700]! : Colors.black.withValues(alpha: 0.1),
-            width: 1,
           ),
           boxShadow: [
             BoxShadow(

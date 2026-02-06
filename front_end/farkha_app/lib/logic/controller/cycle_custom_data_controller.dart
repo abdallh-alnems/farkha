@@ -20,9 +20,9 @@ class CustomDataEntry {
 
   factory CustomDataEntry.fromJson(Map<String, dynamic> json) {
     return CustomDataEntry(
-      id: json['id'] ?? '',
-      text: json['text'] ?? '',
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      id: (json['id'] ?? '').toString(),
+      text: (json['text'] ?? '').toString(),
+      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -102,8 +102,8 @@ class CustomDataItem {
     }
 
     return CustomDataItem(
-      id: json['id'] ?? '',
-      label: json['label'] ?? '',
+      id: (json['id'] ?? '').toString(),
+      label: (json['label'] ?? '').toString(),
       icon: iconData,
       entries: entriesList,
     );
@@ -135,13 +135,13 @@ class CycleCustomDataController extends GetxController {
   void _updateLastCycleId() {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
-    _lastCycleId = cycle['name'] ?? 'default';
+    _lastCycleId = (cycle['name'] ?? 'default').toString();
   }
 
   void _checkAndReloadCustomData() {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
-    final currentCycleId = cycle['name'] ?? 'default';
+    final currentCycleId = (cycle['name'] ?? 'default').toString();
 
     if (_lastCycleId != currentCycleId) {
       _lastCycleId = currentCycleId;
@@ -252,7 +252,7 @@ class CycleCustomDataController extends GetxController {
       return;
     }
 
-    final saved = _storage.read<List>(storageKey);
+    final saved = _storage.read<List<dynamic>>(storageKey);
     if (saved != null && saved.isNotEmpty && cycleExists) {
       final savedItems =
           saved

@@ -14,19 +14,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "159521160544-4ali0c0agd6b7logi18oust6td1g877c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "ni.nims.frkha",
-            "certificate_hash": "c262386f0936ee95598be9c881f965b1bac0288d"
-          }
-        },
-        {
           "client_id": "159521160544-ac9jmah04pfebol1ltpqqbsa6jtgr5qo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "ni.nims.frkha",
             "certificate_hash": "d27637b4446ceedfc1beed0079e43eb86a2658d4"
+          }
+        },
+        {
+          "client_id": "159521160544-msti4nbv0ako5ui9s8lfm6nkjuabocs8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ni.nims.frkha",
+            "certificate_hash": "a20bb9fc67248328fba0ece6f050aa7c8465019a"
           }
         },
         {

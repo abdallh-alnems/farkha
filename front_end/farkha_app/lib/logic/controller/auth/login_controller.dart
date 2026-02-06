@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/login_data.dart';
 import '../cycle_controller.dart';
+import '../tools_controller/favorite_tools_controller.dart';
 
 class LoginController extends GetxController {
   late final FirebaseAuth _auth;
@@ -24,7 +27,8 @@ class LoginController extends GetxController {
     // قراءة حالة تسجيل الدخول الحالية
     if (Get.isRegistered<MyServices>()) {
       final myServices = Get.find<MyServices>();
-      isLoggedIn.value = myServices.getStorage.read<bool>('is_logged_in') ?? false;
+      isLoggedIn.value =
+          myServices.getStorage.read<bool>('is_logged_in') ?? false;
     }
   }
 
@@ -48,7 +52,6 @@ class LoginController extends GetxController {
             isError ? Icons.error_outline : Icons.check_circle,
             color: Colors.white,
           ),
-          duration: const Duration(seconds: 3),
         );
         return;
       }
@@ -154,16 +157,21 @@ class LoginController extends GetxController {
 
       if (success) {
         _showSnackbar('تم تسجيل الدخول بنجاح');
-        
-        // جلب الدورات من API بعد تسجيل الدخول الناجح
+
+        // جلب الدورات من API في الخلفية بدون انتظار
         if (Get.isRegistered<CycleController>()) {
           final cycleController = Get.find<CycleController>();
-          await cycleController.fetchCyclesFromServer();
+          // تشغيل في الخلفية بدون await
+          unawaited(
+            cycleController.fetchCyclesFromServer().catchError((Object error) {
+              debugPrint('Error fetching cycles in background: $error');
+            }),
+          );
         }
-        
-        // انتظار وقت كافٍ لعرض الرسالة قبل إغلاق الصفحة
-        await Future.delayed(const Duration(milliseconds: 2500));
-        Get.back();
+
+        // انتظار وقت قصير لعرض الرسالة قبل إغلاق الصفحة
+        await Future<void>.delayed(const Duration(milliseconds: 1500));
+        Get.back<void>();
       } else {
         _showSnackbar('فشل الاتصال بالخادم', isError: true);
       }
@@ -186,8 +194,8 @@ class LoginController extends GetxController {
     try {
       final response = await _loginData.login(token);
 
-      return response.fold((_) => false, (result) {
-        final data = result as Map<String, dynamic>;
+      return response.fold((_) => false, (Map<String, dynamic> result) {
+        final data = result;
         final isSuccess =
             data['success'] == true || data['status'] == 'success';
 
@@ -195,6 +203,12 @@ class LoginController extends GetxController {
           final userData = data['user'] as Map<String, dynamic>;
           final myServices = Get.find<MyServices>();
           myServices.getStorage.write('user_name', userData['name']);
+          if (userData['phone'] != null) {
+            myServices.getStorage.write(
+              'user_phone',
+              userData['phone'].toString(),
+            );
+          }
           myServices.getStorage.write('is_logged_in', true);
           isLoggedIn.value = true; // تحديث observable
           return true;
@@ -207,18 +221,57 @@ class LoginController extends GetxController {
     }
   }
 
+  Future<void> clearAllLocalData() async {
+    final myServices = Get.find<MyServices>();
+    
+    // 1. حذف بيانات المستخدم
+    await myServices.getStorage.remove('user_name');
+    await myServices.getStorage.remove('user_phone');
+    await myServices.getStorage.write('is_logged_in', false);
+    
+    // 2. حذف كل الدورات والمصاريف والبيانات المخصصة
+    if (Get.isRegistered<CycleController>()) {
+      final cycleController = Get.find<CycleController>();
+      
+      // حذف المصاريف والبيانات المخصصة لكل دورة
+      for (var cycle in cycleController.cycles) {
+        final cycleName = cycle['name'];
+        final cycleId = cycle['id'];
+        
+        if (cycleName != null) {
+          await myServices.getStorage.remove('expenses_$cycleName');
+        }
+        
+        if (cycleId != null) {
+          await myServices.getStorage.remove('custom_data_$cycleId');
+        }
+      }
+      
+      // تفريغ قائمة الدورات في الـ controller
+      cycleController.cycles.clear();
+      cycleController.currentCycle.clear();
+    }
+    
+    // حذف الدورات والدورات المحذوفة
+    await myServices.getStorage.remove('cycles');
+    await myServices.getStorage.remove('deleted_cycles');
+    
+    // 3. حذف المفضلات
+    await myServices.getStorage.remove('favorite_tools_order');
+    if (Get.isRegistered<FavoriteToolsController>()) {
+      Get.find<FavoriteToolsController>().favoriteToolsOrder.clear();
+    }
+  }
+
   Future<void> signOut() async {
     try {
       // Sign out from Google and Firebase
       await _googleSignIn.signOut();
       await _auth.signOut();
 
-      // Clear all user data from GetStorage
-      final myServices = Get.find<MyServices>();
-      myServices.getStorage.remove('user_name');
-      myServices.getStorage.remove('user_phone');
-      myServices.getStorage.write('is_logged_in', false);
-      isLoggedIn.value = false; // تحديث observable
+      // Clear all local data
+      await clearAllLocalData();
+      isLoggedIn.value = false;
 
       // Show success message
       _showSnackbar('تم تسجيل الخروج بنجاح');

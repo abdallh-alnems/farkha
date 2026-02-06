@@ -16,7 +16,7 @@ class TapToExit extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        DateTime now = DateTime.now();
+        final DateTime now = DateTime.now();
 
         if (_lastBackPressTime == null ||
             now.difference(_lastBackPressTime!) > const Duration(seconds: 3)) {
@@ -27,12 +27,12 @@ class TapToExit extends StatelessWidget {
           } else {
             SnackbarMessage.show(
               context,
-              "اضغط مرة اخري للخروج",
+              'اضغط مرة اخري للخروج',
               icon: Icons.exit_to_app,
             );
           }
         } else {
-          SystemNavigator.pop();
+          await SystemNavigator.pop();
         }
       },
       child: child,

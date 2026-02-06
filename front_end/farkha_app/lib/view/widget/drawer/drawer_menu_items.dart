@@ -27,7 +27,7 @@ class DrawerMenuItems extends StatelessWidget {
 
   void _handleSuggestion(BuildContext context) {
     Navigator.pop(context);
-    Get.toNamed(AppRoute.suggestion);
+    Get.toNamed<void>(AppRoute.suggestion);
   }
 
   void _handleRateApp(BuildContext context) {

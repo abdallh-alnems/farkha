@@ -18,7 +18,7 @@ class PriceChangeWidget extends StatelessWidget {
     final sign = priceDifference > 0 ? '+' : '-';
 
     return Text(
-      "$sign$displayValue",
+      '$sign$displayValue',
       style: TextStyle(
         color: _getChangeColor(priceDifference),
         fontWeight: FontWeight.bold,
@@ -28,7 +28,7 @@ class PriceChangeWidget extends StatelessWidget {
   }
 
   Color _getChangeColor(double difference) {
-    if (difference > 0) return Colors.red;
-    return Colors.green;
+    if (difference > 0) return Colors.green; // صعود
+    return Colors.red; // نزول
   }
 }

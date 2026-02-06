@@ -1,7 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';  
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -24,18 +24,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
         final analytics = Get.find<AnalyticsService>().analytics;
         final themeService = Get.find<DarkLightService>();
-        return Obx(
-          () => GetMaterialApp(
+        return Obx(() {
+          // Read observable first so GetX always has a valid subscription (avoids "improper use" crash)
+          final themeMode = themeService.themeMode.value;
+          return GetMaterialApp(
             locale: const Locale('ar'),
             debugShowCheckedModeBanner: false,
-            showPerformanceOverlay: false,
-            showSemanticsDebugger: false,
             defaultTransition: Transition.upToDown,
             navigatorObservers: [
               FirebaseAnalyticsObserver(analytics: analytics),
@@ -49,10 +48,10 @@ class MyApp extends StatelessWidget {
             getPages: pages,
             theme: AppTheme().lightThemes(),
             darkTheme: AppTheme().darkThemes(),
-            themeMode: themeService.themeMode.value,
+            themeMode: themeMode,
             // home: Cycle(),
-          ),
-        );
+          );
+        });
       },
     );
   }

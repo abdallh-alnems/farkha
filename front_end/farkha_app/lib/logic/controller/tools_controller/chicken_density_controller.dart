@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/id/tool_ids.dart';
+import '../../../core/functions/number_format.dart';
 import '../../../core/services/initialization.dart';
-import 'tool_usage_controller.dart';
 
 class ChickenDensityController extends GetxController {
-  static const int toolId =
-      ToolIds.chickenDensity; // Chicken Density tool ID = 3
-
   final MyServices myServices = Get.find();
   final TextEditingController chickenCountTextController =
       TextEditingController();
@@ -36,22 +32,21 @@ class ChickenDensityController extends GetxController {
       selectedAgeCategory.value!,
     );
 
-    final requiredGroundArea = (chickenCount / recommendedDensity).clamp(
-      1,
-      double.infinity,
-    );
-    final totalArea = (chickenCount / 10).clamp(1, double.infinity);
-    final requiredBatteryCageArea = (chickenCount / 16).clamp(
-      1,
-      double.infinity,
-    );
+    final requiredGroundArea = (chickenCount / recommendedDensity)
+        .clamp(1, double.infinity)
+        .toDouble();
+    final totalArea = (chickenCount / 10).clamp(1, double.infinity).toDouble();
+    final requiredBatteryCageArea = (chickenCount / 16)
+        .clamp(1, double.infinity)
+        .toDouble();
 
+    final weekName = selectedAgeCategory.value!;
     currentAgeGroundAreaResult.value =
-        'المساحة المطلوبة في عمر $selectedAgeCategory: ${requiredGroundArea.toStringAsFixed(0)}م';
+        'المساحة حسب العمر ($weekName): ${formatDecimal(requiredGroundArea, decimals: 0)} م²';
     totalGroundAreaResult.value =
-        'المساحة الكلية حتى عمر البيع: ${totalArea.toStringAsFixed(0)}م';
+        'المساحة الكلية حتى عمر البيع: ${formatDecimal(totalArea, decimals: 0)} م²';
     batteryCageAreaResult.value =
-        'المساحة المطلوبة للتربية في البطاريات: ${requiredBatteryCageArea.toStringAsFixed(0)}م';
+        '${formatDecimal(requiredBatteryCageArea, decimals: 0)} م²';
   }
 
   int _getRecommendedDensity(String age) {
@@ -65,11 +60,6 @@ class ChickenDensityController extends GetxController {
     return densityMap[age] ?? 0;
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    ToolUsageController.recordToolUsageFromController(toolId);
-  }
 
   @override
   void onClose() {

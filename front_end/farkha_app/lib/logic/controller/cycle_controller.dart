@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,9 +25,9 @@ class WeightEntry {
 
   factory WeightEntry.fromJson(Map<String, dynamic> json) {
     return WeightEntry(
-      id: json['id'] ?? '',
-      weight: (json['weight'] ?? 0.0).toDouble(),
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      id: (json['id'] ?? '').toString(),
+      weight: ((json['weight'] ?? 0.0) as num).toDouble(),
+      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -43,9 +45,9 @@ class MedicationEntry {
 
   factory MedicationEntry.fromJson(Map<String, dynamic> json) {
     return MedicationEntry(
-      id: json['id'] ?? '',
-      text: json['text'] ?? '',
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      id: (json['id'] ?? '').toString(),
+      text: (json['text'] ?? '').toString(),
+      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -67,9 +69,9 @@ class FeedConsumptionEntry {
 
   factory FeedConsumptionEntry.fromJson(Map<String, dynamic> json) {
     return FeedConsumptionEntry(
-      id: json['id'] ?? '',
-      amount: (json['amount'] ?? 0.0).toDouble(),
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      id: (json['id'] ?? '').toString(),
+      amount: ((json['amount'] ?? 0.0) as num).toDouble(),
+      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -87,9 +89,9 @@ class MortalityEntry {
 
   factory MortalityEntry.fromJson(Map<String, dynamic> json) {
     return MortalityEntry(
-      id: json['id'] ?? '',
-      count: (json['count'] ?? 0) as int,
-      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      id: (json['id'] ?? '').toString(),
+      count: ((json['count'] ?? 0) as num).toInt(),
+      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -147,9 +149,9 @@ class CycleController extends GetxController {
   void _loadCycles() {
     // قراءة الدورات من GetStorage فقط (لا يتم استدعاء API هنا)
     // getCycles يتم استدعاؤه فقط عند تسجيل الدخول في LoginController
-    final saved = myServices.getStorage.read<List>(_storageKey);
+    final saved = myServices.getStorage.read<List<dynamic>>(_storageKey);
     if (saved != null && saved.isNotEmpty) {
-      final loadedCycles = saved.map((item) => Map<String, dynamic>.from(item)).toList();
+      final loadedCycles = saved.map((item) => Map<String, dynamic>.from(item as Map<dynamic, dynamic>)).toList();
       // فلترة الدورات لإخفاء الدورات المنتهية
       cycles.value = loadedCycles.where((cycle) {
         final status = cycle['status']?.toString();
@@ -202,13 +204,14 @@ class CycleController extends GetxController {
 
                   // تحويل التاريخ إلى صيغة عربية
                   String startDate = '';
-                  if (startDateRaw.isNotEmpty) {
+                  final startDateRawStr = startDateRaw.toString();
+                  if (startDateRawStr.isNotEmpty) {
                     try {
-                      final date = DateTime.parse(startDateRaw);
+                      final date = DateTime.parse(startDateRawStr);
                       final formatter = DateFormat('yyyy/MM/dd', 'ar');
                       startDate = formatter.format(date);
                     } catch (e) {
-                      startDate = startDateRaw;
+                      startDate = startDateRawStr;
                     }
                   }
 
@@ -304,7 +307,7 @@ class CycleController extends GetxController {
             });
             
             // فلترة الدورات المحذوفة محلياً (تم حذفها عند إنهائها)
-            final deletedCycles = myServices.getStorage.read<List>(_deletedCyclesKey) ?? [];
+            final deletedCycles = myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ?? <dynamic>[];
             if (deletedCycles.isNotEmpty) {
               cycles.removeWhere((cycle) {
                 final cycleName = cycle['name']?.toString();
@@ -451,12 +454,12 @@ class CycleController extends GetxController {
           }
         },
         (result) {
-          final responseData = result['data'];
+          final responseData = result['data'] as Map<String, dynamic>?;
           if (responseData != null) {
             // API يعيد البيانات بصيغة: { cycle: {...}, data: [...], expenses: [...] }
-            final cycleData = responseData['cycle'];
-            final cycleDataList = responseData['data'] ?? <dynamic>[];
-            final expensesList = responseData['expenses'] ?? <dynamic>[];
+            final cycleData = responseData['cycle'] as Map<String, dynamic>?;
+            final cycleDataList = (responseData['data'] as List<dynamic>?) ?? <dynamic>[];
+            final expensesList = (responseData['expenses'] as List<dynamic>?) ?? <dynamic>[];
 
             if (cycleData != null) {
               // تحديث currentCycle بالبيانات من API
@@ -469,8 +472,24 @@ class CycleController extends GetxController {
               // البحث عن الدورة في cycles وتحديثها
               final idx = cycles.indexWhere((c) => c['cycle_id'] == cycleId);
               if (idx != -1) {
-                // استبدال الدورة بالبيانات الكاملة من API
-                cycles[idx] = Map<String, dynamic>.from(cycleDetails);
+                final existing = cycles[idx];
+                final merged = Map<String, dynamic>.from(cycleDetails);
+                // الحفاظ على العدد إذا لم يرجعه الـ API
+                final fromApi =
+                    (merged['chickCount']?.toString().trim() ??
+                        merged['chick_count']?.toString().trim()) ??
+                    '';
+                if (fromApi.isEmpty || fromApi == '0') {
+                  final existingCount =
+                      existing['chickCount']?.toString().trim() ??
+                      existing['chick_count']?.toString().trim();
+                  if (existingCount != null &&
+                      existingCount.isNotEmpty &&
+                      existingCount != '0') {
+                    merged['chickCount'] = existingCount;
+                  }
+                }
+                cycles[idx] = merged;
               } else {
                 // إذا لم تكن الدورة موجودة، أضفها
                 cycles.add(Map<String, dynamic>.from(cycleDetails));
@@ -584,20 +603,24 @@ class CycleController extends GetxController {
   }) {
     final cycleId = cycleData['id'] ?? cycleData['cycle_id'];
     final name = cycleData['name'] ?? '';
-    final chickCount = cycleData['chick_count']?.toString() ?? '0';
+    final chickCount =
+        cycleData['chick_count']?.toString() ??
+        cycleData['chickCount']?.toString() ??
+        '0';
     final space = cycleData['space']?.toString() ?? '0';
     final breed = cycleData['breed'] ?? 'تسمين';
     final startDateRaw = cycleData['start_date_raw'] ?? '';
 
     // تحويل التاريخ إلى صيغة عربية
     String startDate = '';
-    if (startDateRaw.isNotEmpty) {
+    final startDateRawStr = startDateRaw.toString();
+    if (startDateRawStr.isNotEmpty) {
       try {
-        final date = DateTime.parse(startDateRaw);
+        final date = DateTime.parse(startDateRawStr);
         final formatter = DateFormat('yyyy/MM/dd', 'ar');
         startDate = formatter.format(date);
       } catch (e) {
-        startDate = startDateRaw;
+        startDate = startDateRawStr;
       }
     }
 
@@ -892,11 +915,12 @@ class CycleController extends GetxController {
   void prepareForEdit(Map<String, dynamic> data, int index) {
     isEdit.value = true;
     editIndex.value = index;
-    nameController.text = data['name'] ?? '';
-    countController.text = data['chickCount'] ?? '';
-    spaceController.text = data['space'] ?? '';
-    dateController.text = data['startDate'] ?? '';
-    dateRawController.text = data['startDateRaw'] ?? '';
+    nameController.text = (data['name'] ?? '').toString();
+    countController.text =
+        (data['chickCount'] ?? data['chick_count'] ?? '').toString();
+    spaceController.text = (data['space'] ?? '').toString();
+    dateController.text = (data['startDate'] ?? '').toString();
+    dateRawController.text = (data['startDateRaw'] ?? '').toString();
   }
 
   String ageOf(String isoDate) {
@@ -915,7 +939,7 @@ class CycleController extends GetxController {
     final name = nameController.text.trim();
     final chickCount = int.tryParse(countController.text.trim()) ?? 0;
     final space = double.tryParse(spaceController.text.trim()) ?? 0.0;
-    final breed = 'تسمين';
+    const breed = 'تسمين';
     final startDateRaw = dateRawController.text.trim();
     final startDate = dateController.text.trim();
 
@@ -931,7 +955,9 @@ class CycleController extends GetxController {
       // 'lastStageShown' removed
     };
 
-    if (isEdit.value && editIndex.value >= 0) {
+    if (isEdit.value &&
+        editIndex.value >= 0 &&
+        editIndex.value < cycles.length) {
       cycles[editIndex.value] = entry;
       currentCycle.assignAll(entry);
       isEdit.value = false;
@@ -943,8 +969,14 @@ class CycleController extends GetxController {
       }
       clearFields();
 
-      Get.back();
+      Get.back<void>();
       return;
+    }
+
+    // Edit state was set but list is empty or index out of range (e.g. list cleared elsewhere) — treat as new cycle
+    if (isEdit.value) {
+      isEdit.value = false;
+      editIndex.value = -1;
     }
 
     // إنشاء دورة جديدة
@@ -973,10 +1005,12 @@ class CycleController extends GetxController {
         final newIndex = cycles.length - 1;
         final shouldShowTutorial = cycles.length == 2;
 
-        Get.offNamedUntil(
-          AppRoute.cycle,
-          ModalRoute.withName('/'),
-          arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+        unawaited(
+          Get.offNamedUntil(
+            AppRoute.cycle,
+            ModalRoute.withName('/'),
+            arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+          ),
         );
         return;
       }
@@ -1019,9 +1053,9 @@ class CycleController extends GetxController {
             cycleSaveStatus.value = StatusRequest.failure;
           }
         },
-        (result) {
+        (Map<String, dynamic> result) {
           // نجح API
-          final data = result as Map<String, dynamic>;
+          final data = result;
           final isSuccess = data['status'] == 'success';
 
           if (isSuccess && data['data'] != null) {
@@ -1029,7 +1063,14 @@ class CycleController extends GetxController {
             final cycleId = cycleData['cycle_id'];
 
             // إضافة cycle_id إلى الدورة
-            entry['cycle_id'] = cycleId;
+            if (cycleId is int) {
+              entry['cycle_id'] = cycleId;
+            } else if (cycleId is String) {
+              final parsedId = int.tryParse(cycleId);
+              if (parsedId != null) {
+                entry['cycle_id'] = parsedId;
+              }
+            }
           }
 
           cycles.add(entry);
@@ -1050,11 +1091,11 @@ class CycleController extends GetxController {
       final newIndex = cycles.length - 1;
       final shouldShowTutorial = cycles.length == 2;
 
-      Get.offNamedUntil(
+      unawaited(Get.offNamedUntil<void>(
         AppRoute.cycle,
         ModalRoute.withName('/'),
         arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
-      );
+      ));
     } catch (e) {
       // في حالة أي خطأ، احفظ محلياً
       cycles.add(entry);
@@ -1066,11 +1107,11 @@ class CycleController extends GetxController {
       final newIndex = cycles.length - 1;
       final shouldShowTutorial = cycles.length == 2;
 
-      Get.offNamedUntil(
+      unawaited(Get.offNamedUntil<void>(
         AppRoute.cycle,
         ModalRoute.withName('/'),
         arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
-      );
+      ));
     } finally {
       isCreatingCycle.value = false;
     }
@@ -1204,10 +1245,10 @@ class CycleController extends GetxController {
       _deleteCycleRelatedData(cycleName);
       
       // إضافة اسم الدورة إلى قائمة الدورات المحذوفة لمنع إعادة إضافتها من API
-      final deletedCycles = myServices.getStorage.read<List>(_deletedCyclesKey) ?? [];
+      final deletedCycles = myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ?? <dynamic>[];
       if (!deletedCycles.contains(cycleName)) {
         deletedCycles.add(cycleName);
-        myServices.getStorage.write(_deletedCyclesKey, deletedCycles);
+        unawaited(myServices.getStorage.write(_deletedCyclesKey, deletedCycles));
       }
     }
     
@@ -1229,15 +1270,15 @@ class CycleController extends GetxController {
     cycles.refresh();
     
     // تحديث إضافي للتأكد من تحديث الواجهة
-    Future.microtask(() {
+    unawaited(Future.microtask(() {
       cycles.refresh();
-    });
+    }));
 
     cycleEndStatus.value = StatusRequest.loading;
 
     // إرسال طلب إنهاء الدورة إلى API في الخلفية
     if (cycleId != null) {
-      _endCycleFromServerInBackground(cycleId);
+      unawaited(_endCycleFromServerInBackground(cycleId));
     } else {
       // للدورات المحلية فقط
       cycleEndStatus.value = StatusRequest.success;
@@ -1251,7 +1292,7 @@ class CycleController extends GetxController {
     return true;
   }
 
-  void _endCycleFromServerInBackground(dynamic cycleId) async {
+  Future<void> _endCycleFromServerInBackground(dynamic cycleId) async {
     try {
       final isLoggedIn = myServices.getStorage.read<bool>('is_logged_in') ?? false;
       if (!isLoggedIn) {
@@ -1417,8 +1458,9 @@ class CycleController extends GetxController {
   }) async {
     try {
       final cycleId = currentCycle['cycle_id'];
-      if (cycleId == null)
+      if (cycleId == null) {
         return; // إذا لم يكن cycle_id موجوداً، لا ترسل إلى API
+      }
 
       final isLoggedIn =
           myServices.getStorage.read<bool>('is_logged_in') ?? false;
@@ -1568,7 +1610,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    myServices.getStorage.write(_storageKey, cycles.toList());
+    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
@@ -1670,7 +1712,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    myServices.getStorage.write(_storageKey, cycles.toList());
+    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
@@ -1779,7 +1821,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    myServices.getStorage.write(_storageKey, cycles.toList());
+    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
@@ -1912,7 +1954,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    myServices.getStorage.write(_storageKey, cycles.toList());
+    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];

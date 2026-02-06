@@ -92,7 +92,7 @@ class PerformanceMetricsCard extends StatelessWidget {
   }
 
   double _getExpectedWeight(BroilerController broilerCtrl) {
-    final ageDays = broilerCtrl.selectedChickenAge.value ?? 0;
+    final ageDays = (broilerCtrl.selectedChickenAge.value as num?)?.toInt() ?? 0;
     if (ageDays <= 0 || ageDays > weightsList.length) return 0.0;
     // تحويل من جرام إلى كيلو
     return weightsList[ageDays - 1] / 1000.0;
@@ -103,7 +103,7 @@ class PerformanceMetricsCard extends StatelessWidget {
     BroilerController broilerCtrl,
   ) {
     // الحصول على العمر باليوم
-    final ageDays = broilerCtrl.selectedChickenAge.value ?? 0;
+    final ageDays = (broilerCtrl.selectedChickenAge.value as num?)?.toInt() ?? 0;
     if (ageDays <= 0) return 0.0;
 
     // الحصول على FCR
@@ -157,15 +157,7 @@ class PerformanceMetricsCard extends StatelessWidget {
   }
 
   double _calculateCostPerChicken(CycleController cycleCtrl) {
-    // محاولة الحصول على CycleExpensesController
-    CycleExpensesController expensesCtrl;
-    try {
-      expensesCtrl = Get.find<CycleExpensesController>();
-    } catch (e) {
-      // إذا لم يكن موجوداً، أنشئه
-      expensesCtrl = Get.put(CycleExpensesController());
-    }
-
+    final expensesCtrl = Get.find<CycleExpensesController>();
     final totalExpenses = expensesCtrl.totalExpenses.value;
     final cycle = cycleCtrl.currentCycle;
     final chickCount =
@@ -187,7 +179,7 @@ class PerformanceMetricsCard extends StatelessWidget {
     final broilerCtrl = Get.find<BroilerController>();
 
     return Obx(() {
-      final ageDays = broilerCtrl.selectedChickenAge.value ?? 0;
+      final ageDays = (broilerCtrl.selectedChickenAge.value as num?)?.toInt() ?? 0;
       final canCalculateFCR = ageDays >= 15;
       final showEarlyEvaluation = ageDays >= 15 && ageDays < 21;
 
@@ -209,13 +201,12 @@ class PerformanceMetricsCard extends StatelessWidget {
                   ? AppColors.darkSurfaceElevatedColor
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 15,
               offset: const Offset(0, 5),
-              spreadRadius: 0,
             ),
           ],
         ),
@@ -343,18 +334,15 @@ class PerformanceMetricsCard extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.15 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
-            spreadRadius: 0,
           ),
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: 2.h),
@@ -450,7 +438,7 @@ class PerformanceMetricsCard extends StatelessWidget {
     required double expectedWeight,
     required bool isDark,
   }) {
-    final color = AppColors.primaryColor;
+    const color = AppColors.primaryColor;
     final difference = currentWeight - expectedWeight;
     final isAboveExpected = difference >= 0;
 
@@ -484,18 +472,15 @@ class PerformanceMetricsCard extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.15 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
-            spreadRadius: 0,
           ),
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: 2.h),
@@ -650,18 +635,15 @@ class PerformanceMetricsCard extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.15 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
-            spreadRadius: 0,
           ),
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: 2.h),
@@ -681,7 +663,6 @@ class PerformanceMetricsCard extends StatelessWidget {
           SizedBox(height: 6.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               RichText(
                 text: TextSpan(
@@ -729,7 +710,6 @@ class PerformanceMetricsCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6.r),
                     border: Border.all(
                       color: const Color(0xFFFF9800).withValues(alpha: 0.3),
-                      width: 1,
                     ),
                   ),
                   child: Text(

@@ -11,12 +11,13 @@ class PricesByTypeController extends GetxController {
   Future<void> getDataPricesByType(String mainId) async {
     statusRequest = StatusRequest.loading;
     update();
-    var response = await pricesByTypesData.getData(mainId);
+    final response = await pricesByTypesData.getData(mainId);
     statusRequest = handlingData(response);
     if (StatusRequest.success == statusRequest) {
       final mapResponse = response as Map<String, dynamic>;
-      if (mapResponse['status'] == "success") {
-       pricesByTypeList = List<Map<String, dynamic>>.from(mapResponse['data']);
+      if (mapResponse['status'] == 'success') {
+        final data = mapResponse['data'] as List<dynamic>;
+        pricesByTypeList = data.map((item) => item as Map<String, dynamic>).toList();
       } else {
         statusRequest = StatusRequest.failure;
       }

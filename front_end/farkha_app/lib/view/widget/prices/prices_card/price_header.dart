@@ -20,7 +20,7 @@ class PriceHeader extends StatelessWidget {
     final onSurface = colorScheme.onSurface;
     final List<Widget> baseChildren = [
       GestureDetector(
-        onTap: () => Get.toNamed(AppRoute.mainTypes),
+        onTap: () => Get.toNamed<void>(AppRoute.mainTypes),
         child: Container(
           key: allPricesButtonKey,
           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
@@ -29,7 +29,7 @@ class PriceHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(
-            "جميع الأسعار",
+            'جميع الأسعار',
             style: TextStyle(color: Colors.white, fontSize: 13.sp),
           ),
         ),
@@ -37,7 +37,7 @@ class PriceHeader extends StatelessWidget {
 
       Expanded(
         child: Text(
-          "أسعار البورصة",
+          'أسعار البورصة',
           style: TextStyle(
             color: onSurface,
             fontSize: 19.sp,
@@ -47,7 +47,7 @@ class PriceHeader extends StatelessWidget {
         ),
       ),
       GestureDetector(
-        onTap: () => Get.toNamed(AppRoute.customizePrices),
+        onTap: () => Get.toNamed<void>(AppRoute.customizePrices),
         child: SvgPicture.asset(
           AppImages.settingCardPrices,
           key: settingsIconKey,

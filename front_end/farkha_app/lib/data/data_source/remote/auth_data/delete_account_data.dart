@@ -9,7 +9,7 @@ import '../../../../core/constant/id/api.dart';
 import '../../../../core/package/internet_checker.dart';
 
 class DeleteAccountData {
-  Future<Either<StatusRequest, Map>> deleteAccount({
+  Future<Either<StatusRequest, Map<String, dynamic>>> deleteAccount({
     required String token,
   }) async {
     final bool isConnected = await InternetChecker.checkConnection();
@@ -28,7 +28,7 @@ class DeleteAccountData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);

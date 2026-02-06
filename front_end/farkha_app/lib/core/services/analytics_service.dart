@@ -34,13 +34,7 @@ class AnalyticsService extends GetxService {
     debugPrint('📊 Analytics Event: $name');
   }
 
-  Future<void> logScreenView({
-    required String screenName,
-    String? screenClass,
-  }) async {
-    await analytics.logScreenView(
-      screenName: screenName,
-      screenClass: screenClass ?? screenName,
-    );
+  Future<void> logToolPageView({required String toolName}) async {
+    await logEvent(name: 'tool_page_view', parameters: {'tool_name': toolName});
   }
 }

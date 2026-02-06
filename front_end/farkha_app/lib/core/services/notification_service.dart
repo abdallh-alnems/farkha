@@ -46,7 +46,7 @@ class NotificationService extends GetxService {
     await _configureFirebaseMessaging();
 
     // تشغيل الاشتراك في background بدون انتظار لتجنب ANR
-    Future.microtask(() => _restoreSubscriptions());
+    unawaited(Future.microtask(() => _restoreSubscriptions()));
 
     return this;
   }
@@ -68,21 +68,25 @@ class NotificationService extends GetxService {
     // إذا كانت أول مرة (لا توجد إعدادات محفوظة)
     if (savedNotifications == null || savedNotifications.isEmpty) {
       // الاشتراك في لحم أبيض افتراضياً بدون انتظار
-      subscribeToTopic('lhm_abyad').catchError((error) {
-        if (kDebugMode) {
-          debugPrint('Error subscribing to lhm_abyad: $error');
-        }
-      });
+      unawaited(
+        subscribeToTopic('lhm_abyad').catchError((Object error) {
+          if (kDebugMode) {
+            debugPrint('Error subscribing to lhm_abyad: $error');
+          }
+        }),
+      );
       // حفظ الإعداد الافتراضي
-      storage.write(_notificationTypesKey, ['lhm_abyad']);
+      unawaited(storage.write(_notificationTypesKey, ['lhm_abyad']));
     } else {
       // الاشتراك في جميع الـ topics المحفوظة بدون انتظار
       for (var topic in savedNotifications) {
-        subscribeToTopic(topic.toString()).catchError((error) {
-          if (kDebugMode) {
-            debugPrint('Error subscribing to $topic: $error');
-          }
-        });
+        unawaited(
+          subscribeToTopic(topic.toString()).catchError((Object error) {
+            if (kDebugMode) {
+              debugPrint('Error subscribing to $topic: $error');
+            }
+          }),
+        );
       }
     }
   }
@@ -92,7 +96,12 @@ class NotificationService extends GetxService {
       '@mipmap/ic_launcher',
     );
 
-    const initSettings = InitializationSettings(android: androidSettings);
+    const darwinSettings = DarwinInitializationSettings();
+
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: darwinSettings,
+    );
 
     await _localNotifications.initialize(
       initSettings,
@@ -103,18 +112,17 @@ class NotificationService extends GetxService {
   Future<void> _requestPermissions() async {
     // Note: Permission requests are handled by PermissionController
     // No need to request permissions here for Android
+    // For iOS, permissions are requested during initialization via requestAlertPermission etc.
   }
 
   Future<void> _createNotificationChannel() async {
-    final androidChannel = const AndroidNotificationChannel(
+    const androidChannel = AndroidNotificationChannel(
       _channelId,
       _channelName,
       description: _channelDescription,
       importance: Importance.high,
-      playSound: true,
       sound: RawResourceAndroidNotificationSound('notification_sound'),
       enableVibration: false,
-      showBadge: true,
     );
 
     await _localNotifications
@@ -171,13 +179,21 @@ class NotificationService extends GetxService {
       importance: Importance.high,
       priority: Priority.high,
       icon: android?.smallIcon ?? '@mipmap/ic_launcher',
-      playSound: true,
       sound: const RawResourceAndroidNotificationSound('notification_sound'),
       enableVibration: false,
-      showWhen: true,
     );
 
-    final notificationDetails = NotificationDetails(android: androidDetails);
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'notification_sound.caf', // Should match the file in iOS project
+    );
+
+    final notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+    );
 
     await _localNotifications.show(
       notification.hashCode,

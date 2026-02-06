@@ -33,7 +33,7 @@ class CycleStatsBar extends StatelessWidget {
               ? 0
               : DateTime.now().difference(startDateParsed).inDays;
       final currentStage = _getStageIndex(ageDays < 0 ? 0 : ageDays);
-      final ageText = controller.ageOf(startRaw);
+      final ageText = controller.ageOf((startRaw ?? '').toString());
 
       bool isStageCompleted(int idx) => idx < currentStage;
       bool isCurrentStage(int idx) => idx == currentStage;
@@ -84,7 +84,7 @@ class CycleStatsBar extends StatelessWidget {
                   ? AppColors.darkSurfaceElevatedColor
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(11),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
@@ -139,7 +139,6 @@ class CycleStatsBar extends StatelessWidget {
                                             ? AppColors.darkOutlineColor
                                                 .withValues(alpha: 0.4)
                                             : Colors.grey[400]!,
-                                    width: 1,
                                   ),
                           boxShadow:
                               isCurrentStage(s)
@@ -172,7 +171,6 @@ class CycleStatsBar extends StatelessWidget {
                 }
                 final li = (idx - 1) ~/ 2;
                 return Expanded(
-                  flex: 1,
                   child: Container(height: 2.h, color: lineColor(li, isDark)),
                 );
               }),
@@ -224,7 +222,12 @@ class CycleStatsBar extends StatelessWidget {
   Widget _buildChickCountColumn(Map<String, dynamic> cycle) {
     final mortality = int.tryParse(cycle['mortality']?.toString() ?? '0') ?? 0;
     final chickCount =
-        int.tryParse(cycle['chickCount']?.toString() ?? '0') ?? 0;
+        int.tryParse(
+          cycle['chickCount']?.toString() ??
+              cycle['chick_count']?.toString() ??
+              '0',
+        ) ??
+        0;
     final liveChickCount = chickCount - mortality;
     return _buildStatColumn('عدد الفراخ', liveChickCount.toString());
   }
@@ -234,7 +237,12 @@ class CycleStatsBar extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final mortality = int.tryParse(cycle['mortality']?.toString() ?? '0') ?? 0;
     final chickCount =
-        int.tryParse(cycle['chickCount']?.toString() ?? '0') ?? 0;
+        int.tryParse(
+          cycle['chickCount']?.toString() ??
+              cycle['chick_count']?.toString() ??
+              '0',
+        ) ??
+        0;
     final mortalityPercentage =
         chickCount > 0 ? (mortality / chickCount * 100) : 0.0;
 
@@ -285,7 +293,7 @@ class CycleStatsBar extends StatelessWidget {
 
   Widget _buildTotalExpensesColumn() {
     try {
-      final expensesCtrl = Get.put(CycleExpensesController());
+      final expensesCtrl = Get.find<CycleExpensesController>();
       return Obx(() {
         final total = expensesCtrl.totalExpenses.value.round();
         return _buildStatColumn('المصروفات', '$total');

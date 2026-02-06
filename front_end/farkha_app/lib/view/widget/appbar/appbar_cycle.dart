@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -5,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../core/class/handling_data.dart';
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
@@ -14,7 +17,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<CycleController>();
     return Obx(() {
-      final name = controller.currentCycle['name'] ?? 'خطا';
+      final name = (controller.currentCycle['name'] ?? 'خطا').toString();
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
       final Color background = colorScheme.surface;
@@ -28,7 +31,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
               context,
               Icons.arrow_back_ios_new_rounded,
               color: onBackground,
-              onPressed: () => Get.back(),
+              onPressed: () => Get.back<void>(),
             ),
             title: Center(
               child: Text(
@@ -41,7 +44,46 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
             ),
             actions: [
               // زر إنهاء الدورة - يظهر فقط إذا لم تكن الدورة منتهية
-              if (!controller.isCycleEnded(controller.currentCycle))
+              if (!controller.isCycleEnded(controller.currentCycle)) ...[
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 4.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.sunsetGradientStart.withValues(
+                        alpha: 0.1,
+                      ),
+                      border: Border.all(
+                        color: AppColors.sunsetGradientStart.withValues(
+                          alpha: 0.5,
+                        ),
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.science_outlined,
+                          size: 14.sp,
+                          color: AppColors.sunsetGradientStart,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          'ميزة تجريبية',
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            color: AppColors.sunsetGradientStart,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 IconButton(
                   onPressed: () async {
                     // التحقق من أن الدورة لم تنتهِ بعد
@@ -90,7 +132,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
 
                     if (confirmed == true) {
                       // تنفيذ إنهاء الدورة (سيتم التعامل مع التحميل في cycle.dart)
-                      controller.endCurrentCycle();
+                      unawaited(controller.endCurrentCycle());
                     }
                   },
                   icon: Icon(
@@ -100,13 +142,14 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   tooltip: 'إنهاء الدورة',
                 ),
+              ],
               PopupMenuButton<String>(
                 icon: Icon(Icons.more_vert, size: 23.sp, color: onBackground),
                 onSelected: (value) async {
                   if (value == 'cycleData') {
                     // Show dialog with cycle data
                     final cycle = controller.currentCycle;
-                    Get.dialog(
+                    unawaited(Get.dialog<void>(
                       AlertDialog(
                         backgroundColor: background,
                         title: Text(
@@ -150,7 +193,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () => Get.back(),
+                            onPressed: () => Get.back<void>(),
                             child: Text(
                               'حسناً',
                               style: TextStyle(color: onBackground),
@@ -163,8 +206,8 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                                 (c) => c['name'] == data['name'],
                               );
                               controller.prepareForEdit(data, idx);
-                              Get.back(); // Close dialog first
-                              Get.toNamed(AppRoute.addCycle);
+                              Get.back<void>(); // Close dialog first
+                              unawaited(Get.toNamed<void>(AppRoute.addCycle));
                             },
                             child: Text(
                               'تعديل',
@@ -173,14 +216,14 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ],
                       ),
-                    );
+                    ));
                   } else if (value == 'edit') {
                     final data = controller.currentCycle;
                     final idx = controller.cycles.indexWhere(
                       (c) => c['name'] == data['name'],
                     );
                     controller.prepareForEdit(data, idx);
-                    Get.toNamed(AppRoute.addCycle);
+                    unawaited(Get.toNamed<void>(AppRoute.addCycle));
                   } else if (value == 'delete') {
                     final confirmed = await Get.dialog<bool>(
                       AlertDialog(
@@ -202,7 +245,8 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                           TextButton(
                             onPressed: () {
                               Get.back(result: true); // إغلاق الـ Dialog مباشرة
-                              controller.deleteCurrentCycle(); // تنفيذ الحذف في الخلفية
+                              controller
+                                  .deleteCurrentCycle(); // تنفيذ الحذف في الخلفية
                             },
                             child: Text(
                               'نعم',
@@ -248,7 +292,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
           ),
           Obx(() {
             final deleteStatus = controller.cycleDeleteStatus.value;
-            
+
             // إظهار حالة التحميل للحذف فقط
             if (deleteStatus == StatusRequest.loading ||
                 deleteStatus == StatusRequest.serverFailure ||
@@ -267,7 +311,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                 ),
               );
             }
-            
+
             // التحقق من أن الحذف اكتمل بنجاح
             if (deleteStatus == StatusRequest.success) {
               // إغلاق الصفحة بعد قليل من نجاح الحذف
@@ -275,13 +319,13 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                 if (Get.isDialogOpen != true) {
                   final isEmpty = controller.cycles.isEmpty;
                   if (isEmpty) {
-                    Get.back(); // إغلاق صفحة cycle.dart إذا لم تكن هناك دورات
+                    Get.back<void>(); // إغلاق صفحة cycle.dart إذا لم تكن هناك دورات
                   }
                 }
                 controller.cycleDeleteStatus.value = StatusRequest.none;
               });
             }
-            
+
             return const SizedBox.shrink();
           }),
         ],

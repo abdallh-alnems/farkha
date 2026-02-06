@@ -1,6 +1,10 @@
 import 'package:get/get.dart';
 
 import '../../../logic/bindings/home_binding.dart';
+import '../../../logic/controller/cycle_controller.dart';
+import '../../../logic/controller/cycle_expenses_controller.dart';
+import '../../../logic/controller/tools_controller/broiler_controller.dart';
+import '../../../logic/controller/weather_controller.dart';
 import '../../../view/screen/auth/login_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
@@ -10,6 +14,7 @@ import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
 import '../../../view/screen/prices/customize_prices_screen.dart';
 import '../../../view/screen/prices/main_types.dart';
+import '../../../view/screen/prices/price_history_screen.dart';
 import '../../../view/screen/prices/prices_by_type.dart';
 import '../../../view/screen/tools/all_tools.dart';
 import '../../../view/screen/tools/articles/article_detail.dart';
@@ -20,6 +25,7 @@ import '../../../view/screen/tools/bird_production_cost.dart';
 import '../../../view/screen/tools/broiler_chicken_requirements.dart';
 import '../../../view/screen/tools/chicken_density.dart';
 import '../../../view/screen/tools/daily_feed_consumption.dart';
+import '../../../view/screen/tools/water_consumption.dart';
 import '../../../view/screen/tools/darkness_levels.dart';
 import '../../../view/screen/tools/disease/diagnosis_diseases.dart';
 import '../../../view/screen/tools/disease/disease_details.dart';
@@ -36,6 +42,7 @@ import '../../../view/screen/tools/total_farm_weight.dart';
 import '../../../view/screen/tools/total_feed_consumption.dart';
 import '../../../view/screen/tools/total_revenue.dart';
 import '../../../view/screen/tools/vaccination_schedule.dart';
+import '../../../view/screen/tools/weather_screen.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
 import '../../../view/widget/drawer/suggestion.dart';
 import '../../middleware/auth_middleware.dart';
@@ -45,7 +52,7 @@ import 'route.dart';
 List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
   GetPage(
-    name: "/",
+    name: '/',
     page: () => const Home(),
     middlewares: [OnboardingMiddleWare()],
     binding: HomeBindings(),
@@ -61,13 +68,12 @@ List<GetPage<dynamic>> pages = [
 
   // ================================ prices ===================================
   GetPage(name: AppRoute.pricesByType, page: () => const PricesByType()),
-
-  GetPage(name: AppRoute.mainTypes, page: () => const MainTypes()),
-
   GetPage(
-    name: AppRoute.customizePrices,
-    page: () => const CustomizePricesScreen(),
+    name: AppRoute.priceHistory,
+    page: () => const PriceHistoryScreen(),
   ),
+  GetPage(name: AppRoute.mainTypes, page: () => const MainTypes()),
+  GetPage(name: AppRoute.customizePrices, page: () => const CustomizePricesScreen()),
 
   // ================================ cycle ====================================
   GetPage(
@@ -76,14 +82,32 @@ List<GetPage<dynamic>> pages = [
     middlewares: [AuthMiddleware()],
   ),
 
-  GetPage(name: AppRoute.cycle, page: () => const Cycle()),
-
+  GetPage(
+    name: AppRoute.cycle,
+    page: () => const Cycle(),
+    binding: BindingsBuilder<void>(() {
+      if (!Get.isRegistered<CycleController>()) {
+        Get.put(CycleController());
+      }
+      if (!Get.isRegistered<BroilerController>()) {
+        Get.put(BroilerController());
+      }
+      if (!Get.isRegistered<CycleExpensesController>()) {
+        Get.put(CycleExpensesController());
+      }
+      if (!Get.isRegistered<WeatherController>()) {
+        Get.put(WeatherController(), permanent: true);
+      }
+    }),
+  ),
   GetPage(
     name: AppRoute.cycleExpenses,
     page: () => const CycleExpensesScreen(),
   ),
-
-  GetPage(name: AppRoute.cycleData, page: () => const CycleDataScreen()),
+  GetPage(
+    name: AppRoute.cycleData,
+    page: () => const CycleDataScreen(),
+  ),
 
   // ================================ drawer ==================================
   GetPage(name: AppRoute.suggestion, page: () => const Suggestion()),
@@ -122,6 +146,11 @@ List<GetPage<dynamic>> pages = [
   ),
 
   GetPage(
+    name: AppRoute.waterConsumption,
+    page: () => const WaterConsumption(),
+  ),
+
+  GetPage(
     name: AppRoute.totalFeedConsumption,
     page: () => const TotalFeedConsumption(),
   ),
@@ -157,6 +186,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(name: AppRoute.allTools, page: () => const AllTools()),
   GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
+  GetPage(name: AppRoute.weather, page: () => const WeatherScreen()),
 
   // ================================ articles =================================
 ];

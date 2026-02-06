@@ -7,9 +7,13 @@ import 'input_field.dart';
 class ChickenAgeCountInput extends StatefulWidget {
   final TextEditingController? controller;
   final int? selectedAge;
-  final Function(int) onAgeChanged;
+  final void Function(int) onAgeChanged;
   final int maxAge;
   final String ageHint;
+  final bool validateCount;
+  final String? countSuffix;
+  final bool useInnerForm;
+  final AutovalidateMode autovalidateMode;
 
   const ChickenAgeCountInput({
     super.key,
@@ -18,6 +22,10 @@ class ChickenAgeCountInput extends StatefulWidget {
     required this.onAgeChanged,
     this.maxAge = 45,
     this.ageHint = 'اختر اليوم',
+    this.validateCount = true,
+    this.countSuffix,
+    this.useInnerForm = true,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
   });
 
   @override
@@ -35,8 +43,12 @@ class _ChickenAgeCountInputState extends State<ChickenAgeCountInput> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.useInnerForm) {
+      return _buildInputRow();
+    }
+
     return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: widget.autovalidateMode,
       child: _buildInputRow(),
     );
   }
@@ -60,11 +72,14 @@ class _ChickenAgeCountInputState extends State<ChickenAgeCountInput> {
         Expanded(
           child: InputField(
             label: 'عدد الفراخ',
+            controller: widget.controller,
+            suffixText: widget.countSuffix,
             onChanged: (value) {
               if (widget.controller != null) {
                 widget.controller!.text = value;
               }
             },
+            enableValidation: widget.validateCount,
           ),
         ),
       ],

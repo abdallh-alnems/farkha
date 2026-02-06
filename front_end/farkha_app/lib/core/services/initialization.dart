@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import '../../logic/controller/get_min_version.dart';
+import '../../logic/controller/remote_config_controller.dart';
 import '../constant/firebase_options.dart';
 import 'analytics_service.dart';
 import 'dark_light_service.dart';
@@ -18,7 +18,7 @@ class MyServices extends GetxService {
   late GetStorage getStorage;
 
   Future<MyServices> init() async {
-    await dotenv.load(fileName: ".env");
+    await dotenv.load();
 
     await GetStorage.init();
     getStorage = GetStorage();
@@ -40,8 +40,8 @@ class MyServices extends GetxService {
 
     await initializeDateFormatting('ar');
 
-    // Initialize minimum version checker early to speed update prompt
-    Get.put(GetMinVersionController(), permanent: true);
+    // Initialize Remote Config controller early
+    Get.put(RemoteConfigController(), permanent: true);
 
     // Initialize notification service
     await Get.putAsync(() => NotificationService().init());
@@ -75,11 +75,11 @@ Future<void> initialServices() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Get.putAsync(() => MyServices().init());
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // Enable edge-to-edge mode for Android 15+ compatibility
   // This works alongside native enableEdgeToEdge() in MainActivity.kt
-  SystemChrome.setEnabledSystemUIMode(
+  await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
     overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
   );

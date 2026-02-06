@@ -11,11 +11,11 @@ class PageTurningTips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = AppColors.primaryColor;
+    const primaryColor = AppColors.primaryColor;
     final backgroundColor =
         isDark ? AppColors.darkSurfaceElevatedColor : Colors.white;
     final textColor = isDark ? Colors.white : Colors.black87;
-    final accentColor = primaryColor;
+    const accentColor = primaryColor;
 
     return IgnorePointer(
       child: Center(
@@ -75,7 +75,7 @@ class PageTurningTips extends StatelessWidget {
                       Container(
                         width: 4.w,
                         height: 4.w,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: accentColor,
                           shape: BoxShape.circle,
                         ),

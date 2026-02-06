@@ -19,7 +19,6 @@ class ToolsResult extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color titleColor = Theme.of(context).colorScheme.onSurface;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           title,

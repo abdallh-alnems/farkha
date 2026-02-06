@@ -7,7 +7,7 @@ class PricesCardData {
 
   Future<Object> getDataWithTypeIds(List<int> typeIds) async {
     final url = '${Api.pricesCard}?type_ids=${typeIds.join(',')}';
-    var response = await crud.postData(url, {'type_ids': typeIds.join(',')});
+    final response = await crud.postData(url, {'type_ids': typeIds.join(',')});
     return response.fold((l) => l, (r) => r);
   }
 }

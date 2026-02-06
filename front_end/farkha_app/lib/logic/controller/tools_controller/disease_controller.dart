@@ -26,19 +26,17 @@ class DiagnosisDiseasesController extends GetxController {
     if (currentStep.value > 0) {
       currentStep.value--;
 
-      int newCurrentQuestionIndex = currentStep.value - 1;
+      final int newCurrentQuestionIndex = currentStep.value - 1;
 
-      if (newCurrentQuestionIndex < 0) {
-        for (var question in filteredQuestions) {
-          answers.remove(question.name);
+      // Remove only answers of questions that come after the one we're going back to
+      if (newCurrentQuestionIndex >= 0) {
+        for (int i = newCurrentQuestionIndex + 1; i < filteredQuestions.length; i++) {
+          answers.remove(filteredQuestions[i].name);
         }
       } else {
-        for (
-          int i = newCurrentQuestionIndex;
-          i < filteredQuestions.length;
-          i++
-        ) {
-          answers.remove(filteredQuestions[i].name);
+        // Going back to symptom selection: clear all question answers
+        for (var question in filteredQuestions) {
+          answers.remove(question.name);
         }
       }
 
@@ -72,12 +70,12 @@ class DiagnosisDiseasesController extends GetxController {
   bool get isFinal => currentQuestionIndex == filteredQuestions.length - 1;
 
   List<String> updatedOptions(List<String> options) {
-    List<String> updated = List<String>.from(options);
-    if (!updated.contains("لا توجد مشاكل")) {
-      updated.add("لا توجد مشاكل");
+    final List<String> updated = List<String>.from(options);
+    if (!updated.contains('لا توجد مشاكل')) {
+      updated.add('لا توجد مشاكل');
     }
-    if (!updated.contains("غير محدد")) {
-      updated.add("غير محدد");
+    if (!updated.contains('غير محدد')) {
+      updated.add('غير محدد');
     }
     return updated;
   }
@@ -96,13 +94,13 @@ class DiagnosisDiseasesController extends GetxController {
   }
 
   DiseaseModel computeDisease() {
-    bool allAnswersInvalid = answers.values.every(
-      (answer) => answer == "غير محدد" || answer == "لا توجد مشاكل",
+    final bool allAnswersInvalid = answers.values.every(
+      (answer) => answer == 'غير محدد' || answer == 'لا توجد مشاكل',
     );
 
     if (allAnswersInvalid) {
       return DiseaseModel(
-        name: "! يجب اختيار اعراض",
+        name: '! يجب اختيار اعراض',
         criteria: {},
         treatment: [],
         prevention: [],
@@ -112,7 +110,7 @@ class DiagnosisDiseasesController extends GetxController {
     DiseaseModel? bestMatch;
     int maxScore = -1;
     for (final disease in diseases) {
-      int score = matchingScore(disease);
+      final int score = matchingScore(disease);
       if (score > maxScore) {
         maxScore = score;
         bestMatch = disease;
@@ -121,7 +119,7 @@ class DiagnosisDiseasesController extends GetxController {
 
     return bestMatch ??
         DiseaseModel(
-          name: "نتيجة غير محددة",
+          name: 'نتيجة غير محددة',
           criteria: {},
           treatment: [],
           prevention: [],

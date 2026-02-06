@@ -18,7 +18,7 @@ class PricesCardController extends GetxController {
   Map<int, String> typeNames = {};
 
   String getTypeName(int typeId) {
-    return typeNames[typeId] ?? "نوع $typeId";
+    return typeNames[typeId] ?? 'نوع $typeId';
   }
 
   Map<String, String> getTypePrices(int typeId) {
@@ -33,15 +33,15 @@ class PricesCardController extends GetxController {
 
   double getTypeYesterdayAverage(int typeId) {
     final prices = getTypePrices(typeId);
-    double higher = double.tryParse(prices['higher_yesterday'] ?? '') ?? 0;
-    double lower = double.tryParse(prices['lower_yesterday'] ?? '') ?? 0;
+    final double higher = double.tryParse(prices['higher_yesterday'] ?? '') ?? 0;
+    final double lower = double.tryParse(prices['lower_yesterday'] ?? '') ?? 0;
     return (higher + lower) / 2;
   }
 
   double getTypeTodayAverage(int typeId) {
     final prices = getTypePrices(typeId);
-    double higher = double.tryParse(prices['higher_today'] ?? '') ?? 0;
-    double lower = double.tryParse(prices['lower_today'] ?? '') ?? 0;
+    final double higher = double.tryParse(prices['higher_today'] ?? '') ?? 0;
+    final double lower = double.tryParse(prices['lower_today'] ?? '') ?? 0;
     return (higher + lower) / 2;
   }
 
@@ -55,7 +55,7 @@ class PricesCardController extends GetxController {
     );
 
     if (savedTypes != null && savedTypes.isNotEmpty) {
-      List<int> types = savedTypes.map((e) => int.parse(e.toString())).toList();
+      final List<int> types = savedTypes.map((e) => int.parse(e.toString())).toList();
       if (!types.contains(1)) {
         types.add(1);
       }
@@ -66,7 +66,7 @@ class PricesCardController extends GetxController {
   }
 
   void _saveSelectedTypes() {
-    List<int> types = List.from(selectedTypeIds);
+    final List<int> types = List.from(selectedTypeIds);
     if (!types.contains(1)) {
       types.add(1);
     }
@@ -89,16 +89,16 @@ class PricesCardController extends GetxController {
       statusRequest = StatusRequest.loading;
       update();
 
-      var response = await pricesCardData.getDataWithTypeIds(selectedTypeIds);
+      final response = await pricesCardData.getDataWithTypeIds(selectedTypeIds);
       statusRequest = handlingData(response);
 
       if (StatusRequest.success == statusRequest) {
         final mapResponse = response as Map<String, dynamic>;
-        if (mapResponse['status'] == "success") {
-          List data = mapResponse['data'];
+        if (mapResponse['status'] == 'success') {
+          final List<dynamic> data = mapResponse['data'] as List<dynamic>;
           if (data.isNotEmpty) {
             for (var item in data) {
-              int typeId = item['id'] ?? 0;
+              final int typeId = (item['id'] as num?)?.toInt() ?? 0;
               if (typeId > 0) {
                 pricesData[typeId] = {
                   'higher_today': item['higher_today']?.toString() ?? '',
@@ -143,16 +143,16 @@ class PricesCardController extends GetxController {
   Future<void> refreshData() async {
     try {
       // تحديث البيانات بدون تغيير حالة التحميل
-      var response = await pricesCardData.getDataWithTypeIds(selectedTypeIds);
+      final response = await pricesCardData.getDataWithTypeIds(selectedTypeIds);
       final status = handlingData(response);
 
       if (StatusRequest.success == status) {
         final mapResponse = response as Map<String, dynamic>;
-        if (mapResponse['status'] == "success") {
-          List data = mapResponse['data'];
+        if (mapResponse['status'] == 'success') {
+          final List<dynamic> data = mapResponse['data'] as List<dynamic>;
           if (data.isNotEmpty) {
             for (var item in data) {
-              int typeId = item['id'] ?? 0;
+              final int typeId = (item['id'] as num?)?.toInt() ?? 0;
               if (typeId > 0) {
                 pricesData[typeId] = {
                   'higher_today': item['higher_today']?.toString() ?? '',

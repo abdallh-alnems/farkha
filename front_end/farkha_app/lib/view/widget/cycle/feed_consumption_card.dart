@@ -69,7 +69,7 @@ class FeedConsumptionCard extends StatelessWidget {
     final cycleCtrl = Get.find<CycleController>();
 
     return Obx(() {
-      final ageDays = broilerCtrl.selectedChickenAge.value ?? 0;
+      final ageDays = (broilerCtrl.selectedChickenAge.value as num?)?.toInt() ?? 0;
       final feedType = _getFeedType(ageDays);
       final feedTypeColor = _getFeedTypeColor(feedType);
       // dailyFeedConsumption بالجرام
@@ -88,7 +88,7 @@ class FeedConsumptionCard extends StatelessWidget {
                   ? AppColors.darkSurfaceElevatedColor
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(11.r),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),

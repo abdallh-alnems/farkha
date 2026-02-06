@@ -2,23 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/class/status_request.dart';
 import '../../../../core/constant/theme/colors.dart';
 import '../../../../logic/controller/tools_controller/feasibility_study_controller.dart';
-import '../../input_fields/input_field.dart';
-import '../../input_fields/three_input_fields.dart';
+import '../../../../core/shared/input_fields/input_field.dart';
+import '../../../../core/shared/input_fields/three_input_fields.dart';
 import '../../tutorial/feasibility_tutorial.dart';
 import '../tools_button.dart';
 
 class InputsSection extends StatelessWidget {
-  const InputsSection({super.key, required this.formKey});
+  const InputsSection({
+    super.key,
+    required this.formKey,
+    this.onAfterCalculate,
+  });
 
   final GlobalKey<FormState> formKey;
+  final VoidCallback? onAfterCalculate;
 
   @override
   Widget build(BuildContext context) {
     final FeasibilityController controller = Get.find<FeasibilityController>();
 
     return Obx(() {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final primaryColor =
+          isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
       // إظهار المدخلات إذا كانت مفعلة
       if (controller.showInputs.value) {
         return Column(
@@ -43,13 +53,11 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     !controller.isProfessionalMode.value
-                                        ? (Theme.of(context).brightness ==
-                                                Brightness.dark
+                                        ? (isDark
                                             ? Colors.white
                                             : Colors.grey[800])
-                                        : (Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.grey[500]
+                                        : (isDark
+                                            ? Colors.grey[400]
                                             : Colors.grey[500]),
                               ),
                             ),
@@ -63,12 +71,16 @@ class InputsSection extends StatelessWidget {
                               onChanged: (value) {
                                 controller.toggleProfessionalMode();
                               },
-                              activeThumbColor: AppColors.primaryColor,
-                              activeTrackColor: AppColors.primaryColor
-                                  .withValues(alpha: 0.3),
-                              inactiveThumbColor: AppColors.primaryColor,
-                              inactiveTrackColor: AppColors.primaryColor
-                                  .withValues(alpha: 0.3),
+                              activeThumbColor: primaryColor,
+                              activeTrackColor: primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
+                              inactiveThumbColor: primaryColor.withValues(
+                                alpha: 0.7,
+                              ),
+                              inactiveTrackColor: primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               overlayColor: WidgetStateProperty.all(
@@ -79,11 +91,9 @@ class InputsSection extends StatelessWidget {
                                 Colors.transparent,
                               ),
                               trackOutlineWidth: WidgetStateProperty.all(0),
-                              thumbColor: WidgetStateProperty.all(
-                                AppColors.primaryColor,
-                              ),
+                              thumbColor: WidgetStateProperty.all(primaryColor),
                               trackColor: WidgetStateProperty.all(
-                                AppColors.primaryColor.withValues(alpha: 0.3),
+                                primaryColor.withValues(alpha: 0.3),
                               ),
                             ),
                           ),
@@ -98,13 +108,11 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     controller.isProfessionalMode.value
-                                        ? (Theme.of(context).brightness ==
-                                                Brightness.dark
+                                        ? (isDark
                                             ? Colors.white
                                             : Colors.grey[800])
-                                        : (Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.grey[500]
+                                        : (isDark
+                                            ? Colors.grey[400]
                                             : Colors.grey[500]),
                               ),
                             ),
@@ -133,13 +141,11 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     controller.isChickenCountMode.value
-                                        ? (Theme.of(context).brightness ==
-                                                Brightness.dark
+                                        ? (isDark
                                             ? Colors.white
                                             : Colors.grey[800])
-                                        : (Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.grey[500]
+                                        : (isDark
+                                            ? Colors.grey[400]
                                             : Colors.grey[500]),
                               ),
                             ),
@@ -153,12 +159,16 @@ class InputsSection extends StatelessWidget {
                               onChanged: (value) {
                                 controller.toggleCalculationMode();
                               },
-                              activeThumbColor: AppColors.primaryColor,
-                              activeTrackColor: AppColors.primaryColor
-                                  .withValues(alpha: 0.3),
-                              inactiveThumbColor: AppColors.primaryColor,
-                              inactiveTrackColor: AppColors.primaryColor
-                                  .withValues(alpha: 0.3),
+                              activeThumbColor: primaryColor,
+                              activeTrackColor: primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
+                              inactiveThumbColor: primaryColor.withValues(
+                                alpha: 0.7,
+                              ),
+                              inactiveTrackColor: primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               overlayColor: WidgetStateProperty.all(
@@ -169,11 +179,9 @@ class InputsSection extends StatelessWidget {
                                 Colors.transparent,
                               ),
                               trackOutlineWidth: WidgetStateProperty.all(0),
-                              thumbColor: WidgetStateProperty.all(
-                                AppColors.primaryColor,
-                              ),
+                              thumbColor: WidgetStateProperty.all(primaryColor),
                               trackColor: WidgetStateProperty.all(
-                                AppColors.primaryColor.withValues(alpha: 0.3),
+                                primaryColor.withValues(alpha: 0.3),
                               ),
                             ),
                           ),
@@ -188,13 +196,11 @@ class InputsSection extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color:
                                     !controller.isChickenCountMode.value
-                                        ? (Theme.of(context).brightness ==
-                                                Brightness.dark
+                                        ? (isDark
                                             ? Colors.white
                                             : Colors.grey[800])
-                                        : (Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.grey[500]
+                                        : (isDark
+                                            ? Colors.grey[400]
                                             : Colors.grey[500]),
                               ),
                             ),
@@ -223,32 +229,55 @@ class InputsSection extends StatelessWidget {
                             : Colors.grey[800],
                   ),
                 ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    key: FeasibilityTutorial.stockButtonKey,
-                    onTap: () => controller.fetchFeasibilityData(),
-                    borderRadius: BorderRadius.circular(8.r),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Text(
-                        'متوسط البورصة',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
+                Obx(() {
+                  final isLoading =
+                      controller.pricesStatusRequest.value ==
+                      StatusRequest.loading;
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      key: FeasibilityTutorial.stockButtonKey,
+                      onTap:
+                          isLoading
+                              ? null
+                              : () => controller.fetchFeasibilityData(),
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
                         ),
+                        decoration: BoxDecoration(
+                          color:
+                              isLoading
+                                  ? AppColors.primaryColor.withValues(
+                                    alpha: 0.6,
+                                  )
+                                  : AppColors.primaryColor,
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child:
+                            isLoading
+                                ? SizedBox(
+                                  width: 18.w,
+                                  height: 18.h,
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                                : Text(
+                                  'متوسط البورصة',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
             const SizedBox(height: 12),
@@ -259,6 +288,7 @@ class InputsSection extends StatelessWidget {
                   child: InputField(
                     label: 'اللحم الأبيض',
                     controller: controller.chickenSalePriceController,
+                    suffixText: 'ج',
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -266,6 +296,7 @@ class InputsSection extends StatelessWidget {
                   child: InputField(
                     label: 'كتكوت الأبيض',
                     controller: controller.chickPriceController,
+                    suffixText: 'ج',
                   ),
                 ),
               ],
@@ -276,16 +307,20 @@ class InputsSection extends StatelessWidget {
               () =>
                   controller.isProfessionalMode.value
                       ? ThreeInputFields(
-                        firstLabel: 'بادي (طن)',
-                        secondLabel: 'نامي (طن)',
-                        thirdLabel: 'ناهي (طن)',
+                        firstLabel: 'بادي بالطن',
+                        secondLabel: 'نامي بالطن',
+                        thirdLabel: 'ناهي بالطن',
                         firstController: controller.badiPriceController,
                         secondController: controller.namiPriceController,
                         thirdController: controller.nahiPriceController,
+                        firstSuffix: 'جنيه',
+                        secondSuffix: 'جنيه',
+                        thirdSuffix: 'جنيه',
                       )
                       : InputField(
-                        label: 'متوسط العلف (طن)',
+                        label: 'متوسط العلف بالطن',
                         controller: controller.averageFeedPriceController,
+                        suffixText: 'جنيه',
                       ),
             ),
             const SizedBox(height: 19),
@@ -349,13 +384,14 @@ class InputsSection extends StatelessWidget {
                             : InputField(
                               label: 'المبلغ المالي (ج)',
                               controller: controller.budgetController,
+                              suffixText: 'ج',
                             ),
                   ),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: InputField(
-                    label: 'وزن الفرخ',
+                    label: 'وزن الفرخ الواحد',
                     controller: controller.defaultWeightController,
                     suffixText: 'كجم',
                   ),
@@ -371,6 +407,7 @@ class InputsSection extends StatelessWidget {
                     label: 'معدل النافق (%)',
                     controller: controller.mortalityRateController,
                     suffixText: '%',
+                    allowZero: true,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -379,6 +416,7 @@ class InputsSection extends StatelessWidget {
                     label: 'النثريات (ج)',
                     controller: controller.overheadController,
                     suffixText: 'ج',
+                    allowZero: true,
                   ),
                 ),
               ],
@@ -417,7 +455,7 @@ class InputsSection extends StatelessWidget {
             Container(
               key: FeasibilityTutorial.calculateButtonKey,
               child: ToolsButton(
-                text: "احسب دراسة الجدوي",
+                text: 'احسب دراسة الجدوي',
                 onPressed: () => _onCalculatePressed(context),
               ),
             ),
@@ -434,17 +472,94 @@ class InputsSection extends StatelessWidget {
     final FeasibilityController controller = Get.find<FeasibilityController>();
 
     // التحقق من صحة البيانات
-    if (!formKey.currentState!.validate()) {
+    if (formKey.currentState?.validate() != true) {
       return;
     }
 
-    FocusScope.of(context).unfocus();
+    // التحقق من الأسعار الصفرية
+    final chickenPrice =
+        int.tryParse(controller.chickenSalePriceController.text) ?? 0;
+    final chickPrice = int.tryParse(controller.chickPriceController.text) ?? 0;
+    final feedPrice =
+        controller.isProfessionalMode.value
+            ? ((int.tryParse(controller.badiPriceController.text) ?? 0) +
+                    (int.tryParse(controller.namiPriceController.text) ?? 0) +
+                    (int.tryParse(controller.nahiPriceController.text) ?? 0)) /
+                3
+            : (int.tryParse(controller.averageFeedPriceController.text) ?? 0)
+                .toDouble();
+
+    final hasZeroPrice =
+        chickenPrice == 0 || chickPrice == 0 || feedPrice.round() == 0;
+
+    if (hasZeroPrice) {
+      _showZeroPricesDialog(context, controller, onAfterCalculate);
+      return;
+    }
+
     controller.calculateFeasibility();
+    onAfterCalculate?.call();
+  }
+
+  void _showZeroPricesDialog(
+    BuildContext context,
+    FeasibilityController controller,
+    VoidCallback? onAfterCalculate,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    Get.dialog<void>(
+      AlertDialog(
+        backgroundColor:
+            isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
+        title: Text(
+          'تحذير',
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontSize: 18.sp,
+          ),
+        ),
+        content: Text(
+          'يبدو أن بعض الأسعار صفرية. لم يتم تحميل أسعار البورصة بعد؟ '
+          'اضغط على متوسط البورصة للحصول على الأسعار الحالية.',
+          style: TextStyle(
+            color: isDark ? Colors.white70 : Colors.black87,
+            fontSize: 14.sp,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back<void>(),
+            child: Text(
+              'إلغاء',
+              style: TextStyle(
+                color: isDark ? Colors.white70 : Colors.grey[700],
+                fontSize: 14.sp,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back<void>();
+              controller.calculateFeasibility();
+              onAfterCalculate?.call();
+            },
+            child: Text(
+              'متابعة بالأسعار الحالية',
+              style: TextStyle(
+                color: AppColors.primaryColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _setDefaultValues(FeasibilityController controller) {
     // تعيين القيم الافتراضية
-    controller.defaultWeightController.text = '2.5';
+    controller.defaultWeightController.text = '2.1';
     controller.mortalityRateController.text = '5';
     controller.overheadController.text = '10';
 

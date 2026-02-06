@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
@@ -33,7 +35,7 @@ class CustomizePricesController extends GetxController {
     );
 
     if (savedTypes != null && savedTypes.isNotEmpty) {
-      List<int> types = savedTypes.map((e) => int.parse(e.toString())).toList();
+      final List<int> types = savedTypes.map((e) => int.parse(e.toString())).toList();
       if (!types.contains(1)) {
         types.add(1);
       }
@@ -69,31 +71,31 @@ class CustomizePricesController extends GetxController {
     try {
       statusRequest.value = StatusRequest.loading;
 
-      var response = await typesData.getTypes();
+      final response = await typesData.getTypes();
       statusRequest.value = handlingData(response);
 
       if (StatusRequest.success == statusRequest.value) {
         final mapResponse = response as Map<String, dynamic>;
-        if (mapResponse['status'] == "success") {
-          Map<String, dynamic> data = mapResponse['data'];
+        if (mapResponse['status'] == 'success') {
+          final Map<String, dynamic> data = mapResponse['data'] as Map<String, dynamic>;
           if (data.isNotEmpty) {
-            List<int> selectedTypeIds = _loadSelectedTypes();
-            List<String> notificationEnabledTopics =
+            final List<int> selectedTypeIds = _loadSelectedTypes();
+            final List<String> notificationEnabledTopics =
                 _loadNotificationEnabledTypes();
-            List<Map<String, dynamic>> allTypes = [];
+            final List<Map<String, dynamic>> allTypes = [];
 
             // تحويل البيانات من Map إلى List مع إضافة main_name
             data.forEach((categoryName, typesList) {
               if (typesList is List) {
                 for (var item in typesList) {
                   if (item is Map<String, dynamic>) {
-                    int typeId = item['id'] ?? 0;
-                    String typeName = item['name'] ?? '';
-                    bool isSelected = selectedTypeIds.contains(typeId);
+                    final int typeId = (item['id'] as num?)?.toInt() ?? 0;
+                    final String typeName = (item['name'] ?? '').toString();
+                    final bool isSelected = selectedTypeIds.contains(typeId);
 
                     // Check if notification is enabled for this type
-                    String? topicName = _getTopicNameFromId(typeId);
-                    bool isNotificationEnabled =
+                    final String? topicName = _getTopicNameFromId(typeId);
+                    final bool isNotificationEnabled =
                         topicName != null &&
                         notificationEnabledTopics.contains(topicName);
 
@@ -124,9 +126,9 @@ class CustomizePricesController extends GetxController {
   }
 
   void _categorizeTypes() {
-    Map<String, List<Map<String, dynamic>>> newCategorizedTypes = {};
+    final Map<String, List<Map<String, dynamic>>> newCategorizedTypes = {};
     for (var item in priceTypes) {
-      String category = item['main_name'] ?? 'أخرى';
+      final String category = (item['main_name'] ?? 'أخرى').toString();
       if (!newCategorizedTypes.containsKey(category)) {
         newCategorizedTypes[category] = [];
       }
@@ -140,15 +142,15 @@ class CustomizePricesController extends GetxController {
       return;
     }
 
-    int mainIndex = priceTypes.indexWhere(
+    final int mainIndex = priceTypes.indexWhere(
       (element) => element['id'] == item['id'],
     );
     if (mainIndex != -1) {
-      List<Map<String, dynamic>> newList = [];
+      final List<Map<String, dynamic>> newList = [];
       for (int i = 0; i < priceTypes.length; i++) {
         if (i == mainIndex) {
-          Map<String, dynamic> updatedItem = Map.from(priceTypes[i]);
-          updatedItem['isSelected'] = !updatedItem['isSelected'];
+          final Map<String, dynamic> updatedItem = Map.from(priceTypes[i]);
+          updatedItem['isSelected'] = !((updatedItem['isSelected'] as bool?) ?? false);
           newList.add(updatedItem);
         } else {
           newList.add(Map.from(priceTypes[i]));
@@ -166,36 +168,40 @@ class CustomizePricesController extends GetxController {
   }
 
   Future<void> toggleNotification(Map<String, dynamic> item) async {
-    String? topicName = item['topicName'];
+    final String? topicName = item['topicName'] as String?;
     if (topicName == null) return;
 
-    int mainIndex = priceTypes.indexWhere(
+    final int mainIndex = priceTypes.indexWhere(
       (element) => element['id'] == item['id'],
     );
 
     if (mainIndex != -1) {
-      List<Map<String, dynamic>> newList = [];
+      final List<Map<String, dynamic>> newList = [];
       for (int i = 0; i < priceTypes.length; i++) {
         if (i == mainIndex) {
-          Map<String, dynamic> updatedItem = Map.from(priceTypes[i]);
-          bool newNotificationState = !updatedItem['isNotificationEnabled'];
+          final Map<String, dynamic> updatedItem = Map.from(priceTypes[i]);
+          final bool newNotificationState = !((updatedItem['isNotificationEnabled'] as bool?) ?? false);
           updatedItem['isNotificationEnabled'] = newNotificationState;
 
           // Subscribe or unsubscribe from topic (without await to avoid ANR)
           if (newNotificationState) {
-            NotificationService.instance.subscribeToTopic(topicName).catchError(
-              (error) {
-                // Log error but don't block UI
-                debugPrint('Error subscribing to $topicName: $error');
-              },
+            unawaited(
+              NotificationService.instance.subscribeToTopic(topicName).catchError(
+                (Object error) {
+                  // Log error but don't block UI
+                  debugPrint('Error subscribing to $topicName: $error');
+                },
+              ),
             );
           } else {
-            NotificationService.instance
-                .unsubscribeFromTopic(topicName)
-                .catchError((error) {
-                  // Log error but don't block UI
-                  debugPrint('Error unsubscribing from $topicName: $error');
-                });
+            unawaited(
+              NotificationService.instance
+                  .unsubscribeFromTopic(topicName)
+                  .catchError((Object error) {
+                    // Log error but don't block UI
+                    debugPrint('Error unsubscribing from $topicName: $error');
+                  }),
+            );
           }
 
           newList.add(updatedItem);
@@ -230,8 +236,8 @@ class CustomizePricesController extends GetxController {
   void _saveSelectedTypes() {
     final selectedTypes =
         priceTypes
-            .where((item) => item['isSelected'])
-            .map((item) => item['id'] as int)
+            .where((item) => (item['isSelected'] as bool?) ?? false)
+            .map((item) => (item['id'] as num).toInt())
             .toList();
 
     if (!selectedTypes.contains(1)) {
@@ -244,8 +250,8 @@ class CustomizePricesController extends GetxController {
   void _updatePricesCardController() {
     final selectedTypes =
         priceTypes
-            .where((item) => item['isSelected'])
-            .map((item) => item['id'] as int)
+            .where((item) => (item['isSelected'] as bool?) ?? false)
+            .map((item) => (item['id'] as num).toInt())
             .toList();
 
     if (selectedTypes.isNotEmpty) {
@@ -255,10 +261,10 @@ class CustomizePricesController extends GetxController {
   }
 
   void _saveTypeNames() {
-    Map<String, String> namesMap = {};
+    final Map<String, String> namesMap = {};
     for (var item in priceTypes) {
-      int typeId = item['id'] as int;
-      String typeName = item['name'] as String;
+      final int typeId = item['id'] as int;
+      final String typeName = item['name'] as String;
       namesMap[typeId.toString()] = typeName;
     }
     _myServices.getStorage.write('type_names', namesMap);

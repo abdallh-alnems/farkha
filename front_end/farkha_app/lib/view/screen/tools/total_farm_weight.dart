@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/theme/colors.dart';
+import '../../../core/functions/number_format.dart';
+import '../../../core/functions/tool_page_view.dart';
 import '../../../logic/controller/tools_controller/total_farm_weight_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
-import '../../widget/input_fields/two_input_fields.dart';
+import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../widget/tools/notes_card.dart';
+import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tools/tools_button.dart';
 
 class TotalFarmWeightScreen extends StatelessWidget {
@@ -18,80 +23,132 @@ class TotalFarmWeightScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logToolPageViewOnce(
+      widgetType: TotalFarmWeightScreen,
+      toolName: 'الوزن الإجمالي',
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
+    final resultColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
     return Scaffold(
-      appBar: const CustomAppBar(text: 'الوزن الإجمالي'),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      appBar: const CustomAppBar(text: 'الوزن الاجمالي', favoriteToolName: 'الوزن الاجمالي'),
+      body: SafeArea(
         child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                TwoInputFields(
-                  firstLabel: 'عدد الطيور',
-                  secondLabel: 'متوسط الوزن',
-                  onFirstChanged: (val) => controller.birdsCount.value = val,
-                  onSecondChanged: (val) => controller.birdWeight.value = val,
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.darkSurfaceElevatedColor
+                      : AppColors.lightSurfaceColor,
+                  borderRadius: BorderRadius.circular(14.r),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                        : AppColors.lightOutlineColor.withValues(alpha: 0.3),
+                  ),
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                 ),
-                const SizedBox(height: 28),
-                const AdNativeWidget(),
-                const SizedBox(height: 28),
-                ToolsButton(
-                  text: 'احسب',
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      controller.calculate();
-                    }
-                  },
+                child: Form(
+                  key: _formKey,
+                  child: TwoInputFields(
+                    firstLabel: 'عدد الطيور',
+                    secondLabel: 'متوسط الوزن للفرخ',
+                    firstSuffix: 'طائر',
+                    secondSuffix: 'كجم',
+                    onFirstChanged: (val) {
+                      controller.birdsCount.value = val;
+                      controller.totalWeight.value = 0.0;
+                    },
+                    onSecondChanged: (val) {
+                      controller.birdWeight.value = val;
+                      controller.totalWeight.value = 0.0;
+                    },
+                  ),
                 ),
-                const SizedBox(height: 32),
-                Obx(
-                  () =>
-                      controller.totalWeight.value > 0
-                          ? Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 32,
-                                horizontal: 24,
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    controller.totalWeight.value
-                                        .toStringAsFixed(0),
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.displayLarge?.copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'كيلو جرام (الوزن الإجمالي)',
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                          : const SizedBox(),
-                ),
-                const SizedBox(height: 32),
-                const NotesCard(
-                  notes: [
-                    'لحساب الوزن الكلي للقطيع: وزّن 10 فراخ عشوائيًا، احسب متوسط الوزن (قسمة على 10)، ثم اضربه في عدد الطيور.',
-                  ],
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 12.h),
+              const AdNativeWidget(),
+              SizedBox(height: 12.h),
+              ToolsButton(
+                text: 'احسب الوزن الإجمالي',
+                onPressed: () {
+                  if (_formKey.currentState?.validate() != true) return;
+                  controller.calculate();
+                },
+              ),
+              SizedBox(height: 14.h),
+              Obx(() {
+                final totalWeight = controller.totalWeight.value;
+                if (totalWeight <= 0) return const SizedBox.shrink();
+
+                return Container(
+                  margin: EdgeInsets.only(bottom: 16.h),
+                  padding: EdgeInsets.all(18.w),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        resultColor.withValues(alpha: isDark ? 0.22 : 0.1),
+                        resultColor.withValues(alpha: isDark ? 0.12 : 0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(14.r),
+                    border: Border.all(
+                      color: resultColor.withValues(alpha: 0.45),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'الوزن الإجمالي للقطيع',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurface.withValues(alpha: 0.85),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        '${formatDecimal(totalWeight, decimals: 0)} كيلو جرام',
+                        style: TextStyle(
+                          fontSize: 26.sp,
+                          fontWeight: FontWeight.bold,
+                          color: resultColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              SizedBox(height: 16.h),
+              const NotesCard(
+                notes: [
+                  'لحساب الوزن الكلي للقطيع: وزّن 10 فراخ عشوائيًا، احسب متوسط الوزن (قسمة على 10)، ثم اضربه في عدد الطيور.',
+                ],
+              ),
+              SizedBox(height: 16.h),
+              const RelatedArticlesSection(
+                relatedArticleIds: [13, 8],
+              ),
+            ],
           ),
         ),
       ),

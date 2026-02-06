@@ -14,16 +14,20 @@ class CycleExpensesCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Obx(() {
-      try {
-        final expensesCtrl = Get.find<CycleExpensesController>();
-        final total = expensesCtrl.totalExpenses.value.round();
+    // Only use Obx when controller is registered; otherwise no observable to subscribe to causes GetX crash
+    if (!Get.isRegistered<CycleExpensesController>()) {
+      return const SizedBox.shrink();
+    }
 
-        return Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16.w),
-          margin: EdgeInsets.only(bottom: 20.h),
-          decoration: BoxDecoration(
+    return Obx(() {
+      final expensesCtrl = Get.find<CycleExpensesController>();
+      final total = expensesCtrl.totalExpenses.value.round();
+
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16.w),
+        margin: EdgeInsets.only(bottom: 20.h),
+        decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurfaceElevatedColor : Colors.white,
             borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
@@ -32,15 +36,15 @@ class CycleExpensesCard extends StatelessWidget {
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
-            ],
-          ),
-          child: InkWell(
-            onTap: () => Get.toNamed(AppRoute.cycleExpenses),
-            borderRadius: BorderRadius.circular(16.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        ],
+        ),
+        child: InkWell(
+          onTap: () => Get.toNamed<void>(AppRoute.cycleExpenses),
+          borderRadius: BorderRadius.circular(16.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -59,12 +63,12 @@ class CycleExpensesCard extends StatelessWidget {
                       size: 16.sp,
                       color: isDark ? Colors.grey[400] : Colors.grey[400],
                     ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                Container(
-                  padding: EdgeInsets.all(14.w),
-                  decoration: BoxDecoration(
+                ],
+              ),
+              SizedBox(height: 16.h),
+              Container(
+                padding: EdgeInsets.all(14.w),
+                decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
                         AppColors.primaryColor.withValues(alpha: 0.15),
@@ -77,56 +81,53 @@ class CycleExpensesCard extends StatelessWidget {
                     border: Border.all(
                       color: AppColors.primaryColor.withValues(alpha: 0.25),
                       width: 1.5,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'إجمالي المصروفات',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color:
-                                  isDark ? Colors.grey[400] : Colors.grey[700],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          Text(
-                            '$total جنيه',
-                            style: TextStyle(
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(12.w),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryColor.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Icon(
-                          Icons.account_balance_wallet,
-                          color: AppColors.primaryColor,
-                          size: 28.sp,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
-              ],
-            ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'إجمالي المصروفات',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color:
+                                isDark ? Colors.grey[400] : Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 6.h),
+                        Text(
+                          '$total جنيه',
+                          style: TextStyle(
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        Icons.account_balance_wallet,
+                        color: AppColors.primaryColor,
+                        size: 28.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        );
-      } catch (e) {
-        return const SizedBox.shrink();
-      }
+        ),
+      );
     });
   }
 }

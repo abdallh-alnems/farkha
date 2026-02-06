@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/constant/theme/colors.dart';
+import '../../../core/functions/number_format.dart';
+import '../../../core/functions/tool_page_view.dart';
+import '../../../core/shared/input_fields/input_field.dart';
+import '../../../core/shared/input_fields/two_input_fields.dart';
 import '../../../logic/controller/tools_controller/fan_operation_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
-import '../../widget/input_fields/input_field.dart';
-import '../../widget/input_fields/two_input_fields.dart';
+import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tools/tools_button.dart';
 
 class FanOperationScreen extends StatefulWidget {
@@ -34,8 +37,17 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    logToolPageViewOnce(
+      widgetType: FanOperationScreen,
+      toolName: 'تشغيل الشفاطات',
+    );
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final btnColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
     return Scaffold(
-      appBar: const CustomAppBar(text: 'حساب تشغيل الشفاطات'),
+      appBar: const CustomAppBar(text: 'تشغيل الشفاطات', favoriteToolName: 'تشغيل الشفاطات'),
       body: Column(
         children: [
           Expanded(
@@ -52,7 +64,8 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                     SizedBox(height: 21.h),
                     TwoInputFields(
                       firstLabel: 'عدد الطيور',
-                      secondLabel: 'متوسط الوزن (كجم)',
+                      secondLabel: 'متوسط الوزن',
+                      secondSuffix: 'كجم',
                       onFirstChanged: controller.updateNumberOfBirds,
                       onSecondChanged: controller.updateAverageWeight,
                     ),
@@ -63,6 +76,7 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                         Expanded(
                           child: InputField(
                             label: 'سعة المروحة',
+                            suffixText: 'م³/س',
                             onChanged: controller.updateFanCapacityPerHour,
                           ),
                         ),
@@ -78,8 +92,8 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                 suffixText: _isLoadingTemperature ? null : '°C',
                                 suffixIcon:
                                     _isLoadingTemperature
-                                        ? const Padding(
-                                          padding: EdgeInsets.only(left: 6),
+                                        ? Padding(
+                                          padding: const EdgeInsets.only(left: 6),
                                           child: SizedBox(
                                             width: 13,
                                             height: 13,
@@ -87,7 +101,7 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                               strokeWidth: 1.5,
                                               valueColor:
                                                   AlwaysStoppedAnimation<Color>(
-                                                    AppColors.primaryColor,
+                                                    btnColor,
                                                   ),
                                             ),
                                           ),
@@ -126,7 +140,7 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                             }
 
                                             await controller.getWeatherData();
-                                            await Future.delayed(
+                                            await Future<void>.delayed(
                                               const Duration(milliseconds: 500),
                                             );
 
@@ -168,9 +182,9 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
                                   ),
                                 ),
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: AppColors.primaryColor
-                                      .withValues(alpha: 0.12),
-                                  foregroundColor: AppColors.primaryColor,
+                                  backgroundColor: btnColor
+                                      .withValues(alpha: isDark ? 0.2 : 0.12),
+                                  foregroundColor: btnColor,
                                   padding: EdgeInsets.symmetric(
                                     vertical: 10.h,
                                     horizontal: 8.w,
@@ -208,6 +222,9 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
 
                     // Results section
                     if (showResult) _buildResultsSection(),
+
+                    const SizedBox(height: 24),
+                    const RelatedArticlesSection(relatedArticleIds: [5, 6]),
                   ],
                 ),
               ),
@@ -324,6 +341,6 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
   }
 
   String _formatNumber(double value) {
-    return value.toStringAsFixed(0);
+    return formatDecimal(value, decimals: 0);
   }
 }

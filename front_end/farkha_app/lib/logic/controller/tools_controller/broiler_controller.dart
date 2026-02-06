@@ -3,20 +3,14 @@ import 'package:get/get.dart';
 
 import '../../../core/class/crud.dart';
 import '../../../core/class/status_request.dart';
-import '../../../core/constant/id/tool_ids.dart';
 import '../../../core/functions/handing_data_controller.dart';
 import '../../../data/data_source/remote/prices_data/broiler_price_data.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import '../weather_controller.dart';
-import 'tool_usage_controller.dart';
 
 class BroilerController extends GetxController {
-  static const int toolId =
-      ToolIds
-          .broilerChickenRequirements; // Broiler Chicken Requirements tool ID = 13
-
   final TextEditingController chickensCountController = TextEditingController();
-  final Rxn selectedChickenAge = Rxn();
+  final Rxn<dynamic> selectedChickenAge = Rxn<dynamic>();
 
   late final WeatherController weatherController;
 
@@ -26,7 +20,7 @@ class BroilerController extends GetxController {
 
   int dailyFeedConsumption = 0;
   double totalFeedConsumption = 0.0;
-  String ageHumidityRange = "";
+  String ageHumidityRange = '';
   int chickensPerSquareMeter = 0;
   final RxDouble requiredArea = 0.0.obs;
   double collegeArea = 0.0;
@@ -70,16 +64,17 @@ class BroilerController extends GetxController {
 
   void ageOfChickens() {
     if (selectedChickenAge.value != null) {
-      if (selectedChickenAge.value! <= 7) {
+      final age = (selectedChickenAge.value as num).toInt();
+      if (age <= 7) {
         ageHumidityRange = '60-70%';
         chickensPerSquareMeter = 30;
-      } else if (selectedChickenAge.value! <= 14) {
+      } else if (age <= 14) {
         ageHumidityRange = '60-70%';
         chickensPerSquareMeter = 25;
-      } else if (selectedChickenAge.value! <= 21) {
+      } else if (age <= 21) {
         ageHumidityRange = '50-60%';
         chickensPerSquareMeter = 20;
-      } else if (selectedChickenAge.value! <= 28) {
+      } else if (age <= 28) {
         ageHumidityRange = '50-60%';
         chickensPerSquareMeter = 15;
       } else {
@@ -90,22 +85,26 @@ class BroilerController extends GetxController {
   }
 
   void getTemperature() {
-    ageTemperature.value = temperatureList[selectedChickenAge.value! - 1];
+    final age = (selectedChickenAge.value as num).toInt();
+    ageTemperature.value = temperatureList[age - 1];
   }
 
   void getLighting() {
-    ageDarkness = darknessLevels[selectedChickenAge.value! - 1];
+    final age = (selectedChickenAge.value as num).toInt();
+    ageDarkness = darknessLevels[age - 1];
   }
 
   void getWeight() {
-    ageWeight = weightsList[selectedChickenAge.value! - 1];
+    final age = (selectedChickenAge.value as num).toInt();
+    ageWeight = weightsList[age - 1];
   }
 
   void calculateFeedConsumption() {
     final int? chickens = int.tryParse(chickensCountController.text);
 
+    final age = (selectedChickenAge.value as num).toInt();
     dailyFeedConsumption =
-        feedConsumptions[selectedChickenAge.value! - 1] * chickens!;
+        feedConsumptions[age - 1] * chickens!;
     totalFeedConsumption = chickens * 3.5;
   }
 
@@ -124,18 +123,18 @@ class BroilerController extends GetxController {
 
   String get weatherTemperatureText {
     final String tempText = weatherController.temperatureText;
-    if (tempText == "فعّل صلاحية الموقع") {
+    if (tempText == 'فعّل صلاحية الموقع') {
       return tempText;
     }
-    return "الخارج : $tempText";
+    return 'الخارج : $tempText';
   }
 
   String get weatherHumidityText {
     final String humidityText = weatherController.humidityText;
-    if (humidityText == "فعّل صلاحية الموقع") {
+    if (humidityText == 'فعّل صلاحية الموقع') {
       return humidityText;
     }
-    return "الخارج : $humidityText";
+    return 'الخارج : $humidityText';
   }
 
   String get weatherLocationShort => weatherController.locationMessage;
@@ -146,12 +145,12 @@ class BroilerController extends GetxController {
 
   Future<void> fetchBroilerPrice() async {
     try {
-      var response = await broilerPriceData.getBroilerPrice();
+      final response = await broilerPriceData.getBroilerPrice();
       final status = handlingData(response);
 
       if (StatusRequest.success == status) {
         final mapResponse = response as Map<String, dynamic>;
-        if (mapResponse['status'] == "success") {
+        if (mapResponse['status'] == 'success') {
           final data = mapResponse['data'] as Map<String, dynamic>?;
           if (data != null && data['price'] != null) {
             final price = double.tryParse(data['price'].toString());
@@ -175,7 +174,6 @@ class BroilerController extends GetxController {
             ? Get.find<WeatherController>()
             : Get.put(WeatherController());
     broilerPriceData = BroilerPriceData(Get.find<Crud>());
-    ToolUsageController.recordToolUsageFromController(toolId);
     // جلب السعر عند تهيئة الـ controller
     fetchBroilerPrice();
   }

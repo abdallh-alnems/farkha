@@ -30,7 +30,7 @@ class SuggestionController extends GetxController {
     if (response is Map<String, dynamic>) {
       statusRequest = handlingData(response);
       
-      if (response['status'] != "success") {
+      if (response['status'] != 'success') {
         statusRequest = StatusRequest.failure;
         update();
         return;

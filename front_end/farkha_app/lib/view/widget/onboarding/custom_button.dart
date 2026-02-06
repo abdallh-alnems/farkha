@@ -29,7 +29,7 @@ class CustomButtonOnBoarding extends GetView<OnBoardingControllerImp> {
             },
             child: Text(
               controller.currentPage.value != onBoardingList.length - 1
-                  ? "متابعة"
+                  ? 'متابعة'
                   : 'بدء',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),

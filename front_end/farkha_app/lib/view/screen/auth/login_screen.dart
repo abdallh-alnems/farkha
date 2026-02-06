@@ -11,7 +11,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // LoginController is already registered in AppBindings
+    if (!Get.isRegistered<LoginController>()) {
+      Get.put(LoginController(), permanent: true);
+    }
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -82,7 +84,7 @@ class LoginScreen extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        onPressed: () => Get.back(),
+                        onPressed: () => Get.back<void>(),
                         style: IconButton.styleFrom(
                           backgroundColor: (isDark
                                   ? Colors.white

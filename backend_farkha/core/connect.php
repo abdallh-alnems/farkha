@@ -7,6 +7,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/cors.php';
 require_once __DIR__ . '/../cache_system/cache_manager.php';
 require_once __DIR__ . '/base_api.php';
+require_once __DIR__ . '/error.php';
 
 class DatabaseConnection {
     private static $instance = null;

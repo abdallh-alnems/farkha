@@ -16,22 +16,23 @@ class NotesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Column(
       children: [
-        const SizedBox(height: 32),
+        const SizedBox(height: 16),
         Card(
-          color: isDark 
-              ? AppColors.darkSurfaceElevatedColor 
-              : AppColors.lightSurfaceColor,
+          color:
+              isDark
+                  ? AppColors.darkSurfaceElevatedColor
+                  : AppColors.lightSurfaceColor,
           elevation: isDark ? 0 : 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
-              color: isDark 
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                  : AppColors.lightOutlineColor.withValues(alpha: 0.3),
-              width: 1,
+              color:
+                  isDark
+                      ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+                      : AppColors.lightOutlineColor.withValues(alpha: 0.3),
             ),
           ),
           child: Padding(
@@ -42,7 +43,7 @@ class NotesCard extends StatelessWidget {
                   title!,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -51,7 +52,7 @@ class NotesCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 16),
       ],
     );
   }
@@ -67,14 +68,14 @@ class NotesCard extends StatelessWidget {
             size: 18,
             color: colorScheme.primary,
           ),
-                     const SizedBox(width: 7),
+          const SizedBox(width: 7),
           Expanded(
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 14,
-                    color: colorScheme.onSurface.withValues(alpha: 0.8),
-                  ),
+                fontSize: 14,
+                color: colorScheme.onSurface.withValues(alpha: 0.8),
+              ),
             ),
           ),
         ],

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -12,7 +14,9 @@ import '../../../logic/controller/auth/login_controller.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
 class CardCycle extends StatefulWidget {
-  const CardCycle({super.key});
+  const CardCycle({super.key, this.cycleCardKey});
+
+  final GlobalKey? cycleCardKey;
 
   @override
   State<CardCycle> createState() => _CardCycleState();
@@ -67,7 +71,7 @@ class _CardCycleState extends State<CardCycle> {
     try {
       final storage = GetStorage();
       final storageKey = 'expenses_$cycleName';
-      final saved = storage.read<List>(storageKey);
+      final saved = storage.read<List<dynamic>>(storageKey);
       if (saved != null && saved.isNotEmpty) {
         double total = 0.0;
         for (var expense in saved) {
@@ -90,7 +94,6 @@ class _CardCycleState extends State<CardCycle> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // تهيئة الـ controllers
     final cycleCtrl =
         Get.isRegistered<CycleController>()
             ? Get.find<CycleController>()
@@ -98,17 +101,12 @@ class _CardCycleState extends State<CardCycle> {
     final loginCtrl =
         Get.isRegistered<LoginController>()
             ? Get.find<LoginController>()
-            : Get.put(LoginController());
+            : Get.put(LoginController(), permanent: true);
 
     // استخدام Obx للاستماع لتغييرات كلا الـ controllers
-    return Obx(() {
-      // فلترة الدورات لإخفاء الدورات المنتهية
-      final allCycles = cycleCtrl.cycles;
-      final cycles = allCycles.where((cycle) {
-        final status = cycle['status']?.toString();
-        return status != 'finished';
-      }).toList();
-
+    return Container(
+      key: widget.cycleCardKey,
+      child: Obx(() {
       // تحديث حالة تسجيل الدخول من storage إذا لزم الأمر
       if (Get.isRegistered<MyServices>()) {
         final myServices = Get.find<MyServices>();
@@ -118,7 +116,16 @@ class _CardCycleState extends State<CardCycle> {
           loginCtrl.isLoggedIn.value = storedValue;
         }
       }
+      
+      // استخدام cycles observable مباشرة وفلترتها داخل Obx
+      final allCycles = cycleCtrl.cycles;
       final isLoggedIn = loginCtrl.isLoggedIn.value;
+      
+      // فلترة الدورات لإخفاء الدورات المنتهية - استخدام allCycles مباشرة
+      final cycles = allCycles.where((cycle) {
+        final status = cycle['status']?.toString();
+        return status != 'finished';
+      }).toList();
 
       // إذا كان هناك دورات والمستخدم غير مسجل الدخول
       if (cycles.isNotEmpty && !isLoggedIn) {
@@ -132,12 +139,12 @@ class _CardCycleState extends State<CardCycle> {
                 isDark
                     ? AppColors.darkSurfaceColor
                     : AppColors.lightSurfaceColor,
-            border: Border.all(color: Colors.black, width: 1),
+            border: Border.all(),
           ),
           child: Center(
             child: GestureDetector(
       onTap: () {
-                Get.toNamed(AppRoute.login);
+                Get.toNamed<void>(AppRoute.login);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -177,14 +184,14 @@ class _CardCycleState extends State<CardCycle> {
                 isDark
                     ? AppColors.darkSurfaceColor
                     : AppColors.lightSurfaceColor,
-            border: Border.all(color: Colors.black, width: 1),
+            border: Border.all(),
           ),
           child: Stack(
             children: [
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(AppRoute.addCycle);
+                    Get.toNamed<void>(AppRoute.addCycle);
                   },
         child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -255,7 +262,7 @@ class _CardCycleState extends State<CardCycle> {
                     ),
                     onSelected: (value) async {
                       if (value == 'history') {
-                        // Get.toNamed(AppRoute.history);
+                        // Get.toNamed<void>(AppRoute.history);
                       } else if (value == 'permissions') {
                         await openAppSettings();
                       }
@@ -301,7 +308,6 @@ class _CardCycleState extends State<CardCycle> {
             height: 101.h,
             child: PageView.builder(
               controller: _pageController,
-              scrollDirection: Axis.horizontal,
               itemCount: cycles.length,
               onPageChanged: (index) {
                 setState(() {
@@ -322,7 +328,8 @@ class _CardCycleState extends State<CardCycle> {
           SizedBox(height: 8.h),
         ],
       );
-    });
+    }),
+    );
   }
 
   Widget _buildCycleCard(
@@ -335,12 +342,13 @@ class _CardCycleState extends State<CardCycle> {
         Get.isRegistered<CycleController>()
             ? Get.find<CycleController>()
             : Get.put(CycleController());
-    
+
     // استخدام Obx لقراءة القيم المحدثة مباشرة من cycles
     return Obx(() {
-      // قراءة الدورة المحدثة من cycles
-      final updatedCycle = cycleCtrl.cycles.length > index 
-          ? cycleCtrl.cycles[index] 
+      // قراءة الدورة المحدثة من cycles - استخدام cycles observable مباشرة
+      final cycles = cycleCtrl.cycles;
+      final updatedCycle = cycles.length > index 
+          ? cycles[index] 
           : cycle;
       
       final startDateRaw =
@@ -364,15 +372,20 @@ class _CardCycleState extends State<CardCycle> {
         currentStage = _getCurrentStage(ageDays);
       }
 
-      // حساب النافق
+      // حساب النافق والعدد (دعم chickCount و chick_count من API)
       final mortality = int.tryParse(updatedCycle['mortality']?.toString() ?? '0') ?? 0;
       final chickCount =
-          int.tryParse(updatedCycle['chickCount']?.toString() ?? '0') ?? 0;
+          int.tryParse(
+            updatedCycle['chickCount']?.toString() ??
+                updatedCycle['chick_count']?.toString() ??
+                '0',
+          ) ??
+          0;
 
       // إجمالي المصروفات - استخدام total_expenses من API إذا كان متوفراً
       double totalExpenses = 0.0;
       if (updatedCycle['total_expenses'] != null) {
-        totalExpenses = (double.tryParse(updatedCycle['total_expenses'].toString()) ?? 0.0);
+        totalExpenses = double.tryParse(updatedCycle['total_expenses'].toString()) ?? 0.0;
       } else {
         // إذا لم يكن متوفراً من API، استخدم GetStorage كبديل
         final cycleName = updatedCycle['name'] as String? ?? '';
@@ -386,7 +399,7 @@ class _CardCycleState extends State<CardCycle> {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed(AppRoute.cycle, arguments: {'index': index});
+        Get.toNamed<void>(AppRoute.cycle, arguments: {'index': index});
       },
       child: Container(
         width: double.infinity,
@@ -396,7 +409,7 @@ class _CardCycleState extends State<CardCycle> {
           color:
               isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
@@ -406,13 +419,11 @@ class _CardCycleState extends State<CardCycle> {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             // اسم الدورة والثلاث نقاط من الطرف إلى الطرف
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // مسافة متساوية على اليسار
                 Row(
@@ -487,7 +498,7 @@ class _CardCycleState extends State<CardCycle> {
                         size: 16.sp,
                       ),
                       onPressed: () {
-                        Get.toNamed(AppRoute.addCycle);
+                        Get.toNamed<void>(AppRoute.addCycle);
                       },
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -523,7 +534,7 @@ class _CardCycleState extends State<CardCycle> {
                           );
                           if (idx != -1) {
                             cycleCtrl.prepareForEdit(data, idx);
-                            Get.toNamed(AppRoute.addCycle);
+                            unawaited(Get.toNamed<void>(AppRoute.addCycle));
                           }
                         } else if (value == 'delete') {
                           await _showDeleteDialog(context, updatedCycle, isDark);
@@ -649,7 +660,6 @@ class _CardCycleState extends State<CardCycle> {
 
   Widget _buildInfoRow(IconData icon, String label, String value, bool isDark) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -701,7 +711,7 @@ class _CardCycleState extends State<CardCycle> {
     Map<String, dynamic> cycle,
     bool isDark,
   ) {
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor:
             isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
@@ -717,11 +727,16 @@ class _CardCycleState extends State<CardCycle> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDialogRow('الاسم', cycle['name'] ?? '-', isDark),
+            _buildDialogRow('الاسم', (cycle['name'] ?? '-').toString(), isDark),
             SizedBox(height: 9.h),
             _buildDialogRow('نوع الدورة', 'تسمين', isDark),
             SizedBox(height: 9.h),
-            _buildDialogRow('عدد الفراخ', cycle['chickCount'] ?? '-', isDark),
+            _buildDialogRow(
+                          'عدد الفراخ',
+                          (cycle['chickCount'] ?? cycle['chick_count'] ?? '-')
+                              .toString(),
+                          isDark,
+                        ),
             SizedBox(height: 9.h),
             _buildDialogRow(
               'المساحة',
@@ -733,12 +748,12 @@ class _CardCycleState extends State<CardCycle> {
             SizedBox(height: 9.h),
             _buildDialogRow('نظام التربية', 'ارضي', isDark),
             SizedBox(height: 9.h),
-            _buildDialogRow('تاريخ البدء', cycle['startDate'] ?? '-', isDark),
+            _buildDialogRow('تاريخ البدء', (cycle['startDate'] ?? '-').toString(), isDark),
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'حسناً',
               style: TextStyle(
@@ -762,8 +777,8 @@ class _CardCycleState extends State<CardCycle> {
               );
               if (idx != -1) {
                 cycleCtrl.prepareForEdit(data, idx);
-                Get.back();
-                Get.toNamed(AppRoute.addCycle);
+                Get.back<void>();
+                Get.toNamed<void>(AppRoute.addCycle);
               }
             },
             child: Text(

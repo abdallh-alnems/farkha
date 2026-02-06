@@ -14,9 +14,15 @@ class CycleExpensesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<CycleController>()) {
+      Get.put(CycleController());
+    }
+    if (!Get.isRegistered<CycleExpensesController>()) {
+      Get.put(CycleExpensesController());
+    }
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
-    final expensesCtrl = Get.put(CycleExpensesController());
+    final expensesCtrl = Get.find<CycleExpensesController>();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -34,7 +40,7 @@ class CycleExpensesScreen extends StatelessWidget {
             Icons.arrow_back_ios_new_rounded,
             color: isDark ? AppColors.darkPrimaryColor : Colors.white,
           ),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.back<void>(),
         ),
         title: Text(
           'مصروفات ${cycle['name'] ?? 'الدورة'}',
@@ -145,7 +151,6 @@ class CycleExpensesScreen extends StatelessWidget {
               isDark
                   ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                   : Colors.grey.withValues(alpha: 0.1),
-          width: 1,
         ),
         boxShadow:
             isDark
@@ -155,7 +160,6 @@ class CycleExpensesScreen extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 10,
                     offset: const Offset(0, 3),
-                    spreadRadius: 0,
                   ),
                 ],
       ),
@@ -387,7 +391,7 @@ class CycleExpensesScreen extends StatelessWidget {
             }
 
             // ترتيب المدفوعات من الأحدث إلى الأقدم
-            final sortedPayments = List.from(expense.payments)
+            final sortedPayments = List<ExpensePayment>.from(expense.payments)
               ..sort((a, b) => b.date.compareTo(a.date));
 
             // إذا كان السجل مغلقاً، اعرض آخر مبلغ فقط
@@ -423,7 +427,6 @@ class CycleExpensesScreen extends StatelessWidget {
                         isDark
                             ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                             : AppColors.primaryColor.withValues(alpha: 0.2),
-                    width: 1,
                   ),
                 ),
                 child: Row(
@@ -607,7 +610,6 @@ class CycleExpensesScreen extends StatelessWidget {
                                         0.3,
                                       )
                                       : AppColors.primaryColor.withValues(alpha: 0.2),
-                              width: 1,
                             ),
                           ),
                           child: Row(
@@ -943,7 +945,7 @@ class CycleExpensesScreen extends StatelessWidget {
     final nameController = TextEditingController();
     const IconData defaultIcon = Icons.receipt;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -995,7 +997,7 @@ class CycleExpensesScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -1007,7 +1009,7 @@ class CycleExpensesScreen extends StatelessWidget {
             onPressed: () {
               if (nameController.text.isNotEmpty) {
                 controller.addExpense(nameController.text, defaultIcon);
-                Get.back();
+                Get.back<void>();
               }
             },
             style: TextButton.styleFrom(
@@ -1042,7 +1044,7 @@ class CycleExpensesScreen extends StatelessWidget {
   ) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -1060,7 +1062,7 @@ class CycleExpensesScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -1070,7 +1072,7 @@ class CycleExpensesScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               controller.removeExpense(index); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
@@ -1096,7 +1098,7 @@ class CycleExpensesScreen extends StatelessWidget {
   ) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -1114,7 +1116,7 @@ class CycleExpensesScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -1124,7 +1126,7 @@ class CycleExpensesScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               controller.removePayment(
                 expenseIndex,
                 paymentIndex,

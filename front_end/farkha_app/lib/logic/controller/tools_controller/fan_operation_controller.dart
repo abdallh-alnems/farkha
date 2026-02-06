@@ -1,12 +1,9 @@
 import 'package:get/get.dart';
 
-import '../../../core/constant/id/tool_ids.dart';
+import '../../../core/functions/number_format.dart';
 import '../weather_controller.dart';
-import 'tool_usage_controller.dart';
 
 class FanOperationController extends GetxController {
-  static const int toolId = ToolIds.fanOperation; // Fan Operation tool ID = 9
-
   // Weather controller
   WeatherController weatherController = Get.put(WeatherController());
 
@@ -63,13 +60,13 @@ class FanOperationController extends GetxController {
     // 6. تحديد حالة التشغيل
     if (operationDuration.value <= 60) {
       operationStatus.value =
-          'تشغيل مستمر (${operationDuration.value.toStringAsFixed(1)} دقيقة)';
+          'تشغيل مستمر (${formatDecimal(operationDuration.value)} دقيقة)';
     } else if (operationDuration.value <= 120) {
       operationStatus.value =
-          'تشغيل متقطع (${operationDuration.value.toStringAsFixed(1)} دقيقة)';
+          'تشغيل متقطع (${formatDecimal(operationDuration.value)} دقيقة)';
     } else {
       operationStatus.value =
-          'تشغيل خفيف (${operationDuration.value.toStringAsFixed(1)} دقيقة)';
+          'تشغيل خفيف (${formatDecimal(operationDuration.value)} دقيقة)';
     }
 
     // تم إلغاء رسالة النجاح بناءً على طلب المستخدم
@@ -116,9 +113,4 @@ class FanOperationController extends GetxController {
   // Getter for weather data status
   bool get hasWeatherData => weatherController.hasWeatherData;
 
-  @override
-  void onInit() {
-    super.onInit();
-    ToolUsageController.recordToolUsageFromController(toolId);
-  }
 }

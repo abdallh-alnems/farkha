@@ -9,14 +9,14 @@ import '../../../../core/constant/id/api.dart';
 import '../../../../core/package/internet_checker.dart';
 
 class LoginData {
-  Future<Either<StatusRequest, Map>> login(String token) async {
-    bool isConnected = await InternetChecker.checkConnection();
+  Future<Either<StatusRequest, Map<String, dynamic>>> login(String token) async {
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final response = await http.post(
@@ -26,7 +26,7 @@ class LoginData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);

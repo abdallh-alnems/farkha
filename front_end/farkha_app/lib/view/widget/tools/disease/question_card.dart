@@ -12,25 +12,30 @@ class QuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final primaryColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 11),
+      margin: EdgeInsets.symmetric(vertical: 11.h),
       decoration: BoxDecoration(
         color:
             isDark
                 ? AppColors.darkSurfaceElevatedColor
                 : AppColors.lightSurfaceColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color:
-              isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                  : AppColors.lightOutlineColor.withValues(alpha: 0.5),
-          width: 1,
+          color: primaryColor.withValues(alpha: 0.4),
+          width: 1.2,
         ),
         boxShadow:
             isDark
                 ? null
                 : [
+                  BoxShadow(
+                    color: primaryColor.withValues(alpha: 0.12),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.06),
                     blurRadius: 8,
@@ -41,45 +46,51 @@ class QuestionCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => Get.toNamed(AppRoute.questionDisease),
-          borderRadius: BorderRadius.circular(14),
+          onTap: () => Get.toNamed<void>(AppRoute.questionDisease),
+          borderRadius: BorderRadius.circular(14.r),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
             child: Row(
               children: [
-                // Accent Line
                 Container(
-                  width: 4,
-                  height: 40,
+                  width: 5.w,
+                  height: 44.h,
                   decoration: BoxDecoration(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(2),
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
-                const SizedBox(width: 14),
-                // Text Content
+                SizedBox(width: 16.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "تشخيص المرض",
+                        'تشخيص المرض',
                         style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : Colors.grey[800],
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 6.h),
                       Text(
-                        "أجب عن الأسئلة لمعرفة المرض المحتمل",
+                        'أجب عن الأسئلة لمعرفة المرض المحتمل',
                         style: TextStyle(
-                          fontSize: 12.sp,
-                          color: isDark ? Colors.white60 : Colors.grey[500],
+                          fontSize: 13.sp,
+                          height: 1.35,
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.85)
+                              : Colors.grey[700],
                         ),
                       ),
                     ],
                   ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16.sp,
+                  color: primaryColor,
                 ),
               ],
             ),

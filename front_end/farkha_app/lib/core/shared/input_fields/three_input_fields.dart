@@ -18,6 +18,10 @@ class ThreeInputFields extends StatelessWidget {
   final String? firstSuffix;
   final String? secondSuffix;
   final String? thirdSuffix;
+  final GlobalKey<FormState>? formKey;
+  final bool firstAllowZero;
+  final bool secondAllowZero;
+  final bool thirdAllowZero;
 
   const ThreeInputFields({
     super.key,
@@ -36,11 +40,15 @@ class ThreeInputFields extends StatelessWidget {
     this.firstSuffix,
     this.secondSuffix,
     this.thirdSuffix,
+    this.formKey,
+    this.firstAllowZero = false,
+    this.secondAllowZero = false,
+    this.thirdAllowZero = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final content = Column(
       children: [
         Row(
           children: [
@@ -51,6 +59,7 @@ class ThreeInputFields extends StatelessWidget {
                 controller: firstController,
                 hintText: firstHint,
                 suffixText: firstSuffix,
+                allowZero: firstAllowZero,
               ),
             ),
             const SizedBox(width: 12),
@@ -61,6 +70,7 @@ class ThreeInputFields extends StatelessWidget {
                 controller: secondController,
                 hintText: secondHint,
                 suffixText: secondSuffix,
+                allowZero: secondAllowZero,
               ),
             ),
           ],
@@ -72,8 +82,13 @@ class ThreeInputFields extends StatelessWidget {
           controller: thirdController,
           hintText: thirdHint,
           suffixText: thirdSuffix,
+          allowZero: thirdAllowZero,
         ),
       ],
     );
+    if (formKey != null) {
+      return Form(key: formKey, child: content);
+    }
+    return content;
   }
 }

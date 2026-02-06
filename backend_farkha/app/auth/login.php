@@ -31,6 +31,7 @@ try {
     // 📦 استخراج البيانات المطلوبة
     $uid = $verifiedToken->claims()->get('sub');
     $name = $verifiedToken->claims()->get('name') ?? 'مستخدم';
+    $phone = $verifiedToken->claims()->get('phone_number');
     
     // 🔎 البحث عن المستخدم في MySQL
     $stmt = $con->prepare("SELECT * FROM users WHERE firebase_uid = ?");
@@ -39,9 +40,9 @@ try {
     
     if (!$user) {
         // 🆕 إنشاء مستخدم جديد
-        $stmt = $con->prepare("INSERT INTO users (firebase_uid, name) VALUES (?, ?)");
-        $stmt->execute([$uid, $name]);
-        $user = ['name' => $name];
+        $stmt = $con->prepare("INSERT INTO users (firebase_uid, name, phone) VALUES (?, ?, ?)");
+        $stmt->execute([$uid, $name, $phone]);
+        $user = ['name' => $name, 'phone' => $phone];
     } else {
         // 📝 تحديث اسم المستخدم
         $stmt = $con->prepare("UPDATE users SET name = ? WHERE firebase_uid = ?");
@@ -52,7 +53,10 @@ try {
     // ✅ إرسال الرد
     echo json_encode([
         'status' => 'success',
-        'user' => ['name' => $user['name']]
+        'user' => [
+            'name' => $user['name'],
+            'phone' => $user['phone'] ?? null
+        ]
     ]);
     
 } catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {

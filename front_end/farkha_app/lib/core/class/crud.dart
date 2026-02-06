@@ -8,13 +8,13 @@ import '../package/internet_checker.dart';
 import 'status_request.dart';
 
 class Crud {
-  Future<Either<StatusRequest, Map>> postData(String linkUrl, Map data) async {
-    Map<String, String> myHeaders = getMyHeaders();
+  Future<Either<StatusRequest, Map<String, dynamic>>> postData(String linkUrl, Map<String, dynamic> data) async {
+    final Map<String, String> myHeaders = getMyHeaders();
 
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (isConnected) {
       try {
-        http.Response response;
+        final http.Response response;
 
         // Use GET if data is empty, otherwise use POST
         if (data.isEmpty) {
@@ -28,7 +28,7 @@ class Crud {
         }
 
         if (response.statusCode == 200 || response.statusCode == 201) {
-          Map responseBody = jsonDecode(response.body);
+          final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
           return Right(responseBody);
         } else {
           return const Left(StatusRequest.serverFailure);

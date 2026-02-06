@@ -3,15 +3,21 @@ import '../../model/onboarding_model.dart';
 
 List<OnBoardingModel> onBoardingList = [
   OnBoardingModel(
-    title: "متابعة الاسعار",
+    title: 'متابعة الاسعار',
     body:
-        "احصل على أحدث أسعار الدواجن والأعلاف في السوق المحلي مع تحديثات يومية دقيقة",
+        'احصل على أحدث أسعار الدواجن والأعلاف في السوق المحلي مع تحديثات يومية دقيقة',
     image: AppImages.onboardingPrices,
   ),
   OnBoardingModel(
-    title: "ادوات مساعدة",
+    title: 'ادوات مساعدة',
     body:
-        "مجموعة شاملة من الأدوات والحاسبات المتخصصة لإدارة مزرعتك بكفاءة عالية",
+        'مجموعة شاملة من الأدوات والحاسبات المتخصصة لإدارة مزرعتك بكفاءة عالية',
     image: AppImages.onboardingTools,
+  ),
+  OnBoardingModel(
+    title: 'إدارة الدورات',
+    body:
+        'تتبع دورات الإنتاج والمزارع بسهولة مع أدوات متكاملة لإدارة كل دورة من البداية للنهاية',
+    image: AppImages.onboardingCycle,
   ),
 ];

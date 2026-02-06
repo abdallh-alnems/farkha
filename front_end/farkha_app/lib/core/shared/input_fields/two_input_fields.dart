@@ -15,6 +15,9 @@ class TwoInputFields extends StatelessWidget {
   final String? secondSuffix;
   final Widget? secondSuffixIcon;
   final BoxConstraints? secondSuffixIconConstraints;
+  final GlobalKey<FormState>? formKey;
+  final bool firstAllowZero;
+  final bool secondAllowZero;
 
   const TwoInputFields({
     super.key,
@@ -30,11 +33,14 @@ class TwoInputFields extends StatelessWidget {
     this.secondSuffix,
     this.secondSuffixIcon,
     this.secondSuffixIconConstraints,
+    this.formKey,
+    this.firstAllowZero = false,
+    this.secondAllowZero = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final content = Row(
       children: [
         Expanded(
           child: InputField(
@@ -43,6 +49,7 @@ class TwoInputFields extends StatelessWidget {
             controller: firstController,
             hintText: firstHint,
             suffixText: firstSuffix,
+            allowZero: firstAllowZero,
           ),
         ),
         const SizedBox(width: 16),
@@ -55,9 +62,14 @@ class TwoInputFields extends StatelessWidget {
             suffixText: secondSuffix,
             suffixIcon: secondSuffixIcon,
             suffixIconConstraints: secondSuffixIconConstraints,
+            allowZero: secondAllowZero,
           ),
         ),
       ],
     );
+    if (formKey != null) {
+      return Form(key: formKey, child: content);
+    }
+    return content;
   }
 }

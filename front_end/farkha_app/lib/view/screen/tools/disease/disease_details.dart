@@ -12,7 +12,7 @@ class DiseaseDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DiseaseModel disease = Get.arguments;
+    final DiseaseModel disease = Get.arguments as DiseaseModel;
 
     return Scaffold(
       body: Column(
@@ -27,11 +27,11 @@ class DiseaseDetails extends StatelessWidget {
                     const AdNativeWidget(),
                     const SizedBox(height: 11),
                     buildSection(
-                      "الاعراض",
+                      'الاعراض',
                       buildCriteriaList(disease.criteria),
                     ),
-                    buildSection("العلاج", buildList(disease.treatment)),
-                    buildSection("الوقاية", buildList(disease.prevention)),
+                    buildSection('العلاج', buildList(disease.treatment)),
+                    buildSection('الوقاية', buildList(disease.prevention)),
                   ],
                 ),
               ),

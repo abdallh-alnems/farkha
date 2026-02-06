@@ -34,28 +34,76 @@ try {
         exit;
     }
     
-    // 🗑️ حذف المستخدم من Firebase Authentication
+    // 🔄 بدء Transaction لضمان تناسق البيانات
+    $con->beginTransaction();
+    
     try {
-        $auth = getFirebaseAuth();
-        $auth->deleteUser($uid);
+        // 📋 البحث عن جميع دورات المستخدم
+        $stmt = $con->prepare("SELECT cycle_id FROM cycle_users WHERE user_id = :user_id");
+        $stmt->execute([':user_id' => $user['id']]);
+        $userCycles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        // 🗑️ حذف جميع بيانات الدورات
+        foreach ($userCycles as $cycleId) {
+            // حذف بيانات الدورة (cycle_data)
+            $stmt = $con->prepare(Queries::deleteCycleDataQuery());
+            $stmt->execute([':cycle_id' => $cycleId]);
+            
+            // حذف مصاريف الدورة (cycle_expenses)
+            $stmt = $con->prepare(Queries::deleteCycleExpensesQuery());
+            $stmt->execute([':cycle_id' => $cycleId]);
+            
+            // حذف المستخدمين من الدورة (cycle_users)
+            $stmt = $con->prepare(Queries::deleteCycleUsersQuery());
+            $stmt->execute([':cycle_id' => $cycleId]);
+            
+            // حذف الدورة نفسها (cycles)
+            $stmt = $con->prepare(Queries::deleteCycleQuery());
+            $stmt->execute([':cycle_id' => $cycleId]);
+        }
+        
+        // 🗑️ حذف المستخدم من Firebase Authentication
+        try {
+            $auth = getFirebaseAuth();
+            $auth->deleteUser($uid);
+        } catch (Exception $e) {
+            // إذا فشل حذف من Firebase، نتابع حذف من MySQL
+            error_log('Firebase delete error: ' . $e->getMessage());
+        }
+        
+        // 🗑️ حذف المستخدم من MySQL
+        $stmt = $con->prepare(Queries::deleteUserByFirebaseUidQuery());
+        $stmt->execute([':firebase_uid' => $uid]);
+        
+        // ✅ تأكيد التغييرات
+        $con->commit();
+        
+        // 📊 تسجيل عملية الحذف
+        error_log("User deleted successfully: {$uid}, Cycles deleted: " . count($userCycles));
+        
+        // ✅ إرسال الرد
+        echo json_encode([
+            'status' => 'success'
+        ]);
+        
     } catch (Exception $e) {
-        // إذا فشل حذف من Firebase، نتابع حذف من MySQL
-        error_log('Firebase delete error: ' . $e->getMessage());
+        // ↩️ التراجع عن جميع التغييرات في حالة الخطأ
+        $con->rollBack();
+        throw $e;
     }
     
-    // 🗑️ حذف المستخدم من MySQL
-    $stmt = $con->prepare(Queries::deleteUserByFirebaseUidQuery());
-    $stmt->execute([':firebase_uid' => $uid]);
-    
-    // ✅ إرسال الرد
-    echo json_encode([
-        'status' => 'success'
-    ]);
-    
 } catch (PDOException $e) {
+    error_log('Delete account error: ' . $e->getMessage());
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Database error: ' . $e->getMessage()
+        'message' => 'Database error'
+    ]);
+    http_response_code(500);
+} catch (Exception $e) {
+    error_log('Delete account error: ' . $e->getMessage());
+    echo json_encode([
+        'status' => 'fail',
+        'message' => 'Server error'
     ]);
     http_response_code(500);
 }

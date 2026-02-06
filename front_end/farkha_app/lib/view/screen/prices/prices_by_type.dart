@@ -20,10 +20,10 @@ class PricesByType extends StatelessWidget {
     // Check if this is a feed prices request (ID 6 or 7)
     final bool isFeedPrices = mainId == '6' || mainId == '7';
 
-   final PricesByTypeController controller = Get.put(PricesByTypeController());
+    final PricesByTypeController controller = Get.put(PricesByTypeController());
     controller.getDataPricesByType(mainId);
     return Scaffold(
-      appBar: CustomAppBar(text: "اسعار $mainName" ),
+      appBar: CustomAppBar(text: 'اسعار $mainName'),
       body: Column(
         children: [
           Expanded(
@@ -35,7 +35,7 @@ class PricesByType extends StatelessWidget {
                         const EdgeInsets.symmetric(
                           horizontal: 9,
                           vertical: 9,
-                        ).r,  
+                        ).r,
                     child: const AdNativeWidget(),
                   ),
                   isFeedPrices

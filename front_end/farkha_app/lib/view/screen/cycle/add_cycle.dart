@@ -48,7 +48,6 @@ class AddCycle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (didPop, result) {
         // مسح الحقول عند الخروج من الصفحة (فقط عند إضافة دورة جديدة وليس تعديل)
         if (didPop) {
@@ -134,7 +133,7 @@ class AddCycle extends StatelessWidget {
                   Future.delayed(const Duration(milliseconds: 500), () {
                     if (Get.isDialogOpen != true) {
                       controller.cycleDeleteStatus.value = StatusRequest.none;
-                      Get.back();
+                      Get.back<void>();
                     }
                   });
                 }
@@ -149,19 +148,18 @@ class AddCycle extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    final textColor = Colors.white;
+    const textColor = Colors.white;
 
     return Padding(
       padding: EdgeInsets.only(top: 11.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // علامة X (إغلاق) في اليسار
           Padding(
             padding: EdgeInsets.only(left: 11.w),
             child: IconButton(
-              onPressed: () => Get.back(),
+              onPressed: () => Get.back<void>(),
               icon: Icon(Icons.close, color: textColor, size: 25.sp),
             ),
           ),

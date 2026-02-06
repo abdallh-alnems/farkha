@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -85,7 +87,8 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
         },
       ),
       request: const AdRequest(),
-    )..load();
+    );
+    unawaited(_bannerAd!.load());
   }
 
   void _scheduleRetry() {

@@ -1,30 +1,40 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/id/tool_ids.dart';
-import 'tool_usage_controller.dart';
-
 class FcrController extends GetxController {
-  static const int toolId = ToolIds.fcr; // FCR tool ID = 1
-
   final double initialWeight =
       0.045; // الوزن الابتدائي الثابت بالكيلوغرام (45 جرام = 0.045 كجم)
 
-  RxDouble feedConsumed = 0.0.obs; // كمية العلف المستهلك (كجم)
-  RxDouble currentWeight = 0.0.obs; // الوزن الحالي للقطيع (كجم)
-  RxDouble fcr = 0.0.obs; // الناتج
+  final TextEditingController feedConsumedController = TextEditingController();
+  final TextEditingController currentWeightController = TextEditingController();
 
-  @override
-  void onInit() {
-    super.onInit();
-    ToolUsageController.recordToolUsageFromController(toolId);
-  }
+  RxDouble fcr = 0.0.obs;
 
   void calculateFCR() {
-    double weightGain = currentWeight.value - initialWeight;
+    final feedConsumed = double.tryParse(feedConsumedController.text) ?? 0;
+    final currentWeight = double.tryParse(currentWeightController.text) ?? 0;
+    final weightGain = currentWeight - initialWeight;
     if (weightGain > 0) {
-      fcr.value = feedConsumed.value / weightGain;
+      fcr.value = feedConsumed / weightGain;
     } else {
       fcr.value = 0.0;
     }
+  }
+
+  /// 0=ممتاز, 1=جيد, 2=مقبول, 3=ضعيف
+  int getFcrQuality() {
+    final v = fcr.value;
+    if (v <= 0) return -1;
+    if (v <= 1.6) return 0;
+    if (v <= 1.8) return 1;
+    if (v <= 1.9) return 2;
+    return 3;
+  }
+
+  @override
+  void onClose() {
+    feedConsumedController.dispose();
+    currentWeightController.dispose();
+    super.onClose();
   }
 }

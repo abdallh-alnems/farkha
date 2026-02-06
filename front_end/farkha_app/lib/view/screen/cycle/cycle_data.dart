@@ -19,9 +19,9 @@ class CycleDataScreen extends StatefulWidget {
 }
 
 class _CycleDataScreenState extends State<CycleDataScreen> {
-  final cycleCtrl = Get.find<CycleController>();
-  final customDataCtrl = Get.put(CycleCustomDataController(), permanent: true);
-  final broilerCtrl = Get.find<BroilerController>();
+  late final CycleController cycleCtrl;
+  late final CycleCustomDataController customDataCtrl;
+  late final BroilerController broilerCtrl;
   late final TextEditingController _mortalityNewController;
   late final TextEditingController _averageWeightController;
   late final TextEditingController _medicationController;
@@ -46,6 +46,16 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   @override
   void initState() {
     super.initState();
+    if (!Get.isRegistered<CycleController>()) {
+      Get.put(CycleController());
+    }
+    if (!Get.isRegistered<BroilerController>()) {
+      Get.put(BroilerController());
+    }
+    Get.put(CycleCustomDataController(), permanent: true);
+    cycleCtrl = Get.find<CycleController>();
+    customDataCtrl = Get.find<CycleCustomDataController>();
+    broilerCtrl = Get.find<BroilerController>();
     _mortalityNewController = TextEditingController();
     _averageWeightController = TextEditingController();
     _medicationController = TextEditingController();
@@ -95,7 +105,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             Icons.arrow_back_ios_new_rounded,
             color: isDark ? AppColors.darkPrimaryColor : Colors.white,
           ),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.back<void>(),
         ),
         title: Obx(() {
           final cycle = cycleCtrl.currentCycle;
@@ -170,7 +180,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
       final cycle = cycleCtrl.currentCycle;
       final entries = cycleCtrl.getMortalityEntries();
       final lastEntry = entries.isNotEmpty ? entries.last : null;
-      final sortedEntries = List.from(entries)
+      final sortedEntries = List<MortalityEntry>.from(entries)
         ..sort((a, b) => b.date.compareTo(a.date));
       final currentTotal = _currentMortalityTotal;
       final chickCount =
@@ -188,7 +198,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 isDark
                     ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                     : Colors.grey.withValues(alpha: 0.1),
-            width: 1,
           ),
           boxShadow:
               isDark
@@ -198,7 +207,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
-                      spreadRadius: 0,
                     ),
                   ],
         ),
@@ -388,7 +396,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                  margin: EdgeInsets.symmetric(horizontal: 12.w),
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -413,7 +421,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -534,7 +541,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 ),
               ),
             if (isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((entryMap) {
+              ...sortedEntries.asMap().entries.map((MapEntry<int, MortalityEntry> entryMap) {
                 final index = entryMap.key;
                 final entry = entryMap.value;
                 return Container(
@@ -568,7 +575,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -836,7 +842,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     return Obx(() {
       final entries = cycleCtrl.getAverageWeightEntries();
       final lastEntry = entries.isNotEmpty ? entries.last : null;
-      final sortedEntries = List.from(entries)
+      final sortedEntries = List<WeightEntry>.from(entries)
         ..sort((a, b) => b.date.compareTo(a.date));
 
       return Container(
@@ -849,7 +855,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 isDark
                     ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                     : Colors.grey.withValues(alpha: 0.1),
-            width: 1,
           ),
           boxShadow:
               isDark
@@ -859,7 +864,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
-                      spreadRadius: 0,
                     ),
                   ],
         ),
@@ -1005,7 +1009,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                  margin: EdgeInsets.symmetric(horizontal: 12.w),
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -1030,7 +1034,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -1151,7 +1154,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 ),
               ),
             if (isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((entryMap) {
+              ...sortedEntries.asMap().entries.map((MapEntry<int, WeightEntry> entryMap) {
                 final index = entryMap.key;
                 final entry = entryMap.value;
                 return Container(
@@ -1185,7 +1188,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -1455,7 +1457,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     return Obx(() {
       final entries = cycleCtrl.getMedicationEntries();
       final lastEntry = entries.isNotEmpty ? entries.last : null;
-      final sortedEntries = List.from(entries)
+      final sortedEntries = List<MedicationEntry>.from(entries)
         ..sort((a, b) => b.date.compareTo(a.date));
 
       return Container(
@@ -1468,7 +1470,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 isDark
                     ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                     : Colors.grey.withValues(alpha: 0.1),
-            width: 1,
           ),
           boxShadow:
               isDark
@@ -1478,7 +1479,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
-                      spreadRadius: 0,
                     ),
                   ],
         ),
@@ -1624,7 +1624,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                  margin: EdgeInsets.symmetric(horizontal: 12.w),
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -1649,7 +1649,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -1784,7 +1783,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -2130,7 +2128,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     return Obx(() {
       final entries = cycleCtrl.getFeedConsumptionEntries();
       final lastEntry = entries.isNotEmpty ? entries.last : null;
-      final sortedEntries = List.from(entries)
+      final sortedEntries = List<FeedConsumptionEntry>.from(entries)
         ..sort((a, b) => b.date.compareTo(a.date));
 
       return Container(
@@ -2143,7 +2141,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 isDark
                     ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                     : Colors.grey.withValues(alpha: 0.1),
-            width: 1,
           ),
           boxShadow:
               isDark
@@ -2153,7 +2150,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
-                      spreadRadius: 0,
                     ),
                   ],
         ),
@@ -2350,7 +2346,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                  margin: EdgeInsets.symmetric(horizontal: 12.w),
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -2375,7 +2371,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -2496,7 +2491,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 ),
               ),
             if (isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((entryMap) {
+              ...sortedEntries.asMap().entries.map((MapEntry<int, FeedConsumptionEntry> entryMap) {
                 final index = entryMap.key;
                 final entry = entryMap.value;
                 return Container(
@@ -2530,7 +2525,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -2842,7 +2836,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   void _showDeleteAverageWeightConfirmDialog(WeightEntry entry) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -2860,7 +2854,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -2870,7 +2864,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               cycleCtrl.removeAverageWeightEntry(entry.id); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
@@ -2890,7 +2884,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   void _showDeleteMedicationConfirmDialog(MedicationEntry entry) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -2908,7 +2902,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -2927,7 +2921,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 _addedVaccinations.remove(entry.text);
               }
 
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               cycleCtrl.removeMedicationEntry(entry.id); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
@@ -2947,7 +2941,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   void _showDeleteFeedConsumptionConfirmDialog(FeedConsumptionEntry entry) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -2965,7 +2959,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -2975,7 +2969,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               cycleCtrl.removeFeedConsumptionEntry(entry.id); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
@@ -2995,7 +2989,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   void _showDeleteMortalityConfirmDialog(MortalityEntry entry) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -3013,7 +3007,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -3023,7 +3017,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               cycleCtrl.removeMortalityEntry(entry.id); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
@@ -3044,7 +3038,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     final nameController = TextEditingController();
     const IconData defaultIcon = Icons.note;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -3096,7 +3090,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -3111,7 +3105,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                   nameController.text,
                   defaultIcon,
                 );
-                Get.back();
+                Get.back<void>();
               }
             },
             style: TextButton.styleFrom(
@@ -3147,7 +3141,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     return Obx(() {
       final entries = item.entries;
       final lastEntry = entries.isNotEmpty ? entries.last : null;
-      final sortedEntries = List.from(entries)
+      final sortedEntries = List<CustomDataEntry>.from(entries)
         ..sort((a, b) => b.date.compareTo(a.date));
 
       return Container(
@@ -3160,7 +3154,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 isDark
                     ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                     : Colors.grey.withValues(alpha: 0.1),
-            width: 1,
           ),
           boxShadow:
               isDark
@@ -3170,7 +3163,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 3),
-                      spreadRadius: 0,
                     ),
                   ],
         ),
@@ -3338,7 +3330,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               Padding(
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                  margin: EdgeInsets.symmetric(horizontal: 12.w),
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -3363,7 +3355,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -3508,7 +3499,6 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
                               : AppColors.primaryColor.withValues(alpha: 0.2),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -3763,7 +3753,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   void _showDeleteCustomDataConfirmDialog(int index, String label) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -3781,7 +3771,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -3791,7 +3781,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               customDataCtrl.removeCustomDataItem(index); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
@@ -3816,7 +3806,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   ) {
     final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
 
-    Get.dialog(
+    Get.dialog<void>(
       AlertDialog(
         backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
         shape: RoundedRectangleBorder(
@@ -3834,7 +3824,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Get.back(),
+            onPressed: () => Get.back<void>(),
             child: Text(
               'إلغاء',
               style: TextStyle(
@@ -3844,7 +3834,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           ),
           TextButton(
             onPressed: () {
-              Get.back(); // إغلاق الـ Dialog مباشرة
+              Get.back<void>(); // إغلاق الـ Dialog مباشرة
               customDataCtrl.removeEntry(itemIndex, entryIndex); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(

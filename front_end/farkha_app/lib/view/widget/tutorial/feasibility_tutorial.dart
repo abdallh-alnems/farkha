@@ -67,7 +67,7 @@ class FeasibilityTutorial {
     _tutorial = TutorialCoachMark(
       targets: targets,
       colorShadow: Colors.black.withValues(alpha: 0.3), // تقليل لون الظل
-      textSkip: "تخطي",
+      textSkip: 'تخطي',
       textStyleSkip: TextStyle(color: isDark ? Colors.white : Colors.black),
       paddingFocus: 0, // أصغر قيمة ممكنة
       opacityShadow: 0.3, // تقليل شفافية الظل
@@ -92,7 +92,7 @@ class FeasibilityTutorial {
   }) {
     final List<TargetFocus> targets = [
       buildTutorialTarget(
-        id: "toggle_mode_switch",
+        id: 'toggle_mode_switch',
         key: toggleModeKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -106,7 +106,7 @@ class FeasibilityTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "toggle_calculation_switch",
+        id: 'toggle_calculation_switch',
         key: defaultValuesKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -121,7 +121,7 @@ class FeasibilityTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "price_boxes",
+        id: 'price_boxes',
         key: chickenPriceKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -140,13 +140,13 @@ class FeasibilityTutorial {
     if (stockButtonKey.currentContext != null) {
       targets.add(
         buildTutorialTarget(
-          id: "stock_button",
+          id: 'stock_button',
           key: stockButtonKey,
           cardBuilder: (context, controller) {
             return TutorialContentCard(
               title: 'زر متوسط اسعار البورصة',
               description:
-                'اضغط على هذا الزر للحصول على متوسط الأسعار الحالية من البورصة تلقائياً 📊',
+                  'اضغط على هذا الزر للحصول على متوسط الأسعار الحالية من البورصة تلقائياً 📊',
               actionButtons: [
                 TutorialActionButtons.next(onPressed: controller.next),
                 TutorialActionButtons.previous(onPressed: controller.previous),
@@ -159,7 +159,7 @@ class FeasibilityTutorial {
 
     targets.addAll([
       buildTutorialTarget(
-        id: "default_values",
+        id: 'default_values',
         key: defaultValuesTitleKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -174,7 +174,7 @@ class FeasibilityTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "default_values_button",
+        id: 'default_values_button',
         key: defaultValuesButtonKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -208,7 +208,7 @@ class FeasibilityTutorial {
   // دالة لإعادة تعيين الـ tutorial (للاستخدام في الاختبار)
   static void resetTutorial() {
     final myServices = Get.find<MyServices>();
-    myServices.getStorage.remove('feasibsility_tutorial_seen');
+    myServices.getStorage.remove('feasibility_tutorial_seen');
   }
 
   // دالة لإلغاء الشرح عند الخروج من الصفحة

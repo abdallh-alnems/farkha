@@ -41,7 +41,8 @@ class EnvironmentStatus extends StatelessWidget {
         return const SizedBox();
       }
 
-      final isLoading = weatherCtrl.statusRequest != StatusRequest.success;
+      final isLoading =
+          weatherCtrl.statusRequest.value != StatusRequest.success;
       final currTemp = weatherCtrl.currentTemperature.value;
       final currHum = weatherCtrl.currentHumidity.value.toDouble();
       final currPrecip = weatherCtrl.currentPrecipitation.value;
@@ -61,7 +62,7 @@ class EnvironmentStatus extends StatelessWidget {
                   ? AppColors.darkSurfaceElevatedColor
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(11.r),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
@@ -102,7 +103,6 @@ class EnvironmentStatus extends StatelessWidget {
               title: 'الأمطار',
               currentValue:
                   isLoading ? '-' : _getPrecipitationDescription(currPrecip),
-              targetValue: null,
               isDark: isDark,
             ),
           ],

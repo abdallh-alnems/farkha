@@ -9,7 +9,7 @@ import '../../../../core/constant/id/api.dart';
 import '../../../../core/package/internet_checker.dart';
 
 class CycleData {
-  Future<Either<StatusRequest, Map>> createCycle({
+  Future<Either<StatusRequest, Map<String, dynamic>>> createCycle({
     required String token,
     required String name,
     required int chickCount,
@@ -17,13 +17,13 @@ class CycleData {
     String? breed,
     required String startDateRaw,
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {
@@ -45,7 +45,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -55,19 +55,19 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> addCycleData({
+  Future<Either<StatusRequest, Map<String, dynamic>>> addCycleData({
     required String token,
     required int cycleId,
     required String label,
     required String value,
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {
@@ -84,7 +84,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -94,19 +94,19 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> addCycleExpense({
+  Future<Either<StatusRequest, Map<String, dynamic>>> addCycleExpense({
     required String token,
     required int cycleId,
     required String label,
     required double value,
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {
@@ -123,7 +123,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -133,17 +133,17 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> deleteCycle({
+  Future<Either<StatusRequest, Map<String, dynamic>>> deleteCycle({
     required String token,
     required int cycleId,
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {'token': token, 'cycle_id': cycleId};
@@ -155,7 +155,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -165,14 +165,14 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> getCycles({required String token}) async {
-    bool isConnected = await InternetChecker.checkConnection();
+  Future<Either<StatusRequest, Map<String, dynamic>>> getCycles({required String token}) async {
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {'token': token};
@@ -184,7 +184,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -194,17 +194,17 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> getCycleDetails({
+  Future<Either<StatusRequest, Map<String, dynamic>>> getCycleDetails({
     required String token,
     required int cycleId,
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {'token': token, 'cycle_id': cycleId};
@@ -216,7 +216,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -226,7 +226,7 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> deleteCycleItem({
+  Future<Either<StatusRequest, Map<String, dynamic>>> deleteCycleItem({
     required String token,
     required int cycleId,
     required String type, // "data" or "expense"
@@ -234,13 +234,13 @@ class CycleData {
     int? itemId, // required when deleteType = "single"
     String? label, // required when deleteType = "by_label"
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {
@@ -263,7 +263,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);
@@ -273,17 +273,17 @@ class CycleData {
     }
   }
 
-  Future<Either<StatusRequest, Map>> endCycle({
+  Future<Either<StatusRequest, Map<String, dynamic>>> endCycle({
     required String token,
     required int cycleId,
   }) async {
-    bool isConnected = await InternetChecker.checkConnection();
+    final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
       return const Left(StatusRequest.offlineFailure);
     }
 
     try {
-      Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final body = {'token': token, 'cycle_id': cycleId, 'status': 'finished'};
@@ -295,7 +295,7 @@ class CycleData {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Map responseBody = jsonDecode(response.body);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
         return const Left(StatusRequest.serverFailure);

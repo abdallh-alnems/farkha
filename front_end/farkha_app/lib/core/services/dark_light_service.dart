@@ -54,4 +54,9 @@ class DarkLightService extends GetxService {
     storage.write(_storageKey, mode.name);
     Get.changeThemeMode(mode);
   }
+
+  /// Apply theme from outside (e.g. first-launch theme selection dialog).
+  void applyTheme(ThemeMode mode) {
+    _applyTheme(mode);
+  }
 }

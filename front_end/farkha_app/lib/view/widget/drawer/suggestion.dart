@@ -36,7 +36,7 @@ class Suggestion extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 20),
                                 const Text(
-                                  "✔ تم إرسال اقتراحك بنجاح",
+                                  '✔ تم إرسال اقتراحك بنجاح',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,
@@ -45,16 +45,16 @@ class Suggestion extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 const Text(
-                                  "شكراً لك، تم استلام اقتراحك",
+                                  'شكراً لك، تم استلام اقتراحك',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 const SizedBox(height: 35),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Get.offAllNamed('/');
+                                    Get.offAllNamed<void>('/');
                                   },
-                                  child: const Text("الصفحة الرئيسية"),
+                                  child: const Text('الصفحة الرئيسية'),
                                 ),
                               ],
                             )
@@ -88,7 +88,7 @@ class Suggestion extends StatelessWidget {
                                   onPressed: () async {
                                     if (textController.text.trim().isEmpty) {
                                       errorMessage.value =
-                                          "لا يمكن إرسال اقتراح فارغ";
+                                          'لا يمكن إرسال اقتراح فارغ';
                                       return;
                                     }
                                     errorMessage.value = '';
@@ -99,7 +99,7 @@ class Suggestion extends StatelessWidget {
                                       textController.clear();
                                     }
                                   },
-                                  child: const Text("ارسال الاقتراح"),
+                                  child: const Text('ارسال الاقتراح'),
                                 ),
                               ],
                             ),

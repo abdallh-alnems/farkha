@@ -13,6 +13,12 @@ import 'widgets/tutorial_content_card.dart';
 import 'widgets/tutorial_target_factory.dart';
 
 class HomeTutorial {
+  // Drawer Key (menu icon in app bar)
+  static final GlobalKey drawerKey = GlobalKey();
+
+  // Cycle Card Key
+  static final GlobalKey cardCycleKey = GlobalKey();
+
   // Price Card Keys
   static final GlobalKey priceCardKey = GlobalKey();
   static final GlobalKey allPricesButtonKey = GlobalKey();
@@ -72,7 +78,7 @@ class HomeTutorial {
       _tutorial = TutorialCoachMark(
         targets: targets,
         colorShadow: Colors.black.withValues(alpha: 0.3),
-        textSkip: "تخطي",
+        textSkip: 'تخطي',
         textStyleSkip: TextStyle(color: isDark ? Colors.white : Colors.black),
         paddingFocus: 0, // أصغر قيمة ممكنة
         opacityShadow: 0.3,
@@ -118,7 +124,7 @@ class HomeTutorial {
 
   static Future<void> _waitForUiToSettle() async {
     // Small delay to allow system dialogs/transitions to finish
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future<void>.delayed(const Duration(milliseconds: 200));
   }
 
   static Future<void> _waitSnackbarsToClose() async {
@@ -127,7 +133,7 @@ class HomeTutorial {
     const int maxSteps = 20; // up to 2s
     int steps = 0;
     while (Get.isSnackbarOpen && steps < maxSteps) {
-      await Future.delayed(step);
+      await Future<void>.delayed(step);
       steps++;
     }
   }
@@ -138,7 +144,26 @@ class HomeTutorial {
   }) {
     final List<TargetFocus> targets = [
       buildTutorialTarget(
-        id: "all_prices_button",
+        id: 'drawer',
+        key: drawerKey,
+        cardBuilder: (context, controller) {
+          return TutorialContentCard(
+            title: 'القائمة الجانبية',
+            description:
+                'اضغط على أيقونة القائمة لفتح القائمة الجانبية\n\n**ماذا تجد فيها؟** 📋\n'
+                '• معلومات عن التطبيق وإصداره\n'
+                '• إعدادات الحساب والخصوصية\n'
+                '• الدعم والاتصال\n'
+                '• روابط التواصل الاجتماعي\n\n'
+                'يمكنك الرجوع إليها في أي وقت من أيقونة القائمة',
+            actionButtons: [
+              TutorialActionButtons.next(onPressed: controller.next),
+            ],
+          );
+        },
+      ),
+      buildTutorialTarget(
+        id: 'all_prices_button',
         key: allPricesButtonKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -152,7 +177,7 @@ class HomeTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "settings_icon",
+        id: 'settings_icon',
         key: settingsIconKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -167,13 +192,16 @@ class HomeTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "price_card",
+        id: 'price_card',
         key: priceCardKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
             title: 'بطاقة الأسعار الحالية',
             description:
-                'هذه البطاقة الكاملة تحتوي على جميع الاسعار التي يتم تخصصها\n\n**التحديث التلقائي** 🔄\nالأسعار محدثة باستمرار من البورصة المحلية لضمان دقة المعلومات\n\n**سهولة الوصول** 📱\nيمكنك مراجعة هذه الأسعار في أي وقت لاتخاذ قرارات مدروسة',
+                'هذه البطاقة الكاملة تحتوي على جميع الاسعار التي يتم تخصصها\n\n'
+                '**التحديث التلقائي** 🔄\nالأسعار محدثة باستمرار من البورصة المحلية لضمان دقة المعلومات\n\n'
+                '**سجل الأسعار** 📈\nاضغط على أي صف سعر لفتح سجل الأسعار التاريخي لهذا النوع ومعرفة تطور الأسعار عبر الزمن\n\n'
+                '**سهولة الوصول** 📱\nيمكنك مراجعة هذه الأسعار في أي وقت لاتخاذ قرارات مدروسة',
             actionButtons: [
               TutorialActionButtons.next(onPressed: controller.next),
               TutorialActionButtons.previous(onPressed: controller.previous),
@@ -182,7 +210,28 @@ class HomeTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "tools_section",
+        id: 'card_cycle',
+        key: cardCycleKey,
+        cardBuilder: (context, controller) {
+          return TutorialContentCard(
+            title: 'بطاقة الدورة الحالية',
+            description:
+                'هذه البطاقة تعرض دورات التربية النشطة\n\n'
+                '**مراحل الدورة** 📅\n'
+                '• تحضين → تسمين → بيع\n\n'
+                '**ما الذي تراه؟** 📊\n'
+                'عمر الدورة، عدد الكتاكيت، النافق، المرحلة الحالية، وإجمالي المصروفات. '
+                'يمكنك التمرير بين الدورات إذا كان لديك أكثر من دورة.\n\n'
+                'اضغط على البطاقة للانتقال إلى تفاصيل الدورة أو إضافة دورة جديدة.',
+            actionButtons: [
+              TutorialActionButtons.next(onPressed: controller.next),
+              TutorialActionButtons.previous(onPressed: controller.previous),
+            ],
+          );
+        },
+      ),
+      buildTutorialTarget(
+        id: 'tools_section',
         key: toolsSectionKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(
@@ -197,7 +246,7 @@ class HomeTutorial {
         },
       ),
       buildTutorialTarget(
-        id: "view_all_button",
+        id: 'view_all_button',
         key: viewAllKey,
         cardBuilder: (context, controller) {
           return TutorialContentCard(

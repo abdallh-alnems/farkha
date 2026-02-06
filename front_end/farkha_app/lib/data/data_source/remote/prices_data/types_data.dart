@@ -6,7 +6,7 @@ class TypesData {
   TypesData(this.crud);
 
   Future<Object> getTypes() async {
-    var response = await crud.postData(Api.types, {});
+    final response = await crud.postData(Api.types, {});
     return response.fold((l) => l, (r) => r);
   }
 }

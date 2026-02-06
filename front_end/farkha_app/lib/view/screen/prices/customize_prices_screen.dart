@@ -86,7 +86,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (didPop, result) {
         // إلغاء الشرح عند الضغط على زر الرجوع
         if (_isTutorialActive) {
@@ -123,9 +122,9 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                   ),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
-                      String category = controller.categorizedTypes.keys
+                      final String category = controller.categorizedTypes.keys
                           .elementAt(index);
-                      List<Map<String, dynamic>> types =
+                      final List<Map<String, dynamic>> types =
                           controller.categorizedTypes[category]!;
                       return _buildCategorySection(category, types);
                     }, childCount: controller.categorizedTypes.length),
@@ -144,7 +143,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
     String category,
     List<Map<String, dynamic>> types,
   ) {
-    Color categoryColor = AppColors.primaryColor;
+    const Color categoryColor = AppColors.primaryColor;
 
     return Column(
       children: [
@@ -202,7 +201,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
 
   Widget _buildTypeCard(Map<String, dynamic> item, Color categoryColor) {
     // التحقق من أن اللحم الأبيض (ID: 1) محدد ولا يمكن إلغاء تحديده
-    bool isLocked = item['id'] == 1 && item['isSelected'] == true;
+    final bool isLocked = item['id'] == 1 && item['isSelected'] == true;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final bool isDark = theme.brightness == Brightness.dark;
@@ -253,7 +252,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minWidth: 1, maxWidth: 150.w),
                   child: Text(
-                    item['name'],
+                    (item['name'] ?? '').toString(),
                     key:
                         item['id'] == 2
                             ? CustomizePricesTutorial.typeNameKey
@@ -263,7 +262,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                       fontWeight:
                           isLocked
                               ? FontWeight.w700
-                              : item['isSelected']
+                              : ((item['isSelected'] as bool?) ?? false)
                               ? FontWeight.w700
                               : FontWeight.w600,
                       color:
@@ -295,7 +294,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    item['isNotificationEnabled'] == true
+                    ((item['isNotificationEnabled'] as bool?) ?? false)
                         ? (isDark
                             ? Colors.white.withValues(alpha: 0.15)
                             : AppColors.primaryColor.withValues(alpha: 0.1))
@@ -305,7 +304,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                 alignment: Alignment.center,
                 children: [
                   Icon(
-                    item['isNotificationEnabled'] == true
+                    ((item['isNotificationEnabled'] as bool?) ?? false)
                         ? Icons.notifications_active
                         : Icons.notifications_off_outlined,
                     size: 20.sp,
@@ -314,7 +313,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                             ? (isDark
                                 ? Colors.white
                                 : AppColors.primaryColor.withValues(alpha: 0.7))
-                            : item['isNotificationEnabled'] == true
+                            : ((item['isNotificationEnabled'] as bool?) ?? false)
                             ? Colors.amber
                             : (isDark
                                 ? Colors.white.withValues(alpha: 0.5)
@@ -363,7 +362,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                         ? (isDark
                             ? Colors.white
                             : AppColors.primaryColor.withValues(alpha: 0.7))
-                        : item['isSelected']
+                        : ((item['isSelected'] as bool?) ?? false)
                         ? (isDark ? Colors.white : AppColors.primaryColor)
                         : Colors.transparent,
                 border: Border.all(
@@ -372,12 +371,12 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                           ? (isDark
                               ? Colors.white
                               : AppColors.primaryColor.withValues(alpha: 0.7))
-                          : item['isSelected']
+                          : ((item['isSelected'] as bool?) ?? false)
                           ? (isDark ? Colors.white : AppColors.primaryColor)
                           : (isDark
                               ? Colors.white.withValues(alpha: 0.6)
                               : colorScheme.onSurface),
-                  width: item['isSelected'] ? 0 : 2,
+                  width: ((item['isSelected'] as bool?) ?? false) ? 0 : 2,
                 ),
               ),
               child:
@@ -391,7 +390,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                                 : Colors.white,
                         weight: 900,
                       )
-                      : item['isSelected']
+                      : ((item['isSelected'] as bool?) ?? false)
                       ? Icon(
                         Icons.check,
                         size: 14.sp,

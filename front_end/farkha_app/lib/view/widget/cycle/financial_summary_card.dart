@@ -117,23 +117,15 @@ class FinancialSummaryCard extends StatelessWidget {
     final broilerCtrl = Get.find<BroilerController>();
 
     return Obx(() {
-      // محاولة الحصول على CycleExpensesController
-      CycleExpensesController expensesCtrl;
-      try {
-        expensesCtrl = Get.find<CycleExpensesController>();
-      } catch (e) {
-        // إذا لم يكن موجوداً، أنشئه
-        expensesCtrl = Get.put(CycleExpensesController());
-      }
-
+      final expensesCtrl = Get.find<CycleExpensesController>();
       final totalExpenses = expensesCtrl.totalExpenses.value;
       final cycle = cycleCtrl.currentCycle;
       final chickCount =
           int.tryParse(cycle['chickCount']?.toString() ?? '0') ?? 0;
       final mortality =
           int.tryParse(cycle['mortality']?.toString() ?? '0') ?? 0;
-      final ageDays = broilerCtrl.selectedChickenAge.value ?? 0;
-      final expectedDays = 45; // متوسط دورة التسمين
+      final ageDays = (broilerCtrl.selectedChickenAge.value as num?)?.toInt() ?? 0;
+      const expectedDays = 45; // متوسط دورة التسمين
 
       final totalLiveWeight = _calculateTotalLiveWeight(cycleCtrl);
       final pricePerKilo = _calculatePricePerKilo(
@@ -169,13 +161,12 @@ class FinancialSummaryCard extends StatelessWidget {
                   ? AppColors.darkSurfaceElevatedColor
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(color: Colors.black, width: 1),
+          border: Border.all(),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.1),
               blurRadius: 15,
               offset: const Offset(0, 5),
-              spreadRadius: 0,
             ),
           ],
         ),
@@ -216,7 +207,7 @@ class FinancialSummaryCard extends StatelessWidget {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      Get.toNamed(AppRoute.cycleExpenses);
+                      Get.toNamed<void>(AppRoute.cycleExpenses);
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(
@@ -266,7 +257,6 @@ class FinancialSummaryCard extends StatelessWidget {
                     color: AppColors.primaryColor.withValues(alpha: 0.15),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
-                    spreadRadius: 0,
                   ),
                 ],
               ),
@@ -422,12 +412,10 @@ class FinancialSummaryCard extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.1 : 0.15),
             blurRadius: 8,
             offset: const Offset(0, 2),
-            spreadRadius: 0,
           ),
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(

@@ -5,7 +5,7 @@ class PricesByTypeData {
   Crud crud;
   PricesByTypeData(this.crud);
   Future<Object> getData(String mainId) async {
-    var response = await crud.postData(Api.pricesByType, {"type": mainId});
+    final response = await crud.postData(Api.pricesByType, {'type': mainId});
     return response.fold((l) => l, (r) => r);
   }
 }
