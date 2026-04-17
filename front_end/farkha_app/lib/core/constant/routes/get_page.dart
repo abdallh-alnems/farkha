@@ -3,13 +3,20 @@ import 'package:get/get.dart';
 import '../../../logic/bindings/home_binding.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
+import '../../../logic/controller/cycle_sales_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
+import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 import '../../../logic/controller/weather_controller.dart';
 import '../../../view/screen/auth/login_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/cycle/cycle_data.dart';
 import '../../../view/screen/cycle/cycle_expenses.dart';
+import '../../../view/screen/cycle/cycle_sales.dart';
+import '../../../view/screen/cycle/cycle_notes.dart';
+import '../../../view/screen/cycle/cycle_history_screen.dart';
+import '../../../view/screen/cycle/cycle_history_details_screen.dart';
+import '../../../view/screen/cycle/darkness_alarm_screen.dart';
 import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
 import '../../../view/screen/prices/customize_prices_screen.dart';
@@ -25,7 +32,6 @@ import '../../../view/screen/tools/bird_production_cost.dart';
 import '../../../view/screen/tools/broiler_chicken_requirements.dart';
 import '../../../view/screen/tools/chicken_density.dart';
 import '../../../view/screen/tools/daily_feed_consumption.dart';
-import '../../../view/screen/tools/water_consumption.dart';
 import '../../../view/screen/tools/darkness_levels.dart';
 import '../../../view/screen/tools/disease/diagnosis_diseases.dart';
 import '../../../view/screen/tools/disease/disease_details.dart';
@@ -42,11 +48,13 @@ import '../../../view/screen/tools/total_farm_weight.dart';
 import '../../../view/screen/tools/total_feed_consumption.dart';
 import '../../../view/screen/tools/total_revenue.dart';
 import '../../../view/screen/tools/vaccination_schedule.dart';
+import '../../../view/screen/tools/water_consumption.dart';
 import '../../../view/screen/tools/weather_screen.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
 import '../../../view/widget/drawer/suggestion.dart';
 import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
+
 import 'route.dart';
 
 List<GetPage<dynamic>> pages = [
@@ -68,12 +76,12 @@ List<GetPage<dynamic>> pages = [
 
   // ================================ prices ===================================
   GetPage(name: AppRoute.pricesByType, page: () => const PricesByType()),
-  GetPage(
-    name: AppRoute.priceHistory,
-    page: () => const PriceHistoryScreen(),
-  ),
+  GetPage(name: AppRoute.priceHistory, page: () => const PriceHistoryScreen()),
   GetPage(name: AppRoute.mainTypes, page: () => const MainTypes()),
-  GetPage(name: AppRoute.customizePrices, page: () => const CustomizePricesScreen()),
+  GetPage(
+    name: AppRoute.customizePrices,
+    page: () => const CustomizePricesScreen(),
+  ),
 
   // ================================ cycle ====================================
   GetPage(
@@ -87,13 +95,19 @@ List<GetPage<dynamic>> pages = [
     page: () => const Cycle(),
     binding: BindingsBuilder<void>(() {
       if (!Get.isRegistered<CycleController>()) {
-        Get.put(CycleController());
+        Get.put(CycleController(), permanent: true);
       }
       if (!Get.isRegistered<BroilerController>()) {
         Get.put(BroilerController());
       }
+      if (!Get.isRegistered<DarknessScheduleController>()) {
+        Get.put(DarknessScheduleController());
+      }
       if (!Get.isRegistered<CycleExpensesController>()) {
         Get.put(CycleExpensesController());
+      }
+      if (!Get.isRegistered<CycleSalesController>()) {
+        Get.put(CycleSalesController());
       }
       if (!Get.isRegistered<WeatherController>()) {
         Get.put(WeatherController(), permanent: true);
@@ -103,10 +117,32 @@ List<GetPage<dynamic>> pages = [
   GetPage(
     name: AppRoute.cycleExpenses,
     page: () => const CycleExpensesScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.cycleSales,
+    page: () => const CycleSalesScreen(),
+    middlewares: [AuthMiddleware()],
   ),
   GetPage(
     name: AppRoute.cycleData,
     page: () => const CycleDataScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.cycleNotes,
+    page: () => const CycleNotesScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.history,
+    page: () => const CycleHistoryScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.cycleHistoryDetails,
+    page: () => const CycleHistoryDetailsScreen(),
+    middlewares: [AuthMiddleware()],
   ),
 
   // ================================ drawer ==================================
@@ -187,6 +223,26 @@ List<GetPage<dynamic>> pages = [
   GetPage(name: AppRoute.allTools, page: () => const AllTools()),
   GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
   GetPage(name: AppRoute.weather, page: () => const WeatherScreen()),
+
+  GetPage(
+    name: AppRoute.darknessAlarm,
+    page: () {
+      final args = Get.arguments as Map<String, dynamic>?;
+      return DarknessAlarmScreen(
+        title: args?['title'] as String?,
+        body: args?['body'] as String?,
+        phase: args?['phase'] as int?,
+        cycleName: args?['cycleName'] as String?,
+        duration: args?['duration'] as String?,
+        startTime: args?['startTime'] as String?,
+        endTime: args?['endTime'] as String?,
+        totalPhases: args?['totalPhases'] as int?,
+        age: args?['age'] as int?,
+        totalDarknessHours: args?['totalDarknessHours'] as int?,
+        fromBackground: args?['fromBackground'] as bool? ?? false,
+      );
+    },
+  ),
 
   // ================================ articles =================================
 ];

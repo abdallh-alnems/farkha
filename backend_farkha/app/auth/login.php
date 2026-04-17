@@ -63,18 +63,21 @@ try {
     http_response_code(401);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Invalid or expired token'
+        'message' => 'Invalid or expired token',
+        'error_detail' => $e->getMessage()
     ]);
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Database error'
+        'message' => 'Database error',
+        'error_detail' => $e->getMessage()
     ]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Server error'
+        'message' => 'Server error',
+        'error_detail' => $e->getMessage()
     ]);
 }

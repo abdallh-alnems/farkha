@@ -88,7 +88,15 @@ try {
         $stmt = $con->prepare(Queries::deleteCycleExpensesQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // 3. حذف مستخدمي الدورة
+        // 3. حذف ملاحظات الدورة
+        $stmt = $con->prepare(Queries::deleteCycleNotesQuery());
+        $stmt->execute([':cycle_id' => (int)$cycleId]);
+
+        // 3.5 حذف مخزون الدورة
+        $stmt = $con->prepare(Queries::deleteCycleInventoryQuery());
+        $stmt->execute([':cycle_id' => (int)$cycleId]);
+
+        // 4. حذف مستخدمي الدورة
         $stmt = $con->prepare(Queries::deleteCycleUsersQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 

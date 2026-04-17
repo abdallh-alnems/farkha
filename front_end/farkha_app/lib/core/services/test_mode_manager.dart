@@ -1,7 +1,7 @@
 class TestModeManager {
   static const bool _isAppInDevelopment = false;
 
-  static const bool _isAdsInTestMode = false;
+  static const bool _isAdsInTestMode = true;
 
   static const bool _showTutorialEveryTime = false;
 

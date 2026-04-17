@@ -1,5 +1,9 @@
 # Miscellaneous
 *dev_notes.txt
+*.claude
+*.opencode
+*.specify
+*specs
 *.env
 *.class
 *.log

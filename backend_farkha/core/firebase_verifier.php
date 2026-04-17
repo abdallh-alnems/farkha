@@ -29,9 +29,8 @@ function getFirebaseAuth() {
 function verifyToken(string $token) {
     $auth = getFirebaseAuth();
     
-    // استخدام leeway = 60 ثانية للسماح بفرق زمني بسيط
-    // إذا لم يعمل، يمكن زيادة القيمة إلى 300
-    return $auth->verifyIdToken($token, $checkIfRevoked = false, $leewayInSeconds = 60);
+    // استخدام leeway = 300 ثانية للسماح بفرق زمني في السيرفر المحلي
+    return $auth->verifyIdToken($token, $checkIfRevoked = false, $leewayInSeconds = 300);
 }
 
 /**

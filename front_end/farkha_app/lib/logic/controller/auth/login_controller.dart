@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/services/initialization.dart';
+import '../../../core/services/notification_service.dart';
 import '../../../data/data_source/remote/auth_data/login_data.dart';
 import '../cycle_controller.dart';
 import '../tools_controller/favorite_tools_controller.dart';
@@ -157,6 +158,9 @@ class LoginController extends GetxController {
 
       if (success) {
         _showSnackbar('تم تسجيل الدخول بنجاح');
+        if (Get.isRegistered<NotificationService>()) {
+          NotificationService.instance.syncToken();
+        }
 
         // جلب الدورات من API في الخلفية بدون انتظار
         if (Get.isRegistered<CycleController>()) {
@@ -223,39 +227,41 @@ class LoginController extends GetxController {
 
   Future<void> clearAllLocalData() async {
     final myServices = Get.find<MyServices>();
-    
+
     // 1. حذف بيانات المستخدم
     await myServices.getStorage.remove('user_name');
     await myServices.getStorage.remove('user_phone');
     await myServices.getStorage.write('is_logged_in', false);
-    
+
     // 2. حذف كل الدورات والمصاريف والبيانات المخصصة
     if (Get.isRegistered<CycleController>()) {
       final cycleController = Get.find<CycleController>();
-      
-      // حذف المصاريف والبيانات المخصصة لكل دورة
+
+      // حذف المصاريف والبيانات المخصصة والملاحظات لكل دورة
       for (var cycle in cycleController.cycles) {
         final cycleName = cycle['name'];
         final cycleId = cycle['id'];
-        
+
         if (cycleName != null) {
           await myServices.getStorage.remove('expenses_$cycleName');
+          await myServices.getStorage.remove('custom_data_$cycleName');
+          await myServices.getStorage.remove('notes_$cycleName');
         }
-        
+
         if (cycleId != null) {
           await myServices.getStorage.remove('custom_data_$cycleId');
         }
       }
-      
+
       // تفريغ قائمة الدورات في الـ controller
       cycleController.cycles.clear();
       cycleController.currentCycle.clear();
     }
-    
+
     // حذف الدورات والدورات المحذوفة
     await myServices.getStorage.remove('cycles');
     await myServices.getStorage.remove('deleted_cycles');
-    
+
     // 3. حذف المفضلات
     await myServices.getStorage.remove('favorite_tools_order');
     if (Get.isRegistered<FavoriteToolsController>()) {

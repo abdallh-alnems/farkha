@@ -123,8 +123,8 @@ class HomeTutorial {
   }
 
   static Future<void> _waitForUiToSettle() async {
-    // Small delay to allow system dialogs/transitions to finish
-    await Future<void>.delayed(const Duration(milliseconds: 200));
+    // Brief delay so dialogs/transitions finish before tutorial overlay
+    await Future<void>.delayed(const Duration(milliseconds: 80));
   }
 
   static Future<void> _waitSnackbarsToClose() async {

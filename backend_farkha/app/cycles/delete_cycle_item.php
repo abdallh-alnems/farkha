@@ -41,11 +41,11 @@ if (!$cycleId || !is_numeric($cycleId)) {
 }
 
 // التحقق من type
-if (!$type || !in_array($type, ['data', 'expense'])) {
+if (!$type || !in_array($type, ['data', 'expense', 'sale', 'inventory'])) {
     http_response_code(400);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'type must be "data" or "expense"'
+        'message' => 'type must be "data", "expense", "sale" or "inventory"'
     ]);
     exit;
 }
@@ -121,13 +121,34 @@ try {
             $query = Queries::deleteCycleDataByLabelQuery();
             $params[':label'] = $label;
         }
-    } else { // expense
+    } elseif ($type === 'expense') {
         if ($deleteType === 'single') {
             $query = Queries::deleteCycleExpenseByIdQuery();
             $params[':id'] = (int)$itemId;
         } else {
             $query = Queries::deleteCycleExpenseByLabelQuery();
             $params[':label'] = $label;
+        }
+    } elseif ($type === 'sale') {
+        if ($deleteType === 'single') {
+            $query = Queries::deleteCycleSaleByIdQuery();
+            $params[':id'] = (int)$itemId;
+        } else {
+            // No support for deleting sales by label
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'fail',
+                'message' => 'delete_type "by_label" is not supported for sales'
+            ]);
+            exit;
+        }
+    } elseif ($type === 'inventory') {
+        if ($deleteType === 'single') {
+            $query = Queries::deleteCycleInventoryByIdQuery();
+            $params[':id'] = (int)$itemId;
+        } else {
+            $query = Queries::deleteCycleInventoryByItemNameQuery();
+            $params[':item_name'] = $label;
         }
     }
 

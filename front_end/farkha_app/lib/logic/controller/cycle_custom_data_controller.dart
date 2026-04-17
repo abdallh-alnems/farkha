@@ -118,6 +118,7 @@ class CycleCustomDataController extends GetxController {
   final MyServices myServices = Get.find<MyServices>();
 
   String? _lastCycleId;
+  String? _lastApiDataHash;
 
   @override
   void onInit() {
@@ -127,6 +128,15 @@ class CycleCustomDataController extends GetxController {
     _updateLastCycleId();
 
     final cycleCtrl = Get.find<CycleController>();
+
+    // إذا كان currentCycle يحتوي بالفعل على بيانات من API (من fetchCycleDetails سابق)، حمّلها
+    final existingApiData =
+        cycleCtrl.currentCycle['customDataEntries'] as List<dynamic>?;
+    if (existingApiData != null && existingApiData.isNotEmpty) {
+      _lastApiDataHash = _getApiDataHash(existingApiData);
+      loadCustomDataFromApi(existingApiData);
+    }
+
     ever(cycleCtrl.currentCycle, (_) {
       _checkAndReloadCustomData();
     });
@@ -138,6 +148,12 @@ class CycleCustomDataController extends GetxController {
     _lastCycleId = (cycle['name'] ?? 'default').toString();
   }
 
+  String _getApiDataHash(List<dynamic> entries) {
+    return entries
+        .map((e) => '${e['id']}_${e['label']}_${e['value']}')
+        .join('|');
+  }
+
   void _checkAndReloadCustomData() {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
@@ -145,6 +161,21 @@ class CycleCustomDataController extends GetxController {
 
     if (_lastCycleId != currentCycleId) {
       _lastCycleId = currentCycleId;
+      _lastApiDataHash = null;
+      _reloadCustomDataForCurrentCycle();
+      return;
+    }
+
+    // تحقق من بيانات API الجديدة (مثل ما يفعله controller المصروفات)
+    final customDataFromApi = cycle['customDataEntries'] as List<dynamic>?;
+    if (customDataFromApi != null && customDataFromApi.isNotEmpty) {
+      final newHash = _getApiDataHash(customDataFromApi);
+      if (_lastApiDataHash != newHash) {
+        _lastApiDataHash = newHash;
+        loadCustomDataFromApi(customDataFromApi);
+      }
+    } else if (_lastApiDataHash != null) {
+      _lastApiDataHash = null;
       _reloadCustomDataForCurrentCycle();
     }
   }

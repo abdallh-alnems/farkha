@@ -10,6 +10,10 @@ class CustomDotControllerOnBoarding extends GetView<OnBoardingControllerImp> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dotColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
     return GetBuilder<OnBoardingControllerImp>(
       builder: (controller) {
         return Padding(
@@ -27,8 +31,8 @@ class CustomDotControllerOnBoarding extends GetView<OnBoardingControllerImp> {
                   decoration: BoxDecoration(
                     color:
                         controller.currentPage.value == index
-                            ? AppColors.primaryColor
-                            : AppColors.primaryColor.withValues(alpha: 0.3),
+                            ? dotColor
+                            : dotColor.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),

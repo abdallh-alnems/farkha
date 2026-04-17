@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../core/class/status_request.dart';
 import '../../core/services/initialization.dart';
@@ -115,7 +114,6 @@ class ExpenseItem {
 }
 
 class CycleExpensesController extends GetxController {
-  final GetStorage _storage = GetStorage();
   final RxList<ExpenseItem> expenses = <ExpenseItem>[].obs;
   final RxDouble totalExpenses = 0.0.obs;
   late final CycleData _cycleData;
@@ -258,39 +256,14 @@ class CycleExpensesController extends GetxController {
   void _loadSavedExpenses() {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
-    final cycleId = cycle['name'] ?? 'default';
-    final storageKey = 'expenses_$cycleId';
 
-    // التحقق من أن الدورة موجودة فعلاً في cycles (لم يتم حذفها)
-    final cycleExists = cycleCtrl.cycles.any((c) => c['name'] == cycleId);
-    if (!cycleExists) {
-      // إذا لم تكن الدورة موجودة، لا تحمل البيانات القديمة
-      expenses.clear();
-      _loadDefaultExpenses();
-      _calculateTotal();
-      return;
-    }
-
-    // أولاً: جلب المصروفات من API إذا كانت موجودة
+    // جلب المصروفات من API فقط - لا نقرأ من التخزين المحلي
+    // لضمان مزامنة البيانات بين جميع المستخدمين في الدورة
     final expensesFromApi = cycle['expenses'] as List<dynamic>?;
     if (expensesFromApi != null && expensesFromApi.isNotEmpty) {
       _loadExpensesFromApi(expensesFromApi);
-      return;
     }
-
-    // إذا لم تكن هناك مصروفات من API، جلب من التخزين المحلي
-    // فقط إذا كانت الدورة تحتوي على cycle_id (من API) أو إذا كانت موجودة في cycles
-    final saved = _storage.read<List<dynamic>>(storageKey);
-    if (saved != null && saved.isNotEmpty && cycleExists) {
-      final savedExpenses =
-          saved
-              .map((e) => ExpenseItem.fromJson(e as Map<String, dynamic>))
-              .toList();
-
-      // استبدال المصروفات الافتراضية بالمحفوظة
-      expenses.clear();
-      expenses.addAll(savedExpenses);
-    }
+    // إذا لم تكن هناك بيانات من API بعد، تبقى المصروفات الافتراضية
   }
 
   void _loadExpensesFromApi(List<dynamic> expensesFromApi) {
@@ -298,9 +271,9 @@ class CycleExpensesController extends GetxController {
     final expensesMap = <String, List<Map<String, dynamic>>>{};
 
     for (var expense in expensesFromApi) {
-      final label = expense['label']?.toString() ?? '';
-      final value = expense['value'];
-      final entryDateStr = expense['entry_date']?.toString() ?? '';
+      final label = expense['label']?.toString() ?? expense['type']?.toString() ?? '';
+      final value = expense['value'] ?? expense['amount'];
+      final entryDateStr = expense['entry_date']?.toString() ?? expense['created_at']?.toString() ?? '';
 
       if (label.isEmpty) continue;
 
@@ -448,15 +421,7 @@ class CycleExpensesController extends GetxController {
     return ExpenseItem._getIconFromName(iconName);
   }
 
-  void _saveExpenses() {
-    final cycleCtrl = Get.find<CycleController>();
-    final cycle = cycleCtrl.currentCycle;
-    final cycleId = cycle['name'] ?? 'default';
-    final storageKey = 'expenses_$cycleId';
-
-    final expensesJson = expenses.map((e) => e.toJson()).toList();
-    _storage.write(storageKey, expensesJson);
-  }
+  // تم إزالة _saveExpenses() - البيانات تأتي من السيرفر فقط
 
   Future<Map<String, dynamic>?> _sendExpenseToServer({
     required String label,
@@ -521,7 +486,6 @@ class CycleExpensesController extends GetxController {
         );
         expenses[expenseIndex].payments.add(payment);
         _calculateTotal();
-        _saveExpenses();
 
         // إرسال المصروف إلى API
         final result = await _sendExpenseToServer(
@@ -545,8 +509,7 @@ class CycleExpensesController extends GetxController {
             );
             expenses[expenseIndex].payments[paymentIndex] = updatedPayment;
             _calculateTotal();
-            _saveExpenses();
-          }
+              }
         }
 
         expensesStatus.value = StatusRequest.success;
@@ -574,7 +537,6 @@ class CycleExpensesController extends GetxController {
       final payment = expenses[expenseIndex].payments[paymentIndex];
       expenses[expenseIndex].payments.removeAt(paymentIndex);
       _calculateTotal();
-      _saveExpenses();
 
       // حذف من API في الخلفية
       final cycleCtrl = Get.find<CycleController>();
@@ -590,7 +552,6 @@ class CycleExpensesController extends GetxController {
   void addExpense(String label, IconData icon) {
     final newId = 'custom_${DateTime.now().millisecondsSinceEpoch}';
     expenses.add(ExpenseItem(id: newId, label: label, icon: icon));
-    _saveExpenses();
   }
 
   Future<void> removeExpense(int index) async {
@@ -599,7 +560,6 @@ class CycleExpensesController extends GetxController {
       final expense = expenses[index];
       expenses.removeAt(index);
       _calculateTotal();
-      _saveExpenses();
 
       // حذف من API في الخلفية
       final cycleCtrl = Get.find<CycleController>();

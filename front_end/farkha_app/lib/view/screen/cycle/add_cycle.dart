@@ -243,11 +243,6 @@ class AddCycle extends StatelessWidget {
                 label: 'نوع الدورة',
                 value: 'تسمين',
               ),
-              _buildFixedField(
-                context: context,
-                label: 'نوع السلالة',
-                value: 'تسمين',
-              ),
               _buildTextField(
                 context: context,
                 label: 'عدد الفراخ',
@@ -386,11 +381,30 @@ class AddCycle extends StatelessWidget {
         controller: controller.dateController,
         readOnly: true,
         style: TextStyle(color: textColor),
-        validator:
-            (value) =>
-                value == null || value.isEmpty
-                    ? 'يرجى اختيار تاريخ بدء الدورة'
-                    : null,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'يرجى اختيار تاريخ بدء الدورة';
+          }
+
+          final dateRawText = controller.dateRawController.text.trim();
+          if (dateRawText.isEmpty) {
+            return 'تاريخ غير صحيح';
+          }
+
+          final selectedDate = DateTime.tryParse(dateRawText);
+          if (selectedDate == null) {
+            return 'تاريخ غير صحيح';
+          }
+
+          final now = DateTime.now();
+          final thirtyNineDaysAgo = now.subtract(const Duration(days: 39));
+
+          if (selectedDate.isBefore(thirtyNineDaysAgo)) {
+            return 'يجب أن يكون التاريخ ضمن آخر 39 يوم';
+          }
+
+          return null;
+        },
         decoration: _inputDecoration(context, 'تاريخ بدء الدورة'),
         onTap: () => controller.pickDate(Get.context!),
       ),

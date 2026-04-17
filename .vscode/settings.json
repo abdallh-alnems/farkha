@@ -1,0 +1,14 @@
+{
+    "java.import.project.enabled": false,
+    "java.autobuild.enabled": false,
+    "java.project.importOnFirstTimeStartup": "never",
+    "gradle.autoDetect": "off",
+    "gradle.nestedProjects": false,
+    "java.referencesCodeLens.enabled": false,
+    "java.signatureHelp.enabled": false,
+    "java.implementationsCodeLens.enabled": false,
+    "java.configuration.checkProjectSettings": false,
+    "java.import.gradle.enabled": false,
+    "java.format.enabled": false,
+    "java.problems.visibility": "off"
+}

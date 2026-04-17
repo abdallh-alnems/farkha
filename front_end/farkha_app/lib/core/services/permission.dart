@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -76,6 +75,69 @@ class PermissionController extends GetxController {
     }
   }
 
+  Future<bool> checkAndRequestExactAlarmPermission() async {
+    if (!GetPlatform.isAndroid) return true;
+
+    // Prevent overlapping permission requests
+    if (_ongoingRequest != null) {
+      await _ongoingRequest;
+      return (await Permission.scheduleExactAlarm.status).isGranted;
+    }
+
+    final completer = Completer<void>();
+    _ongoingRequest = completer.future;
+    try {
+      final status = await Permission.scheduleExactAlarm.status;
+
+      if (status.isGranted) {
+        return true;
+      } else if (status.isDenied) {
+        // For exact alarms, request() usually opens system settings on Android 12+
+        final result = await Permission.scheduleExactAlarm.request();
+        return result.isGranted;
+      } else if (status.isPermanentlyDenied) {
+        _showSettingsSnackbar(
+          'إذن المنبهات الدقيقة مرفوض',
+          'يرجى تمكين "السماح بضبط المنبهات والتذكيرات" من إعدادات التطبيق لضمان عمل المنبه.',
+        );
+        return false;
+      }
+      return false;
+    } finally {
+      completer.complete();
+      _ongoingRequest = null;
+    }
+  }
+
+  Future<bool> checkAndRequestSystemAlertWindowPermission() async {
+    if (!GetPlatform.isAndroid) return true;
+
+    // Prevent overlapping permission requests
+    if (_ongoingRequest != null) {
+      await _ongoingRequest;
+      return (await Permission.systemAlertWindow.status).isGranted;
+    }
+
+    final completer = Completer<void>();
+    _ongoingRequest = completer.future;
+    try {
+      final status = await Permission.systemAlertWindow.status;
+
+      if (status.isGranted) {
+        return true;
+      } else if (status.isDenied) {
+        final result = await Permission.systemAlertWindow.request();
+        return result.isGranted;
+      }
+      // On some devices, systemAlertWindow status might be 'denied' but request() opens settings.
+      // We rely on user to grant it.
+      return false;
+    } finally {
+      completer.complete();
+      _ongoingRequest = null;
+    }
+  }
+
   Future<void> initializePermissionsLocation() async {
     await checkAndRequestLocationPermission();
   }
@@ -95,8 +157,8 @@ class PermissionController extends GetxController {
   }
 
   /// Shows the intro dialogs in sequence: location, then notifications, then
-  /// theme. Each step has its own message and "تفعيل" / "لاحقاً". Call from
-  /// Home (or first screen) after UI is ready.
+  /// theme. Each step waits for the system permission dialog to fully resolve
+  /// (grant or deny) before moving to the next step.
   Future<void> showPermissionsIntroIfNeeded(BuildContext? context) async {
     final ctx = context ?? Get.context;
     if (ctx == null || !ctx.mounted) return;
@@ -109,7 +171,7 @@ class PermissionController extends GetxController {
       PermissionsIntroDialog.notificationIntroShownKey,
       Permission.notification.status,
     );
-    final showTheme = kDebugMode ||
+    final showTheme =
         _storage.read<bool>(PermissionsIntroDialog.themeIntroShownKey) != true;
 
     if (!showLocation && !showNotification && !showTheme) {
@@ -117,40 +179,51 @@ class PermissionController extends GetxController {
     }
 
     if (showLocation) {
+      // Completer يضمن عدم الانتقال للخطوة التالية حتى ينتهي طلب الإذن
+      final locationCompleter = Completer<void>();
       await Get.dialog<void>(
         LocationIntroDialog(
-          onEnable: () {
+          onEnable: () async {
             _storage.write(PermissionsIntroDialog.locationIntroShownKey, true);
-            checkAndRequestLocationPermission();
+            // انتظار نتيجة طلب الإذن من النظام قبل إكمال
+            await checkAndRequestLocationPermission();
+            locationCompleter.complete();
           },
           onLater: () {
             _storage.write(PermissionsIntroDialog.locationIntroShownKey, true);
+            locationCompleter.complete();
           },
         ),
         barrierDismissible: false,
       );
+      // انتظار اكتمال طلب الإذن (في حالة الضغط على تفعيل)
+      await locationCompleter.future;
     }
 
     if (!ctx.mounted) return;
     if (showNotification) {
+      final notificationCompleter = Completer<void>();
       await Get.dialog<void>(
         NotificationIntroDialog(
-          onEnable: () {
+          onEnable: () async {
             _storage.write(
               PermissionsIntroDialog.notificationIntroShownKey,
               true,
             );
-            checkAndRequestNotificationPermission();
+            await checkAndRequestNotificationPermission();
+            notificationCompleter.complete();
           },
           onLater: () {
             _storage.write(
               PermissionsIntroDialog.notificationIntroShownKey,
               true,
             );
+            notificationCompleter.complete();
           },
         ),
         barrierDismissible: false,
       );
+      await notificationCompleter.future;
     }
 
     if (!ctx.mounted) return;
@@ -166,11 +239,12 @@ class PermissionController extends GetxController {
     }
   }
 
-  Future<bool> _shouldShowStep(String storageKey, Future<PermissionStatus> statusFuture) async {
-    if (kDebugMode) return true;
+  Future<bool> _shouldShowStep(
+    String storageKey,
+    Future<PermissionStatus> statusFuture,
+  ) async {
     if (_storage.read<bool>(storageKey) == true) return false;
     final status = await statusFuture;
     return !status.isGranted;
   }
-
 }

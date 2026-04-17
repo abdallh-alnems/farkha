@@ -6,6 +6,7 @@ import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
+import '../../../logic/controller/cycle_sales_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
 
 class FinancialSummaryCard extends StatelessWidget {
@@ -118,7 +119,13 @@ class FinancialSummaryCard extends StatelessWidget {
 
     return Obx(() {
       final expensesCtrl = Get.find<CycleExpensesController>();
+      final salesCtrl = Get.isRegistered<CycleSalesController>() 
+          ? Get.find<CycleSalesController>() 
+          : Get.put(CycleSalesController());
+          
       final totalExpenses = expensesCtrl.totalExpenses.value;
+      final totalSales = salesCtrl.totalSales.value;
+      final netProfit = totalSales - totalExpenses;
       final cycle = cycleCtrl.currentCycle;
       final chickCount =
           int.tryParse(cycle['chickCount']?.toString() ?? '0') ?? 0;
@@ -189,107 +196,48 @@ class FinancialSummaryCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primaryColor.withValues(alpha: 0.25),
-                        AppColors.primaryColor.withValues(alpha: 0.18),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildNavButton(
+                      label: 'المبيعات',
+                      onPressed: () => Get.toNamed<void>(AppRoute.cycleSales),
+                      isDark: isDark,
                     ),
-                    borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(
-                      color: AppColors.primaryColor.withValues(alpha: 0.6),
-                      width: 2,
+                    SizedBox(width: 8.w),
+                    _buildNavButton(
+                      label: 'المصروفات',
+                      onPressed: () => Get.toNamed<void>(AppRoute.cycleExpenses),
+                      isDark: isDark,
                     ),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Get.toNamed<void>(AppRoute.cycleExpenses);
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                    ),
-                    child: Text(
-                      'المصروفات',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : const Color(0xFF1A3A52),
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
             SizedBox(height: 20.h),
-            // إجمالي المصروفات
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryColor.withValues(alpha: 0.25),
-                    AppColors.primaryColor.withValues(alpha: 0.18),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            // إجمالي المصروفات والمبيعات
+            Row(
+              children: [
+                Expanded(
+                  child: _buildMainMetric(
+                    label: 'المصروفات',
+                    value: totalExpenses.toStringAsFixed(0),
+                    unit: 'جـ',
+                    color: Colors.red,
+                    isDark: isDark,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: AppColors.primaryColor.withValues(alpha: 0.6),
-                  width: 1.5,
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: _buildMainMetric(
+                    label: 'المبيعات',
+                    value: totalSales.toStringAsFixed(0),
+                    unit: 'جـ',
+                    color: Colors.green,
+                    isDark: isDark,
+                  ),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryColor.withValues(alpha: 0.15),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
-                      'إجمالي المصروفات',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
-                        color:
-                            isDark ? Colors.grey[200] : const Color(0xFF1A3A52),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  SizedBox(width: 6.w),
-                  Text(
-                    '${totalExpenses.toStringAsFixed(0)} جنيه',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                      color:
-                          isDark
-                              ? AppColors.darkPrimaryColor
-                              : const Color(0xFF0D2A3F),
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
+              ],
             ),
             SizedBox(height: 16.h),
             // المؤشرات الأخرى
@@ -346,24 +294,32 @@ class FinancialSummaryCard extends StatelessWidget {
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child:
-                        canCalculateProfit
+                    child: totalSales > 0
+                        ? _buildFinancialInfo(
+                            icon: Icons.account_balance_wallet,
+                            label: 'صافي الربح',
+                            value: netProfit.toStringAsFixed(0),
+                            unit: 'جنيه',
+                            color: netProfit >= 0 ? Colors.green : Colors.red,
+                            isDark: isDark,
+                          )
+                        : (canCalculateProfit
                             ? _buildFinancialInfo(
-                              icon: Icons.trending_up,
-                              label: 'الربح المتوقع',
-                              value: expectedProfit.toStringAsFixed(0),
-                              unit: 'جنيه',
-                              color: AppColors.primaryColor,
-                              isDark: isDark,
-                            )
+                                icon: Icons.trending_up,
+                                label: 'الربح المتوقع',
+                                value: expectedProfit.toStringAsFixed(0),
+                                unit: 'جنيه',
+                                color: AppColors.primaryColor,
+                                isDark: isDark,
+                              )
                             : _buildFinancialInfo(
-                              icon: Icons.trending_up,
-                              label: 'الربح المتوقع',
-                              value: 'سيتم التحديد عند عمر 30 يوم',
-                              unit: '',
-                              color: AppColors.primaryColor,
-                              isDark: isDark,
-                            ),
+                                icon: Icons.trending_up,
+                                label: 'الربح المتوقع',
+                                value: 'سيتم التحديد عند 30 يوم',
+                                unit: '',
+                                color: AppColors.primaryColor,
+                                isDark: isDark,
+                              )),
                   ),
                 ],
               ),
@@ -472,6 +428,98 @@ class FinancialSummaryCard extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavButton({
+    required String label,
+    required VoidCallback onPressed,
+    required bool isDark,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryColor.withValues(alpha: 0.25),
+            AppColors.primaryColor.withValues(alpha: 0.18),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(
+          color: AppColors.primaryColor.withValues(alpha: 0.6),
+          width: 2,
+        ),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11.sp,
+            fontWeight: FontWeight.bold,
+            color: isDark ? AppColors.darkPrimaryColor : const Color(0xFF1A3A52),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainMetric({
+    required String label,
+    required String value,
+    required String unit,
+    required Color color,
+    required bool isDark,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10.sp,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+              SizedBox(width: 2.w),
+              Text(
+                unit,
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ],
           ),
         ],
       ),

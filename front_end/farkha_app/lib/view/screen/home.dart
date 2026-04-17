@@ -2,6 +2,7 @@ import 'package:farkha_app/view/widget/home/card_cycle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/constant/routes/route.dart';
 import '../../core/package/alert_exit_app.dart';
 import '../../core/package/upgrade.dart';
 import '../../core/services/initialization.dart';
@@ -13,6 +14,7 @@ import '../widget/appbar/appbar_home.dart';
 import '../widget/drawer/drawer.dart';
 import '../widget/home/price_card.dart';
 import '../widget/home/tools_section.dart';
+import '../widget/home/invitation_card.dart';
 import '../widget/tutorial/home_tutorial.dart';
 
 class Home extends StatefulWidget {
@@ -31,6 +33,18 @@ class _HomeState extends State<Home> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final pending = myServices.getStorage.read<Map<dynamic, dynamic>>(
+        'pending_darkness_alarm',
+      );
+      if (pending != null && mounted) {
+        await myServices.getStorage.remove('pending_darkness_alarm');
+        final args = Map<String, dynamic>.from(
+          pending.map((k, v) => MapEntry(k.toString(), v)),
+        );
+        args['fromBackground'] = true;
+        await Get.toNamed<void>(AppRoute.darknessAlarm, arguments: args);
+        return;
+      }
       final permissionController = Get.find<PermissionController>();
       await permissionController.showPermissionsIntroIfNeeded(context);
       if (!mounted) return;
@@ -50,20 +64,18 @@ class _HomeState extends State<Home> {
         _isTutorialActive = true;
       });
 
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        if (mounted) {
-          HomeTutorial.showTutorial(
-            context,
-            onTutorialComplete: () {
-              if (mounted) {
-                setState(() {
-                  _isTutorialActive = false;
-                });
-              }
-            },
-          );
-        }
-      });
+      if (mounted) {
+        HomeTutorial.showTutorial(
+          context,
+          onTutorialComplete: () {
+            if (mounted) {
+              setState(() {
+                _isTutorialActive = false;
+              });
+            }
+          },
+        );
+      }
     }
   }
 
@@ -83,7 +95,9 @@ class _HomeState extends State<Home> {
               settingsIconKey: HomeTutorial.settingsIconKey,
             ),
 
-            CardCycle(cycleCardKey: HomeTutorial.cardCycleKey),
+            const InvitationCard(),
+
+            const CardCycle(),
             if (!_isTutorialActive) ...[
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 17),

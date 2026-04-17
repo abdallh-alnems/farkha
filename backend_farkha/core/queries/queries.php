@@ -111,12 +111,16 @@ final class Queries {
         return CycleQueries::insert();
     }
 
-    public static function insertCycleUserQuery(): string {
-        return CycleQueries::insertCycleUser();
+    public static function insertCycleUserQuery(string $status = 'accepted'): string {
+        return CycleQueries::insertCycleUser($status);
     }
 
     public static function fetchUserCyclesQuery(): string {
         return CycleQueries::fetchUserCycles();
+    }
+
+    public static function fetchUserHistoryCyclesQuery(bool $hasSearch = false, bool $hasDateFrom = false, bool $hasDateTo = false): string {
+        return CycleQueries::fetchUserHistoryCycles($hasSearch, $hasDateFrom, $hasDateTo);
     }
 
     public static function fetchCycleDetailsQuery(): string {
@@ -125,6 +129,26 @@ final class Queries {
 
     public static function checkUserAccessQuery(): string {
         return CycleQueries::checkUserAccess();
+    }
+
+    public static function leaveCycleQuery(): string {
+        return CycleQueries::leaveCycleQuery();
+    }
+
+    public static function fetchCycleMembersQuery(): string {
+        return CycleQueries::fetchCycleMembers();
+    }
+
+    public static function fetchUserInvitationsQuery(): string {
+        return CycleQueries::fetchUserInvitations();
+    }
+
+    public static function acceptInvitationQuery(): string {
+        return CycleQueries::acceptInvitation();
+    }
+
+    public static function rejectInvitationQuery(): string {
+        return CycleQueries::rejectInvitation();
     }
 
     public static function insertCycleDataQuery(): string {
@@ -141,6 +165,14 @@ final class Queries {
 
     public static function fetchCycleExpensesQuery(): string {
         return CycleQueries::fetchCycleExpenses();
+    }
+
+    public static function fetchCycleDataChronologicalQuery(): string {
+        return CycleQueries::fetchCycleDataChronological();
+    }
+
+    public static function fetchCycleExpensesChronologicalQuery(): string {
+        return CycleQueries::fetchCycleExpensesChronological();
     }
 
     public static function updateCycleQuery(): string {
@@ -181,6 +213,65 @@ final class Queries {
 
     public static function deleteCycleExpenseByLabelQuery(): string {
         return CycleQueries::deleteCycleExpenseByLabel();
+    }
+
+    // Cycle Sales Queries
+    public static function insertCycleSaleQuery(): string {
+        return CycleQueries::insertCycleSale();
+    }
+
+    public static function fetchCycleSalesQuery(): string {
+        return CycleQueries::fetchCycleSales();
+    }
+
+    public static function deleteCycleSaleByIdQuery(): string {
+        return CycleQueries::deleteCycleSaleById();
+    }
+
+    // Cycle Notes Queries
+    public static function insertCycleNoteQuery(): string {
+        return CycleQueries::insertCycleNote();
+    }
+
+    public static function fetchCycleNotesQuery(): string {
+        return CycleQueries::fetchCycleNotes();
+    }
+
+    public static function deleteCycleNoteByIdQuery(): string {
+        return CycleQueries::deleteCycleNoteById();
+    }
+
+    public static function deleteCycleNotesQuery(): string {
+        return CycleQueries::deleteCycleNotes();
+    }
+
+    public static function updateCycleNoteQuery(): string {
+        return CycleQueries::updateCycleNote();
+    }
+
+    // Inventory Queries
+    public static function insertCycleInventoryQuery(): string {
+        return CycleQueries::insertCycleInventory();
+    }
+
+    public static function fetchCycleInventoryQuery(): string {
+        return CycleQueries::fetchCycleInventory();
+    }
+
+    public static function fetchCycleInventorySummaryQuery(): string {
+        return CycleQueries::fetchCycleInventorySummary();
+    }
+
+    public static function deleteCycleInventoryByIdQuery(): string {
+        return CycleQueries::deleteCycleInventoryById();
+    }
+
+    public static function deleteCycleInventoryByItemNameQuery(): string {
+        return CycleQueries::deleteCycleInventoryByItemName();
+    }
+
+    public static function deleteCycleInventoryQuery(): string {
+        return CycleQueries::deleteCycleInventory();
     }
 }
 

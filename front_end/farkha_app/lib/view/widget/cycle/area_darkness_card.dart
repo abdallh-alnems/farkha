@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/theme/colors.dart';
-import '../../../data/data_source/static/chicken_data.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
 
+/// بطاقة المزرعة: المساحة المطلوبة والمساحة الكلية فقط (بدون الإظلام).
 class AreaDarknessCard extends StatelessWidget {
   const AreaDarknessCard({super.key});
 
@@ -18,20 +18,14 @@ class AreaDarknessCard extends StatelessWidget {
     return Obx(() {
       final requiredArea = broilerCtrl.requiredArea.value;
       final totalArea = broilerCtrl.collegeArea;
-      final selectedAge = broilerCtrl.selectedChickenAge.value;
-      final ageInt = (selectedAge as num?)?.toInt();
-      final darkness = ageInt != null && ageInt > 0 && ageInt <= darknessLevels.length
-          ? darknessLevels[ageInt - 1]
-          : 0;
 
       return Container(
         width: double.infinity,
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color:
-              isDark
-                  ? AppColors.darkSurfaceElevatedColor
-                  : AppColors.lightCardBackgroundColor,
+          color: isDark
+              ? AppColors.darkSurfaceElevatedColor
+              : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(),
           boxShadow: [
@@ -50,7 +44,8 @@ class AreaDarknessCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
-                color: isDark ? AppColors.darkPrimaryColor : Colors.black87,
+                color:
+                    isDark ? AppColors.darkPrimaryColor : Colors.black87,
               ),
             ),
             SizedBox(height: 16.h),
@@ -69,15 +64,6 @@ class AreaDarknessCard extends StatelessWidget {
                   child: _buildInfoItem(
                     label: 'المساحة الكلية',
                     value: '${totalArea.round()} م²',
-                    color: AppColors.primaryColor,
-                    isDark: isDark,
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                Expanded(
-                  child: _buildInfoItem(
-                    label: 'الإظلام',
-                    value: '$darkness ساعة',
                     color: AppColors.primaryColor,
                     isDark: isDark,
                   ),
@@ -101,18 +87,17 @@ class AreaDarknessCard extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors:
-              isDark
-                  ? [
-                    color.withValues(alpha: 0.18),
-                    color.withValues(alpha: 0.12),
-                    color.withValues(alpha: 0.06),
-                  ]
-                  : [
-                    color.withValues(alpha: 0.25),
-                    color.withValues(alpha: 0.15),
-                    color.withValues(alpha: 0.08),
-                  ],
+          colors: isDark
+              ? [
+                color.withValues(alpha: 0.18),
+                color.withValues(alpha: 0.12),
+                color.withValues(alpha: 0.06),
+              ]
+              : [
+                color.withValues(alpha: 0.25),
+                color.withValues(alpha: 0.15),
+                color.withValues(alpha: 0.08),
+              ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -152,10 +137,9 @@ class AreaDarknessCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: value.length > 15 ? 11.sp : 17.sp,
                     fontWeight: FontWeight.bold,
-                    color:
-                        isDark
-                            ? AppColors.darkPrimaryColor
-                            : AppColors.primaryColor,
+                    color: isDark
+                        ? AppColors.darkPrimaryColor
+                        : AppColors.primaryColor,
                     letterSpacing: 0.5,
                   ),
                 ),

@@ -21,6 +21,18 @@ final class UserQueries {
     public static function deleteByFirebaseUid(): string {
         return "DELETE FROM users WHERE firebase_uid = :firebase_uid";
     }
+
+    public static function findByPhone(): string {
+        return "SELECT * FROM users WHERE phone = :phone LIMIT 1";
+    }
+
+    public static function searchByPhone(): string {
+        return "SELECT id, name, phone FROM users WHERE phone LIKE :search_term LIMIT 10";
+    }
+
+    public static function searchByPhoneExcludeUid(): string {
+        return "SELECT id, name, phone FROM users WHERE phone LIKE :search_term AND firebase_uid != :firebase_uid LIMIT 10";
+    }
 }
 
 ?>

@@ -66,27 +66,55 @@ try {
         exit;
     }
 
-    // جلب بيانات الدورة
-    $stmt = $con->prepare(Queries::fetchCycleDataQuery());
-    $stmt->execute([':cycle_id' => (int)$cycleId]);
-    $cycleData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // جلب بيانات الدورة (مرتبة تصاعدياً لعرض التايملاين)
+    $stmtData = $con->prepare(Queries::fetchCycleDataChronologicalQuery());
+    $stmtData->execute([':cycle_id' => (int)$cycleId]);
+    $cycleData = $stmtData->fetchAll(PDO::FETCH_ASSOC);
 
-    // جلب مصاريف الدورة
-    $stmt = $con->prepare(Queries::fetchCycleExpensesQuery());
-    $stmt->execute([':cycle_id' => (int)$cycleId]);
-    $cycleExpenses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // جلب مصاريف الدورة (مرتبة تصاعدياً حسب التاريخ)
+    $stmtExp = $con->prepare(Queries::fetchCycleExpensesChronologicalQuery());
+    $stmtExp->execute([':cycle_id' => (int)$cycleId]);
+    $cycleExpenses = $stmtExp->fetchAll(PDO::FETCH_ASSOC);
+
+    // جلب ملاحظات الدورة
+    $stmtNotes = $con->prepare(Queries::fetchCycleNotesQuery());
+    $stmtNotes->execute([':cycle_id' => (int)$cycleId]);
+    $cycleNotes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
+
+    // جلب أعضاء الدورة
+    $stmtMembers = $con->prepare(Queries::fetchCycleMembersQuery());
+    $stmtMembers->execute([':cycle_id' => (int)$cycleId]);
+    $cycleMembers = $stmtMembers->fetchAll(PDO::FETCH_ASSOC);
+
+    // جلب سجل المبيعات
+    $stmtSales = $con->prepare(Queries::fetchCycleSalesQuery());
+    $stmtSales->execute([':cycle_id' => (int)$cycleId]);
+    $cycleSales = $stmtSales->fetchAll(PDO::FETCH_ASSOC);
+
+    // جلب ملخص المخزون
+    $stmtInventory = $con->prepare(Queries::fetchCycleInventorySummaryQuery());
+    $stmtInventory->execute([':cycle_id' => (int)$cycleId]);
+    $inventorySummary = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
 
     // ✅ إرسال الرد
     echo json_encode([
         'status' => 'success',
         'data' => [
-            'cycle' => $cycleDetails,
-            'data' => $cycleData,
-            'expenses' => $cycleExpenses,
-            'data_count' => count($cycleData),
-            'expenses_count' => count($cycleExpenses)
+            'cycle'            => $cycleDetails,
+            'data'             => $cycleData,
+            'expenses'         => $cycleExpenses,
+            'notes'            => $cycleNotes,
+            'members'          => $cycleMembers,
+            'sales'            => $cycleSales,
+            'inventory'        => $inventorySummary,
+            'data_count'       => count($cycleData),
+            'expenses_count'   => count($cycleExpenses),
+            'notes_count'      => count($cycleNotes),
+            'members_count'    => count($cycleMembers),
+            'sales_count'      => count($cycleSales),
+            'inventory_count'  => count($inventorySummary)
         ]
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 
 } catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
     http_response_code(401);

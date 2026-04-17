@@ -1,7 +1,7 @@
 name: farkha_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 6.1.8+36
+version: 6.1.8+37
 
 environment:
   sdk: ^3.7.2
@@ -33,14 +33,17 @@ dependencies:
   firebase_analytics: ^12.0.4
   firebase_crashlytics: ^5.0.5
   firebase_messaging: ^16.0.2
+  firebase_app_check: ^0.4.2
   google_sign_in: ^7.2.0
 
   # Ads
-  google_mobile_ads: ^6.0.0
-  gma_mediation_meta: ^1.5.0
+  google_mobile_ads: ^7.0.0
+  gma_mediation_meta: ^1.5.1
 
   # Notifications
   flutter_local_notifications: ^19.5.0
+  timezone: ^0.10.0
+  flutter_ringtone_player: ^4.0.0+4
 
   # Network & API
   http: ^1.3.0
@@ -66,6 +69,13 @@ dependencies:
   package_info_plus: ^9.0.0
   firebase_remote_config: ^6.1.3
   font_awesome_flutter: ^10.12.0
+  percent_indicator: ^4.2.5
+  app_links: ^7.0.0
+  flutter_contacts: ^1.1.9+2
+  pdf: ^3.11.1
+  printing: ^5.13.0
+  excel: ^4.0.6
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +102,7 @@ flutter:
     - assets/icons/tools/
     - assets/lottie/
     - assets/fonts/
+    - assets/sounds/
 
   fonts:
     - family: Cairo

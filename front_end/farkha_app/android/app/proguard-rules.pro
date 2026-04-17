@@ -20,16 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Facebook Ads ProGuard rules
--keep class com.facebook.** { *; }
--keep class com.facebook.ads.** { *; }
--keep class com.facebook.infer.annotation.** { *; }
--dontwarn com.facebook.**
--dontwarn com.facebook.ads.**
-
-# Keep Facebook SDK classes
--keep class com.facebook.infer.annotation.Nullsafe { *; }
--keep class com.facebook.infer.annotation.Nullsafe$Mode { *; }
 
 # Google Mobile Ads
 -keep class com.google.android.gms.ads.** { *; }

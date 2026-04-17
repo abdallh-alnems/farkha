@@ -4,6 +4,10 @@
 # Enable Rewrite Engine
 RewriteEngine On
 
+# Pass HTTP Basic Authentication to PHP (required for CGI/FastCGI like MAMP)
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
 # Security Headers
 <IfModule mod_headers.c>
     # Prevent clickjacking

@@ -3,25 +3,48 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/class/status_request.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 
-class CycleExpensesScreen extends StatelessWidget {
+class CycleExpensesScreen extends StatefulWidget {
   const CycleExpensesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<CycleExpensesScreen> createState() => _CycleExpensesScreenState();
+}
+
+class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
+  @override
+  void initState() {
+    super.initState();
     if (!Get.isRegistered<CycleController>()) {
       Get.put(CycleController());
     }
     if (!Get.isRegistered<CycleExpensesController>()) {
       Get.put(CycleExpensesController());
     }
+    // جلب أحدث البيانات من السيرفر عند فتح الشاشة لضمان مزامنة بيانات الأعضاء
+    // silent: true لمنع تأثير cycleDetailsStatus على صفحة الدورة عند الرجوع
+    final cycleCtrl = Get.find<CycleController>();
+    final cycleId = cycleCtrl.currentCycle['cycle_id'];
+    if (cycleId != null) {
+      final cycleIdInt =
+          cycleId is int ? cycleId : int.tryParse(cycleId.toString());
+      if (cycleIdInt != null && cycleIdInt > 0) {
+        cycleCtrl.fetchCycleDetails(cycleIdInt, silent: true);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
+    final isViewer = cycle['role']?.toString() == 'viewer';
     final expensesCtrl = Get.find<CycleExpensesController>();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -52,36 +75,55 @@ class CycleExpensesScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+          if (cycle['role']?.toString() != 'viewer')
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+              ),
+              onPressed: () => _showAddExpenseDialog(expensesCtrl, isDark),
             ),
-            onPressed: () => _showAddExpenseDialog(expensesCtrl, isDark),
-          ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 15.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTotalCard(expensesCtrl, isDark),
-              SizedBox(height: 12.h),
-              _buildExpensesSection(expensesCtrl, isDark),
-            ],
+      body: Obx(() {
+        final isLoading =
+            cycleCtrl.cycleDetailsStatus.value == StatusRequest.loading;
+        if (isLoading) {
+          return const SafeArea(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () => cycleCtrl.forceRefreshCurrentCycle(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 15.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildTotalCard(expensesCtrl, isDark),
+                  SizedBox(height: 12.h),
+                  _buildExpensesSection(
+                    expensesCtrl,
+                    isDark,
+                    isViewer: isViewer,
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
       bottomNavigationBar: const AdBannerWidget(),
     );
   }
 
   Widget _buildExpensesSection(
     CycleExpensesController controller,
-    bool isDark,
-  ) {
+    bool isDark, {
+    bool isViewer = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -114,6 +156,7 @@ class CycleExpensesScreen extends StatelessWidget {
                         index: index,
                         expense: expense,
                         isDark: isDark,
+                        isViewer: isViewer,
                       ),
                     ),
                     if (index == 0) ...[
@@ -136,6 +179,7 @@ class CycleExpensesScreen extends StatelessWidget {
     required int index,
     required ExpenseItem expense,
     required bool isDark,
+    bool isViewer = false,
   }) {
     final textController = TextEditingController();
     final focusNode = FocusNode();
@@ -195,8 +239,12 @@ class CycleExpensesScreen extends StatelessWidget {
                       colors:
                           isDark
                               ? [
-                                AppColors.darkPrimaryColor.withValues(alpha: 0.2),
-                                AppColors.darkPrimaryColor.withValues(alpha: 0.15),
+                                AppColors.darkPrimaryColor.withValues(
+                                  alpha: 0.2,
+                                ),
+                                AppColors.darkPrimaryColor.withValues(
+                                  alpha: 0.15,
+                                ),
                               ]
                               : [
                                 AppColors.primaryColor.withValues(alpha: 0.15),
@@ -211,7 +259,9 @@ class CycleExpensesScreen extends StatelessWidget {
                             ? []
                             : [
                               BoxShadow(
-                                color: AppColors.primaryColor.withValues(alpha: 0.1),
+                                color: AppColors.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 blurRadius: 3,
                                 offset: const Offset(0, 2),
                               ),
@@ -260,8 +310,9 @@ class CycleExpensesScreen extends StatelessWidget {
                                         isDark
                                             ? AppColors.darkPrimaryColor
                                                 .withValues(alpha: 0.2)
-                                            : AppColors.primaryColor
-                                                .withValues(alpha: 0.1),
+                                            : AppColors.primaryColor.withValues(
+                                              alpha: 0.1,
+                                            ),
                                     borderRadius: BorderRadius.circular(5.r),
                                   ),
                                   child: Text(
@@ -304,19 +355,20 @@ class CycleExpensesScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color:
                                     isHistoryExpanded.value
-                                        ? AppColors.primaryColor.withValues(alpha: 
-                                          0.3,
+                                        ? AppColors.primaryColor.withValues(
+                                          alpha: 0.3,
                                         )
                                         : isDark
-                                        ? AppColors.darkPrimaryColor
-                                            .withValues(alpha: 0.25)
-                                        : AppColors.primaryColor.withValues(alpha: 
-                                          0.2,
+                                        ? AppColors.darkPrimaryColor.withValues(
+                                          alpha: 0.25,
+                                        )
+                                        : AppColors.primaryColor.withValues(
+                                          alpha: 0.2,
                                         ),
                                 borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.primaryColor.withValues(alpha: 
-                                    0.4,
+                                  color: AppColors.primaryColor.withValues(
+                                    alpha: 0.4,
                                   ),
                                   width: 1.5,
                                 ),
@@ -342,31 +394,32 @@ class CycleExpensesScreen extends StatelessWidget {
                           ),
                         ),
                       if (hasMultiplePayments) SizedBox(width: 5.w),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteConfirmDialog(
-                              controller,
-                              index,
-                              expense.label,
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: Container(
-                            padding: EdgeInsets.all(8.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              color: Colors.red[500],
-                              size: 18.sp,
+                      if (!isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteConfirmDialog(
+                                controller,
+                                index,
+                                expense.label,
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(8.r),
+                            child: Container(
+                              padding: EdgeInsets.all(8.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                color: Colors.red[500],
+                                size: 18.sp,
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   );
                 }),
@@ -410,8 +463,8 @@ class CycleExpensesScreen extends StatelessWidget {
                         isDark
                             ? [
                               AppColors.darkSurfaceElevatedColor,
-                              AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                0.8,
+                              AppColors.darkSurfaceElevatedColor.withValues(
+                                alpha: 0.8,
                               ),
                             ]
                             : [
@@ -446,7 +499,9 @@ class CycleExpensesScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(2.r),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryColor.withValues(alpha: 0.3),
+                            color: AppColors.primaryColor.withValues(
+                              alpha: 0.3,
+                            ),
                             blurRadius: 2,
                             offset: const Offset(0, 1),
                           ),
@@ -521,35 +576,36 @@ class CycleExpensesScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          if (lastPaymentIndex != -1) {
-                            _showDeletePaymentConfirmDialog(
-                              controller,
-                              index,
-                              lastPaymentIndex,
-                              lastPayment.amount,
-                              expense.label,
-                            );
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(6.r),
-                        child: Container(
-                          padding: EdgeInsets.all(6.w),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          child: Icon(
-                            Icons.delete_outline,
-                            size: 14.sp,
-                            color: Colors.red[500],
+                    if (!isViewer)
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            if (lastPaymentIndex != -1) {
+                              _showDeletePaymentConfirmDialog(
+                                controller,
+                                index,
+                                lastPaymentIndex,
+                                lastPayment.amount,
+                                expense.label,
+                              );
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(6.r),
+                          child: Container(
+                            padding: EdgeInsets.all(6.w),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(6.r),
+                            ),
+                            child: Icon(
+                              Icons.delete_outline,
+                              size: 14.sp,
+                              color: Colors.red[500],
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               );
@@ -592,11 +648,11 @@ class CycleExpensesScreen extends StatelessWidget {
                                             .withValues(alpha: 0.8),
                                       ]
                                       : [
-                                        AppColors.primaryColor.withValues(alpha: 
-                                          0.08,
+                                        AppColors.primaryColor.withValues(
+                                          alpha: 0.08,
                                         ),
-                                        AppColors.primaryColor.withValues(alpha: 
-                                          0.04,
+                                        AppColors.primaryColor.withValues(
+                                          alpha: 0.04,
                                         ),
                                       ],
                               begin: Alignment.topLeft,
@@ -606,10 +662,12 @@ class CycleExpensesScreen extends StatelessWidget {
                             border: Border.all(
                               color:
                                   isDark
-                                      ? AppColors.darkOutlineColor.withValues(alpha: 
-                                        0.3,
+                                      ? AppColors.darkOutlineColor.withValues(
+                                        alpha: 0.3,
                                       )
-                                      : AppColors.primaryColor.withValues(alpha: 0.2),
+                                      : AppColors.primaryColor.withValues(
+                                        alpha: 0.2,
+                                      ),
                             ),
                           ),
                           child: Row(
@@ -621,7 +679,9 @@ class CycleExpensesScreen extends StatelessWidget {
                                   gradient: LinearGradient(
                                     colors: [
                                       AppColors.primaryColor,
-                                      AppColors.primaryColor.withValues(alpha: 0.7),
+                                      AppColors.primaryColor.withValues(
+                                        alpha: 0.7,
+                                      ),
                                     ],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
@@ -629,8 +689,8 @@ class CycleExpensesScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(2.r),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primaryColor.withValues(alpha: 
-                                        0.3,
+                                      color: AppColors.primaryColor.withValues(
+                                        alpha: 0.3,
                                       ),
                                       blurRadius: 2,
                                       offset: const Offset(0, 1),
@@ -707,35 +767,40 @@ class CycleExpensesScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (originalIndex != -1) {
-                                      _showDeletePaymentConfirmDialog(
-                                        controller,
-                                        index,
-                                        originalIndex,
-                                        payment.amount,
-                                        expense.label,
-                                      );
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(6.r),
-                                  child: Container(
-                                    padding: EdgeInsets.all(6.w),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(6.r),
-                                    ),
-                                    child: Icon(
-                                      Icons.delete_outline,
-                                      size: 14.sp,
-                                      color: Colors.red[500],
+                              if (!isViewer)
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (originalIndex != -1) {
+                                        _showDeletePaymentConfirmDialog(
+                                          controller,
+                                          index,
+                                          originalIndex,
+                                          payment.amount,
+                                          expense.label,
+                                        );
+                                      }
+                                    },
+                                    borderRadius: BorderRadius.circular(6.r),
+                                    child: Container(
+                                      padding: EdgeInsets.all(6.w),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          6.r,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.delete_outline,
+                                        size: 14.sp,
+                                        color: Colors.red[500],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
                             ],
                           ),
                         );
@@ -756,150 +821,155 @@ class CycleExpensesScreen extends StatelessWidget {
           }),
 
           // Input Section
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-            decoration: BoxDecoration(
-              gradient:
-                  isDark
-                      ? null
-                      : LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          AppColors.primaryColor.withValues(alpha: 0.02),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(12.r),
-                bottomRight: Radius.circular(12.r),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: textController,
-                    focusNode: focusNode,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: 'أدخل مبلغ جديد',
-                      hintStyle: TextStyle(
-                        fontSize: 12.sp,
-                        color: isDark ? Colors.grey[500] : Colors.grey[400],
-                      ),
-                      filled: true,
-                      fillColor:
-                          isDark
-                              ? AppColors.darkSurfaceElevatedColor
-                              : Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(
-                          color:
-                              isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(
-                          color:
-                              isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(
-                          color:
-                              isDark
-                                  ? AppColors.darkPrimaryColor
-                                  : AppColors.primaryColor,
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 10.h,
-                      ),
-                      suffixText: 'جنيه',
-                      suffixStyle: TextStyle(
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w500,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color:
-                          isDark ? AppColors.darkPrimaryColor : Colors.black87,
-                    ),
-                    onSubmitted: (value) {
-                      final amount = double.tryParse(value) ?? 0.0;
-                      if (amount > 0) {
-                        controller.addPayment(index, amount);
-                        textController.clear();
-                        focusNode.unfocus();
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Material(
-                  color: AppColors.primaryColor,
-                  borderRadius: BorderRadius.circular(10.r),
-                  elevation: 2,
-                  shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
-                  child: InkWell(
-                    onTap: () {
-                      final value = textController.text;
-                      final amount = double.tryParse(value) ?? 0.0;
-                      if (amount > 0) {
-                        controller.addPayment(index, amount);
-                        textController.clear();
-                        focusNode.unfocus();
-                      } else {
-                        focusNode.requestFocus();
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(10.r),
-                    child: Container(
-                      width: 44.w,
-                      height: 44.w,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
+          if (!isViewer)
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+              decoration: BoxDecoration(
+                gradient:
+                    isDark
+                        ? null
+                        : LinearGradient(
                           colors: [
-                            AppColors.primaryColor,
-                            AppColors.primaryColor.withValues(alpha: 0.8),
+                            Colors.transparent,
+                            AppColors.primaryColor.withValues(alpha: 0.02),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(10.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryColor.withValues(alpha: 0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(12.r),
+                  bottomRight: Radius.circular(12.r),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: textController,
+                      focusNode: focusNode,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: 'أدخل مبلغ جديد',
+                        hintStyle: TextStyle(
+                          fontSize: 12.sp,
+                          color: isDark ? Colors.grey[500] : Colors.grey[400],
+                        ),
+                        filled: true,
+                        fillColor:
+                            isDark
+                                ? AppColors.darkSurfaceElevatedColor
+                                : Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide(
+                            color:
+                                isDark
+                                    ? AppColors.darkOutlineColor
+                                    : Colors.grey[300]!,
                           ),
-                        ],
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide(
+                            color:
+                                isDark
+                                    ? AppColors.darkOutlineColor
+                                    : Colors.grey[300]!,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                          borderSide: BorderSide(
+                            color:
+                                isDark
+                                    ? AppColors.darkPrimaryColor
+                                    : AppColors.primaryColor,
+                            width: 2,
+                          ),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 10.h,
+                        ),
+                        suffixText: 'جنيه',
+                        suffixStyle: TextStyle(
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w500,
+                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        ),
                       ),
-                      child: Icon(
-                        Icons.add_rounded,
-                        color: Colors.white,
-                        size: 22.sp,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            isDark
+                                ? AppColors.darkPrimaryColor
+                                : Colors.black87,
+                      ),
+                      onSubmitted: (value) {
+                        final amount = double.tryParse(value) ?? 0.0;
+                        if (amount > 0) {
+                          controller.addPayment(index, amount);
+                          textController.clear();
+                          focusNode.unfocus();
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Material(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10.r),
+                    elevation: 2,
+                    shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
+                    child: InkWell(
+                      onTap: () {
+                        final value = textController.text;
+                        final amount = double.tryParse(value) ?? 0.0;
+                        if (amount > 0) {
+                          controller.addPayment(index, amount);
+                          textController.clear();
+                          focusNode.unfocus();
+                        } else {
+                          focusNode.requestFocus();
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(10.r),
+                      child: Container(
+                        width: 44.w,
+                        height: 44.w,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.primaryColor,
+                              AppColors.primaryColor.withValues(alpha: 0.8),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(10.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.add_rounded,
+                          color: Colors.white,
+                          size: 22.sp,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

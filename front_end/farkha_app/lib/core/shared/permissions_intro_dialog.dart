@@ -13,7 +13,8 @@ const Color _introThemeAccent = Color(0xFF7C3AED);
 class PermissionsIntroDialog {
   PermissionsIntroDialog._();
 
-  static const String locationIntroShownKey = 'permissions_intro_location_shown';
+  static const String locationIntroShownKey =
+      'permissions_intro_location_shown';
   static const String notificationIntroShownKey =
       'permissions_intro_notification_shown';
   static const String themeIntroShownKey = 'permissions_intro_theme_shown';
@@ -27,7 +28,7 @@ class LocationIntroDialog extends StatelessWidget {
     required this.onLater,
   });
 
-  final VoidCallback onEnable;
+  final Future<void> Function() onEnable;
   final VoidCallback onLater;
 
   @override
@@ -52,7 +53,7 @@ class NotificationIntroDialog extends StatelessWidget {
     required this.onLater,
   });
 
-  final VoidCallback onEnable;
+  final Future<void> Function() onEnable;
   final VoidCallback onLater;
 
   @override
@@ -71,23 +72,18 @@ class NotificationIntroDialog extends StatelessWidget {
 
 /// Step 3: Theme selection for the app.
 class ThemeIntroDialog extends StatelessWidget {
-  const ThemeIntroDialog({
-    super.key,
-    required this.onDone,
-  });
+  const ThemeIntroDialog({super.key, required this.onDone});
 
   final VoidCallback onDone;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark
-        ? AppColors.darkSurfaceColor
-        : AppColors.lightSurfaceColor;
+    final surfaceColor =
+        isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor;
     final textColor = isDark ? Colors.white : Colors.black87;
-    final bodyTextColor = isDark
-        ? const Color(0xFFCBD5E1)
-        : const Color(0xFF424242);
+    final bodyTextColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF424242);
     const accentColor = _introThemeAccent;
 
     return Dialog(
@@ -98,28 +94,24 @@ class ThemeIntroDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.palette_outlined,
-              size: 56,
-              color: accentColor,
-            ),
+            const Icon(Icons.palette_outlined, size: 56, color: accentColor),
             const SizedBox(height: 16),
             Text(
               'اختر مظهر التطبيق',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: textColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 12),
             Text(
               'اختر الوضع المناسب لك: فاتح، غامق، أو حسب مظهر الهاتف.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: bodyTextColor,
-                    height: 1.5,
-                  ),
+                color: bodyTextColor,
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 20),
             _ThemeChoiceRow(onDone: onDone, accentColor: accentColor),
@@ -212,9 +204,12 @@ class _ThemeOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = currentMode == themeMode;
-    final borderColor = isSelected
-        ? accentColor
-        : (isDark ? AppColors.darkOutlineColor : AppColors.lightOutlineColor);
+    final borderColor =
+        isSelected
+            ? accentColor
+            : (isDark
+                ? AppColors.darkOutlineColor
+                : AppColors.lightOutlineColor);
 
     return Expanded(
       child: InkWell(
@@ -236,12 +231,13 @@ class _ThemeOption extends StatelessWidget {
                 label,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isSelected
+                  color:
+                      isSelected
                           ? accentColor
                           : (isDark
                               ? AppColors.darkSecondaryColor
                               : Colors.black54),
-                    ),
+                ),
               ),
             ],
           ),
@@ -265,19 +261,17 @@ class _IntroDialogLayout extends StatelessWidget {
   final Color accentColor;
   final String title;
   final String message;
-  final VoidCallback onEnable;
+  final Future<void> Function() onEnable;
   final VoidCallback onLater;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark
-        ? AppColors.darkSurfaceColor
-        : AppColors.lightSurfaceColor;
+    final surfaceColor =
+        isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor;
     final textColor = isDark ? Colors.white : Colors.black87;
-    final bodyTextColor = isDark
-        ? const Color(0xFFCBD5E1)
-        : const Color(0xFF424242);
+    final bodyTextColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF424242);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -293,26 +287,26 @@ class _IntroDialogLayout extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: textColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: textColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 12),
             Text(
               message,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: bodyTextColor,
-                    height: 1.5,
-                  ),
+                color: bodyTextColor,
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Get.back<void>();
-                  onEnable();
+                  await onEnable();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: accentColor,
@@ -331,10 +325,7 @@ class _IntroDialogLayout extends StatelessWidget {
                 Get.back<void>();
                 onLater();
               },
-              child: Text(
-                'لاحقاً',
-                style: TextStyle(color: bodyTextColor),
-              ),
+              child: Text('لاحقاً', style: TextStyle(color: bodyTextColor)),
             ),
           ],
         ),

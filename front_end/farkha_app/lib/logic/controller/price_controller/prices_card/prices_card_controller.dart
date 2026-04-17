@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
@@ -17,6 +20,20 @@ class PricesCardController extends GetxController {
   Map<int, Map<String, String>> pricesData = {};
   Map<int, String> typeNames = {};
 
+  // حماية من الطلبات المتزامنة
+  bool _isLoading = false;
+
+  // التحديث الدوري
+  Timer? _refreshTimer;
+  static const Duration _refreshInterval = Duration(minutes: 10);
+
+  // Caching مع TTL
+  DateTime? _lastFetchTime;
+  static const Duration _minFetchInterval = Duration(minutes: 2);
+
+  // آخر تحديث ناجح
+  DateTime? lastUpdated;
+
   String getTypeName(int typeId) {
     return typeNames[typeId] ?? 'نوع $typeId';
   }
@@ -33,7 +50,8 @@ class PricesCardController extends GetxController {
 
   double getTypeYesterdayAverage(int typeId) {
     final prices = getTypePrices(typeId);
-    final double higher = double.tryParse(prices['higher_yesterday'] ?? '') ?? 0;
+    final double higher =
+        double.tryParse(prices['higher_yesterday'] ?? '') ?? 0;
     final double lower = double.tryParse(prices['lower_yesterday'] ?? '') ?? 0;
     return (higher + lower) / 2;
   }
@@ -49,13 +67,34 @@ class PricesCardController extends GetxController {
     return getTypeTodayAverage(typeId) - getTypeYesterdayAverage(typeId);
   }
 
+  // دالة مشتركة لتحويل بيانات الاستجابة (DRY)
+  void _parseResponseData(List<dynamic> data) {
+    for (var item in data) {
+      final int typeId = (item['id'] as num?)?.toInt() ?? 0;
+      if (typeId > 0) {
+        pricesData[typeId] = {
+          'higher_today': item['higher_today']?.toString() ?? '',
+          'lower_today': item['lower_today']?.toString() ?? '',
+          'higher_yesterday': item['higher_yesterday']?.toString() ?? '',
+          'lower_yesterday': item['lower_yesterday']?.toString() ?? '',
+        };
+
+        if (item['name'] != null) {
+          typeNames[typeId] = item['name'].toString();
+        }
+      }
+    }
+    lastUpdated = DateTime.now();
+  }
+
   void _loadSelectedTypes() {
     final savedTypes = _myServices.getStorage.read<List<dynamic>>(
       _selectedTypesKey,
     );
 
     if (savedTypes != null && savedTypes.isNotEmpty) {
-      final List<int> types = savedTypes.map((e) => int.parse(e.toString())).toList();
+      final List<int> types =
+          savedTypes.map((e) => int.parse(e.toString())).toList();
       if (!types.contains(1)) {
         types.add(1);
       }
@@ -85,6 +124,9 @@ class PricesCardController extends GetxController {
   }
 
   Future<void> getDataPricesCard() async {
+    if (_isLoading) return;
+    _isLoading = true;
+
     try {
       statusRequest = StatusRequest.loading;
       update();
@@ -97,22 +139,7 @@ class PricesCardController extends GetxController {
         if (mapResponse['status'] == 'success') {
           final List<dynamic> data = mapResponse['data'] as List<dynamic>;
           if (data.isNotEmpty) {
-            for (var item in data) {
-              final int typeId = (item['id'] as num?)?.toInt() ?? 0;
-              if (typeId > 0) {
-                pricesData[typeId] = {
-                  'higher_today': item['higher_today']?.toString() ?? '',
-                  'lower_today': item['lower_today']?.toString() ?? '',
-                  'higher_yesterday':
-                      item['higher_yesterday']?.toString() ?? '',
-                  'lower_yesterday': item['lower_yesterday']?.toString() ?? '',
-                };
-
-                if (item['name'] != null) {
-                  typeNames[typeId] = item['name'].toString();
-                }
-              }
-            }
+            _parseResponseData(data);
           }
         } else {
           statusRequest = StatusRequest.failure;
@@ -120,6 +147,10 @@ class PricesCardController extends GetxController {
       }
     } catch (e) {
       statusRequest = StatusRequest.failure;
+      debugPrint('PricesCardController.getDataPricesCard error: $e');
+    } finally {
+      _isLoading = false;
+      _lastFetchTime = DateTime.now();
     }
     update();
   }
@@ -141,6 +172,15 @@ class PricesCardController extends GetxController {
 
   // دالة لإعادة تحديث البيانات عند العودة للتطبيق (بدون إظهار التحميل)
   Future<void> refreshData() async {
+    // تجاهل التحديث إذا لم تمر المدة الكافية
+    if (_lastFetchTime != null &&
+        DateTime.now().difference(_lastFetchTime!) < _minFetchInterval) {
+      return;
+    }
+
+    if (_isLoading) return;
+    _isLoading = true;
+
     try {
       // تحديث البيانات بدون تغيير حالة التحميل
       final response = await pricesCardData.getDataWithTypeIds(selectedTypeIds);
@@ -151,31 +191,24 @@ class PricesCardController extends GetxController {
         if (mapResponse['status'] == 'success') {
           final List<dynamic> data = mapResponse['data'] as List<dynamic>;
           if (data.isNotEmpty) {
-            for (var item in data) {
-              final int typeId = (item['id'] as num?)?.toInt() ?? 0;
-              if (typeId > 0) {
-                pricesData[typeId] = {
-                  'higher_today': item['higher_today']?.toString() ?? '',
-                  'lower_today': item['lower_today']?.toString() ?? '',
-                  'higher_yesterday':
-                      item['higher_yesterday']?.toString() ?? '',
-                  'lower_yesterday': item['lower_yesterday']?.toString() ?? '',
-                };
-
-                if (item['name'] != null) {
-                  typeNames[typeId] = item['name'].toString();
-                }
-              }
-            }
+            _parseResponseData(data);
           }
         }
       }
       // تحديث الواجهة بدون تغيير حالة التحميل
       update();
     } catch (e) {
-      // في حالة الخطأ، لا نغير حالة التحميل
-      // يمكن إضافة معالجة الأخطاء هنا إذا لزم الأمر
+      debugPrint('PricesCardController.refreshData error: $e');
+    } finally {
+      _isLoading = false;
+      _lastFetchTime = DateTime.now();
     }
+  }
+
+  void _startPeriodicRefresh() {
+    _refreshTimer = Timer.periodic(_refreshInterval, (_) {
+      refreshData();
+    });
   }
 
   @override
@@ -183,6 +216,13 @@ class PricesCardController extends GetxController {
     _loadSelectedTypes();
     _loadTypeNames();
     getDataPricesCard();
+    _startPeriodicRefresh();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _refreshTimer?.cancel();
+    super.onClose();
   }
 }

@@ -58,12 +58,36 @@ try {
         exit;
     }
 
+    // جلب اسم الدورة واسم من قام بالإزالة
+    $stmtCycle = $con->prepare("SELECT name FROM cycles WHERE id = ?");
+    $stmtCycle->execute([(int)$cycleId]);
+    $cycleRow = $stmtCycle->fetch(PDO::FETCH_ASSOC);
+    $cycleName = $cycleRow['name'] ?? 'الدورة';
+
+    $stmtOwner = $con->prepare("SELECT name FROM users WHERE id = ?");
+    $stmtOwner->execute([$userId]);
+    $ownerRow = $stmtOwner->fetch(PDO::FETCH_ASSOC);
+    $ownerName = $ownerRow['name'] ?? 'صاحب الدورة';
+
     // 🗑️ تنفيذ الحذف
     $stmt = $con->prepare(Queries::leaveCycleQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
         ':user_id' => (int)$targetUserId
     ]);
+
+    // 🔔 إرسال إشعار FCM للعضو المحذوف
+    require_once __DIR__ . '/../../core/fcm_sender.php';
+    sendFCMToUser(
+        $con,
+        (int)$targetUserId,
+        'تنبيه',
+        "تم ازالتك من دورة $cycleName بواسطة $ownerName",
+        [
+            'type'     => 'member_removed',
+            'cycle_id' => (string)$cycleId,
+        ]
+    );
 
     echo json_encode([
         'status' => 'success',

@@ -19,13 +19,13 @@ class CustomSliderOnBoarding extends GetView<OnBoardingControllerImp> {
       itemBuilder:
           (context, i) => Column(
             children: [
-              const SizedBox(height: 47),
+              const SizedBox(height: 61),
               SvgPicture.asset(
                 onBoardingList[i].image!,
                 width: 300,
                 height: 300,
               ),
-              const SizedBox(height: 23),
+              const SizedBox(height: 55),
               Text(
                 onBoardingList[i].title!,
                 style: TextStyle(
@@ -34,7 +34,7 @@ class CustomSliderOnBoarding extends GetView<OnBoardingControllerImp> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 9),
+              const SizedBox(height: 19),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 13),
                 child: Text(

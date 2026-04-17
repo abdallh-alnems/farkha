@@ -1,4 +1,5 @@
 class AppRoute {
+  static const String home = '/';
   static const String test = '/test';
   static const String test2 = '/test2';
   static const String adad = '/adad';
@@ -19,7 +20,10 @@ class AppRoute {
   static const String cycle = '/cycle';
   static const String cycleExpenses = '/cycleExpenses';
   static const String cycleData = '/cycleData';
-
+  static const String cycleNotes = '/cycleNotes';
+  static const String history = '/history';
+  static const String cycleHistoryDetails = '/cycle-history-details';
+  static const String cycleSales = '/cycleSales';
   // ================================ drawer ===================================
 
   static const String suggestion = '/suggestion';
@@ -66,4 +70,5 @@ class AppRoute {
   static const String vaccinationSchedule = '/vaccination-schedule';
   static const String weather = '/weather';
   static const String allTools = '/all-tools';
+  static const String darknessAlarm = '/darkness-alarm';
 }

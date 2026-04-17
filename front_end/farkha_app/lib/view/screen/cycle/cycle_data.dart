@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/class/status_request.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../data/data_source/static/vaccination_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
@@ -30,6 +31,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   // تتبع التحصينات المضافة لإخفائها من القائمة
   final RxSet<String> _addedVaccinations = <String>{}.obs;
   final RxBool _isManualVaccinationEntry = false.obs;
+
+  bool get _isViewer => cycleCtrl.currentCycle['role']?.toString() == 'viewer';
 
   int get _currentMortalityTotal {
     final cycle = cycleCtrl.currentCycle;
@@ -63,6 +66,17 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
 
     // تحميل التحصينات المضافة مسبقاً
     _loadAddedVaccinations();
+
+    // جلب أحدث البيانات من السيرفر عند فتح الشاشة لضمان مزامنة بيانات الأعضاء
+    // silent: true لمنع تأثير cycleDetailsStatus على صفحة الدورة عند الرجوع
+    final cycleId = cycleCtrl.currentCycle['cycle_id'];
+    if (cycleId != null) {
+      final cycleIdInt =
+          cycleId is int ? cycleId : int.tryParse(cycleId.toString());
+      if (cycleIdInt != null && cycleIdInt > 0) {
+        cycleCtrl.fetchCycleDetails(cycleIdInt, silent: true);
+      }
+    }
   }
 
   void _loadAddedVaccinations() {
@@ -120,55 +134,67 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
         }),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+          if (cycleCtrl.currentCycle['role']?.toString() != 'viewer')
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+              ),
+              onPressed: () => _showAddDataDialog(isDark),
             ),
-            onPressed: () => _showAddDataDialog(isDark),
-          ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 24.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMortalityInputCard(isDark),
-              SizedBox(height: 20.h),
-              _buildAverageWeightInputCard(isDark),
-              SizedBox(height: 20.h),
-              const AdNativeWidget(),
-              SizedBox(height: 20.h),
-              _buildMedicationInputCard(isDark),
-              SizedBox(height: 20.h),
-              _buildFeedConsumptionInputCard(isDark),
-              Obx(() {
-                if (customDataCtrl.customDataItems.isEmpty) {
-                  return const SizedBox.shrink();
-                }
-                return Column(
-                  children: [
-                    ...customDataCtrl.customDataItems.asMap().entries.map((
-                      entry,
-                    ) {
-                      final index = entry.key;
-                      final item = entry.value;
-                      return Column(
-                        children: [
-                          SizedBox(height: 20.h),
-                          _buildCustomDataCard(item, index, isDark),
-                        ],
-                      );
-                    }),
-                  ],
-                );
-              }),
-            ],
+      body: Obx(() {
+        if (cycleCtrl.cycleDetailsStatus.value == StatusRequest.loading) {
+          return const SafeArea(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () => cycleCtrl.forceRefreshCurrentCycle(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 24.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMortalityInputCard(isDark),
+                  SizedBox(height: 20.h),
+                  _buildAverageWeightInputCard(isDark),
+                  SizedBox(height: 20.h),
+                  const AdNativeWidget(),
+                  SizedBox(height: 20.h),
+                  _buildMedicationInputCard(isDark),
+                  SizedBox(height: 20.h),
+                  _buildFeedConsumptionInputCard(isDark),
+                  Obx(() {
+                    if (customDataCtrl.customDataItems.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    return Column(
+                      children: [
+                        ...customDataCtrl.customDataItems.asMap().entries.map((
+                          entry,
+                        ) {
+                          final index = entry.key;
+                          final item = entry.value;
+                          return Column(
+                            children: [
+                              SizedBox(height: 20.h),
+                              _buildCustomDataCard(item, index, isDark),
+                            ],
+                          );
+                        }),
+                      ],
+                    );
+                  }),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
       bottomNavigationBar: const AdBannerWidget(),
     );
   }
@@ -244,16 +270,20 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                             colors:
                                 isDark
                                     ? [
-                                      AppColors.darkPrimaryColor.withValues(alpha: 
-                                        0.2,
+                                      AppColors.darkPrimaryColor.withValues(
+                                        alpha: 0.2,
                                       ),
-                                      AppColors.darkPrimaryColor.withValues(alpha: 
-                                        0.15,
+                                      AppColors.darkPrimaryColor.withValues(
+                                        alpha: 0.15,
                                       ),
                                     ]
                                     : [
-                                      AppColors.primaryColor.withValues(alpha: 0.15),
-                                      AppColors.primaryColor.withValues(alpha: 0.08),
+                                      AppColors.primaryColor.withValues(
+                                        alpha: 0.15,
+                                      ),
+                                      AppColors.primaryColor.withValues(
+                                        alpha: 0.08,
+                                      ),
                                     ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -264,8 +294,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                   ? []
                                   : [
                                     BoxShadow(
-                                      color: AppColors.primaryColor.withValues(alpha: 
-                                        0.1,
+                                      color: AppColors.primaryColor.withValues(
+                                        alpha: 0.1,
                                       ),
                                       blurRadius: 3,
                                       offset: const Offset(0, 2),
@@ -340,19 +370,20 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                               decoration: BoxDecoration(
                                 color:
                                     isHistoryExpanded.value
-                                        ? AppColors.primaryColor.withValues(alpha: 
-                                          0.3,
+                                        ? AppColors.primaryColor.withValues(
+                                          alpha: 0.3,
                                         )
                                         : isDark
-                                        ? AppColors.darkPrimaryColor
-                                            .withValues(alpha: 0.25)
-                                        : AppColors.primaryColor.withValues(alpha: 
-                                          0.2,
+                                        ? AppColors.darkPrimaryColor.withValues(
+                                          alpha: 0.25,
+                                        )
+                                        : AppColors.primaryColor.withValues(
+                                          alpha: 0.2,
                                         ),
                                 borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.primaryColor.withValues(alpha: 
-                                    0.4,
+                                  color: AppColors.primaryColor.withValues(
+                                    alpha: 0.4,
                                   ),
                                   width: 1.5,
                                 ),
@@ -404,8 +435,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -419,7 +450,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -440,7 +473,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -515,33 +550,36 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteMortalityConfirmDialog(lastEntry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteMortalityConfirmDialog(lastEntry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
               ),
             if (isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((MapEntry<int, MortalityEntry> entryMap) {
+              ...sortedEntries.asMap().entries.map((
+                MapEntry<int, MortalityEntry> entryMap,
+              ) {
                 final index = entryMap.key;
                 final entry = entryMap.value;
                 return Container(
@@ -558,8 +596,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -573,7 +611,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -594,7 +634,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -667,27 +709,28 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteMortalityConfirmDialog(entry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteMortalityConfirmDialog(entry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -695,141 +738,146 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             ],
 
             // Input Section
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-              decoration: BoxDecoration(
-                gradient:
-                    isDark
-                        ? null
-                        : LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            AppColors.primaryColor.withValues(alpha: 0.02),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12.r),
-                  bottomRight: Radius.circular(12.r),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _mortalityNewController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        hintText: 'أدخل العدد',
-                        hintStyle: TextStyle(
-                          fontSize: 12.sp,
-                          color: isDark ? Colors.grey[500] : Colors.grey[400],
-                        ),
-                        filled: true,
-                        fillColor:
-                            isDark
-                                ? AppColors.darkSurfaceElevatedColor
-                                : Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 10.h,
-                        ),
-                        suffixText: 'فرخ',
-                        suffixStyle: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Material(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(10.r),
-                    elevation: 2,
-                    shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
-                    child: InkWell(
-                      onTap: () {
-                        final value = _mortalityNewController.text;
-                        final count = int.tryParse(value) ?? 0;
-                        if (count > 0) {
-                          _saveMortality();
-                        } else {
-                          _mortalityNewController.clear();
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(10.r),
-                      child: Container(
-                        width: 44.w,
-                        height: 44.w,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
+            if (!_isViewer)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                decoration: BoxDecoration(
+                  gradient:
+                      isDark
+                          ? null
+                          : LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withValues(alpha: 0.8),
+                              Colors.transparent,
+                              AppColors.primaryColor.withValues(alpha: 0.02),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
-                          borderRadius: BorderRadius.circular(10.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12.r),
+                    bottomRight: Radius.circular(12.r),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _mortalityNewController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: 'أدخل العدد',
+                          hintStyle: TextStyle(
+                            fontSize: 12.sp,
+                            color: isDark ? Colors.grey[500] : Colors.grey[400],
+                          ),
+                          filled: true,
+                          fillColor:
+                              isDark
+                                  ? AppColors.darkSurfaceElevatedColor
+                                  : Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkOutlineColor
+                                      : Colors.grey[300]!,
                             ),
-                          ],
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkOutlineColor
+                                      : Colors.grey[300]!,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkPrimaryColor
+                                      : AppColors.primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 10.h,
+                          ),
+                          suffixText: 'فرخ',
+                          suffixStyle: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          ),
                         ),
-                        child: Icon(
-                          Icons.add_rounded,
-                          color: Colors.white,
-                          size: 22.sp,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              isDark
+                                  ? AppColors.darkPrimaryColor
+                                  : Colors.black87,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 8.w),
+                    Material(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(10.r),
+                      elevation: 2,
+                      shadowColor: AppColors.primaryColor.withValues(
+                        alpha: 0.3,
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          final value = _mortalityNewController.text;
+                          final count = int.tryParse(value) ?? 0;
+                          if (count > 0) {
+                            _saveMortality();
+                          } else {
+                            _mortalityNewController.clear();
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(10.r),
+                        child: Container(
+                          width: 44.w,
+                          height: 44.w,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primaryColor,
+                                AppColors.primaryColor.withValues(alpha: 0.8),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(10.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryColor.withValues(
+                                  alpha: 0.3,
+                                ),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.add_rounded,
+                            color: Colors.white,
+                            size: 22.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       );
@@ -899,12 +947,20 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         colors:
                             isDark
                                 ? [
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.2),
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.15),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
                                 ]
                                 : [
-                                  AppColors.primaryColor.withValues(alpha: 0.15),
-                                  AppColors.primaryColor.withValues(alpha: 0.08),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.08,
+                                  ),
                                 ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -915,8 +971,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                               ? []
                               : [
                                 BoxShadow(
-                                  color: AppColors.primaryColor.withValues(alpha: 
-                                    0.1,
+                                  color: AppColors.primaryColor.withValues(
+                                    alpha: 0.1,
                                   ),
                                   blurRadius: 3,
                                   offset: const Offset(0, 2),
@@ -960,15 +1016,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           decoration: BoxDecoration(
                             color:
                                 isHistoryExpanded.value
-                                    ? AppColors.primaryColor.withValues(alpha: 0.3)
-                                    : isDark
-                                    ? AppColors.darkPrimaryColor.withValues(alpha: 
-                                      0.25,
+                                    ? AppColors.primaryColor.withValues(
+                                      alpha: 0.3,
                                     )
-                                    : AppColors.primaryColor.withValues(alpha: 0.2),
+                                    : isDark
+                                    ? AppColors.darkPrimaryColor.withValues(
+                                      alpha: 0.25,
+                                    )
+                                    : AppColors.primaryColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.primaryColor.withValues(alpha: 0.4),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.4,
+                              ),
                               width: 1.5,
                             ),
                           ),
@@ -1017,8 +1079,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -1032,7 +1094,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -1053,7 +1117,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -1128,33 +1194,36 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteAverageWeightConfirmDialog(lastEntry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteAverageWeightConfirmDialog(lastEntry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
               ),
             if (isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((MapEntry<int, WeightEntry> entryMap) {
+              ...sortedEntries.asMap().entries.map((
+                MapEntry<int, WeightEntry> entryMap,
+              ) {
                 final index = entryMap.key;
                 final entry = entryMap.value;
                 return Container(
@@ -1171,8 +1240,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -1186,7 +1255,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -1207,7 +1278,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -1280,27 +1353,28 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteAverageWeightConfirmDialog(entry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteAverageWeightConfirmDialog(entry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -1308,143 +1382,148 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             ],
 
             // Input Section
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-              decoration: BoxDecoration(
-                gradient:
-                    isDark
-                        ? null
-                        : LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            AppColors.primaryColor.withValues(alpha: 0.02),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12.r),
-                  bottomRight: Radius.circular(12.r),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _averageWeightController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'أدخل متوسط وزن القطيع',
-                        hintStyle: TextStyle(
-                          fontSize: 12.sp,
-                          color: isDark ? Colors.grey[500] : Colors.grey[400],
-                        ),
-                        filled: true,
-                        fillColor:
-                            isDark
-                                ? AppColors.darkSurfaceElevatedColor
-                                : Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 10.h,
-                        ),
-                        suffixText: 'كيلو',
-                        suffixStyle: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Material(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(10.r),
-                    elevation: 2,
-                    shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
-                    child: InkWell(
-                      onTap: () {
-                        final value = _averageWeightController.text;
-                        final weight = double.tryParse(value) ?? 0.0;
-                        if (weight > 0) {
-                          _saveAverageWeight();
-                        } else {
-                          _averageWeightController.clear();
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(10.r),
-                      child: Container(
-                        width: 44.w,
-                        height: 44.w,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
+            if (!_isViewer)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                decoration: BoxDecoration(
+                  gradient:
+                      isDark
+                          ? null
+                          : LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withValues(alpha: 0.8),
+                              Colors.transparent,
+                              AppColors.primaryColor.withValues(alpha: 0.02),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
-                          borderRadius: BorderRadius.circular(10.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12.r),
+                    bottomRight: Radius.circular(12.r),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _averageWeightController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
-                        child: Icon(
-                          Icons.add_rounded,
-                          color: Colors.white,
-                          size: 22.sp,
+                        decoration: InputDecoration(
+                          hintText: 'أدخل متوسط وزن القطيع',
+                          hintStyle: TextStyle(
+                            fontSize: 12.sp,
+                            color: isDark ? Colors.grey[500] : Colors.grey[400],
+                          ),
+                          filled: true,
+                          fillColor:
+                              isDark
+                                  ? AppColors.darkSurfaceElevatedColor
+                                  : Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkOutlineColor
+                                      : Colors.grey[300]!,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkOutlineColor
+                                      : Colors.grey[300]!,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkPrimaryColor
+                                      : AppColors.primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 10.h,
+                          ),
+                          suffixText: 'كيلو',
+                          suffixStyle: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              isDark
+                                  ? AppColors.darkPrimaryColor
+                                  : Colors.black87,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 8.w),
+                    Material(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(10.r),
+                      elevation: 2,
+                      shadowColor: AppColors.primaryColor.withValues(
+                        alpha: 0.3,
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          final value = _averageWeightController.text;
+                          final weight = double.tryParse(value) ?? 0.0;
+                          if (weight > 0) {
+                            _saveAverageWeight();
+                          } else {
+                            _averageWeightController.clear();
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(10.r),
+                        child: Container(
+                          width: 44.w,
+                          height: 44.w,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primaryColor,
+                                AppColors.primaryColor.withValues(alpha: 0.8),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(10.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryColor.withValues(
+                                  alpha: 0.3,
+                                ),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.add_rounded,
+                            color: Colors.white,
+                            size: 22.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       );
@@ -1514,12 +1593,20 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         colors:
                             isDark
                                 ? [
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.2),
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.15),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
                                 ]
                                 : [
-                                  AppColors.primaryColor.withValues(alpha: 0.15),
-                                  AppColors.primaryColor.withValues(alpha: 0.08),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.08,
+                                  ),
                                 ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -1530,8 +1617,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                               ? []
                               : [
                                 BoxShadow(
-                                  color: AppColors.primaryColor.withValues(alpha: 
-                                    0.1,
+                                  color: AppColors.primaryColor.withValues(
+                                    alpha: 0.1,
                                   ),
                                   blurRadius: 3,
                                   offset: const Offset(0, 2),
@@ -1575,15 +1662,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           decoration: BoxDecoration(
                             color:
                                 isHistoryExpanded.value
-                                    ? AppColors.primaryColor.withValues(alpha: 0.3)
-                                    : isDark
-                                    ? AppColors.darkPrimaryColor.withValues(alpha: 
-                                      0.25,
+                                    ? AppColors.primaryColor.withValues(
+                                      alpha: 0.3,
                                     )
-                                    : AppColors.primaryColor.withValues(alpha: 0.2),
+                                    : isDark
+                                    ? AppColors.darkPrimaryColor.withValues(
+                                      alpha: 0.25,
+                                    )
+                                    : AppColors.primaryColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.primaryColor.withValues(alpha: 0.4),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.4,
+                              ),
                               width: 1.5,
                             ),
                           ),
@@ -1632,8 +1725,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -1647,7 +1740,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -1668,7 +1763,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -1723,27 +1820,28 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteMedicationConfirmDialog(lastEntry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteMedicationConfirmDialog(lastEntry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -1766,8 +1864,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -1781,7 +1879,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -1802,7 +1902,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -1855,27 +1957,28 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteMedicationConfirmDialog(entry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteMedicationConfirmDialog(entry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -1883,80 +1986,96 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             ],
 
             // Input Section
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-              decoration: BoxDecoration(
-                gradient:
-                    isDark
-                        ? null
-                        : LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            AppColors.primaryColor.withValues(alpha: 0.02),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12.r),
-                  bottomRight: Radius.circular(12.r),
+            if (!_isViewer)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                decoration: BoxDecoration(
+                  gradient:
+                      isDark
+                          ? null
+                          : LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              AppColors.primaryColor.withValues(alpha: 0.02),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12.r),
+                    bottomRight: Radius.circular(12.r),
+                  ),
                 ),
-              ),
-              child: Obx(() {
-                final allVaccinations = VaccinationData.vaccinationSchedule;
-                final availableVaccinations =
-                    allVaccinations
-                        .where(
-                          (v) => !_addedVaccinations.contains(v.vaccineName),
-                        )
-                        .toList();
+                child: Obx(() {
+                  final allVaccinations = VaccinationData.vaccinationSchedule;
+                  final availableVaccinations =
+                      allVaccinations
+                          .where(
+                            (v) => !_addedVaccinations.contains(v.vaccineName),
+                          )
+                          .toList();
 
-                String? selectedVaccination;
+                  String? selectedVaccination;
 
-                return Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            isDark
-                                ? AppColors.darkSurfaceElevatedColor
-                                : Colors.white,
-                        borderRadius: BorderRadius.circular(10.r),
-                        border: Border.all(
+                  return Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
                           color:
                               isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
-                        ),
-                      ),
-                      child: DropdownButton<String>(
-                        value: selectedVaccination,
-                        isExpanded: true,
-                        hint: Text(
-                          'اختر تحصين من القائمة',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                  ? AppColors.darkSurfaceElevatedColor
+                                  : Colors.white,
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(
+                            color:
+                                isDark
+                                    ? AppColors.darkOutlineColor
+                                    : Colors.grey[300]!,
                           ),
                         ),
-                        underline: const SizedBox(),
-                        icon: Icon(
-                          Icons.arrow_drop_down,
-                          color:
-                              isDark
-                                  ? AppColors.darkPrimaryColor
-                                  : AppColors.primaryColor,
-                        ),
-                        items: [
-                          ...availableVaccinations.map((vaccination) {
-                            return DropdownMenuItem<String>(
-                              value: vaccination.vaccineName,
+                        child: DropdownButton<String>(
+                          value: selectedVaccination,
+                          isExpanded: true,
+                          hint: Text(
+                            'اختر تحصين من القائمة',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color:
+                                  isDark ? Colors.grey[400] : Colors.grey[600],
+                            ),
+                          ),
+                          underline: const SizedBox(),
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                            color:
+                                isDark
+                                    ? AppColors.darkPrimaryColor
+                                    : AppColors.primaryColor,
+                          ),
+                          items: [
+                            ...availableVaccinations.map((vaccination) {
+                              return DropdownMenuItem<String>(
+                                value: vaccination.vaccineName,
+                                child: Text(
+                                  '${vaccination.vaccineName} (عمر ${vaccination.age} يوم)',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color:
+                                        isDark
+                                            ? AppColors.darkPrimaryColor
+                                            : Colors.black87,
+                                  ),
+                                ),
+                              );
+                            }),
+                            DropdownMenuItem<String>(
+                              value: 'manual',
                               child: Text(
-                                '${vaccination.vaccineName} (عمر ${vaccination.age} يوم)',
+                                'تحصين آخر',
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   color:
@@ -1965,157 +2084,144 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                           : Colors.black87,
                                 ),
                               ),
-                            );
-                          }),
-                          DropdownMenuItem<String>(
-                            value: 'manual',
-                            child: Text(
-                              'تحصين آخر',
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color:
-                                    isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : Colors.black87,
-                              ),
                             ),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          if (value == 'manual') {
-                            _isManualVaccinationEntry.value = true;
-                            _medicationController.clear();
-                          } else if (value != null) {
-                            // إضافة التحصين المختار تلقائياً
-                            _addedVaccinations.add(value);
-                            cycleCtrl.addMedicationEntry(value);
-                            selectedVaccination = null;
-                          }
-                        },
+                          ],
+                          onChanged: (value) {
+                            if (value == 'manual') {
+                              _isManualVaccinationEntry.value = true;
+                              _medicationController.clear();
+                            } else if (value != null) {
+                              // إضافة التحصين المختار تلقائياً
+                              _addedVaccinations.add(value);
+                              cycleCtrl.addMedicationEntry(value);
+                              selectedVaccination = null;
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                    if (_isManualVaccinationEntry.value) ...[
-                      SizedBox(height: 8.h),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _medicationController,
-                              decoration: InputDecoration(
-                                hintText: 'أدخل اسم التحصين',
-                                hintStyle: TextStyle(
-                                  fontSize: 12.sp,
+                      if (_isManualVaccinationEntry.value) ...[
+                        SizedBox(height: 8.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _medicationController,
+                                decoration: InputDecoration(
+                                  hintText: 'أدخل اسم التحصين',
+                                  hintStyle: TextStyle(
+                                    fontSize: 12.sp,
+                                    color:
+                                        isDark
+                                            ? Colors.grey[500]
+                                            : Colors.grey[400],
+                                  ),
+                                  filled: true,
+                                  fillColor:
+                                      isDark
+                                          ? AppColors.darkSurfaceElevatedColor
+                                          : Colors.white,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    borderSide: BorderSide(
+                                      color:
+                                          isDark
+                                              ? AppColors.darkOutlineColor
+                                              : Colors.grey[300]!,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    borderSide: BorderSide(
+                                      color:
+                                          isDark
+                                              ? AppColors.darkOutlineColor
+                                              : Colors.grey[300]!,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    borderSide: BorderSide(
+                                      color:
+                                          isDark
+                                              ? AppColors.darkPrimaryColor
+                                              : AppColors.primaryColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 10.h,
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
                                   color:
                                       isDark
-                                          ? Colors.grey[500]
-                                          : Colors.grey[400],
-                                ),
-                                filled: true,
-                                fillColor:
-                                    isDark
-                                        ? AppColors.darkSurfaceElevatedColor
-                                        : Colors.white,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  borderSide: BorderSide(
-                                    color:
-                                        isDark
-                                            ? AppColors.darkOutlineColor
-                                            : Colors.grey[300]!,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  borderSide: BorderSide(
-                                    color:
-                                        isDark
-                                            ? AppColors.darkOutlineColor
-                                            : Colors.grey[300]!,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  borderSide: BorderSide(
-                                    color:
-                                        isDark
-                                            ? AppColors.darkPrimaryColor
-                                            : AppColors.primaryColor,
-                                    width: 2,
-                                  ),
-                                ),
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 10.h,
+                                          ? AppColors.darkPrimaryColor
+                                          : Colors.black87,
                                 ),
                               ),
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                color:
-                                    isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : Colors.black87,
-                              ),
                             ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Material(
-                            color: AppColors.primaryColor,
-                            borderRadius: BorderRadius.circular(10.r),
-                            elevation: 2,
-                            shadowColor: AppColors.primaryColor.withValues(alpha: 
-                              0.3,
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                final value = _medicationController.text;
-                                if (value.isNotEmpty) {
-                                  _saveMedication();
-                                  _isManualVaccinationEntry.value = false;
-                                } else {
-                                  _medicationController.clear();
-                                }
-                              },
+                            SizedBox(width: 8.w),
+                            Material(
+                              color: AppColors.primaryColor,
                               borderRadius: BorderRadius.circular(10.r),
-                              child: Container(
-                                width: 44.w,
-                                height: 44.w,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColors.primaryColor,
-                                      AppColors.primaryColor.withValues(alpha: 0.8),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primaryColor.withValues(alpha: 
-                                        0.3,
-                                      ),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 3),
+                              elevation: 2,
+                              shadowColor: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  final value = _medicationController.text;
+                                  if (value.isNotEmpty) {
+                                    _saveMedication();
+                                    _isManualVaccinationEntry.value = false;
+                                  } else {
+                                    _medicationController.clear();
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: Container(
+                                  width: 44.w,
+                                  height: 44.w,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.primaryColor,
+                                        AppColors.primaryColor.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                     ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.add_rounded,
-                                  color: Colors.white,
-                                  size: 22.sp,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.primaryColor
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.add_rounded,
+                                    color: Colors.white,
+                                    size: 22.sp,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ],
-                  ],
-                );
-              }),
-            ),
+                  );
+                }),
+              ),
           ],
         ),
       );
@@ -2185,12 +2291,20 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         colors:
                             isDark
                                 ? [
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.2),
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.15),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
                                 ]
                                 : [
-                                  AppColors.primaryColor.withValues(alpha: 0.15),
-                                  AppColors.primaryColor.withValues(alpha: 0.08),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.08,
+                                  ),
                                 ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -2201,8 +2315,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                               ? []
                               : [
                                 BoxShadow(
-                                  color: AppColors.primaryColor.withValues(alpha: 
-                                    0.1,
+                                  color: AppColors.primaryColor.withValues(
+                                    alpha: 0.1,
                                   ),
                                   blurRadius: 3,
                                   offset: const Offset(0, 2),
@@ -2297,15 +2411,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           decoration: BoxDecoration(
                             color:
                                 isHistoryExpanded.value
-                                    ? AppColors.primaryColor.withValues(alpha: 0.3)
-                                    : isDark
-                                    ? AppColors.darkPrimaryColor.withValues(alpha: 
-                                      0.25,
+                                    ? AppColors.primaryColor.withValues(
+                                      alpha: 0.3,
                                     )
-                                    : AppColors.primaryColor.withValues(alpha: 0.2),
+                                    : isDark
+                                    ? AppColors.darkPrimaryColor.withValues(
+                                      alpha: 0.25,
+                                    )
+                                    : AppColors.primaryColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.primaryColor.withValues(alpha: 0.4),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.4,
+                              ),
                               width: 1.5,
                             ),
                           ),
@@ -2354,8 +2474,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -2369,7 +2489,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -2390,7 +2512,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -2465,33 +2589,38 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteFeedConsumptionConfirmDialog(lastEntry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteFeedConsumptionConfirmDialog(
+                                lastEntry,
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
               ),
             if (isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((MapEntry<int, FeedConsumptionEntry> entryMap) {
+              ...sortedEntries.asMap().entries.map((
+                MapEntry<int, FeedConsumptionEntry> entryMap,
+              ) {
                 final index = entryMap.key;
                 final entry = entryMap.value;
                 return Container(
@@ -2508,8 +2637,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -2523,7 +2652,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -2544,7 +2675,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -2617,27 +2750,28 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            _showDeleteFeedConsumptionConfirmDialog(entry);
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              _showDeleteFeedConsumptionConfirmDialog(entry);
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -2645,143 +2779,148 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             ],
 
             // Input Section
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
-              decoration: BoxDecoration(
-                gradient:
-                    isDark
-                        ? null
-                        : LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            AppColors.primaryColor.withValues(alpha: 0.02),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12.r),
-                  bottomRight: Radius.circular(12.r),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _feedConsumptionController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'أدخل استهلاك العلف',
-                        hintStyle: TextStyle(
-                          fontSize: 12.sp,
-                          color: isDark ? Colors.grey[500] : Colors.grey[400],
-                        ),
-                        filled: true,
-                        fillColor:
-                            isDark
-                                ? AppColors.darkSurfaceElevatedColor
-                                : Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                          borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 10.h,
-                        ),
-                        suffixText: 'كيلو',
-                        suffixStyle: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Material(
-                    color: AppColors.primaryColor,
-                    borderRadius: BorderRadius.circular(10.r),
-                    elevation: 2,
-                    shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
-                    child: InkWell(
-                      onTap: () {
-                        final value = _feedConsumptionController.text;
-                        final amount = double.tryParse(value) ?? 0.0;
-                        if (amount > 0) {
-                          _saveFeedConsumption();
-                        } else {
-                          _feedConsumptionController.clear();
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(10.r),
-                      child: Container(
-                        width: 44.w,
-                        height: 44.w,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
+            if (!_isViewer)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+                decoration: BoxDecoration(
+                  gradient:
+                      isDark
+                          ? null
+                          : LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withValues(alpha: 0.8),
+                              Colors.transparent,
+                              AppColors.primaryColor.withValues(alpha: 0.02),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
-                          borderRadius: BorderRadius.circular(10.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(12.r),
+                    bottomRight: Radius.circular(12.r),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _feedConsumptionController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
-                        child: Icon(
-                          Icons.add_rounded,
-                          color: Colors.white,
-                          size: 22.sp,
+                        decoration: InputDecoration(
+                          hintText: 'أدخل استهلاك العلف',
+                          hintStyle: TextStyle(
+                            fontSize: 12.sp,
+                            color: isDark ? Colors.grey[500] : Colors.grey[400],
+                          ),
+                          filled: true,
+                          fillColor:
+                              isDark
+                                  ? AppColors.darkSurfaceElevatedColor
+                                  : Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkOutlineColor
+                                      : Colors.grey[300]!,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkOutlineColor
+                                      : Colors.grey[300]!,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            borderSide: BorderSide(
+                              color:
+                                  isDark
+                                      ? AppColors.darkPrimaryColor
+                                      : AppColors.primaryColor,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 10.h,
+                          ),
+                          suffixText: 'كيلو',
+                          suffixStyle: TextStyle(
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w500,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                        ),
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color:
+                              isDark
+                                  ? AppColors.darkPrimaryColor
+                                  : Colors.black87,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 8.w),
+                    Material(
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.circular(10.r),
+                      elevation: 2,
+                      shadowColor: AppColors.primaryColor.withValues(
+                        alpha: 0.3,
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          final value = _feedConsumptionController.text;
+                          final amount = double.tryParse(value) ?? 0.0;
+                          if (amount > 0) {
+                            _saveFeedConsumption();
+                          } else {
+                            _feedConsumptionController.clear();
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(10.r),
+                        child: Container(
+                          width: 44.w,
+                          height: 44.w,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primaryColor,
+                                AppColors.primaryColor.withValues(alpha: 0.8),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(10.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryColor.withValues(
+                                  alpha: 0.3,
+                                ),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.add_rounded,
+                            color: Colors.white,
+                            size: 22.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       );
@@ -2865,7 +3004,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () {
               Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              cycleCtrl.removeAverageWeightEntry(entry.id); // تنفيذ الحذف في الخلفية
+              cycleCtrl.removeAverageWeightEntry(
+                entry.id,
+              ); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
@@ -2922,7 +3063,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               }
 
               Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              cycleCtrl.removeMedicationEntry(entry.id); // تنفيذ الحذف في الخلفية
+              cycleCtrl.removeMedicationEntry(
+                entry.id,
+              ); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
@@ -2970,7 +3113,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () {
               Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              cycleCtrl.removeFeedConsumptionEntry(entry.id); // تنفيذ الحذف في الخلفية
+              cycleCtrl.removeFeedConsumptionEntry(
+                entry.id,
+              ); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
@@ -3018,7 +3163,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () {
               Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              cycleCtrl.removeMortalityEntry(entry.id); // تنفيذ الحذف في الخلفية
+              cycleCtrl.removeMortalityEntry(
+                entry.id,
+              ); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
@@ -3197,12 +3344,20 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         colors:
                             isDark
                                 ? [
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.2),
-                                  AppColors.darkPrimaryColor.withValues(alpha: 0.15),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  AppColors.darkPrimaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
                                 ]
                                 : [
-                                  AppColors.primaryColor.withValues(alpha: 0.15),
-                                  AppColors.primaryColor.withValues(alpha: 0.08),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  AppColors.primaryColor.withValues(
+                                    alpha: 0.08,
+                                  ),
                                 ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -3213,8 +3368,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                               ? []
                               : [
                                 BoxShadow(
-                                  color: AppColors.primaryColor.withValues(alpha: 
-                                    0.1,
+                                  color: AppColors.primaryColor.withValues(
+                                    alpha: 0.1,
                                   ),
                                   blurRadius: 3,
                                   offset: const Offset(0, 2),
@@ -3258,15 +3413,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           decoration: BoxDecoration(
                             color:
                                 isHistoryExpanded.value
-                                    ? AppColors.primaryColor.withValues(alpha: 0.3)
-                                    : isDark
-                                    ? AppColors.darkPrimaryColor.withValues(alpha: 
-                                      0.25,
+                                    ? AppColors.primaryColor.withValues(
+                                      alpha: 0.3,
                                     )
-                                    : AppColors.primaryColor.withValues(alpha: 0.2),
+                                    : isDark
+                                    ? AppColors.darkPrimaryColor.withValues(
+                                      alpha: 0.25,
+                                    )
+                                    : AppColors.primaryColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.primaryColor.withValues(alpha: 0.4),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.4,
+                              ),
                               width: 1.5,
                             ),
                           ),
@@ -3291,30 +3452,31 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       ),
                     ),
                   SizedBox(width: 5.w),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        _showDeleteCustomDataConfirmDialog(
-                          itemIndex,
-                          item.label,
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(8.r),
-                      child: Container(
-                        padding: EdgeInsets.all(8.w),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Icon(
-                          Icons.delete_outline,
-                          color: Colors.red[500],
-                          size: 18.sp,
+                  if (!_isViewer)
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          _showDeleteCustomDataConfirmDialog(
+                            itemIndex,
+                            item.label,
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Icon(
+                            Icons.delete_outline,
+                            color: Colors.red[500],
+                            size: 18.sp,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -3338,8 +3500,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -3353,7 +3515,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -3374,7 +3538,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -3429,37 +3595,38 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            final entryIndex = item.entries.indexWhere(
-                              (e) => e.id == lastEntry.id,
-                            );
-                            if (entryIndex != -1) {
-                              _showDeleteCustomEntryConfirmDialog(
-                                itemIndex,
-                                entryIndex,
-                                lastEntry.text,
-                                item.label,
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              final entryIndex = item.entries.indexWhere(
+                                (e) => e.id == lastEntry.id,
                               );
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                              if (entryIndex != -1) {
+                                _showDeleteCustomEntryConfirmDialog(
+                                  itemIndex,
+                                  entryIndex,
+                                  lastEntry.text,
+                                  item.label,
+                                );
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -3482,8 +3649,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           isDark
                               ? [
                                 AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(alpha: 
-                                  0.8,
+                                AppColors.darkSurfaceElevatedColor.withValues(
+                                  alpha: 0.8,
                                 ),
                               ]
                               : [
@@ -3497,7 +3664,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     border: Border.all(
                       color:
                           isDark
-                              ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                              ? AppColors.darkOutlineColor.withValues(
+                                alpha: 0.3,
+                              )
                               : AppColors.primaryColor.withValues(alpha: 0.2),
                     ),
                   ),
@@ -3518,7 +3687,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -3571,37 +3742,38 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           ],
                         ),
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            final originalIndex = item.entries.indexWhere(
-                              (e) => e.id == entry.id,
-                            );
-                            if (originalIndex != -1) {
-                              _showDeleteCustomEntryConfirmDialog(
-                                itemIndex,
-                                originalIndex,
-                                entry.text,
-                                item.label,
+                      if (!_isViewer)
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              final originalIndex = item.entries.indexWhere(
+                                (e) => e.id == entry.id,
                               );
-                            }
-                          },
-                          borderRadius: BorderRadius.circular(6.r),
-                          child: Container(
-                            padding: EdgeInsets.all(6.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Icon(
-                              Icons.delete_outline,
-                              size: 14.sp,
-                              color: Colors.red[500],
+                              if (originalIndex != -1) {
+                                _showDeleteCustomEntryConfirmDialog(
+                                  itemIndex,
+                                  originalIndex,
+                                  entry.text,
+                                  item.label,
+                                );
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(6.r),
+                            child: Container(
+                              padding: EdgeInsets.all(6.w),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Icon(
+                                Icons.delete_outline,
+                                size: 14.sp,
+                                color: Colors.red[500],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 );
@@ -3727,7 +3899,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(10.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(alpha: 0.3),
+                              color: AppColors.primaryColor.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
@@ -3782,7 +3956,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () {
               Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              customDataCtrl.removeCustomDataItem(index); // تنفيذ الحذف في الخلفية
+              customDataCtrl.removeCustomDataItem(
+                index,
+              ); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,
@@ -3835,7 +4011,10 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () {
               Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              customDataCtrl.removeEntry(itemIndex, entryIndex); // تنفيذ الحذف في الخلفية
+              customDataCtrl.removeEntry(
+                itemIndex,
+                entryIndex,
+              ); // تنفيذ الحذف في الخلفية
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,

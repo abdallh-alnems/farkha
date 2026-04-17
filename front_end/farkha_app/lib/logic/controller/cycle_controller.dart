@@ -8,9 +8,12 @@ import 'package:intl/intl.dart';
 import '../../core/class/status_request.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/services/initialization.dart';
+import '../../core/services/notification_service.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
+import '../../view/widget/cycle/darkness_settings_sheet.dart';
 import 'cycle_custom_data_controller.dart';
 import 'cycle_expenses_controller.dart';
+import 'tools_controller/darkness_schedule_controller.dart';
 
 class WeightEntry {
   final String id;
@@ -27,7 +30,8 @@ class WeightEntry {
     return WeightEntry(
       id: (json['id'] ?? '').toString(),
       weight: ((json['weight'] ?? 0.0) as num).toDouble(),
-      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date:
+          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -47,7 +51,8 @@ class MedicationEntry {
     return MedicationEntry(
       id: (json['id'] ?? '').toString(),
       text: (json['text'] ?? '').toString(),
-      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date:
+          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -71,7 +76,8 @@ class FeedConsumptionEntry {
     return FeedConsumptionEntry(
       id: (json['id'] ?? '').toString(),
       amount: ((json['amount'] ?? 0.0) as num).toDouble(),
-      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date:
+          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -91,7 +97,8 @@ class MortalityEntry {
     return MortalityEntry(
       id: (json['id'] ?? '').toString(),
       count: ((json['count'] ?? 0) as num).toInt(),
-      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date:
+          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
     );
   }
 }
@@ -113,6 +120,8 @@ class CycleController extends GetxController {
 
   // Data
   final RxList<Map<String, dynamic>> cycles = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> historyCycles =
+      <Map<String, dynamic>>[].obs;
   final RxMap<String, dynamic> currentCycle = <String, dynamic>{}.obs;
 
   // Edit state
@@ -123,45 +132,332 @@ class CycleController extends GetxController {
   // Flags لتتبع عمليات جلب البيانات
   final Set<int> _loadingCycleDetails = <int>{};
   bool _isCycleOpen = false;
-  
+
   // حالة التحميل للدورة الحالية
   final Rx<StatusRequest> cycleDetailsStatus = StatusRequest.none.obs;
-  
+
   // حالة التحميل لإنشاء/تعديل الدورة
   final Rx<StatusRequest> cycleSaveStatus = StatusRequest.none.obs;
-  
+
+  // Historic cycle deep tracking
+  final RxMap<String, dynamic> historicCycleDetails = <String, dynamic>{}.obs;
+  final Rx<StatusRequest> historicCycleStatus = StatusRequest.none.obs;
+
+  // Pagination Variables (للسجل فقط)
+  int _currentHistoryPage = 1;
+  static const int _historyLimit = 5;
+  final RxBool isLoadingMore = false.obs;
+  final RxBool hasMoreData = true.obs;
+  final RxString searchQuery = ''.obs;
+  final RxString filterDateFrom = ''.obs;
+  final RxString filterDateTo = ''.obs;
+  final ScrollController historyScrollController = ScrollController();
+
   // حالة التحميل لإضافة البيانات
-  final Rx<StatusRequest> cycleDataStatus = StatusRequest.none.obs; // لتتبع ما إذا كانت هناك دورة مفتوحة حالياً
-  
+  final Rx<StatusRequest> cycleDataStatus =
+      StatusRequest.none.obs; // لتتبع ما إذا كانت هناك دورة مفتوحة حالياً
+
   // حالة التحميل لحذف الدورة
   final Rx<StatusRequest> cycleDeleteStatus = StatusRequest.none.obs;
-  
+
+  // حالة التحميل لمغادرة الدورة
+  final Rx<StatusRequest> cycleLeaveStatus = StatusRequest.none.obs;
+
   // حالة التحميل لإنهاء الدورة
   final Rx<StatusRequest> cycleEndStatus = StatusRequest.none.obs;
+
+  // حالة الدعوات
+  final RxList<Map<String, dynamic>> invitations = <Map<String, dynamic>>[].obs;
+  final Rx<StatusRequest> invitationsStatus = StatusRequest.none.obs;
+  final Rx<StatusRequest> invitationResponseStatus = StatusRequest.none.obs;
+
+  /// Incremented when cycle data changes (edit save or fetch); Cycle screen listens to refresh darkness/broiler.
+  final RxInt cycleDataVersion = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     _cycleData = CycleData();
     _loadCycles();
+    fetchCyclesFromServer();
+    fetchInvitations();
+
+    historyScrollController.addListener(() {
+      if (historyScrollController.position.pixels ==
+          historyScrollController.position.maxScrollExtent) {
+        fetchNextHistoryPage();
+      }
+    });
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    _checkArguments();
+  }
+
+  void _checkArguments() {
+    final args = Get.arguments;
+    if (args != null && args is Map) {
+      if (args['action'] == 'open_darkness_settings') {
+        unawaited(
+          Get.bottomSheet(
+            DarknessSettingsSheet(
+              controller: Get.find<DarknessScheduleController>(),
+            ),
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+          ),
+        );
+      }
+    }
   }
 
   void _loadCycles() {
-    // قراءة الدورات من GetStorage فقط (لا يتم استدعاء API هنا)
-    // getCycles يتم استدعاؤه فقط عند تسجيل الدخول في LoginController
+    // قراءة الدورات من GetStorage (البيانات الأساسية فقط بدون تفاصيل)
     final saved = myServices.getStorage.read<List<dynamic>>(_storageKey);
     if (saved != null && saved.isNotEmpty) {
-      final loadedCycles = saved.map((item) => Map<String, dynamic>.from(item as Map<dynamic, dynamic>)).toList();
+      final loadedCycles =
+          saved.map((item) {
+            final cycle = Map<String, dynamic>.from(
+              item as Map<dynamic, dynamic>,
+            );
+            // حذف البيانات التفصيلية المحفوظة محلياً لضمان جلبها من السيرفر دائماً
+            cycle.remove('mortalityEntries');
+            cycle.remove('averageWeightEntries');
+            cycle.remove('medicationEntries');
+            cycle.remove('feedConsumptionEntries');
+            cycle.remove('expenses');
+            cycle.remove('sales');
+            cycle.remove('customDataEntries');
+            cycle.remove('members');
+            cycle.remove('notes');
+            return cycle;
+          }).toList();
       // فلترة الدورات لإخفاء الدورات المنتهية
-      cycles.value = loadedCycles.where((cycle) {
-        final status = cycle['status']?.toString();
-        return status != 'finished';
-      }).toList();
+      cycles.value =
+          loadedCycles.where((cycle) {
+            final status = cycle['status']?.toString();
+            return status != 'finished';
+          }).toList();
+
+      historyCycles.value =
+          loadedCycles.where((cycle) {
+            final status = cycle['status']?.toString();
+            return status == 'finished';
+          }).toList();
       if (cycles.isNotEmpty) {
         currentCycle.assignAll(cycles.first);
       }
     }
   }
+
+  // ======================== جلب سجل الدورات ========================
+
+  Future<void> fetchHistory({int page = 1, bool isRefresh = false}) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return;
+
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) return;
+
+      if (isRefresh) {
+        _currentHistoryPage = 1;
+        page = 1;
+        hasMoreData.value = true;
+      }
+
+      if (page > 1) {
+        isLoadingMore.value = true;
+      }
+
+      final response = await _cycleData.getHistory(
+        token: token,
+        page: page,
+        search: searchQuery.value,
+        dateFrom: filterDateFrom.value,
+        dateTo: filterDateTo.value,
+      );
+
+      response.fold(
+        (failure) {
+          if (page > 1) isLoadingMore.value = false;
+          hasMoreData.value = false;
+        },
+        (result) {
+          if (page > 1) isLoadingMore.value = false;
+          final data = result['data'];
+          if (data != null && data['cycles'] != null) {
+            final apiCycles = data['cycles'] as List;
+            final int totalCount = (data['total_count'] ?? 0) as int;
+
+            final convertedCycles =
+                apiCycles.map<Map<String, dynamic>>((cycle) {
+                  final cycleId = cycle['id'];
+                  final name = cycle['name'] ?? '';
+                  final chickCount = cycle['chick_count']?.toString() ?? '0';
+                  final space = cycle['space']?.toString() ?? '';
+                  final breed = cycle['breed']?.toString() ?? '';
+                  final systemType = cycle['system_type']?.toString() ?? 'أرضي';
+                  final startDateRaw = cycle['start_date_raw'] ?? '';
+                  final endDateRaw = cycle['end_date_raw'];
+                  final mortalityStr = cycle['mortality']?.toString() ?? '0';
+                  final mortality = int.tryParse(mortalityStr) ?? 0;
+                  final totalExpensesStr =
+                      (cycle['total_expenses'] ?? 0).toString();
+                  final totalExpenses =
+                      double.tryParse(totalExpensesStr) ?? 0.0;
+                  final totalSalesStr = (cycle['total_sales'] ?? 0).toString();
+                  final totalSales = double.tryParse(totalSalesStr) ?? 0.0;
+                  final netProfit = totalSales - totalExpenses;
+                  final totalFeedStr = (cycle['total_feed'] ?? 0).toString();
+                  final totalFeed = double.tryParse(totalFeedStr) ?? 0.0;
+                  final averageWeightStr =
+                      (cycle['average_weight'] ?? 0).toString();
+                  final averageWeight =
+                      double.tryParse(averageWeightStr) ?? 0.0;
+                  final parsedChickCount = int.tryParse(chickCount) ?? 0;
+
+                  // حساب معامل التحويل (FCR)
+                  double fcr = 0.0;
+                  final survivingChicks = parsedChickCount - mortality;
+                  if (survivingChicks > 0 &&
+                      averageWeight > 0 &&
+                      totalFeed > 0) {
+                    final totalMeatProduced = survivingChicks * averageWeight;
+                    fcr = totalFeed / totalMeatProduced;
+                  }
+
+                  // حساب تكلفة الفرخ
+                  double costPerBird = 0.0;
+                  if (survivingChicks > 0 && totalExpenses > 0) {
+                    costPerBird = totalExpenses / survivingChicks;
+                  }
+
+                  // حساب نسبة النفوق (%)
+                  double mortalityRate = 0.0;
+                  if (parsedChickCount > 0 && mortality > 0) {
+                    mortalityRate = (mortality / parsedChickCount) * 100;
+                  }
+
+                  // حساب مدة الدورة (بالأيام)
+                  int cycleAge = 0;
+
+                  String startDate = '';
+                  final startDateRawStr = startDateRaw.toString();
+                  if (startDateRawStr.isNotEmpty) {
+                    try {
+                      final date = DateTime.parse(startDateRawStr);
+                      final formatter = DateFormat('yyyy/MM/dd', 'ar');
+                      startDate = formatter.format(date);
+                    } catch (e) {
+                      startDate = startDateRawStr;
+                    }
+                  }
+
+                  String endDate = '';
+                  if (endDateRaw != null && endDateRaw.toString().isNotEmpty) {
+                    try {
+                      final date = DateTime.parse(endDateRaw.toString());
+                      final formatter = DateFormat('yyyy/MM/dd', 'ar');
+                      endDate = formatter.format(date);
+
+                      if (startDateRawStr.isNotEmpty) {
+                        final startD = DateTime.parse(startDateRawStr);
+                        cycleAge = date.difference(startD).inDays + 1;
+                      }
+                    } catch (e) {
+                      endDate = endDateRaw.toString();
+                    }
+                  }
+
+                  return {
+                    'cycle_id': cycleId,
+                    'name': name,
+                    'chickCount': chickCount,
+                    'space': space,
+                    'breed': breed,
+                    'systemType': systemType,
+                    'startDate': startDate,
+                    'startDateRaw': startDateRaw,
+                    'endDate': endDate,
+                    'endDateRaw': endDateRaw,
+                    'mortality': mortality.toString(),
+                    'total_expenses': totalExpensesStr,
+                    'total_sales': totalSales.toStringAsFixed(0),
+                    'net_profit': netProfit.toStringAsFixed(0),
+                    'total_feed': totalFeedStr,
+                    'average_weight': averageWeight.toString(),
+                    'fcr': fcr.toStringAsFixed(1),
+                    'cost_per_bird': costPerBird.toStringAsFixed(2),
+                    'cycle_age': cycleAge.toString(),
+                    'mortality_rate': mortalityRate.toStringAsFixed(1),
+                  };
+                }).toList();
+
+            // تحديث الصفحة
+            if (apiCycles.isNotEmpty) {
+              _currentHistoryPage = page;
+            }
+
+            // إذا كانت الصفحة الأولى، استبدل القائمة بالكامل
+            if (page == 1) {
+              historyCycles.assignAll(convertedCycles);
+            } else {
+              for (var cycle in convertedCycles) {
+                final exists = historyCycles.any(
+                  (c) => c['cycle_id'] == cycle['cycle_id'],
+                );
+                if (!exists) {
+                  historyCycles.add(cycle);
+                }
+              }
+            }
+
+            // تحقق من وجود المزيد بناءً على العدد الإجمالي
+            hasMoreData.value = historyCycles.length < totalCount;
+          } else {
+            hasMoreData.value = false;
+          }
+        },
+      );
+    } catch (e) {
+      if (isLoadingMore.value) isLoadingMore.value = false;
+      hasMoreData.value = false;
+    }
+  }
+
+  Future<void> fetchNextHistoryPage() async {
+    if (!isLoadingMore.value && hasMoreData.value) {
+      await fetchHistory(page: _currentHistoryPage + 1);
+    }
+  }
+
+  void searchHistory(String query) {
+    if (searchQuery.value != query) {
+      searchQuery.value = query;
+      fetchHistory(isRefresh: true);
+    }
+  }
+
+  void setDateFilter(String fromDate, String toDate) {
+    if (filterDateFrom.value != fromDate || filterDateTo.value != toDate) {
+      filterDateFrom.value = fromDate;
+      filterDateTo.value = toDate;
+      fetchHistory(isRefresh: true);
+    }
+  }
+
+  void clearDateFilter() {
+    if (filterDateFrom.value.isNotEmpty || filterDateTo.value.isNotEmpty) {
+      filterDateFrom.value = '';
+      filterDateTo.value = '';
+      fetchHistory(isRefresh: true);
+    }
+  }
+
+  // ======================== جلب الدورات النشطة ========================
 
   Future<void> fetchCyclesFromServer() async {
     // إذا كانت هناك دورة مفتوحة حالياً، لا تقم بجلب الدورات
@@ -181,19 +477,16 @@ class CycleController extends GetxController {
       response.fold(
         (failure) {
           // في حالة الفشل، نستخدم البيانات المحلية
+          // ignore
         },
         (result) {
           final data = result['data'];
           if (data != null && data['cycles'] != null) {
             final apiCycles = data['cycles'] as List;
 
-            // تحويل الدورات من API إلى الصيغة المحلية وفلترة الدورات المنتهية
+            // تحويل الدورات من API إلى الصيغة المحلية
             final convertedCycles =
-                apiCycles.where((cycle) {
-                  // فلترة الدورات المنتهية
-                  final status = cycle['status']?.toString();
-                  return status != 'finished';
-                }).map<Map<String, dynamic>>((cycle) {
+                apiCycles.map<Map<String, dynamic>>((cycle) {
                   final cycleId = cycle['id'];
                   final name = cycle['name'] ?? '';
                   final chickCount = cycle['chick_count']?.toString() ?? '0';
@@ -201,6 +494,7 @@ class CycleController extends GetxController {
                   final mortality = cycle['mortality']?.toString() ?? '0';
                   final totalExpenses =
                       (cycle['total_expenses'] ?? 0).toString();
+                  final totalSales = (cycle['total_sales'] ?? 0).toString();
 
                   // تحويل التاريخ إلى صيغة عربية
                   String startDate = '';
@@ -215,6 +509,7 @@ class CycleController extends GetxController {
                     }
                   }
 
+                  final role = cycle['role']?.toString() ?? 'owner';
                   return {
                     'cycle_id': cycleId,
                     'name': name,
@@ -223,6 +518,9 @@ class CycleController extends GetxController {
                     'startDateRaw': startDateRaw,
                     'mortality': mortality,
                     'total_expenses': totalExpenses,
+                    'total_sales': totalSales,
+                    'role': role,
+                    'is_owner': role == 'owner',
                     'mortalityEntries': <Map<String, dynamic>>[],
                     'averageWeightEntries': <Map<String, dynamic>>[],
                     'medicationEntries': <Map<String, dynamic>>[],
@@ -287,6 +585,7 @@ class CycleController extends GetxController {
                       'startDateRaw': convertedCycle['startDateRaw'],
                       'mortality': convertedCycle['mortality'],
                       'total_expenses': convertedCycle['total_expenses'],
+                      'total_sales': convertedCycle['total_sales'],
                     };
                   }
                   // إذا لم تتغير البيانات الأساسية، لا تفعل شيئاً - احتفظ بالبيانات الكاملة
@@ -300,21 +599,29 @@ class CycleController extends GetxController {
               }
             }
 
-            // فلترة الدورات المنتهية بعد الدمج
+            // إزالة الدورات التي لم تعد في قائمة الاستجابة من الـ API
+            // (المستخدم غادر هذه الدورات أو تم حذفه منها)
+            final convertedCycleIds =
+                convertedCycles.map((c) => c['cycle_id']).toSet();
             cycles.removeWhere((cycle) {
-              final status = cycle['status']?.toString();
-              return status == 'finished';
+              final cycleId = cycle['cycle_id'];
+              return cycleId != null && !convertedCycleIds.contains(cycleId);
             });
-            
+
+            // إخطار GetX بالتغيير فوراً حتى يُحدّث الـ UI
+            cycles.refresh();
+
             // فلترة الدورات المحذوفة محلياً (تم حذفها عند إنهائها)
-            final deletedCycles = myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ?? <dynamic>[];
+            final deletedCycles =
+                myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ??
+                <dynamic>[];
             if (deletedCycles.isNotEmpty) {
               cycles.removeWhere((cycle) {
                 final cycleName = cycle['name']?.toString();
                 return cycleName != null && deletedCycles.contains(cycleName);
               });
             }
-            
+
             // لا نستبدل currentCycle إذا كان يحتوي على بيانات صحيحة
             // فقط نتأكد من أن الدورة موجودة في cycles
             if (cycles.isNotEmpty) {
@@ -385,21 +692,150 @@ class CycleController extends GetxController {
                 }
               }
             }
-            
+
             // حفظ الدورات في GetStorage بعد تحديثها من API
             myServices.getStorage.write(_storageKey, cycles.toList());
-            
+
             // تحديث UI بعد الفلترة والحفظ
             cycles.refresh();
           }
         },
       );
     } catch (e) {
-      // في حالة حدوث خطأ، نستخدم البيانات المحلية
+      // ignore
+    } finally {
+      // فحص الأتمتة بعد جلب البيانات
+      _checkAndAutoEndCycles();
     }
   }
 
-  Future<void> fetchCycleDetails(int cycleId) async {
+  void _checkAndAutoEndCycles() {
+    if (cycles.isEmpty) return;
+
+    // العمل على نسخة لتجنب مشاكل التعديل المتزامن
+    final List<Map<String, dynamic>> activeCycles =
+        List<Map<String, dynamic>>.from(cycles);
+    final List<({Map<String, dynamic> cycle, String autoEndDate})> cyclesToEnd =
+        [];
+
+    for (final cycle in activeCycles) {
+      final startDateRaw = cycle['startDateRaw']?.toString() ?? '';
+      if (startDateRaw.isEmpty) continue;
+
+      try {
+        final startD = DateTime.parse(startDateRaw);
+        final now = DateTime.now();
+        // حساب العمر: اليوم الأول هو تاريخ البدء
+        final age = now.difference(startD).inDays + 1;
+
+        if (age >= 40) {
+          // حساب تاريخ اليوم الـ 40 بدقة (تاريخ البدء + 39 يوماً)
+          final day40 = startD.add(const Duration(days: 39));
+          final autoEndDate = DateFormat('yyyy-MM-dd').format(day40);
+          cyclesToEnd.add((cycle: cycle, autoEndDate: autoEndDate));
+        }
+      } catch (e) {
+        // تجاهل أخطاء تحليل التاريخ
+      }
+    }
+
+    if (cyclesToEnd.isNotEmpty) {
+      _showSalesBeforeCloseDialog(cyclesToEnd, 0);
+    }
+  }
+
+  /// يعرض رسالة إدخال المبيعات قبل إغلاق الدورة تلقائياً عند الوصول لعمر 40 يوماً.
+  void _showSalesBeforeCloseDialog(
+    List<({Map<String, dynamic> cycle, String autoEndDate})> pendingCycles,
+    int index,
+  ) {
+    if (index >= pendingCycles.length) return;
+
+    final entry = pendingCycles[index];
+    final cycle = entry.cycle;
+    final autoEndDate = entry.autoEndDate;
+    final cycleName = cycle['name']?.toString() ?? 'الدورة';
+
+    void proceedToNext() {
+      _showSalesBeforeCloseDialog(pendingCycles, index + 1);
+    }
+
+    Future<void> closeCycleAndProceed() async {
+      await endCurrentCycle(endDate: autoEndDate, cycleOverride: cycle);
+      proceedToNext();
+    }
+
+    Get.dialog<void>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+        actionsPadding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'تنبيه – إغلاق دورة "$cycleName"',
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.warning_amber_rounded, color: Colors.orange),
+          ],
+        ),
+        content: const Text(
+          'وصلت الدورة إلى عمر 40 يوماً وستُغلق تلقائياً.\n\nيُنصح بإدخال بيانات المبيعات أولاً لضمان دقة التقارير المالية.',
+          textAlign: TextAlign.right,
+          style: TextStyle(fontSize: 15, height: 1.5),
+        ),
+        actions: [
+          // إغلاق بدون مبيعات
+          TextButton(
+            onPressed: () {
+              Get.back<void>();
+              unawaited(closeCycleAndProceed());
+            },
+            child: const Text(
+              'إغلاق بدون مبيعات',
+              style: TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+          ),
+          // إدخال المبيعات ثم الإغلاق
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green.shade600,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
+            icon: const Icon(Icons.add_shopping_cart_rounded, size: 18),
+            label: const Text(
+              'إدخال المبيعات',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+            onPressed: () async {
+              Get.back<void>();
+              // تعيين الدورة الحالية لضمان ربط المبيعات بها
+              currentCycle.assignAll(cycle);
+              // التأكد من تسجيل CycleExpensesController قبل الانتقال
+              if (!Get.isRegistered<CycleExpensesController>()) {
+                Get.put(CycleExpensesController());
+              }
+              // الانتقال لشاشة المبيعات والانتظار حتى يعود المستخدم
+              await Get.toNamed<void>(AppRoute.cycleSales);
+              // بعد العودة، أغلق الدورة
+              unawaited(closeCycleAndProceed());
+            },
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  Future<void> fetchCycleDetails(int cycleId, {bool silent = false}) async {
     // منع استدعاءات متعددة لنفس الدورة
     if (_loadingCycleDetails.contains(cycleId)) {
       return;
@@ -408,29 +844,29 @@ class CycleController extends GetxController {
     try {
       _isCycleOpen = true; // تعيين flag أن هناك دورة مفتوحة
       _loadingCycleDetails.add(cycleId);
-      
-      // تحديث حالة التحميل إلى loading
-      cycleDetailsStatus.value = StatusRequest.loading;
+
+      // تحديث حالة التحميل إلى loading (فقط إذا لم يكن silent)
+      if (!silent) cycleDetailsStatus.value = StatusRequest.loading;
 
       final isLoggedIn =
           myServices.getStorage.read<bool>('is_logged_in') ?? false;
       if (!isLoggedIn) {
         _loadingCycleDetails.remove(cycleId);
-        cycleDetailsStatus.value = StatusRequest.none;
+        if (!silent) cycleDetailsStatus.value = StatusRequest.none;
         return;
       }
 
       final user = _auth.currentUser;
       if (user == null) {
         _loadingCycleDetails.remove(cycleId);
-        cycleDetailsStatus.value = StatusRequest.none;
+        if (!silent) cycleDetailsStatus.value = StatusRequest.none;
         return;
       }
 
       final token = await user.getIdToken();
       if (token == null || token.isEmpty) {
         _loadingCycleDetails.remove(cycleId);
-        cycleDetailsStatus.value = StatusRequest.none;
+        if (!silent) cycleDetailsStatus.value = StatusRequest.none;
         return;
       }
 
@@ -443,14 +879,16 @@ class CycleController extends GetxController {
         (failure) {
           // في حالة الفشل، نستخدم البيانات المحلية
           _loadingCycleDetails.remove(cycleId);
-          
-          // تحديث حالة التحميل حسب نوع الفشل
-          if (failure == StatusRequest.offlineFailure) {
-            cycleDetailsStatus.value = StatusRequest.offlineFailure;
-          } else if (failure == StatusRequest.serverFailure) {
-            cycleDetailsStatus.value = StatusRequest.serverFailure;
-          } else {
-            cycleDetailsStatus.value = StatusRequest.failure;
+
+          // تحديث حالة التحميل حسب نوع الفشل (فقط إذا لم يكن silent)
+          if (!silent) {
+            if (failure == StatusRequest.offlineFailure) {
+              cycleDetailsStatus.value = StatusRequest.offlineFailure;
+            } else if (failure == StatusRequest.serverFailure) {
+              cycleDetailsStatus.value = StatusRequest.serverFailure;
+            } else {
+              cycleDetailsStatus.value = StatusRequest.failure;
+            }
           }
         },
         (result) {
@@ -458,8 +896,15 @@ class CycleController extends GetxController {
           if (responseData != null) {
             // API يعيد البيانات بصيغة: { cycle: {...}, data: [...], expenses: [...] }
             final cycleData = responseData['cycle'] as Map<String, dynamic>?;
-            final cycleDataList = (responseData['data'] as List<dynamic>?) ?? <dynamic>[];
-            final expensesList = (responseData['expenses'] as List<dynamic>?) ?? <dynamic>[];
+            final cycleDataList =
+                (responseData['data'] as List<dynamic>?) ?? <dynamic>[];
+            final expensesList =
+                (responseData['expenses'] as List<dynamic>?) ?? <dynamic>[];
+
+            final membersList =
+                (responseData['members'] as List<dynamic>?) ?? <dynamic>[];
+            final salesList =
+                (responseData['sales'] as List<dynamic>?) ?? <dynamic>[];
 
             if (cycleData != null) {
               // تحديث currentCycle بالبيانات من API
@@ -467,6 +912,8 @@ class CycleController extends GetxController {
                 cycleData,
                 cycleDataList: cycleDataList,
                 expensesList: expensesList,
+                membersList: membersList,
+                salesList: salesList,
               );
 
               // البحث عن الدورة في cycles وتحديثها
@@ -494,9 +941,9 @@ class CycleController extends GetxController {
                 // إذا لم تكن الدورة موجودة، أضفها
                 cycles.add(Map<String, dynamic>.from(cycleDetails));
               }
-              
-              // حفظ الدورات المحدثة في GetStorage
-              myServices.getStorage.write(_storageKey, cycles.toList());
+
+              // لا نحفظ البيانات التفصيلية (مصاريف، مبيعات، بيانات) في GetStorage
+              // لضمان أن كل مستخدم يرى البيانات المحدثة من قاعدة البيانات
 
               // تحديث currentCycle إذا كانت هذه هي الدورة الحالية
               final currentCycleId = currentCycle['cycle_id'];
@@ -507,6 +954,22 @@ class CycleController extends GetxController {
                         : int.tryParse(currentCycleId.toString());
                 if (currentCycleIdInt == cycleId) {
                   currentCycle.assignAll(cycleDetails);
+                  currentCycle.assignAll(cycleDetails);
+                  cycleDataVersion.value++;
+
+                  // Schedule notifications for the current cycle
+                  final startDateRaw =
+                      cycleDetails['startDateRaw']?.toString() ?? '';
+                  if (startDateRaw.isNotEmpty) {
+                    final date = DateTime.tryParse(startDateRaw);
+                    if (date != null) {
+                      // Pass cycleName to notification service
+                      NotificationService.instance.scheduleCycleNotifications(
+                        date,
+                        cycleDetails['name']?.toString() ?? '',
+                      );
+                    }
+                  }
 
                   // تحديث المصروفات في CycleExpensesController
                   final expenses = cycleDetails['expenses'] as List<dynamic>?;
@@ -539,6 +1002,7 @@ class CycleController extends GetxController {
               } else if (currentCycle['name'] == cycleDetails['name']) {
                 // إذا كان name متطابق، قم بالتحديث أيضاً
                 currentCycle.assignAll(cycleDetails);
+                cycleDataVersion.value++;
 
                 // تحديث المصروفات في CycleExpensesController
                 final expenses = cycleDetails['expenses'] as List<dynamic>?;
@@ -570,24 +1034,117 @@ class CycleController extends GetxController {
               }
             }
           }
-          
-          // تحديث حالة التحميل إلى success ثم إعادة تعيينها بعد قليل
-          cycleDetailsStatus.value = StatusRequest.success;
+
+          // تحديث حالة التحميل إلى success ثم إعادة تعيينها بعد قليل (فقط إذا لم يكن silent)
           _loadingCycleDetails.remove(cycleId);
-          
-          // إعادة تعيين الحالة إلى none بعد قليل لإخفاء رسالة النجاح
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (cycleDetailsStatus.value == StatusRequest.success) {
-              cycleDetailsStatus.value = StatusRequest.none;
-            }
-          });
+          if (!silent) {
+            cycleDetailsStatus.value = StatusRequest.success;
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (cycleDetailsStatus.value == StatusRequest.success) {
+                cycleDetailsStatus.value = StatusRequest.none;
+              }
+            });
+          }
         },
       );
     } catch (e) {
-      // في حالة حدوث خطأ، نستخدم البيانات المحلية
+      // ignore
       _loadingCycleDetails.remove(cycleId);
-      cycleDetailsStatus.value = StatusRequest.serverFailure;
+      if (!silent) cycleDetailsStatus.value = StatusRequest.serverFailure;
       _isCycleOpen = false; // إزالة flag عند الخطأ
+    }
+  }
+
+  Future<void> fetchHistoricCycleDetails(int cycleId) async {
+    try {
+      historicCycleStatus.value = StatusRequest.loading;
+
+      final isLoggedIn =
+          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+      if (!isLoggedIn) {
+        historicCycleStatus.value = StatusRequest.none;
+        return;
+      }
+
+      final user = _auth.currentUser;
+      if (user == null) {
+        historicCycleStatus.value = StatusRequest.none;
+        return;
+      }
+
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) {
+        historicCycleStatus.value = StatusRequest.none;
+        return;
+      }
+
+      final response = await _cycleData.getCycleDetails(
+        token: token,
+        cycleId: cycleId,
+      );
+
+      response.fold(
+        (failure) {
+          if (failure == StatusRequest.offlineFailure) {
+            historicCycleStatus.value = StatusRequest.offlineFailure;
+          } else if (failure == StatusRequest.serverFailure) {
+            historicCycleStatus.value = StatusRequest.serverFailure;
+          } else {
+            historicCycleStatus.value = StatusRequest.failure;
+          }
+        },
+        (result) {
+          final responseData = result['data'] as Map<String, dynamic>?;
+          if (responseData != null) {
+            final cycleData = responseData['cycle'] as Map<String, dynamic>?;
+            final cycleDataList =
+                (responseData['data'] as List<dynamic>?) ?? <dynamic>[];
+            final expensesList =
+                (responseData['expenses'] as List<dynamic>?) ?? <dynamic>[];
+            final notesList =
+                (responseData['notes'] as List<dynamic>?) ?? <dynamic>[];
+
+            final membersList =
+                (responseData['members'] as List<dynamic>?) ?? <dynamic>[];
+            final salesList =
+                (responseData['sales'] as List<dynamic>?) ?? <dynamic>[];
+
+            if (cycleData != null) {
+              final cycleDetails = _convertCycleDetailsFromApi(
+                cycleData,
+                cycleDataList: cycleDataList,
+                expensesList: expensesList,
+                notesList: notesList,
+                membersList: membersList,
+                salesList: salesList,
+              );
+
+              // الابقاء على البيانات المحسوبة مسبقاً من get_history (مثل تاريخ الانتهاء، الدخل، الفوائد)
+              // وإضافة القوائم التفصيلية التي جلبناها من get_cycle_details
+              final mergedDetails = Map<String, dynamic>.from(
+                historicCycleDetails,
+              );
+              mergedDetails['feedEntries'] = cycleDetails['feedEntries'];
+              mergedDetails['mortalityEntries'] =
+                  cycleDetails['mortalityEntries'];
+              mergedDetails['weightEntries'] = cycleDetails['weightEntries'];
+              mergedDetails['customDataEntries'] =
+                  cycleDetails['customDataEntries'];
+              mergedDetails['expenses'] = cycleDetails['expenses'];
+              mergedDetails['notes'] = cycleDetails['notes'];
+
+              historicCycleDetails.assignAll(mergedDetails);
+              historicCycleStatus.value = StatusRequest.success;
+            } else {
+              historicCycleStatus.value = StatusRequest.failure;
+            }
+          } else {
+            historicCycleStatus.value = StatusRequest.failure;
+          }
+        },
+      );
+    } catch (e) {
+      historicCycleStatus.value = StatusRequest.failure;
     }
   }
 
@@ -596,10 +1153,25 @@ class CycleController extends GetxController {
     _isCycleOpen = false;
   }
 
+  /// إجبار إعادة تحميل تفاصيل الدورة الحالية من السيرفر (تجاوز dedup guard)
+  Future<void> forceRefreshCurrentCycle() async {
+    final cycleId = currentCycle['cycle_id'];
+    if (cycleId == null) return;
+    final cycleIdInt =
+        cycleId is int ? cycleId : int.tryParse(cycleId.toString());
+    if (cycleIdInt == null || cycleIdInt <= 0) return;
+    // إزالة من dedup guard لضمان إعادة الجلب
+    _loadingCycleDetails.remove(cycleIdInt);
+    await fetchCycleDetails(cycleIdInt);
+  }
+
   Map<String, dynamic> _convertCycleDetailsFromApi(
     Map<String, dynamic> cycleData, {
     List<dynamic>? cycleDataList,
     List<dynamic>? expensesList,
+    List<dynamic>? notesList,
+    List<dynamic>? membersList,
+    List<dynamic>? salesList,
   }) {
     final cycleId = cycleData['id'] ?? cycleData['cycle_id'];
     final name = cycleData['name'] ?? '';
@@ -609,7 +1181,9 @@ class CycleController extends GetxController {
         '0';
     final space = cycleData['space']?.toString() ?? '0';
     final breed = cycleData['breed'] ?? 'تسمين';
+    final systemType = cycleData['system_type'] ?? 'أرضي';
     final startDateRaw = cycleData['start_date_raw'] ?? '';
+    final totalSales = (cycleData['total_sales'] ?? 0).toString();
 
     // تحويل التاريخ إلى صيغة عربية
     String startDate = '';
@@ -638,58 +1212,7 @@ class CycleController extends GetxController {
         final value = item['value']?.toString() ?? '';
         final entryDateStr = item['entry_date']?.toString() ?? '';
 
-        // تحويل entry_date من صيغة Y-m-d H:i:s إلى ISO8601
-        DateTime entryDate = DateTime.now();
-        if (entryDateStr.isNotEmpty) {
-          try {
-            // محاولة تحويل من صيغة Y-m-d H:i:s مباشرة
-            DateTime? parsedDate;
-
-            // محاولة 1: تحويل مباشر (إذا كانت بصيغة ISO8601)
-            parsedDate = DateTime.tryParse(entryDateStr);
-
-            // محاولة 2: تحويل من صيغة Y-m-d H:i:s
-            if (parsedDate == null) {
-              final parts = entryDateStr.split(' ');
-              if (parts.length == 2) {
-                final datePart = parts[0];
-                final timePart = parts[1];
-                final dateParts = datePart.split('-');
-                final timeParts = timePart.split(':');
-                if (dateParts.length == 3 && timeParts.length >= 2) {
-                  parsedDate = DateTime(
-                    int.tryParse(dateParts[0]) ?? DateTime.now().year,
-                    int.tryParse(dateParts[1]) ?? DateTime.now().month,
-                    int.tryParse(dateParts[2]) ?? DateTime.now().day,
-                    int.tryParse(timeParts[0]) ?? 0,
-                    int.tryParse(timeParts[1]) ?? 0,
-                    timeParts.length > 2
-                        ? (int.tryParse(timeParts[2]) ?? 0)
-                        : 0,
-                  );
-                }
-              }
-            }
-
-            // محاولة 3: تحويل من صيغة Y-m-d فقط
-            if (parsedDate == null && entryDateStr.contains('-')) {
-              final dateParts = entryDateStr.split('-');
-              if (dateParts.length == 3) {
-                parsedDate = DateTime(
-                  int.tryParse(dateParts[0]) ?? DateTime.now().year,
-                  int.tryParse(dateParts[1]) ?? DateTime.now().month,
-                  int.tryParse(dateParts[2]) ?? DateTime.now().day,
-                );
-              }
-            }
-
-            if (parsedDate != null) {
-              entryDate = parsedDate;
-            }
-          } catch (e) {
-            entryDate = DateTime.now();
-          }
-        }
+        // تحويل entry_date إلى صيغة yyyy/MM/dd
 
         // دعم labels بالعربية والإنجليزية
         final labelLower = label.toLowerCase().trim();
@@ -734,59 +1257,53 @@ class CycleController extends GetxController {
             (label.contains('استهلاك') && !label.contains('غير')) ||
             (label.contains('علف') && label.contains('استهلاك'));
 
+        // helper: parse entry_date string to "yyyy/MM/dd"
+        final dateFormatted = _parseDateToString(entryDateStr);
+
         if (isMortality) {
           final count = int.tryParse(value) ?? 0;
           if (count > 0) {
             mortalityEntries.add({
-              'id':
-                  item['id']?.toString() ??
-                  DateTime.now().millisecondsSinceEpoch.toString(),
+              'id': item['id']?.toString() ?? '',
               'count': count,
-              'date': entryDate.toIso8601String(),
+              'date': dateFormatted,
             });
           }
         } else if (isAverageWeight) {
           final weight = double.tryParse(value) ?? 0.0;
           if (weight > 0) {
             averageWeightEntries.add({
-              'id':
-                  item['id']?.toString() ??
-                  DateTime.now().millisecondsSinceEpoch.toString(),
+              'id': item['id']?.toString() ?? '',
               'weight': weight,
-              'date': entryDate.toIso8601String(),
+              'date': dateFormatted,
             });
           }
         } else if (isMedication) {
           if (value.isNotEmpty) {
             medicationEntries.add({
-              'id':
-                  item['id']?.toString() ??
-                  DateTime.now().millisecondsSinceEpoch.toString(),
+              'id': item['id']?.toString() ?? '',
               'text': value,
-              'date': entryDate.toIso8601String(),
+              'date': dateFormatted,
             });
           }
         } else if (isFeedConsumption) {
           final amount = double.tryParse(value) ?? 0.0;
           if (amount > 0) {
             feedConsumptionEntries.add({
-              'id':
-                  item['id']?.toString() ??
-                  DateTime.now().millisecondsSinceEpoch.toString(),
+              'id': item['id']?.toString() ?? '',
               'amount': amount,
-              'date': entryDate.toIso8601String(),
+              'date': dateFormatted,
             });
           }
         } else {
-          // البيانات المخصصة (ليست من الأنواع المعرفة)
+          // البيانات المخصصة بما فيها الملاحظات اليدوية التي كتبها المستخدم
           if (value.isNotEmpty) {
             customDataEntries.add({
-              'id':
-                  item['id']?.toString() ??
-                  DateTime.now().millisecondsSinceEpoch.toString(),
+              'id': item['id']?.toString() ?? '',
+              'element_type': 'note',
               'label': label,
               'value': value,
-              'entry_date': entryDate.toIso8601String(),
+              'date': dateFormatted,
             });
           }
         }
@@ -815,71 +1332,47 @@ class CycleController extends GetxController {
     if (expensesList != null && expensesList.isNotEmpty) {
       for (var expense in expensesList) {
         final label = expense['label']?.toString() ?? '';
-        final value = expense['value']?.toString() ?? '';
+        final rawValue = expense['value'];
         final entryDateStr = expense['entry_date']?.toString() ?? '';
+        final dateFormatted = _parseDateToString(entryDateStr);
+        final amount =
+            (rawValue is num)
+                ? rawValue.toDouble()
+                : (double.tryParse(rawValue?.toString() ?? '0') ?? 0.0);
 
-        // تحويل entry_date من صيغة Y-m-d H:i:s إلى ISO8601
-        DateTime entryDate = DateTime.now();
-        if (entryDateStr.isNotEmpty) {
-          try {
-            // محاولة تحويل من صيغة Y-m-d H:i:s مباشرة
-            DateTime? parsedDate;
-
-            // محاولة 1: تحويل مباشر (إذا كانت بصيغة ISO8601)
-            parsedDate = DateTime.tryParse(entryDateStr);
-
-            // محاولة 2: تحويل من صيغة Y-m-d H:i:s
-            if (parsedDate == null) {
-              final parts = entryDateStr.split(' ');
-              if (parts.length == 2) {
-                final datePart = parts[0];
-                final timePart = parts[1];
-                final dateParts = datePart.split('-');
-                final timeParts = timePart.split(':');
-                if (dateParts.length == 3 && timeParts.length >= 2) {
-                  parsedDate = DateTime(
-                    int.tryParse(dateParts[0]) ?? DateTime.now().year,
-                    int.tryParse(dateParts[1]) ?? DateTime.now().month,
-                    int.tryParse(dateParts[2]) ?? DateTime.now().day,
-                    int.tryParse(timeParts[0]) ?? 0,
-                    int.tryParse(timeParts[1]) ?? 0,
-                    timeParts.length > 2
-                        ? (int.tryParse(timeParts[2]) ?? 0)
-                        : 0,
-                  );
-                }
-              }
-            }
-
-            // محاولة 3: تحويل من صيغة Y-m-d فقط
-            if (parsedDate == null && entryDateStr.contains('-')) {
-              final dateParts = entryDateStr.split('-');
-              if (dateParts.length == 3) {
-                parsedDate = DateTime(
-                  int.tryParse(dateParts[0]) ?? DateTime.now().year,
-                  int.tryParse(dateParts[1]) ?? DateTime.now().month,
-                  int.tryParse(dateParts[2]) ?? DateTime.now().day,
-                );
-              }
-            }
-
-            if (parsedDate != null) {
-              entryDate = parsedDate;
-            }
-          } catch (e) {
-            entryDate = DateTime.now();
-          }
-        }
-
-        final amount = double.tryParse(value) ?? 0.0;
-        if (amount > 0 && label.isNotEmpty) {
+        if (label.isNotEmpty) {
           processedExpenses.add({
-            'id':
-                expense['id']?.toString() ??
-                DateTime.now().millisecondsSinceEpoch.toString(),
-            'label': label,
-            'value': amount,
-            'entry_date': entryDate.toIso8601String(),
+            'id': expense['id']?.toString() ?? '',
+            'type': label,
+            'amount': amount,
+            'created_at': dateFormatted,
+            'notes': '',
+          });
+          totalExpenses += amount;
+        }
+      }
+    }
+
+    // معالجة الملاحظات من cycle_notes
+    final processedNotes = <Map<String, dynamic>>[];
+    if (notesList != null && notesList.isNotEmpty) {
+      for (var note in notesList) {
+        final content = note['content']?.toString() ?? '';
+        final noteDateStr = note['entry_date']?.toString() ?? '';
+        final dateFormatted = _parseDateToString(noteDateStr);
+        if (content.isNotEmpty) {
+          processedNotes.add({
+            'id': note['id']?.toString() ?? '',
+            'content': content,
+            'date': dateFormatted,
+          });
+          // أيضاً أضفها إلى customDataEntries لتظهر في التايملاين اليومي
+          customDataEntries.add({
+            'id': note['id']?.toString() ?? '',
+            'element_type': 'note',
+            'label': 'ملاحظة',
+            'value': content,
+            'date': dateFormatted,
           });
         }
       }
@@ -893,23 +1386,75 @@ class CycleController extends GetxController {
       );
     }
 
+    // حساب المبيعات من salesList
+    double calculatedTotalSales = (double.tryParse(totalSales) ?? 0.0);
+    if (calculatedTotalSales == 0.0 &&
+        salesList != null &&
+        salesList.isNotEmpty) {
+      calculatedTotalSales = salesList.fold<double>(
+        0.0,
+        (sum, sale) =>
+            sum +
+            (double.tryParse(sale['total_price']?.toString() ?? '0.0') ?? 0.0),
+      );
+    }
+
     return {
       'cycle_id': cycleId,
       'name': name,
       'chickCount': chickCount,
       'space': space,
       'breed': breed,
+      'systemType': systemType,
       'startDate': startDate,
       'startDateRaw': startDateRaw,
       'mortality': calculatedMortality.toString(),
       'total_expenses': totalExpenses.toString(),
+      'total_sales': calculatedTotalSales.toString(),
+      // المفاتيح المتوقعة من الواجهة (cycle_history_details_screen.dart)
+      'feedEntries': feedConsumptionEntries,
       'mortalityEntries': mortalityEntries,
+      'weightEntries': averageWeightEntries,
+      'customDataEntries': customDataEntries,
+      'expenses': processedExpenses,
+      'notes': processedNotes,
+      // المفاتيح القديمة للتوافق مع بقية التطبيق
+      'mortalityEntriesLegacy': mortalityEntries,
       'averageWeightEntries': averageWeightEntries,
       'medicationEntries': medicationEntries,
       'feedConsumptionEntries': feedConsumptionEntries,
-      'expenses': processedExpenses,
-      'customDataEntries': customDataEntries, // البيانات المخصصة من API
+      'members': membersList ?? [],
+      'sales': salesList ?? [],
+      'role': cycleData['role'] ?? 'owner',
+      'is_owner': (cycleData['role'] ?? 'owner') == 'owner',
     };
+  }
+
+  /// تحويل سلسلة تاريخ (Y-m-d H:i:s أو ISO8601) إلى صيغة yyyy/MM/dd
+  String _parseDateToString(String dateStr) {
+    if (dateStr.isEmpty) return '';
+    try {
+      // محاولة 1: صيغة ISO8601
+      DateTime? parsed = DateTime.tryParse(dateStr);
+
+      // محاولة 2: صيغة "Y-m-d H:i:s" (MySQL)
+      if (parsed == null && dateStr.contains(' ')) {
+        final parts = dateStr.split(' ');
+        if (parts.length == 2) {
+          parsed = DateTime.tryParse('${parts[0]}T${parts[1]}');
+        }
+      }
+
+      if (parsed != null) {
+        final y = parsed.year.toString().padLeft(4, '0');
+        final m = parsed.month.toString().padLeft(2, '0');
+        final d = parsed.day.toString().padLeft(2, '0');
+        return '$y/$m/$d';
+      }
+    } catch (_) {}
+    return dateStr.length >= 10
+        ? dateStr.substring(0, 10).replaceAll('-', '/')
+        : dateStr;
   }
 
   void prepareForEdit(Map<String, dynamic> data, int index) {
@@ -933,13 +1478,38 @@ class CycleController extends GetxController {
     return '$days';
   }
 
+  /// Cancels the daily data notification for the current day
+  Future<void> _cancelDailyNotification() async {
+    final start = DateTime.tryParse(
+      currentCycle['startDate']?.toString() ?? '',
+    );
+    if (start == null) return;
+
+    final now = DateTime.now();
+    // Calculate current day of cycle
+    // We strive to match the logic in NotificationService loop:
+    // scheduleCycleNotifications iterates i=0 to max, date = start + i days.
+    // dayOfCycle = i + 1.
+    // So if today is start + 0 days, dayOfCycle is 1.
+    final dayOfCycle = now.difference(start).inDays + 1;
+
+    if (dayOfCycle > 0) {
+      await NotificationService.instance.cancelDailyDataNotification(
+        dayOfCycle,
+      );
+    }
+  }
+
   Future<void> onNext() async {
+    if (cycleSaveStatus.value == StatusRequest.loading) return;
     if (!formKey.currentState!.validate()) return;
 
     final name = nameController.text.trim();
     final chickCount = int.tryParse(countController.text.trim()) ?? 0;
     final space = double.tryParse(spaceController.text.trim()) ?? 0.0;
     const breed = 'تسمين';
+    // نستخرج systemType (إذا كانت الواجهة الأمامية سترسلها من Dropdown مثلاً، حالياً نستخدم أرضي مبدئياً ريثما نعدل UI)
+    const systemType = 'أرضي'; // سيتم تعديله لاحقاً عند استخدام Dropdown
     final startDateRaw = dateRawController.text.trim();
     final startDate = dateController.text.trim();
 
@@ -948,6 +1518,7 @@ class CycleController extends GetxController {
       'chickCount': countController.text.trim(),
       'space': spaceController.text.trim(),
       'breed': breed,
+      'systemType': systemType,
       'startDate': startDate,
       'startDateRaw': startDateRaw,
       'mortalityEntries': <Map<String, dynamic>>[],
@@ -960,8 +1531,21 @@ class CycleController extends GetxController {
         editIndex.value < cycles.length) {
       cycles[editIndex.value] = entry;
       currentCycle.assignAll(entry);
+      cycleDataVersion.value++;
+      isEdit.value = false;
       isEdit.value = false;
       editIndex.value = -1;
+
+      // Schedule notifications
+      if (entry['startDateRaw'] != null) {
+        final date = DateTime.tryParse(entry['startDateRaw'].toString());
+        if (date != null) {
+          NotificationService.instance.scheduleCycleNotifications(
+            date,
+            entry['name']?.toString() ?? '',
+          );
+        }
+      }
 
       // حفظ محلياً فقط للدورات المحلية (بدون cycle_id)
       if (entry['cycle_id'] == null) {
@@ -1037,6 +1621,7 @@ class CycleController extends GetxController {
         chickCount: chickCount,
         space: space,
         breed: breed,
+        systemType: systemType,
         startDateRaw: startDateRaw,
       );
 
@@ -1076,6 +1661,17 @@ class CycleController extends GetxController {
           cycles.add(entry);
           myServices.getStorage.write(_storageKey, cycles.toList());
           cycleSaveStatus.value = StatusRequest.success;
+
+          // Schedule notifications
+          if (entry['startDateRaw'] != null) {
+            final date = DateTime.tryParse(entry['startDateRaw'].toString());
+            if (date != null) {
+              NotificationService.instance.scheduleCycleNotifications(
+                date,
+                entry['name']?.toString() ?? '',
+              );
+            }
+          }
         },
       );
       clearFields();
@@ -1091,11 +1687,13 @@ class CycleController extends GetxController {
       final newIndex = cycles.length - 1;
       final shouldShowTutorial = cycles.length == 2;
 
-      unawaited(Get.offNamedUntil<void>(
-        AppRoute.cycle,
-        ModalRoute.withName('/'),
-        arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
-      ));
+      unawaited(
+        Get.offNamedUntil<void>(
+          AppRoute.cycle,
+          ModalRoute.withName('/'),
+          arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+        ),
+      );
     } catch (e) {
       // في حالة أي خطأ، احفظ محلياً
       cycles.add(entry);
@@ -1107,11 +1705,13 @@ class CycleController extends GetxController {
       final newIndex = cycles.length - 1;
       final shouldShowTutorial = cycles.length == 2;
 
-      unawaited(Get.offNamedUntil<void>(
-        AppRoute.cycle,
-        ModalRoute.withName('/'),
-        arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
-      ));
+      unawaited(
+        Get.offNamedUntil<void>(
+          AppRoute.cycle,
+          ModalRoute.withName('/'),
+          arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+        ),
+      );
     } finally {
       isCreatingCycle.value = false;
     }
@@ -1139,6 +1739,12 @@ class CycleController extends GetxController {
       final customDataKey = 'custom_data_$cycleName';
       if (myServices.getStorage.hasData(customDataKey)) {
         myServices.getStorage.remove(customDataKey);
+      }
+
+      // حذف الملاحظات
+      final notesKey = 'notes_$cycleName';
+      if (myServices.getStorage.hasData(notesKey)) {
+        myServices.getStorage.remove(notesKey);
       }
     } catch (e) {
       // في حالة الفشل، لا شيء (لا نريد أن نوقف عملية الحذف)
@@ -1171,7 +1777,10 @@ class CycleController extends GetxController {
                         ? cycleId
                         : int.tryParse(cycleId.toString()) ?? 0;
                 if (cycleIdInt > 0) {
-                  await _cycleData.deleteCycle(token: token, cycleId: cycleIdInt);
+                  await _cycleData.deleteCycle(
+                    token: token,
+                    cycleId: cycleIdInt,
+                  );
                 }
               }
             }
@@ -1186,6 +1795,9 @@ class CycleController extends GetxController {
       if (cycleName != null && cycleName.isNotEmpty) {
         _deleteCycleRelatedData(cycleName);
       }
+
+      // Cancel notifications
+      await NotificationService.instance.cancelCycleNotifications();
 
       // حذف الدورة محلياً
       cycles.removeAt(idx);
@@ -1228,36 +1840,26 @@ class CycleController extends GetxController {
     }
   }
 
-  Future<bool> endCurrentCycle() async {
-    final idx = cycles.indexWhere((c) => c['name'] == currentCycle['name']);
+  Future<bool> endCurrentCycle({
+    String? endDate,
+    Map<String, dynamic>? cycleOverride,
+  }) async {
+    final cycleToEnd = cycleOverride ?? currentCycle;
+    final idx = cycles.indexWhere((c) => c['name'] == cycleToEnd['name']);
     if (idx == -1) return false;
 
     // التحقق من أن الدورة لم تنتهِ بالفعل
-    if (currentCycle['status'] == 'finished') {
+    if (cycleToEnd['endDateRaw'] != null &&
+        cycleToEnd['endDateRaw'].toString().isNotEmpty) {
       return false;
     }
 
-    final cycleId = currentCycle['cycle_id'];
-    final cycleName = currentCycle['name']?.toString();
+    final cycleId = cycleToEnd['cycle_id'];
+    final cycleName = cycleToEnd['name']?.toString();
 
-    // حذف الدورة محلياً فوراً قبل إرسال الطلب إلى API
-    if (cycleName != null && cycleName.isNotEmpty) {
-      _deleteCycleRelatedData(cycleName);
-      
-      // إضافة اسم الدورة إلى قائمة الدورات المحذوفة لمنع إعادة إضافتها من API
-      final deletedCycles = myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ?? <dynamic>[];
-      if (!deletedCycles.contains(cycleName)) {
-        deletedCycles.add(cycleName);
-        unawaited(myServices.getStorage.write(_deletedCyclesKey, deletedCycles));
-      }
-    }
-    
-    // حذف الدورة من القائمة فوراً
+    // حذف الدورة من القائمة فوراً لتحديث الواجهة
     cycles.removeAt(idx);
-    
-    // حفظ التغييرات فوراً
-    await myServices.getStorage.write(_storageKey, cycles.toList());
-    
+
     // مسح currentCycle إذا كانت الدورة المنتهية هي الحالية
     if (currentCycle['name'] == cycleName) {
       currentCycle.clear();
@@ -1268,17 +1870,41 @@ class CycleController extends GetxController {
 
     // تحديث UI فوراً بعد الحذف
     cycles.refresh();
-    
+
     // تحديث إضافي للتأكد من تحديث الواجهة
-    unawaited(Future.microtask(() {
-      cycles.refresh();
-    }));
+    unawaited(
+      Future.microtask(() {
+        cycles.refresh();
+      }),
+    );
+
+    // Cancel notifications (in background)
+    unawaited(NotificationService.instance.cancelCycleNotifications());
+
+    // حذف الدورة محلياً فوراً قبل إرسال الطلب إلى API
+    if (cycleName != null && cycleName.isNotEmpty) {
+      _deleteCycleRelatedData(cycleName);
+
+      // إضافة اسم الدورة إلى قائمة الدورات المحذوفة لمنع إعادة إضافتها من API
+      final deletedCycles =
+          myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ??
+          <dynamic>[];
+      if (!deletedCycles.contains(cycleName)) {
+        deletedCycles.add(cycleName);
+        unawaited(
+          myServices.getStorage.write(_deletedCyclesKey, deletedCycles),
+        );
+      }
+    }
+
+    // حفظ التغييرات فوراً (يمكن انتظاره لأنه ليس بطيئاً جداً، لكنه يأتي بعد تحديث الواجهة)
+    await myServices.getStorage.write(_storageKey, cycles.toList());
 
     cycleEndStatus.value = StatusRequest.loading;
 
     // إرسال طلب إنهاء الدورة إلى API في الخلفية
     if (cycleId != null) {
-      unawaited(_endCycleFromServerInBackground(cycleId));
+      unawaited(_endCycleFromServerInBackground(cycleId, endDate: endDate));
     } else {
       // للدورات المحلية فقط
       cycleEndStatus.value = StatusRequest.success;
@@ -1292,9 +1918,13 @@ class CycleController extends GetxController {
     return true;
   }
 
-  Future<void> _endCycleFromServerInBackground(dynamic cycleId) async {
+  Future<void> _endCycleFromServerInBackground(
+    dynamic cycleId, {
+    String? endDate,
+  }) async {
     try {
-      final isLoggedIn = myServices.getStorage.read<bool>('is_logged_in') ?? false;
+      final isLoggedIn =
+          myServices.getStorage.read<bool>('is_logged_in') ?? false;
       if (!isLoggedIn) {
         cycleEndStatus.value = StatusRequest.success;
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -1327,7 +1957,8 @@ class CycleController extends GetxController {
         return;
       }
 
-      final cycleIdInt = cycleId is int ? cycleId : int.tryParse(cycleId.toString()) ?? 0;
+      final cycleIdInt =
+          cycleId is int ? cycleId : int.tryParse(cycleId.toString()) ?? 0;
       if (cycleIdInt <= 0) {
         cycleEndStatus.value = StatusRequest.success;
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -1341,6 +1972,7 @@ class CycleController extends GetxController {
       final result = await _cycleData.endCycle(
         token: token,
         cycleId: cycleIdInt,
+        endDate: endDate,
       );
 
       result.fold(
@@ -1385,15 +2017,17 @@ class CycleController extends GetxController {
   }
 
   bool isCycleEnded(Map<String, dynamic> cycle) {
-    return cycle['status'] == 'finished';
+    return cycle['endDateRaw'] != null &&
+        cycle['endDateRaw'].toString().isNotEmpty;
   }
 
   Future<void> pickDate(BuildContext context) async {
     final now = DateTime.now();
+    final firstAllowedDate = now.subtract(const Duration(days: 39));
     final picked = await showDatePicker(
       context: context,
       initialDate: now,
-      firstDate: DateTime(now.year - 1),
+      firstDate: firstAllowedDate,
       lastDate: DateTime(now.year + 1),
       locale: const Locale('ar'),
     );
@@ -1615,7 +2249,7 @@ class CycleController extends GetxController {
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
     final itemId = int.tryParse(entryId);
-    
+
     if (itemId != null && itemId > 0 && cycleId != null) {
       _deleteItemFromServerInBackground(
         type: 'data',
@@ -1654,8 +2288,10 @@ class CycleController extends GetxController {
       );
       entries.add(newEntry);
 
-      cycles[idx]['medicationEntries'] = entries.map((e) => e.toJson()).toList();
-      currentCycle['medicationEntries'] = entries.map((e) => e.toJson()).toList();
+      cycles[idx]['medicationEntries'] =
+          entries.map((e) => e.toJson()).toList();
+      currentCycle['medicationEntries'] =
+          entries.map((e) => e.toJson()).toList();
 
       // حفظ آخر نص كقيمة medication للتوافق مع الكود القديم
       cycles[idx]['medication'] = text;
@@ -1717,7 +2353,7 @@ class CycleController extends GetxController {
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
     final itemId = int.tryParse(entryId);
-    
+
     if (itemId != null && itemId > 0 && cycleId != null) {
       _deleteItemFromServerInBackground(
         type: 'data',
@@ -1772,10 +2408,12 @@ class CycleController extends GetxController {
       await myServices.getStorage.write(_storageKey, cycles.toList());
 
       // إرسال البيانات إلى API
-      await _sendDataToServer(
-        label: 'استهلاك العلف',
-        value: amount.toString(),
-      );
+      await _sendDataToServer(label: 'استهلاك العلف', value: amount.toString());
+
+      // Cancel daily notification if data is entered
+      await _cancelDailyNotification();
+
+      cycleDataStatus.value = StatusRequest.success;
 
       cycleDataStatus.value = StatusRequest.success;
       // إعادة تعيين الحالة بعد قليل
@@ -1826,7 +2464,7 @@ class CycleController extends GetxController {
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
     final itemId = int.tryParse(entryId);
-    
+
     if (itemId != null && itemId > 0 && cycleId != null) {
       _deleteItemFromServerInBackground(
         type: 'data',
@@ -1899,10 +2537,7 @@ class CycleController extends GetxController {
       await myServices.getStorage.write(_storageKey, cycles.toList());
 
       // إرسال البيانات إلى API
-      await _sendDataToServer(
-        label: 'عدد النافق',
-        value: count.toString(),
-      );
+      await _sendDataToServer(label: 'عدد النافق', value: count.toString());
 
       cycleDataStatus.value = StatusRequest.success;
       // إعادة تعيين الحالة بعد قليل
@@ -1959,7 +2594,7 @@ class CycleController extends GetxController {
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
     final itemId = int.tryParse(entryId);
-    
+
     if (itemId != null && itemId > 0 && cycleId != null) {
       _deleteItemFromServerInBackground(
         type: 'data',
@@ -1967,6 +2602,562 @@ class CycleController extends GetxController {
         itemId: itemId,
         cycleId: cycleId,
       );
+    }
+  }
+
+  // ======================== إدارة الأعضاء = [NEW] ========================
+
+  Future<Map<String, dynamic>?> addMember({
+    required int cycleId,
+    required String phone,
+    String role = 'member',
+  }) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) return null;
+
+      final response = await _cycleData.addMember(
+        token: token,
+        cycleId: cycleId,
+        phone: phone,
+        role: role,
+      );
+
+      return response.fold(
+        (failure) {
+          return {'status': 'fail', 'message': 'فشل الاتصال بالسيرفر'};
+        },
+        (result) {
+          return result;
+        },
+      );
+    } catch (e) {
+      return {'status': 'fail', 'message': 'حدث خطأ: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>?> addMemberByPhone(
+    String phone, {
+    int? cycleId,
+    String role = 'member',
+  }) async {
+    final effectiveCycleId =
+        cycleId ??
+        (currentCycle['cycle_id'] is int
+            ? currentCycle['cycle_id'] as int
+            : int.tryParse(currentCycle['cycle_id']?.toString() ?? ''));
+
+    if (effectiveCycleId == null) {
+      return {'status': 'fail', 'message': 'لا توجد دورة محددة'};
+    }
+
+    final result = await addMember(
+      cycleId: effectiveCycleId,
+      phone: phone,
+      role: role,
+    );
+    if (result != null) {
+      if (result['status'] == 'success') {
+        // تحديث تفاصيل الدورة لإظهار العضو الجديد مع حالة pending
+        await fetchCycleDetails(effectiveCycleId);
+      }
+    }
+    return result;
+  }
+
+  Future<void> leaveCycle() async {
+    try {
+      final cycleId = currentCycle['cycle_id'];
+      if (cycleId == null) return;
+      final cycleIdInt =
+          cycleId is int ? cycleId : int.tryParse(cycleId.toString());
+      if (cycleIdInt == null) return;
+
+      cycleLeaveStatus.value = StatusRequest.loading;
+      final user = _auth.currentUser;
+      if (user == null) {
+        cycleLeaveStatus.value = StatusRequest.failure;
+        return;
+      }
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) {
+        cycleLeaveStatus.value = StatusRequest.failure;
+        return;
+      }
+
+      final response = await _cycleData.leaveCycle(
+        token: token,
+        cycleId: cycleIdInt,
+      );
+
+      response.fold(
+        (l) {
+          // API call failed - log for debugging
+          print('❌ Leave Cycle API Failed: $l');
+          cycleLeaveStatus.value = l;
+        },
+        (r) {
+          print('✅ Leave Cycle Response: $r');
+          print('📊 Rows deleted from DB: ${r['rows_deleted'] ?? 0}');
+          if (r['status'] == 'success') {
+            print('✅ Successfully left cycle $cycleIdInt');
+            cycleLeaveStatus.value = StatusRequest.success;
+            _isCycleOpen = false;
+            fetchCyclesFromServer();
+            Get.offAllNamed<void>(AppRoute.home);
+            // Show snackbar with longer delay after navigation completes
+            Future.delayed(const Duration(milliseconds: 800), () {
+              Get.snackbar(
+                'نجاح',
+                'تمت مغادرة الدورة بنجاح',
+                snackPosition: SnackPosition.BOTTOM,
+              );
+            });
+          } else {
+            // API returned fail status
+            print('❌ Leave Cycle API Error: ${r['message']}');
+            if (r['debug_error'] != null) {
+              print('🔧 Debug Error: ${r['debug_error']}');
+              print(
+                '🔧 Debug File: ${r['debug_file']} at line ${r['debug_line']}',
+              );
+            }
+            cycleLeaveStatus.value = StatusRequest.failure;
+          }
+        },
+      );
+    } catch (e) {
+      cycleLeaveStatus.value = StatusRequest.serverFailure;
+    }
+  }
+
+  Future<void> removeMember(int targetUserId) async {
+    final int? cycleId =
+        currentCycle['cycle_id'] is int
+            ? currentCycle['cycle_id'] as int
+            : int.tryParse(currentCycle['cycle_id']?.toString() ?? '');
+    if (cycleId == null) return;
+
+    unawaited(
+      Get.defaultDialog<void>(
+        title: 'حذف عضو',
+        middleText: 'هل أنت متأكد من حذف هذا العضو من الدورة؟',
+        textConfirm: 'حذف',
+        textCancel: 'إلغاء',
+        confirmTextColor: Colors.white,
+        buttonColor: Colors.red,
+        onConfirm: () async {
+          Get.back<void>();
+          final user = _auth.currentUser;
+          if (user == null) return;
+          final token = await user.getIdToken();
+          if (token == null) return;
+
+          cycleLeaveStatus.value = StatusRequest.loading;
+          update();
+
+          final response = await _cycleData.removeMember(
+            token: token,
+            cycleId: cycleId,
+            targetUserId: targetUserId,
+          );
+
+          response.fold(
+            (failure) {
+              cycleLeaveStatus.value = StatusRequest.serverFailure;
+              update();
+              Get.snackbar('خطأ', 'فشل الاتصال بالسيرفر');
+            },
+            (result) {
+              if (result['status'] == 'success') {
+                // تحديث قائمة الأعضاء في currentCycle
+                bool matchMember(dynamic m) {
+                  final rawId = (m as Map)['id'] ?? m['user_id'];
+                  final memberId =
+                      rawId is int
+                          ? rawId
+                          : int.tryParse(rawId?.toString() ?? '');
+                  return memberId == targetUserId;
+                }
+
+                final List<dynamic> currentMembers = List<dynamic>.from(
+                  currentCycle['members'] as List? ?? [],
+                );
+                currentMembers.removeWhere(matchMember);
+                currentCycle['members'] = currentMembers;
+                currentCycle.refresh();
+
+                // تحديث cycles list أيضاً
+                final cycleIdx = cycles.indexWhere((c) {
+                  final cId = c['cycle_id'];
+                  final cIdInt =
+                      cId is int ? cId : int.tryParse(cId?.toString() ?? '');
+                  return cIdInt == cycleId;
+                });
+                if (cycleIdx != -1) {
+                  final cycleMap = Map<String, dynamic>.from(cycles[cycleIdx]);
+                  final cycleMembers = List<dynamic>.from(
+                    cycleMap['members'] as List? ?? [],
+                  );
+                  cycleMembers.removeWhere(matchMember);
+                  cycleMap['members'] = cycleMembers;
+                  cycles[cycleIdx] = cycleMap;
+                }
+
+                Get.snackbar('نجاح', 'تم حذف العضو بنجاح');
+              } else {
+                Get.snackbar(
+                  'تنبيه',
+                  (result['message'] ?? 'فشل حذف العضو').toString(),
+                );
+              }
+              cycleLeaveStatus.value = StatusRequest.none;
+              update();
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  /// إزالة عضو مباشرة بدون dialog تأكيد — يرجع نتيجة ليعرضها الـ UI
+  Future<Map<String, dynamic>> removeMemberDirect(int targetUserId) async {
+    final int? cycleId =
+        currentCycle['cycle_id'] is int
+            ? currentCycle['cycle_id'] as int
+            : int.tryParse(currentCycle['cycle_id']?.toString() ?? '');
+    if (cycleId == null) {
+      return {'status': 'fail', 'message': 'تعذر تحديد الدورة'};
+    }
+
+    final user = _auth.currentUser;
+    if (user == null) return {'status': 'fail', 'message': 'غير مسجل'};
+    final token = await user.getIdToken();
+    if (token == null) return {'status': 'fail', 'message': 'فشل التوثق'};
+
+    cycleLeaveStatus.value = StatusRequest.loading;
+    update();
+
+    final response = await _cycleData.removeMember(
+      token: token,
+      cycleId: cycleId,
+      targetUserId: targetUserId,
+    );
+
+    return response.fold(
+      (failure) {
+        cycleLeaveStatus.value = StatusRequest.serverFailure;
+        update();
+        return {'status': 'fail', 'message': 'فشل الاتصال بالسيرفر'};
+      },
+      (result) {
+        if (result['status'] == 'success') {
+          bool matchMember(dynamic m) {
+            final rawId = (m as Map)['id'] ?? m['user_id'];
+            final memberId =
+                rawId is int ? rawId : int.tryParse(rawId?.toString() ?? '');
+            return memberId == targetUserId;
+          }
+
+          final currentMembers = List<dynamic>.from(
+            currentCycle['members'] as List? ?? [],
+          );
+          currentMembers.removeWhere(matchMember);
+          currentCycle['members'] = currentMembers;
+          currentCycle.refresh();
+
+          final cycleIdx = cycles.indexWhere((c) {
+            final cId = c['cycle_id'];
+            final cIdInt =
+                cId is int ? cId : int.tryParse(cId?.toString() ?? '');
+            return cIdInt == cycleId;
+          });
+          if (cycleIdx != -1) {
+            final cycleMap = Map<String, dynamic>.from(cycles[cycleIdx]);
+            final cycleMembers = List<dynamic>.from(
+              cycleMap['members'] as List? ?? [],
+            );
+            cycleMembers.removeWhere(matchMember);
+            cycleMap['members'] = cycleMembers;
+            cycles[cycleIdx] = cycleMap;
+          }
+
+          cycleLeaveStatus.value = StatusRequest.none;
+          update();
+          return {'status': 'success', 'message': 'تم حذف العضو بنجاح'};
+        } else {
+          cycleLeaveStatus.value = StatusRequest.none;
+          update();
+          return {
+            'status': 'fail',
+            'message': (result['message'] ?? 'فشل حذف العضو').toString(),
+          };
+        }
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>?> createInvitation(int cycleId) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) return null;
+
+      final response = await _cycleData.createInvitation(
+        token: token,
+        cycleId: cycleId,
+      );
+
+      return response.fold(
+        (failure) {
+          return {'status': 'fail', 'message': 'فشل إنشاء رابط الدعوة'};
+        },
+        (result) {
+          return result;
+        },
+      );
+    } catch (e) {
+      return {'status': 'fail', 'message': 'حدث خطأ: $e'};
+    }
+  }
+
+  Future<void> joinByCode(String code) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        Get.snackbar('خطأ', 'يجب تسجيل الدخول أولاً');
+        return;
+      }
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) return;
+
+      final response = await _cycleData.joinByCode(token: token, code: code);
+
+      response.fold(
+        (failure) {
+          Get.snackbar('خطأ', 'فشل الاتصال بالسيرفر');
+        },
+        (result) {
+          if (result['status'] == 'success') {
+            Get.snackbar(
+              'نجاح',
+              result['message']?.toString() ?? 'تم الانضمام بنجاح',
+            );
+            fetchCyclesFromServer();
+          } else {
+            Get.snackbar('فشل', result['message']?.toString() ?? 'حدث خطأ');
+          }
+        },
+      );
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) Get.back<void>();
+      Get.snackbar('خطأ', 'حدث خطأ: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> searchUsers(String searchTerm) async {
+    try {
+      if (searchTerm.length < 2) return [];
+
+      final user = _auth.currentUser;
+      if (user == null) return null;
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) return null;
+
+      final response = await _cycleData.searchUsers(
+        token: token,
+        searchTerm: searchTerm,
+      );
+
+      return response.fold((failure) => null, (result) {
+        if (result['status'] == 'success') {
+          final data = result['data'] as List?;
+          if (data != null) return List<Map<String, dynamic>>.from(data);
+        }
+        return null;
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> updateMemberRole({
+    required int targetUserId,
+    required String newRole,
+  }) async {
+    final int? cycleId =
+        currentCycle['cycle_id'] is int
+            ? currentCycle['cycle_id'] as int
+            : int.tryParse(currentCycle['cycle_id']?.toString() ?? '');
+    if (cycleId == null)
+      return {'status': 'fail', 'message': 'لا توجد دورة محددة'};
+
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return null;
+      final token = await user.getIdToken();
+      if (token == null || token.isEmpty) return null;
+
+      final response = await _cycleData.updateMemberRole(
+        token: token,
+        cycleId: cycleId,
+        targetUserId: targetUserId,
+        newRole: newRole,
+      );
+
+      return response.fold(
+        (failure) => {'status': 'fail', 'message': 'فشل الاتصال بالسيرفر'},
+        (result) {
+          if (result['status'] == 'success') {
+            // تحديث الدور محلياً في currentCycle و cycles list
+            void updateInList(List<dynamic> membersList) {
+              for (int i = 0; i < membersList.length; i++) {
+                final m = membersList[i] as Map;
+                // الـ API يرجع الـ id في حقل 'id'
+                final rawId = m['id'] ?? m['user_id'];
+                final memberId =
+                    rawId is int
+                        ? rawId
+                        : int.tryParse(rawId?.toString() ?? '');
+                if (memberId == targetUserId) {
+                  membersList[i] = {
+                    ...Map<String, dynamic>.from(m),
+                    'role': newRole,
+                  };
+                  break;
+                }
+              }
+            }
+
+            final currentMembers = List<dynamic>.from(
+              currentCycle['members'] as List? ?? [],
+            );
+            updateInList(currentMembers);
+            currentCycle['members'] = currentMembers;
+            currentCycle.refresh();
+
+            // تحديث cycles list أيضاً
+            final cycleIdx = cycles.indexWhere((c) {
+              final cId = c['cycle_id'];
+              final cIdInt =
+                  cId is int ? cId : int.tryParse(cId?.toString() ?? '');
+              return cIdInt == cycleId;
+            });
+            if (cycleIdx != -1) {
+              final cycleMap = Map<String, dynamic>.from(cycles[cycleIdx]);
+              final cycleMembers = List<dynamic>.from(
+                cycleMap['members'] as List? ?? [],
+              );
+              updateInList(cycleMembers);
+              cycleMap['members'] = cycleMembers;
+              cycles[cycleIdx] = cycleMap;
+            }
+          }
+          return result;
+        },
+      );
+    } catch (e) {
+      return {'status': 'fail', 'message': 'حدث خطأ: $e'};
+    }
+  }
+
+  // ======================== إدارة الدعوات ========================
+
+  Future<void> fetchInvitations() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      invitations.clear();
+      return;
+    }
+
+    invitationsStatus.value = StatusRequest.loading;
+
+    try {
+      final token = await user.getIdToken();
+      if (token == null) {
+        invitationsStatus.value = StatusRequest.failure;
+        return;
+      }
+
+      final response = await _cycleData.getInvitations(token: token);
+
+      response.fold(
+        (failure) {
+          invitationsStatus.value = failure;
+        },
+        (result) {
+          if (result['status'] == 'success') {
+            final List<dynamic> data = result['data'] as List<dynamic>? ?? [];
+            invitations.assignAll(
+              data.map((e) => Map<String, dynamic>.from(e as Map)).toList(),
+            );
+            invitationsStatus.value = StatusRequest.success;
+          } else {
+            invitationsStatus.value = StatusRequest.failure;
+          }
+        },
+      );
+    } catch (e) {
+      invitationsStatus.value = StatusRequest.serverFailure;
+    }
+  }
+
+  Future<Map<String, dynamic>?> respondToInvitation(
+    int cycleId,
+    String action,
+  ) async {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+
+    invitationResponseStatus.value = StatusRequest.loading;
+
+    try {
+      final token = await user.getIdToken();
+      if (token == null) {
+        invitationResponseStatus.value = StatusRequest.failure;
+        return {'status': 'fail', 'message': 'فشل المصادقة'};
+      }
+
+      final response = await _cycleData.respondToInvitation(
+        token: token,
+        cycleId: cycleId,
+        action: action,
+      );
+
+      return response.fold(
+        (failure) {
+          invitationResponseStatus.value = failure;
+          return {'status': 'fail', 'message': 'فشل تنفيذ العملية'};
+        },
+        (result) {
+          if (result['status'] == 'success') {
+            invitationResponseStatus.value = StatusRequest.success;
+            invitations.removeWhere((inv) => inv['cycle_id'] == cycleId);
+
+            if (action == 'accept') {
+              fetchCyclesFromServer();
+            }
+
+            return {
+              'status': 'success',
+              'message':
+                  action == 'accept' ? 'تم قبول الدعوة بنجاح' : 'تم رفض الدعوة',
+            };
+          } else {
+            invitationResponseStatus.value = StatusRequest.failure;
+            return {
+              'status': 'fail',
+              'message': (result['message'] ?? 'فشل تنفيذ العملية').toString(),
+            };
+          }
+        },
+      );
+    } catch (e) {
+      invitationResponseStatus.value = StatusRequest.serverFailure;
+      return {'status': 'fail', 'message': 'حدث خطأ غير متوقع'};
     }
   }
 }

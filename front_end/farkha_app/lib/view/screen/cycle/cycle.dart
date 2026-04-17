@@ -12,12 +12,14 @@ import '../../../data/data_source/static/chicken_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
+import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 import '../../../logic/controller/weather_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/appbar_cycle.dart';
 import '../../widget/cycle/area_darkness_card.dart';
 import '../../widget/cycle/cycle_stats_bar.dart';
+import '../../widget/cycle/darkness_schedule_card.dart';
 import '../../widget/cycle/environment_status.dart';
 import '../../widget/cycle/feed_consumption_card.dart';
 import '../../widget/cycle/financial_summary_card.dart';
@@ -50,17 +52,22 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
     super.initState();
 
     // Use put when not registered so we never call find on a missing controller (avoids "not found" crash)
-    cycleCtrl = Get.isRegistered<CycleController>()
-        ? Get.find<CycleController>()
-        : Get.put(CycleController());
-    broilerCtrl = Get.isRegistered<BroilerController>()
-        ? Get.find<BroilerController>()
-        : Get.put(BroilerController());
+    cycleCtrl =
+        Get.isRegistered<CycleController>()
+            ? Get.find<CycleController>()
+            : Get.put(CycleController());
+    broilerCtrl =
+        Get.isRegistered<BroilerController>()
+            ? Get.find<BroilerController>()
+            : Get.put(BroilerController());
     if (!Get.isRegistered<CycleExpensesController>()) {
       Get.put(CycleExpensesController());
     }
     if (!Get.isRegistered<WeatherController>()) {
       Get.put(WeatherController(), permanent: true);
+    }
+    if (!Get.isRegistered<DarknessScheduleController>()) {
+      Get.put(DarknessScheduleController());
     }
 
     _arrowController = AnimationController(
@@ -92,6 +99,11 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
     }
 
     _pageController = PageController(initialPage: _currentPage);
+
+    // عند تحديث بيانات الدورة (مثلاً بعد جلب التفاصيل من API) نحدّث الواجهة فقط دون إعادة جلب التفاصيل
+    ever(cycleCtrl.cycleDataVersion, (_) {
+      if (mounted) _refreshFromCurrentCycle();
+    });
 
     // تأخير تحديث البيانات حتى انتهاء بناء الواجهة
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -155,6 +167,22 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
     }
   }
 
+  /// تحديث واجهة الدورة من currentCycle فقط (بدون إعادة جلب من API) لتجنب حلقة التحميل.
+  void _refreshFromCurrentCycle() {
+    if (!mounted) return;
+    try {
+      final current = cycleCtrl.currentCycle;
+      final startDateRaw = current['startDateRaw']?.toString() ?? '';
+      final chickCount =
+          current['chickCount']?.toString() ??
+          current['chick_count']?.toString() ??
+          '0';
+      if (startDateRaw.isNotEmpty && chickCount.isNotEmpty) {
+        _updateBroilerForCycle(startDateRaw, chickCount);
+      }
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
     _arrowController.dispose();
@@ -200,6 +228,13 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
 
         // ثم جلب بيانات الطقس
         broilerCtrl.onPressed();
+
+        if (!mounted) return;
+        if (Get.isRegistered<DarknessScheduleController>()) {
+          final ctrl = Get.find<DarknessScheduleController>();
+          ctrl.updateSchedule(startDateRaw: startRaw, ageInDays: ageDays);
+          ctrl.checkDarknessFeatureSuggestion(ageDays);
+        }
       } catch (e) {
         // معالجة الأخطاء
         if (mounted) {
@@ -333,26 +368,32 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                   padding: EdgeInsets.symmetric(horizontal: 17.w),
                   child: Stack(
                     children: [
-                      SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            CycleStatsBar(
-                              startDateRaw: cycle['startDateRaw'] as String,
-                            ),
-                            SizedBox(height: 12.h),
-                            const EnvironmentStatus(),
-                            SizedBox(height: 12.h),
-                            const AdNativeWidget(),
-                            SizedBox(height: 12.h),
-                            const PerformanceMetricsCard(),
-                            SizedBox(height: 12.h),
-                            const FeedConsumptionCard(),
-                            SizedBox(height: 12.h),
-                            const FinancialSummaryCard(),
-                            SizedBox(height: 12.h),
-                            const AreaDarknessCard(),
-                            SizedBox(height: 11.h),
-                          ],
+                      RefreshIndicator(
+                        onRefresh: () => cycleCtrl.forceRefreshCurrentCycle(),
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Column(
+                            children: [
+                              CycleStatsBar(
+                                startDateRaw: cycle['startDateRaw'] as String,
+                              ),
+                              SizedBox(height: 12.h),
+                              const EnvironmentStatus(),
+                              SizedBox(height: 12.h),
+                              const AdNativeWidget(),
+                              SizedBox(height: 12.h),
+                              const PerformanceMetricsCard(),
+                              SizedBox(height: 12.h),
+                              const FeedConsumptionCard(),
+                              SizedBox(height: 12.h),
+                              const FinancialSummaryCard(),
+                              SizedBox(height: 12.h),
+                              const AreaDarknessCard(),
+                              SizedBox(height: 12.h),
+                              const DarknessScheduleCard(),
+                              SizedBox(height: 11.h),
+                            ],
+                          ),
                         ),
                       ),
                       if (_showTutorialOverlay && _currentPage == 1)
@@ -464,6 +505,17 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     _buildFabOption(
+                      heroTag: 'sales_fab',
+                      label: 'المبيعات',
+                      color: AppColors.primaryColor,
+                      isDark: isDark,
+                      onTap: () {
+                        _toggleFab();
+                        Get.toNamed<void>(AppRoute.cycleSales);
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+                    _buildFabOption(
                       heroTag: 'expenses_fab',
                       label: 'المصروفات',
                       color: AppColors.primaryColor,
@@ -482,6 +534,17 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                       onTap: () {
                         _toggleFab();
                         Get.toNamed<void>(AppRoute.cycleData);
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+                    _buildFabOption(
+                      heroTag: 'notes_fab',
+                      label: 'ملاحظات',
+                      color: AppColors.primaryColor,
+                      isDark: isDark,
+                      onTap: () {
+                        _toggleFab();
+                        Get.toNamed<void>(AppRoute.cycleNotes);
                       },
                     ),
                     SizedBox(height: 12.h),
@@ -526,7 +589,10 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                   : AppColors.lightCardBackgroundColor,
           borderRadius: BorderRadius.circular(25.r),
           border: Border.all(
-            color: isDark ? Colors.grey[700]! : Colors.black.withValues(alpha: 0.1),
+            color:
+                isDark
+                    ? Colors.grey[700]!
+                    : Colors.black.withValues(alpha: 0.1),
           ),
           boxShadow: [
             BoxShadow(

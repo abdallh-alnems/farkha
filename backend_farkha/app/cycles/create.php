@@ -43,6 +43,7 @@ try {
     $chickCount = $input['chick_count'] ?? null;
     $space = $input['space'] ?? null;
     $breed = $input['breed'] ?? null;
+    $systemType = $input['system_type'] ?? 'أرضي';
     $startDateRaw = $input['start_date_raw'] ?? null;
 
     // التحقق من البيانات المطلوبة
@@ -96,6 +97,7 @@ try {
             ':chick_count' => (int)$chickCount,
             ':space' => (float)$space,
             ':breed' => $breed,
+            ':system_type' => $systemType,
             ':start_date_raw' => $startDateRaw
         ]);
 

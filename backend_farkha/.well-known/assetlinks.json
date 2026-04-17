@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "ni.nims.frkha",
+    "sha256_cert_fingerprints": [
+      "12:FD:80:EF:44:4D:31:51:5A:EB:A5:17:8C:C3:25:82:F7:CE:B4:19:03:D8:FE:B1:0B:4D:2E:8E:CF:C6:26:FF"
+    ]
+  }
+}]

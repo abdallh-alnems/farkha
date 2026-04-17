@@ -7,11 +7,15 @@ class AdManager {
       'ca-app-pub-8595701567488603/1751748833';
   static const String _productionNative =
       'ca-app-pub-8595701567488603/4494984718';
+  static const String _productionInterstitial =
+      'ca-app-pub-8595701567488603/5421039211';
 
   // ================================ Test IDs =================================
 
   static const String _testBanner = 'ca-app-pub-3940256099942544/6300978111';
   static const String _testNative = 'ca-app-pub-3940256099942544/2247696110';
+  static const String _testInterstitial =
+      'ca-app-pub-3940256099942544/1033173712';
 
   // ================================== banner =================================
 
@@ -22,4 +26,10 @@ class AdManager {
 
   static String get idNative =>
       TestModeManager.shouldUseTestAds ? _testNative : _productionNative;
+
+  // =============================== interstitial ==============================
+
+  static String get idInterstitial => TestModeManager.shouldUseTestAds
+      ? _testInterstitial
+      : _productionInterstitial;
 }

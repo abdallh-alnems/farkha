@@ -16,6 +16,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $token = $input['token'] ?? null;
 $cycleId = $input['cycle_id'] ?? null;
 $status = $input['status'] ?? null;
+$endDate = $input['end_date'] ?? null;
 
 // التحقق من وجود Token
 if (!$token) {
@@ -91,7 +92,8 @@ try {
     $stmt = $con->prepare(Queries::updateCycleStatusQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
-        ':status' => $status
+        ':status' => $status,
+        ':end_date' => $endDate
     ]);
 
     if ($stmt->rowCount() === 0) {

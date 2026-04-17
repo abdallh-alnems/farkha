@@ -125,7 +125,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             child: DropdownButtonFormField<String>(
-              value: selectedPeriod,
+              initialValue: selectedPeriod,
               decoration: const InputDecoration(
                 labelText: 'اختر الفترة الزمنية',
                 border: OutlineInputBorder(),

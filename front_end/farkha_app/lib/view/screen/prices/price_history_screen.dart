@@ -7,6 +7,7 @@ import '../../../core/constant/theme/colors.dart';
 import '../../../core/shared/price_change.dart';
 import '../../../logic/controller/price_controller/price_history_controller.dart';
 import '../../widget/ad/banner.dart';
+import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
 
 class PriceHistoryScreen extends StatelessWidget {
@@ -75,9 +76,17 @@ class _PriceHistoryList extends StatelessWidget {
       },
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 17.w, vertical: 12.h),
-        itemCount: historyList.length + (controller.hasMore ? 1 : 0),
+        itemCount:
+            1 + historyList.length + (controller.hasMore ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index >= historyList.length) {
+          if (index == 0) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12).r,
+              child: const AdNativeWidget(),
+            );
+          }
+          final listIndex = index - 1;
+          if (listIndex >= historyList.length) {
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Center(
@@ -92,7 +101,7 @@ class _PriceHistoryList extends StatelessWidget {
             );
           }
 
-          final item = historyList[index];
+          final item = historyList[listIndex];
           final date = item['date'] as String? ?? '';
           final higher = item['higher'] as String? ?? '-';
           final lower = item['lower'] as String? ?? '-';
@@ -101,7 +110,7 @@ class _PriceHistoryList extends StatelessWidget {
           // فرق السعر بين هذا السطر والسطر السابق (الأقدم زمنياً)
           final double? higherPriceDiff = _getHigherPriceDifference(
             historyList,
-            index,
+            listIndex,
           );
 
           return Card(

@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../../logic/controller/remote_config_controller.dart';
 import '../constant/firebase_options.dart';
 import 'analytics_service.dart';
 import 'dark_light_service.dart';
+import 'deep_link_service.dart';
 import 'notification_service.dart';
 
 class MyServices extends GetxService {
@@ -35,6 +37,16 @@ class MyServices extends GetxService {
       debugPrint('Firebase already initialized: $e');
     }
 
+    try {
+      await FirebaseAppCheck.instance.activate(
+        androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+        appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+      );
+      debugPrint('✅ Firebase App Check initialized');
+    } catch (e) {
+      debugPrint('Error initializing Firebase App Check: $e');
+    }
+
     // Initialize Crashlytics
     await _initCrashlytics();
 
@@ -47,6 +59,9 @@ class MyServices extends GetxService {
     await Get.putAsync(() => NotificationService().init());
     // Initialize analytics service
     await Get.putAsync(() => AnalyticsService().init());
+
+    // Initialize deep link service
+    await Get.putAsync(() => DeepLinkService().init());
 
     return this;
   }

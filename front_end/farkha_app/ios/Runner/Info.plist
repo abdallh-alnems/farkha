@@ -53,6 +53,8 @@
 	<string>We need your location to show relevant data.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to show relevant data.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>يحتاج التطبيق لصلاحية الوصول لجهات الاتصال لاختيار رقم هاتف لإضافته كعضو في الدورة</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
@@ -60,5 +62,10 @@
 		<string>tel</string>
 		<string>mailto</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

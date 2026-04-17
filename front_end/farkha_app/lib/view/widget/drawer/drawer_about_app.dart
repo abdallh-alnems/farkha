@@ -86,30 +86,6 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
     rateController.launchStore();
   }
 
-  Future<void> _handleLocationTap() async {
-    try {
-      Navigator.pop(context);
-      await openAppSettings();
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _checkPermissionsStatus();
-      });
-    } catch (e) {
-      debugPrint('Error opening app settings: $e');
-    }
-  }
-
-  Future<void> _handleNotificationTap() async {
-    try {
-      Navigator.pop(context);
-      await openAppSettings();
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _checkPermissionsStatus();
-      });
-    } catch (e) {
-      debugPrint('Error opening app settings: $e');
-    }
-  }
-
   Future<void> _handleThemeToggle() async {
     // #region agent log
     try {
@@ -152,7 +128,6 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
           },
           children: [
             ListTile(
-              onTap: _handleLocationTap,
               title: Text('الموقع', style: TextStyle(fontSize: 15.sp)),
               trailing: Text(
                 _isLocationEnabled ? 'مفعل' : 'غير مفعل',
@@ -170,7 +145,6 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
               contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
             ),
             ListTile(
-              onTap: _handleNotificationTap,
               title: Text('الإشعارات', style: TextStyle(fontSize: 15.sp)),
               trailing: Text(
                 _isNotificationEnabled ? 'مفعل' : 'غير مفعل',
