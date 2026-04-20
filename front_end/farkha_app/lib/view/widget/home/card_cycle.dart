@@ -9,10 +9,12 @@ import 'package:intl/intl.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/initialization.dart';
+import '../../../core/services/excel/excel_export_service.dart';
 import '../../../core/services/pdf/pdf_export_service.dart';
 import '../../../logic/controller/auth/login_controller.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../cycle/add_member_dialog.dart';
+import '../cycle/weekly_report_bottom_sheet.dart';
 
 class CardCycle extends StatefulWidget {
  const CardCycle({super.key});
@@ -542,17 +544,28 @@ class _CardCycleState extends State<CardCycle> {
                                      ),
                                      onTap: () => Get.back(result: 'text'),
                                    ),
-                                   ListTile(
-                                     leading: Icon(
-                                       Icons.picture_as_pdf_outlined,
-                                       color: textColor,
-                                     ),
-                                     title: Text(
-                                       'مشاركة كملف PDF',
-                                       style: TextStyle(color: textColor),
-                                     ),
-                                     onTap: () => Get.back(result: 'pdf'),
-                                   ),
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.picture_as_pdf_outlined,
+                                        color: textColor,
+                                      ),
+                                      title: Text(
+                                        'مشاركة كملف PDF',
+                                        style: TextStyle(color: textColor),
+                                      ),
+                                      onTap: () => Get.back(result: 'pdf'),
+                                    ),
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.table_chart_outlined,
+                                        color: textColor,
+                                      ),
+                                      title: Text(
+                                        'مشاركة كملف Excel',
+                                        style: TextStyle(color: textColor),
+                                      ),
+                                      onTap: () => Get.back(result: 'excel'),
+                                    ),
                                  ],
                                ),
                              ),
@@ -606,20 +619,40 @@ class _CardCycleState extends State<CardCycle> {
    الصافي:    ${netProfit >= 0 ? '+' : ''}${netProfit.toStringAsFixed(0)} ج
 ''';
                              unawaited(SharePlus.instance.share(ShareParams(text: text, subject: 'ملخص دورة: $name')));
-                           } else if (choice == 'pdf') {
-                             try {
-                               await PdfExportService.exportCycleReport(updatedCycle);
-                             } catch (e) {
-                               Get.snackbar(
-                                 'خطأ في التصدير',
-                                 'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
-                                 backgroundColor: Colors.red,
-                                 colorText: Colors.white,
-                               );
-                             }
-                           }
-                         } else if (value == 'history') {
-                           await Get.toNamed<void>(AppRoute.history);
+                            } else if (choice == 'pdf') {
+                              try {
+                                await PdfExportService.exportCycleReport(updatedCycle);
+                              } catch (e) {
+                                Get.snackbar(
+                                  'خطأ في التصدير',
+                                  'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                              }
+                            } else if (choice == 'excel') {
+                              try {
+                                await ExcelExportService.exportCycleReport(updatedCycle);
+                              } catch (e) {
+                                Get.snackbar(
+                                  'خطأ في التصدير',
+                                  'حدث خطأ أثناء تصدير ملف Excel.',
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                              }
+                            }
+                          } else if (value == 'weeklyReport') {
+                            final cycleCtrl =
+                                Get.isRegistered<CycleController>()
+                                    ? Get.find<CycleController>()
+                                    : Get.put(CycleController());
+                            cycleCtrl.currentCycle.assignAll(updatedCycle);
+                            unawaited(
+                              WeeklyReportBottomSheet.show(context, updatedCycle),
+                            );
+                          } else if (value == 'history') {
+                            await Get.toNamed<void>(AppRoute.history);
                          } else if (value == 'permissions') {
                            final cycleId =
                                int.tryParse(
@@ -667,16 +700,26 @@ class _CardCycleState extends State<CardCycle> {
                                ),
                              ),
                            ),
-                           PopupMenuItem<String>(
-                             value: 'history',
-                             child: Text(
-                               'السجل',
-                               style: TextStyle(
-                                 fontSize: 14.sp,
-                                 color: isDark ? Colors.white : Colors.black87,
-                               ),
-                             ),
-                           ),
+                            PopupMenuItem<String>(
+                              value: 'history',
+                              child: Text(
+                                'السجل',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                            ),
+                            PopupMenuItem<String>(
+                              value: 'weeklyReport',
+                              child: Text(
+                                'تقرير أسبوعي',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                            ),
                            const PopupMenuDivider(),
                            PopupMenuItem<String>(
                              value: 'cycleData',

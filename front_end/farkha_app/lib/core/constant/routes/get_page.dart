@@ -9,6 +9,7 @@ import '../../../logic/controller/tools_controller/darkness_schedule_controller.
 import '../../../logic/controller/weather_controller.dart';
 import '../../../view/screen/auth/login_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
+import '../../../view/screen/cycle/cycle_closeout_report.dart';
 import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/cycle/cycle_data.dart';
 import '../../../view/screen/cycle/cycle_expenses.dart';
@@ -16,6 +17,7 @@ import '../../../view/screen/cycle/cycle_sales.dart';
 import '../../../view/screen/cycle/cycle_notes.dart';
 import '../../../view/screen/cycle/cycle_history_screen.dart';
 import '../../../view/screen/cycle/cycle_history_details_screen.dart';
+import '../../../view/screen/cycle/cycle_comparison_screen.dart';
 import '../../../view/screen/cycle/darkness_alarm_screen.dart';
 import '../../../view/screen/home.dart';
 import '../../../view/screen/onboarding.dart';
@@ -142,6 +144,21 @@ List<GetPage<dynamic>> pages = [
   GetPage(
     name: AppRoute.cycleHistoryDetails,
     page: () => const CycleHistoryDetailsScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.cycleCloseoutReport,
+    page: () {
+      final args = Get.arguments as Map<String, dynamic>?;
+      return CloseoutReportScreen(
+        cycleData: args?['cycleData'] as Map<String, dynamic>? ?? {},
+      );
+    },
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.cycleComparison,
+    page: () => const CycleComparisonScreen(),
     middlewares: [AuthMiddleware()],
   ),
 

@@ -332,9 +332,11 @@ class CycleData {
             jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
+        print('getCycleDetails FAILED: \${response.statusCode} -> \${response.body}');
         return const Left(StatusRequest.serverFailure);
       }
     } catch (e) {
+      print('getCycleDetails ERROR: $e');
       return const Left(StatusRequest.serverFailure);
     }
   }

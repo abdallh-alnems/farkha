@@ -23,6 +23,8 @@ import '../../widget/cycle/darkness_schedule_card.dart';
 import '../../widget/cycle/environment_status.dart';
 import '../../widget/cycle/feed_consumption_card.dart';
 import '../../widget/cycle/financial_summary_card.dart';
+import '../../widget/cycle/growth_curve_card.dart';
+import '../../widget/cycle/water_consumption_card.dart';
 import '../../widget/cycle/page_turning_tips.dart';
 import '../../widget/cycle/performance_metrics_card.dart';
 
@@ -384,7 +386,11 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                               SizedBox(height: 12.h),
                               const PerformanceMetricsCard(),
                               SizedBox(height: 12.h),
+                              const GrowthCurveCard(),
+                              SizedBox(height: 12.h),
                               const FeedConsumptionCard(),
+                              SizedBox(height: 12.h),
+                              const WaterConsumptionCard(),
                               SizedBox(height: 12.h),
                               const FinancialSummaryCard(),
                               SizedBox(height: 12.h),

@@ -94,7 +94,6 @@ class PerformanceMetricsCard extends StatelessWidget {
   double _getExpectedWeight(BroilerController broilerCtrl) {
     final ageDays = (broilerCtrl.selectedChickenAge.value as num?)?.toInt() ?? 0;
     if (ageDays <= 0 || ageDays > weightsList.length) return 0.0;
-    // تحويل من جرام إلى كيلو
     return weightsList[ageDays - 1] / 1000.0;
   }
 

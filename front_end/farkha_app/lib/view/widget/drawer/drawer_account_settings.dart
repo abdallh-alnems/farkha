@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -385,6 +387,18 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
   }
 
   Future<void> _deleteAccount() async {
+    bool loadingShown = false;
+    final dialogBg =
+        Theme.of(context).dialogTheme.backgroundColor ??
+        Theme.of(context).colorScheme.surface;
+
+    void closeLoading() {
+      if (loadingShown && Get.isDialogOpen == true) {
+        Get.back<void>();
+        loadingShown = false;
+      }
+    }
+
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
@@ -398,11 +412,50 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
         return;
       }
 
+      loadingShown = true;
+      unawaited(
+        Get.dialog<void>(
+          PopScope(
+            canPop: false,
+            child: Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 21.w, vertical: 21.h),
+                  decoration: BoxDecoration(
+                    color: dialogBg,
+                    borderRadius: BorderRadius.circular(13.r),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 34.w,
+                        height: 34.w,
+                        child: const CircularProgressIndicator(strokeWidth: 3),
+                      ),
+                      SizedBox(height: 13.h),
+                      Text(
+                        'جاري حذف الحساب...',
+                        style: TextStyle(fontSize: 15.sp),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          barrierDismissible: false,
+        ),
+      );
+
       final deleteAccountData = DeleteAccountData();
       final response = await deleteAccountData.deleteAccount(token: token);
 
       await response.fold<Future<void>>(
         (failure) async {
+          closeLoading();
           if (failure == StatusRequest.offlineFailure) {
             _showSnackbar('لا يوجد اتصال بالإنترنت', isError: true);
           } else {
@@ -412,12 +465,12 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
         (Map<String, dynamic> result) async {
           final data = result;
           if (data['status'] == 'success') {
-            // Delete account locally
+            closeLoading();
             final loginController = Get.find<LoginController>();
-            // تسجيل الخروج (الذي يحذف جميع البيانات المحلية تلقائياً)
             await loginController.signOut();
             _showSnackbar('تم حذف الحساب بنجاح');
           } else {
+            closeLoading();
             _showSnackbar(
               (data['message'] ?? 'فشل حذف الحساب').toString(),
               isError: true,
@@ -426,6 +479,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
         },
       );
     } catch (e) {
+      closeLoading();
       _showSnackbar('حدث خطأ أثناء حذف الحساب', isError: true);
     }
   }

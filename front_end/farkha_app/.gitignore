@@ -1,5 +1,7 @@
 # Miscellaneous
 *dev_notes.txt
+*.bak
+*.gs
 *.claude
 *.opencode
 *.specify

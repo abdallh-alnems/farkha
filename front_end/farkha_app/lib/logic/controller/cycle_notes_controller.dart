@@ -31,9 +31,21 @@ class NoteItem {
 }
 
 class CycleNotesController extends GetxController {
+  CycleNotesController({
+    CycleData? cycleData,
+    FirebaseAuth? auth,
+    MyServices? myServices,
+  })  : _cycleDataOverride = cycleData,
+        _authOverride = auth,
+        _myServicesOverride = myServices;
+
+  final CycleData? _cycleDataOverride;
+  final FirebaseAuth? _authOverride;
+  final MyServices? _myServicesOverride;
+
   final RxList<NoteItem> notes = <NoteItem>[].obs;
-  final MyServices myServices = Get.find<MyServices>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final MyServices myServices;
+  late final FirebaseAuth _auth;
   late final CycleData _cycleData;
 
   // حالة التحميل
@@ -43,7 +55,9 @@ class CycleNotesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _cycleData = CycleData();
+    _cycleData = _cycleDataOverride ?? CycleData();
+    _auth = _authOverride ?? FirebaseAuth.instance;
+    myServices = _myServicesOverride ?? Get.find<MyServices>();
     _loadNotes();
 
     // Watch for cycle changes to reload notes

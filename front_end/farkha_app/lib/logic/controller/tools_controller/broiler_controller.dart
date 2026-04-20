@@ -20,6 +20,8 @@ class BroilerController extends GetxController {
 
   int dailyFeedConsumption = 0;
   double totalFeedConsumption = 0.0;
+  int dailyWaterConsumption = 0;
+  double totalWaterConsumption = 0.0;
   String ageHumidityRange = '';
   int chickensPerSquareMeter = 0;
   final RxDouble requiredArea = 0.0.obs;
@@ -40,6 +42,7 @@ class BroilerController extends GetxController {
       getLighting();
       getWeight();
       calculateFeedConsumption();
+      calculateWaterConsumption();
       showData.value = true;
     }
   }
@@ -58,8 +61,10 @@ class BroilerController extends GetxController {
     showData.value = false;
     requiredArea.value = 0.0;
     collegeArea = 0.0;
-    dailyFeedConsumption = 0;
-    totalFeedConsumption = 0.0;
+      dailyFeedConsumption = 0;
+      totalFeedConsumption = 0.0;
+      dailyWaterConsumption = 0;
+      totalWaterConsumption = 0.0;
   }
 
   void ageOfChickens() {
@@ -106,6 +111,19 @@ class BroilerController extends GetxController {
     dailyFeedConsumption =
         feedConsumptions[age - 1] * chickens!;
     totalFeedConsumption = chickens * 3.5;
+  }
+
+  void calculateWaterConsumption() {
+    final int? chickens = int.tryParse(chickensCountController.text);
+
+    final age = (selectedChickenAge.value as num).toInt();
+    dailyWaterConsumption =
+        waterConsumptions[age - 1] * chickens!;
+    double totalMl = 0.0;
+    for (int i = 0; i < age; i++) {
+      totalMl += waterConsumptions[i] * chickens!;
+    }
+    totalWaterConsumption = totalMl / 1000.0;
   }
 
   void calculateArea() {

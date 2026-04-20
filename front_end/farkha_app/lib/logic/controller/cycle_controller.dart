@@ -104,9 +104,21 @@ class MortalityEntry {
 }
 
 class CycleController extends GetxController {
-  final MyServices myServices = Get.find<MyServices>();
+  CycleController({
+    CycleData? cycleData,
+    FirebaseAuth? auth,
+    MyServices? myServices,
+  })  : _cycleDataOverride = cycleData,
+        _authOverride = auth,
+        _myServicesOverride = myServices;
+
+  final CycleData? _cycleDataOverride;
+  final FirebaseAuth? _authOverride;
+  final MyServices? _myServicesOverride;
+
   late final CycleData _cycleData;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final FirebaseAuth _auth;
+  late final MyServices myServices;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController countController = TextEditingController();
@@ -177,7 +189,9 @@ class CycleController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _cycleData = CycleData();
+    _cycleData = _cycleDataOverride ?? CycleData();
+    _auth = _authOverride ?? FirebaseAuth.instance;
+    myServices = _myServicesOverride ?? Get.find<MyServices>();
     _loadCycles();
     fetchCyclesFromServer();
     fetchInvitations();
@@ -232,6 +246,8 @@ class CycleController extends GetxController {
             cycle.remove('customDataEntries');
             cycle.remove('members');
             cycle.remove('notes');
+            // ضمان وجود role للدورات القديمة المحفوظة محلياً قبل إضافة الحقل
+            cycle['role'] ??= 'owner';
             return cycle;
           }).toList();
       // فلترة الدورات لإخفاء الدورات المنتهية
@@ -1203,6 +1219,7 @@ class CycleController extends GetxController {
     final averageWeightEntries = <Map<String, dynamic>>[];
     final medicationEntries = <Map<String, dynamic>>[];
     final feedConsumptionEntries = <Map<String, dynamic>>[];
+    final waterConsumptionEntries = <Map<String, dynamic>>[];
     final customDataEntries = <Map<String, dynamic>>[];
 
     // معالجة cycle_data إذا كانت موجودة
@@ -1523,6 +1540,7 @@ class CycleController extends GetxController {
       'startDateRaw': startDateRaw,
       'mortalityEntries': <Map<String, dynamic>>[],
       'mortality': '0',
+      'role': 'owner',
       // 'lastStageShown' removed
     };
 

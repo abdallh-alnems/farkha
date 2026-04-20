@@ -48,19 +48,36 @@ class SalesItem {
 }
 
 class CycleSalesController extends GetxController {
+  CycleSalesController({
+    CycleData? cycleData,
+    CycleController? cycleController,
+    FirebaseAuth? auth,
+    MyServices? myServices,
+  })  : _cycleDataOverride = cycleData,
+        _cycleControllerOverride = cycleController,
+        _authOverride = auth,
+        _myServicesOverride = myServices;
+
+  final CycleData? _cycleDataOverride;
+  final CycleController? _cycleControllerOverride;
+  final FirebaseAuth? _authOverride;
+  final MyServices? _myServicesOverride;
+
   final RxList<SalesItem> sales = <SalesItem>[].obs;
   final RxDouble totalSales = 0.0.obs;
   final Rx<StatusRequest> statusRequest = StatusRequest.none.obs;
   
   late final CycleData _cycleData;
   late final CycleController _cycleController;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final MyServices myServices = Get.find<MyServices>();
+  late final FirebaseAuth _auth;
+  late final MyServices myServices;
 
   @override
   void onInit() {
-    _cycleData = CycleData();
-    _cycleController = Get.find<CycleController>();
+    _cycleData = _cycleDataOverride ?? CycleData();
+    _cycleController = _cycleControllerOverride ?? Get.find<CycleController>();
+    _auth = _authOverride ?? FirebaseAuth.instance;
+    myServices = _myServicesOverride ?? Get.find<MyServices>();
     super.onInit();
     fetchSales();
   }

@@ -3112,10 +3112,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           ),
           TextButton(
             onPressed: () {
-              Get.back<void>(); // إغلاق الـ Dialog مباشرة
-              cycleCtrl.removeFeedConsumptionEntry(
-                entry.id,
-              ); // تنفيذ الحذف في الخلفية
+              Get.back<void>();
+              cycleCtrl.removeFeedConsumptionEntry(entry.id);
             },
             style: TextButton.styleFrom(
               foregroundColor: Colors.red,

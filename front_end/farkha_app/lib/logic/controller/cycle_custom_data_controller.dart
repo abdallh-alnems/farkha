@@ -111,11 +111,26 @@ class CustomDataItem {
 }
 
 class CycleCustomDataController extends GetxController {
-  final GetStorage _storage = GetStorage();
+  CycleCustomDataController({
+    CycleData? cycleData,
+    FirebaseAuth? auth,
+    MyServices? myServices,
+    GetStorage? storage,
+  })  : _cycleDataOverride = cycleData,
+        _authOverride = auth,
+        _myServicesOverride = myServices,
+        _storageOverride = storage;
+
+  final CycleData? _cycleDataOverride;
+  final FirebaseAuth? _authOverride;
+  final MyServices? _myServicesOverride;
+  final GetStorage? _storageOverride;
+
   final RxList<CustomDataItem> customDataItems = <CustomDataItem>[].obs;
   late final CycleData _cycleData;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final MyServices myServices = Get.find<MyServices>();
+  late final FirebaseAuth _auth;
+  late final MyServices myServices;
+  late final GetStorage _storage;
 
   String? _lastCycleId;
   String? _lastApiDataHash;
@@ -123,7 +138,10 @@ class CycleCustomDataController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _cycleData = CycleData();
+    _cycleData = _cycleDataOverride ?? CycleData();
+    _auth = _authOverride ?? FirebaseAuth.instance;
+    myServices = _myServicesOverride ?? Get.find<MyServices>();
+    _storage = _storageOverride ?? GetStorage();
     _loadSavedCustomData();
     _updateLastCycleId();
 

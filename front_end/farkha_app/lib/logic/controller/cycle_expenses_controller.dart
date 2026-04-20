@@ -114,11 +114,23 @@ class ExpenseItem {
 }
 
 class CycleExpensesController extends GetxController {
+  CycleExpensesController({
+    CycleData? cycleData,
+    FirebaseAuth? auth,
+    MyServices? myServices,
+  })  : _cycleDataOverride = cycleData,
+        _authOverride = auth,
+        _myServicesOverride = myServices;
+
+  final CycleData? _cycleDataOverride;
+  final FirebaseAuth? _authOverride;
+  final MyServices? _myServicesOverride;
+
   final RxList<ExpenseItem> expenses = <ExpenseItem>[].obs;
   final RxDouble totalExpenses = 0.0.obs;
   late final CycleData _cycleData;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final MyServices myServices = Get.find<MyServices>();
+  late final FirebaseAuth _auth;
+  late final MyServices myServices;
 
   String? _lastCycleId;
   bool _isUpdatingTotalExpenses = false;
@@ -129,7 +141,9 @@ class CycleExpensesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _cycleData = CycleData();
+    _cycleData = _cycleDataOverride ?? CycleData();
+    _auth = _authOverride ?? FirebaseAuth.instance;
+    myServices = _myServicesOverride ?? Get.find<MyServices>();
     _loadDefaultExpenses();
     _loadSavedExpenses();
     _calculateTotal();

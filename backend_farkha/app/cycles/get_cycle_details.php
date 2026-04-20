@@ -77,24 +77,36 @@ try {
     $cycleExpenses = $stmtExp->fetchAll(PDO::FETCH_ASSOC);
 
     // جلب ملاحظات الدورة
-    $stmtNotes = $con->prepare(Queries::fetchCycleNotesQuery());
-    $stmtNotes->execute([':cycle_id' => (int)$cycleId]);
-    $cycleNotes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
+    $cycleNotes = [];
+    try {
+        $stmtNotes = $con->prepare(Queries::fetchCycleNotesQuery());
+        $stmtNotes->execute([':cycle_id' => (int)$cycleId]);
+        $cycleNotes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {}
 
     // جلب أعضاء الدورة
-    $stmtMembers = $con->prepare(Queries::fetchCycleMembersQuery());
-    $stmtMembers->execute([':cycle_id' => (int)$cycleId]);
-    $cycleMembers = $stmtMembers->fetchAll(PDO::FETCH_ASSOC);
+    $cycleMembers = [];
+    try {
+        $stmtMembers = $con->prepare(Queries::fetchCycleMembersQuery());
+        $stmtMembers->execute([':cycle_id' => (int)$cycleId]);
+        $cycleMembers = $stmtMembers->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {}
 
     // جلب سجل المبيعات
-    $stmtSales = $con->prepare(Queries::fetchCycleSalesQuery());
-    $stmtSales->execute([':cycle_id' => (int)$cycleId]);
-    $cycleSales = $stmtSales->fetchAll(PDO::FETCH_ASSOC);
+    $cycleSales = [];
+    try {
+        $stmtSales = $con->prepare(Queries::fetchCycleSalesQuery());
+        $stmtSales->execute([':cycle_id' => (int)$cycleId]);
+        $cycleSales = $stmtSales->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {}
 
     // جلب ملخص المخزون
-    $stmtInventory = $con->prepare(Queries::fetchCycleInventorySummaryQuery());
-    $stmtInventory->execute([':cycle_id' => (int)$cycleId]);
-    $inventorySummary = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
+    $inventorySummary = [];
+    try {
+        $stmtInventory = $con->prepare(Queries::fetchCycleInventorySummaryQuery());
+        $stmtInventory->execute([':cycle_id' => (int)$cycleId]);
+        $inventorySummary = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {}
 
     // ✅ إرسال الرد
     echo json_encode([

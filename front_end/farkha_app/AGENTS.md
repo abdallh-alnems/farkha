@@ -103,6 +103,16 @@ flutter clean && flutter pub get
 - Loaded via `flutter_dotenv`
 - Access through `core/services/env.dart`
 
+## Testing
+- Test structure mirrors `lib/` structure under `test/`
+- Shared helpers: `test/helpers/` (FakeCrud, FakeCycleData, FakeLoginData, MockFirebaseAuth, TestHarness, fixtures)
+- Unit tests: `test/logic/controller/` and `test/data/`
+- Widget tests: `test/view/screen/` and `test/view/widget/`
+- Integration wiring: `test/integration/`
+- On-device integration: `integration_test/` (requires physical device)
+- Controllers accept optional constructor params for DI in tests
+- See `test/README.md` for full guide
+
 ## Features
 - User authentication (Firebase Auth + Google Sign-In)
 - Farm cycle management (tracking weight, feed, mortality)
@@ -141,3 +151,10 @@ Before coding, commit to a clear aesthetic: refined minimal, warm organic, bold 
 - Generic AI-looking UI: symmetric cards, purple gradients, Inter font
 - Cookie-cutter `ListTile` and default `AppBar` without customization
 - Placeholder icons instead of meaningful visual language
+
+## Active Technologies
+- Dart 3.7.2+ / Flutter SDK stable
+- `flutter_test` (SDK) · `mocktail ^1.0.x` (dev dep) · `integration_test` (SDK, dev dep)
+
+## Recent Changes
+- 001-testing-setup: Added test infrastructure — mocktail, integration_test SDK, test helpers, controller DI refactor, 52 tests (unit + widget + integration)

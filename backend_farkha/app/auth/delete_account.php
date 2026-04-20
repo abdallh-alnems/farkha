@@ -52,7 +52,11 @@ try {
             // حذف مصاريف الدورة (cycle_expenses)
             $stmt = $con->prepare(Queries::deleteCycleExpensesQuery());
             $stmt->execute([':cycle_id' => $cycleId]);
-            
+
+            // حذف ملاحظات الدورة (cycle_notes)
+            $stmt = $con->prepare(Queries::deleteCycleNotesQuery());
+            $stmt->execute([':cycle_id' => $cycleId]);
+
             // حذف المستخدمين من الدورة (cycle_users)
             $stmt = $con->prepare(Queries::deleteCycleUsersQuery());
             $stmt->execute([':cycle_id' => $cycleId]);

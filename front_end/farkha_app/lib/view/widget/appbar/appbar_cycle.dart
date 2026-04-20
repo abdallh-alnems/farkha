@@ -11,7 +11,9 @@ import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../cycle/add_member_dialog.dart';
 import '../../../logic/controller/cycle_controller.dart';
+import '../../../core/services/excel/excel_export_service.dart';
 import '../../../core/services/pdf/pdf_export_service.dart';
+import '../cycle/weekly_report_bottom_sheet.dart';
 
 class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
  const AppBarCycle({super.key});
@@ -133,10 +135,15 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                      ),
                    );
 
-                   if (confirmed == true) {
-                     // تنفيذ إنهاء الدورة (سيتم التعامل مع التحميل في cycle.dart)
-                     unawaited(controller.endCurrentCycle());
-                   }
+                    if (confirmed == true) {
+                      final cycleData = Map<String, dynamic>.from(controller.currentCycle);
+                      unawaited(
+                        Get.toNamed<void>(
+                          AppRoute.cycleCloseoutReport,
+                          arguments: {'cycleData': cycleData},
+                        ),
+                      );
+                    }
                  },
                  icon: Icon(
                    Icons.task_alt,
@@ -321,12 +328,18 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                                  style: TextStyle(color: onBackground)),
                              onTap: () => Get.back(result: 'text'),
                            ),
-                           ListTile(
-                             leading: const Icon(Icons.picture_as_pdf_outlined),
-                             title: Text('مشاركة كملف PDF',
-                                 style: TextStyle(color: onBackground)),
-                             onTap: () => Get.back(result: 'pdf'),
-                           ),
+                            ListTile(
+                              leading: const Icon(Icons.picture_as_pdf_outlined),
+                              title: Text('مشاركة كملف PDF',
+                                  style: TextStyle(color: onBackground)),
+                              onTap: () => Get.back(result: 'pdf'),
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.table_chart_outlined),
+                              title: Text('مشاركة كملف Excel',
+                                  style: TextStyle(color: onBackground)),
+                              onTap: () => Get.back(result: 'excel'),
+                            ),
                          ],
                        ),
                      ),
@@ -380,21 +393,36 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
    الصافي:    ${netProfit >= 0 ? '+' : ''}${netProfit.toStringAsFixed(0)} ج
 ''';
                      unawaited(SharePlus.instance.share(ShareParams(text: text, subject: 'ملخص دورة: $name')));
-                   } else if (choice == 'pdf') {
-                     try {
-                       await PdfExportService.exportCycleReport(cycle);
-                     } catch (e) {
-                       Get.snackbar(
-                         'خطأ في التصدير',
-                         'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
-                         backgroundColor: Colors.red,
-                         colorText: Colors.white,
-                       );
-                     }
-                   }
-                 } else if (value == 'history') {
-                   unawaited(Get.toNamed<void>(AppRoute.history));
-                 } else if (value == 'permissions') {
+                    } else if (choice == 'pdf') {
+                      try {
+                        await PdfExportService.exportCycleReport(cycle);
+                      } catch (e) {
+                        Get.snackbar(
+                          'خطأ في التصدير',
+                          'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                      }
+                    } else if (choice == 'excel') {
+                      try {
+                        await ExcelExportService.exportCycleReport(cycle);
+                      } catch (e) {
+                        Get.snackbar(
+                          'خطأ في التصدير',
+                          'حدث خطأ أثناء تصدير ملف Excel.',
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                      }
+                    }
+                  } else if (value == 'weeklyReport') {
+                    unawaited(
+                      WeeklyReportBottomSheet.show(context, controller.currentCycle),
+                    );
+                  } else if (value == 'history') {
+                    unawaited(Get.toNamed<void>(AppRoute.history));
+                  } else if (value == 'permissions') {
                    final rawId = controller.currentCycle['cycle_id'];
                    final cycleId =
                        rawId is int
@@ -421,9 +449,10 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                      ),
                    ),
                  ),
-                 _menuItem(context, 'history', 'السجل'),
-                 const PopupMenuDivider(),
-                 _menuItem(context, 'cycleData', 'بيانات الدورة'),
+                   _menuItem(context, 'history', 'السجل'),
+                   const PopupMenuDivider(),
+                  _menuItem(context, 'weeklyReport', 'تقرير أسبوعي'),
+                  _menuItem(context, 'cycleData', 'بيانات الدورة'),
                  if (controller.currentCycle['role'] != 'viewer')
                    _menuItem(context, 'edit', 'تعديل'),
                  _menuItem(context, 'share', 'مشاركة'),

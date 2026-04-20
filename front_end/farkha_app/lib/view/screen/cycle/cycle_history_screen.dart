@@ -62,6 +62,19 @@ class _CycleHistoryScreenState extends State<CycleHistoryScreen> {
                 ? AppColors.darkBackGroundColor
                 : AppColors.appBackGroundColor,
         elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.toNamed<void>(AppRoute.cycleComparison);
+            },
+            icon: Icon(
+              Icons.compare,
+              size: 23.sp,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            tooltip: 'مقارنة الدورات',
+          ),
+        ],
       ),
       body: Column(
         children: [

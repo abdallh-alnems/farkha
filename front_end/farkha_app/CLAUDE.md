@@ -65,3 +65,12 @@ flutter clean && flutter pub get
 ## Backend PHP
 
 كل endpoint في ملف منفصل داخل `backend_farkha/app/`. الـ queries في `backend_farkha/core/queries/`.
+
+## Active Technologies
+- Dart 3.7.2+ / Flutter SDK stable
+- `flutter_test` (SDK)
+- `mocktail ^1.0.x` (dev dep)
+- `integration_test` (SDK, dev dep)
+
+## Recent Changes
+- 001-testing-setup: Added test infrastructure — mocktail, test helpers, controller DI refactor, 52 tests

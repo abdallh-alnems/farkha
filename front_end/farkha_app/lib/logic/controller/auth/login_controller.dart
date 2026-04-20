@@ -12,9 +12,21 @@ import '../cycle_controller.dart';
 import '../tools_controller/favorite_tools_controller.dart';
 
 class LoginController extends GetxController {
+  LoginController({
+    FirebaseAuth? auth,
+    LoginData? loginData,
+    GoogleSignIn? googleSignIn,
+  })  : _authOverride = auth,
+        _loginDataOverride = loginData,
+        _googleSignInOverride = googleSignIn;
+
+  final FirebaseAuth? _authOverride;
+  final LoginData? _loginDataOverride;
+  final GoogleSignIn? _googleSignInOverride;
+
   late final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   late final LoginData _loginData;
+  late final GoogleSignIn _googleSignIn;
 
   final isLoading = false.obs;
   final isLoggedIn = false.obs;
@@ -23,8 +35,9 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _auth = FirebaseAuth.instance;
-    _loginData = LoginData();
+    _auth = _authOverride ?? FirebaseAuth.instance;
+    _loginData = _loginDataOverride ?? LoginData();
+    _googleSignIn = _googleSignInOverride ?? GoogleSignIn.instance;
     // قراءة حالة تسجيل الدخول الحالية
     if (Get.isRegistered<MyServices>()) {
       final myServices = Get.find<MyServices>();
