@@ -37,4 +37,24 @@ class AnalyticsService extends GetxService {
   Future<void> logToolPageView({required String toolName}) async {
     await logEvent(name: 'tool_page_view', parameters: {'tool_name': toolName});
   }
+
+  Future<void> logPhoneOtpSent() async {
+    await logEvent(name: 'phone_otp_sent', parameters: {'phone_country': 'EG'});
+  }
+
+  Future<void> logPhoneOtpVerified({required int attemptsUsed}) async {
+    await logEvent(name: 'phone_otp_verified', parameters: {'attempts_used': attemptsUsed});
+  }
+
+  Future<void> logPhoneOtpFailed({required String reason}) async {
+    await logEvent(name: 'phone_otp_failed', parameters: {'reason': reason});
+  }
+
+  Future<void> logPhoneOtpResent({required int resendNumber}) async {
+    await logEvent(name: 'phone_otp_resent', parameters: {'resend_number': resendNumber});
+  }
+
+  Future<void> logPhoneChanged({required bool changedFromVerified}) async {
+    await logEvent(name: 'phone_changed', parameters: {'changed_from_verified': changedFromVerified});
+  }
 }

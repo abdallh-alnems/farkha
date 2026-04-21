@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
@@ -8,11 +9,10 @@ import '../../../../core/constant/headers.dart';
 import '../../../../core/constant/id/api.dart';
 import '../../../../core/package/internet_checker.dart';
 
-class UpdatePhoneData {
-  Future<Either<StatusRequest, Map<String, dynamic>>> updatePhone({
+class SendOtpData {
+  Future<Either<StatusRequest, Map<String, dynamic>>> sendOtp({
     required String token,
-    String? phone,
-    String? verifiedToken,
+    required String phone,
   }) async {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
@@ -23,29 +23,32 @@ class UpdatePhoneData {
       final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
-      final Map<String, dynamic> body = {'token': token};
-      if (verifiedToken != null) {
-        body['verified_token'] = verifiedToken;
-      } else if (phone != null) {
-        body['phone'] = phone;
-      } else {
-        return const Left(StatusRequest.failure);
-      }
+      dev.log('[send_otp] POST ${Api.sendOtp} phone=$phone token_len=${token.length}', name: 'OTP');
 
       final response = await http.post(
-        Uri.parse(Api.updatePhone),
+        Uri.parse(Api.sendOtp),
         headers: myHeaders,
-        body: jsonEncode(body),
+        body: jsonEncode({'token': token, 'phone': phone}),
       );
 
+      dev.log('[send_otp] status=${response.statusCode} body=${response.body}', name: 'OTP');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+        final Map<String, dynamic> responseBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
-      } else {
-        final Map<String, dynamic> errorBody = jsonDecode(response.body) as Map<String, dynamic>;
-        return Right(errorBody);
       }
-    } catch (e) {
+
+      try {
+        final Map<String, dynamic> errorBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        return Right(errorBody);
+      } catch (e) {
+        dev.log('[send_otp] JSON decode failed: $e', name: 'OTP');
+        return const Left(StatusRequest.serverFailure);
+      }
+    } catch (e, s) {
+      dev.log('[send_otp] HTTP threw: $e\n$s', name: 'OTP');
       return const Left(StatusRequest.serverFailure);
     }
   }

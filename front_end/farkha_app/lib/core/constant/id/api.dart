@@ -37,6 +37,10 @@ class Api {
   static String updatePhone = '$_auth/update_phone.php';
   static String updateFcmToken = '$_auth/update_fcm_token.php';
   static String deleteAccount = '$_auth/delete_account.php';
+  static String sendOtp = '$_auth/send_otp.php';
+  static String verifyOtp = '$_auth/verify_otp.php';
+  static String resendOtp = '$_auth/resend_otp.php';
+  static String phoneVerificationStatus = '$_auth/phone_verification_status.php';
 
   // ================================== cycle ==================================
   static String broilerChicken = '$_cycle/broiler_chicken.php';
