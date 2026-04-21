@@ -65,3 +65,9 @@ flutter clean && flutter pub get
 ## Backend PHP
 
 كل endpoint في ملف منفصل داخل `backend_farkha/app/`. الـ queries في `backend_farkha/core/queries/`.
+
+## Active Technologies
+- Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x for backend + GetX 4.7.2 · Firebase (Auth/Analytics/Crashlytics) · `http` via `core/class/crud.dart` (أو نمط auth_data المحلي القائم على `dartz.Either`) · `flutter_screenutil` · `flutter_dotenv` · `pin_code_fields` (جديد — لعرض حقل OTP ستّ خانات مع autofill paste) · `flutter_svg` (موجود) (002-phone-verification)
+
+## Recent Changes
+- 002-phone-verification: Added Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x for backend + GetX 4.7.2 · Firebase (Auth/Analytics/Crashlytics) · `http` via `core/class/crud.dart` (أو نمط auth_data المحلي القائم على `dartz.Either`) · `flutter_screenutil` · `flutter_dotenv` · `pin_code_fields` (جديد — لعرض حقل OTP ستّ خانات مع autofill paste) · `flutter_svg` (موجود)

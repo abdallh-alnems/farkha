@@ -7,6 +7,8 @@ class AppRoute {
 
   // ================================= auth ====================================
   static const String login = '/login';
+  static const String verifyPhoneNumber = '/verify-phone-number';
+  static const String enterOtp = '/enter-otp';
 
   // ============================ prices and cycle =============================
   // ! prices

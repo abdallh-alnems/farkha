@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../logic/bindings/home_binding.dart';
+import '../../../logic/bindings/phone_verification_binding.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../../logic/controller/cycle_sales_controller.dart';
@@ -8,6 +9,8 @@ import '../../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 import '../../../logic/controller/weather_controller.dart';
 import '../../../view/screen/auth/login_screen.dart';
+import '../../../view/screen/auth/verify_phone_number_screen.dart';
+import '../../../view/screen/auth/enter_otp_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle.dart';
 import '../../../view/screen/cycle/cycle_data.dart';
@@ -73,6 +76,18 @@ List<GetPage<dynamic>> pages = [
 
   // ================================= auth ====================================
   GetPage(name: AppRoute.login, page: () => const LoginScreen()),
+  GetPage(
+    name: AppRoute.verifyPhoneNumber,
+    page: () => const VerifyPhoneNumberScreen(),
+    binding: PhoneVerificationBinding(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoute.enterOtp,
+    page: () => const EnterOtpScreen(),
+    binding: PhoneVerificationBinding(),
+    middlewares: [AuthMiddleware()],
+  ),
 
   // ================================ prices ===================================
   GetPage(name: AppRoute.pricesByType, page: () => const PricesByType()),

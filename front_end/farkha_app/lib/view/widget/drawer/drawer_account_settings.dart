@@ -8,7 +8,6 @@ import '../../../core/constant/routes/route.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/delete_account_data.dart';
 import '../../../data/data_source/remote/auth_data/update_name_data.dart';
-import '../../../data/data_source/remote/auth_data/update_phone_data.dart';
 import '../../../logic/controller/auth/login_controller.dart';
 
 class DrawerAccountSettings extends StatefulWidget {
@@ -211,119 +210,8 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
   }
 
   Future<void> _handleEditPhone() async {
-    final myServices = Get.find<MyServices>();
-    final currentPhone = myServices.getStorage.read<String>('user_phone')?.toString();
-    final isAdding = currentPhone == null || currentPhone.isEmpty;
-
-    final phoneController = TextEditingController(text: '');
-
-    final result = await showDialog<String>(
-      context: context,
-      builder:
-          (dialogContext) => AlertDialog(
-            title: Text(isAdding ? 'إضافة رقم الهاتف' : 'تعديل رقم الهاتف'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!isAdding) ...[
-                  Text(
-                    'الرقم الحالي: $currentPhone',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
-                ],
-                TextField(
-                  controller: phoneController,
-                  autofocus: true,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    labelText: 'رقم الهاتف',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                  ),
-                  onSubmitted:
-                      (value) => Navigator.of(dialogContext).pop(value),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('إلغاء'),
-              ),
-              TextButton(
-                onPressed:
-                    () => Navigator.of(dialogContext).pop(phoneController.text),
-                child: const Text('حفظ'),
-              ),
-            ],
-          ),
-    );
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
-
-    if (result != null && result.isNotEmpty) {
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-      await _updatePhone(result);
-    }
-  }
-
-  Future<void> _updatePhone(String phone) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        _showSnackbar('يجب تسجيل الدخول أولاً', isError: true);
-        return;
-      }
-
-      final String? token = await user.getIdToken();
-      if (token == null) {
-        _showSnackbar('فشل الحصول على رمز الدخول', isError: true);
-        return;
-      }
-
-      final updatePhoneData = UpdatePhoneData();
-      final response = await updatePhoneData.updatePhone(
-        token: token,
-        phone: phone,
-      );
-
-      response.fold(
-        (failure) {
-          _showSnackbar('فشل تحديث رقم الهاتف', isError: true);
-        },
-        (Map<String, dynamic> success) {
-          final data = success;
-          if (data['success'] == true || data['status'] == 'success') {
-            final myServices = Get.find<MyServices>();
-            final val = myServices.getStorage.read<String>('user_phone');
-            final wasEmpty = val == null || val.toString().isEmpty;
-            myServices.getStorage.write('user_phone', phone);
-            _showSnackbar(
-              'تم ${wasEmpty ? 'إضافة' : 'تحديث'} رقم الهاتف بنجاح',
-            );
-            if (mounted) {
-              setState(() {});
-            }
-          } else {
-            _showSnackbar(
-              (data['message'] ?? 'فشل تحديث رقم الهاتف').toString(),
-              isError: true,
-            );
-          }
-        },
-      );
-    } catch (e) {
-      _showSnackbar('حدث خطأ أثناء تحديث رقم الهاتف', isError: true);
-    }
+    Navigator.pop(context);
+    Get.toNamed<void>(AppRoute.verifyPhoneNumber);
   }
 
   Future<void> _handleSignOut() async {
@@ -485,7 +373,9 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
                       subtitle:
                           currentPhone != null && currentPhone.isNotEmpty
                               ? Text(
-                                currentPhone,
+                                currentPhone.startsWith('+20')
+                                    ? '0${currentPhone.substring(3)}'
+                                    : currentPhone,
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   color: Theme.of(

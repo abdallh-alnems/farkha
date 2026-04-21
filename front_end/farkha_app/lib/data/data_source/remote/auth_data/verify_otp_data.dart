@@ -8,11 +8,11 @@ import '../../../../core/constant/headers.dart';
 import '../../../../core/constant/id/api.dart';
 import '../../../../core/package/internet_checker.dart';
 
-class UpdatePhoneData {
-  Future<Either<StatusRequest, Map<String, dynamic>>> updatePhone({
+class VerifyOtpData {
+  Future<Either<StatusRequest, Map<String, dynamic>>> verifyOtp({
     required String token,
-    String? phone,
-    String? verifiedToken,
+    required String sessionToken,
+    required String otpCode,
   }) async {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
@@ -23,26 +23,23 @@ class UpdatePhoneData {
       final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
-      final Map<String, dynamic> body = {'token': token};
-      if (verifiedToken != null) {
-        body['verified_token'] = verifiedToken;
-      } else if (phone != null) {
-        body['phone'] = phone;
-      } else {
-        return const Left(StatusRequest.failure);
-      }
-
       final response = await http.post(
-        Uri.parse(Api.updatePhone),
+        Uri.parse(Api.verifyOtp),
         headers: myHeaders,
-        body: jsonEncode(body),
+        body: jsonEncode({
+          'token': token,
+          'session_token': sessionToken,
+          'otp_code': otpCode,
+        }),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
+        final Map<String, dynamic> responseBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
-        final Map<String, dynamic> errorBody = jsonDecode(response.body) as Map<String, dynamic>;
+        final Map<String, dynamic> errorBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
         return Right(errorBody);
       }
     } catch (e) {

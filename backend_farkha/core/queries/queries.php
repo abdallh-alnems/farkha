@@ -273,6 +273,59 @@ final class Queries {
     public static function deleteCycleInventoryQuery(): string {
         return CycleQueries::deleteCycleInventory();
     }
+
+    // ============================ Phone Verification ============================
+    public static function countPendingVerificationsByUser(): string {
+        return UserQueries::countPendingVerificationsByUser();
+    }
+
+    public static function expireStalePhoneVerifications(): string {
+        return UserQueries::expireStalePhoneVerifications();
+    }
+
+    public static function insertPhoneVerification(): string {
+        return UserQueries::insertPhoneVerification();
+    }
+
+    public static function findActivePhoneVerificationBySession(): string {
+        return UserQueries::findActivePhoneVerificationBySession();
+    }
+
+    public static function findLatestPendingByUserPhone(): string {
+        return UserQueries::findLatestPendingByUserPhone();
+    }
+
+    public static function findLatestPendingByUser(): string {
+        return UserQueries::findLatestPendingByUser();
+    }
+
+    public static function findPhoneVerificationByVerifiedToken(): string {
+        return UserQueries::findPhoneVerificationByVerifiedToken();
+    }
+
+    public static function updatePhoneVerificationAttempts(): string {
+        return UserQueries::updatePhoneVerificationAttempts();
+    }
+
+    public static function updatePhoneVerificationStatus(): string {
+        return UserQueries::updatePhoneVerificationStatus();
+    }
+
+    public static function updatePhoneVerificationResend(): string {
+        return UserQueries::updatePhoneVerificationResend();
+    }
+
+    public static function updatePhoneVerified(): string {
+        return UserQueries::updatePhoneVerified();
+    }
+
+    public static function clearPhoneForOtherUsers(): string {
+        return UserQueries::clearPhoneForOtherUsers();
+    }
+
+    public static function consumeVerifiedToken(): string {
+        return UserQueries::consumeVerifiedToken();
+    }
 }
 
 ?>
