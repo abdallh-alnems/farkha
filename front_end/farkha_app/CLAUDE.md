@@ -67,8 +67,9 @@ flutter clean && flutter pub get
 كل endpoint في ملف منفصل داخل `backend_farkha/app/`. الـ queries في `backend_farkha/core/queries/`.
 
 ## Active Technologies
-- Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x for backend + GetX 4.7.2 · Firebase (Auth/Analytics/Crashlytics) · `http` via `core/class/crud.dart` · `flutter_screenutil` · `flutter_dotenv` · `pin_code_fields` · `flutter_svg`
+- Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x for backend + GetX 4.7.2 · Firebase (Auth/Analytics/Crashlytics/Remote Config) · `http` via `core/class/crud.dart` · `flutter_screenutil` · `flutter_dotenv` · `pin_code_fields` · `flutter_svg` · `get_storage: ^2.1.1` · `package_info_plus`
 - `flutter_test` (SDK) · `mocktail ^1.0.x` (dev dep) · `integration_test` (SDK, dev dep)
+- MySQL `app_reviews` table · `get_storage` for review prompt local state
 
 ## Recent Changes
 - 001-testing-setup: Added test infrastructure — mocktail, test helpers, controller DI refactor, 52 tests

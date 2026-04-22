@@ -31,6 +31,7 @@ class AppRoute {
   // ================================ drawer ===================================
 
   static const String suggestion = '/suggestion';
+  static const String appReview = '/app-review';
 
   // ========================== view follow up tools ===========================
 

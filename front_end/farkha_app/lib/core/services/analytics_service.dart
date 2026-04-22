@@ -57,4 +57,10 @@ class AnalyticsService extends GetxService {
   Future<void> logPhoneChanged({required bool changedFromVerified}) async {
     await logEvent(name: 'phone_changed', parameters: {'changed_from_verified': changedFromVerified});
   }
+
+  static const String appReviewScreenOpened = 'app_review_screen_opened';
+  static const String appReviewSubmitted = 'app_review_submitted';
+  static const String reviewPromptShown = 'review_prompt_shown';
+  static const String reviewPromptAccepted = 'review_prompt_accepted';
+  static const String reviewPromptDismissed = 'review_prompt_dismissed';
 }

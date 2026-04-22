@@ -7,6 +7,7 @@ include_once __DIR__ . "/analytics_queries.php";
 include_once __DIR__ . "/suggestion_queries.php";
 include_once __DIR__ . "/user_queries.php";
 include_once __DIR__ . "/cycle_queries.php";
+include_once __DIR__ . "/app_review_queries.php";
 
 final class Queries {
     public static function getFeasibilityStudyPrices(): string {
@@ -325,6 +326,19 @@ final class Queries {
 
     public static function consumeVerifiedToken(): string {
         return UserQueries::consumeVerifiedToken();
+    }
+
+    // App Review queries
+    public static function upsertAppReviewQuery(): string {
+        return AppReviewQueries::upsert();
+    }
+
+    public static function fetchAppReviewByUserIdQuery(): string {
+        return AppReviewQueries::fetchByUserId();
+    }
+
+    public static function fetchAppReviewIdByUserIdQuery(): string {
+        return AppReviewQueries::fetchIdByUserId();
     }
 }
 
