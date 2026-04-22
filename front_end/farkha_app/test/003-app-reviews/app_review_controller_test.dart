@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:farkha_app/core/class/status_request.dart';
 import 'package:farkha_app/data/data_source/remote/app_review_data.dart';
-import 'package:farkha_app/data/model/app_review_model.dart';
 import 'package:farkha_app/logic/controller/app_review_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -30,10 +29,10 @@ void main() {
     when(() => mockUser.getIdToken()).thenAnswer((_) async => 'fake-token');
 
     when(() => mockReviewData.fetchMine(token: any(named: 'token')))
-        .thenAnswer((_) async => {
+        .thenAnswer((_) async => Right({
               'status': 'success',
               'data': {'review': null}
-            });
+            }));
 
     controller = AppReviewController(
       mockReviewData,
@@ -57,7 +56,8 @@ void main() {
       expect(controller.existingReview, isNull);
     });
 
-    test('statusRequest يتغيّر بعد fetchMyReview', () {
+    test('statusRequest يتغيّر بعد fetchMyReview', () async {
+      await controller.fetchMyReview();
       expect(controller.statusRequest, isNot(equals(StatusRequest.none)));
     });
   });
@@ -93,14 +93,14 @@ void main() {
             suggestion: any(named: 'suggestion'),
             appVersion: any(named: 'appVersion'),
             platform: any(named: 'platform'),
-          )).thenAnswer((_) async => {
+          )).thenAnswer((_) async => Right({
             'status': 'success',
             'data': {
               'review_id': 1,
               'was_created': true,
               'message': 'App review saved successfully'
             }
-          });
+          }));
 
       await controller.submit();
 
@@ -120,7 +120,7 @@ void main() {
             suggestion: any(named: 'suggestion'),
             appVersion: any(named: 'appVersion'),
             platform: any(named: 'platform'),
-          )).thenAnswer((_) async => StatusRequest.serverFailure);
+          )).thenAnswer((_) async => const Left(StatusRequest.serverFailure));
 
       await controller.submit();
 
@@ -140,7 +140,7 @@ void main() {
             suggestion: any(named: 'suggestion'),
             appVersion: any(named: 'appVersion'),
             platform: any(named: 'platform'),
-          )).thenAnswer((_) async => StatusRequest.offlineFailure);
+          )).thenAnswer((_) async => const Left(StatusRequest.offlineFailure));
 
       await controller.submit();
 
@@ -152,10 +152,34 @@ void main() {
     });
   });
 
+  group('submit - null token', () {
+    test('يُعالج token == null بدون stuck في loading', () async {
+      controller.setRating(4);
+      when(() => mockUser.getIdToken()).thenAnswer((_) async => null);
+
+      await controller.submit();
+
+      expect(controller.isSubmitting, isFalse);
+      expect(controller.statusRequest, equals(StatusRequest.failure));
+    });
+  });
+
+  group('submit - null user', () {
+    test('يُعالج user == null بدون stuck في loading', () async {
+      controller.setRating(4);
+      when(() => mockAuth.currentUser).thenReturn(null);
+
+      await controller.submit();
+
+      expect(controller.isSubmitting, isFalse);
+      expect(controller.statusRequest, equals(StatusRequest.failure));
+    });
+  });
+
   group('fetchMyReview', () {
     test('يملأ الحقول إذا وُجد تقييم سابق', () async {
       when(() => mockReviewData.fetchMine(token: any(named: 'token')))
-          .thenAnswer((_) async => {
+          .thenAnswer((_) async => Right({
                 'status': 'success',
                 'data': {
                   'review': {
@@ -170,7 +194,7 @@ void main() {
                     'updated_at': '2026-04-21 09:12:00',
                   }
                 }
-              });
+              }));
 
       await controller.fetchMyReview();
 
@@ -183,10 +207,10 @@ void main() {
 
     test('يُبقي الحقول فارغة إذا لا يوجد تقييم سابق', () async {
       when(() => mockReviewData.fetchMine(token: any(named: 'token')))
-          .thenAnswer((_) async => {
+          .thenAnswer((_) async => Right({
                 'status': 'success',
                 'data': {'review': null}
-              });
+              }));
 
       await controller.fetchMyReview();
 
@@ -197,11 +221,19 @@ void main() {
 
     test('يُعالج فشل الشبكة', () async {
       when(() => mockReviewData.fetchMine(token: any(named: 'token')))
-          .thenAnswer((_) async => StatusRequest.offlineFailure);
+          .thenAnswer((_) async => const Left(StatusRequest.offlineFailure));
 
       await controller.fetchMyReview();
 
       expect(controller.statusRequest, equals(StatusRequest.offlineFailure));
+    });
+
+    test('يُعالج token == null', () async {
+      when(() => mockUser.getIdToken()).thenAnswer((_) async => null);
+
+      await controller.fetchMyReview();
+
+      expect(controller.statusRequest, equals(StatusRequest.failure));
     });
   });
 

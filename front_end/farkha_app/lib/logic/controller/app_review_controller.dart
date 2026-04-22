@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/services/analytics_service.dart';
 import '../../../data/data_source/remote/app_review_data.dart';
 import '../../../data/model/app_review_model.dart';
 import 'review_prompt_controller.dart';
@@ -35,10 +35,20 @@ class AppReviewController extends GetxController {
   void onInit() {
     super.onInit();
     try {
+      _logScreenOpened();
+    } catch (_) {}
+    try {
       _loadAppVersion();
     } catch (_) {}
     try {
       fetchMyReview();
+    } catch (_) {}
+  }
+
+  void _logScreenOpened() {
+    try {
+      final analytics = Get.find<AnalyticsService>();
+      unawaited(analytics.logEvent(name: AnalyticsService.appReviewScreenOpened));
     } catch (_) {}
   }
 
@@ -58,24 +68,33 @@ class AppReviewController extends GetxController {
 
     try {
       final token = await user.getIdToken();
-      final response = await _appReviewData.fetchMine(token: token!);
-
-      if (response is Map<String, dynamic>) {
-        final reviewData = response['data']?['review'];
-        if (reviewData != null && reviewData is Map<String, dynamic>) {
-          existingReview = AppReviewModel.fromJson(reviewData);
-          rating = existingReview!.rating;
-          if (existingReview!.issue != null) {
-            issueController.text = existingReview!.issue!;
-          }
-          if (existingReview!.suggestion != null) {
-            suggestionController.text = existingReview!.suggestion!;
-          }
-        }
-        statusRequest = StatusRequest.success;
-      } else if (response is StatusRequest) {
-        statusRequest = response;
+      if (token == null) {
+        statusRequest = StatusRequest.failure;
+        update();
+        return;
       }
+
+      final result = await _appReviewData.fetchMine(token: token);
+
+      result.fold(
+        (failure) {
+          statusRequest = failure;
+        },
+        (response) {
+          final reviewData = response['data']?['review'];
+          if (reviewData != null && reviewData is Map<String, dynamic>) {
+            existingReview = AppReviewModel.fromJson(reviewData);
+            rating = existingReview!.rating;
+            if (existingReview!.issue != null) {
+              issueController.text = existingReview!.issue!;
+            }
+            if (existingReview!.suggestion != null) {
+              suggestionController.text = existingReview!.suggestion!;
+            }
+          }
+          statusRequest = StatusRequest.success;
+        },
+      );
     } catch (e, stack) {
       try {
         unawaited(FirebaseCrashlytics.instance.recordError(e, stack));
@@ -112,11 +131,23 @@ class AppReviewController extends GetxController {
 
     try {
       final user = _auth.currentUser;
-      if (user == null) return;
+      if (user == null) {
+        isSubmitting = false;
+        statusRequest = StatusRequest.failure;
+        update();
+        return;
+      }
 
       final token = await user.getIdToken();
-      final response = await _appReviewData.upsert(
-        token: token!,
+      if (token == null) {
+        isSubmitting = false;
+        statusRequest = StatusRequest.failure;
+        update();
+        return;
+      }
+
+      final result = await _appReviewData.upsert(
+        token: token,
         rating: rating,
         issue: issueController.text.trim().isEmpty ? null : issueController.text.trim(),
         suggestion: suggestionController.text.trim().isEmpty ? null : suggestionController.text.trim(),
@@ -124,27 +155,30 @@ class AppReviewController extends GetxController {
         platform: _platform,
       );
 
-      if (response is Map<String, dynamic> && response['status'] == 'success') {
-        statusRequest = StatusRequest.success;
-        isSubmitting = false;
-        update();
-        try {
-          Get.find<ReviewPromptController>().markRated();
-        } catch (_) {}
-        _showSnackbar('شكراً', 'شكراً لتقييمك');
-        Future.delayed(const Duration(milliseconds: 1500), () {
-          Get.back<void>();
-        });
-      } else if (response is StatusRequest) {
-        statusRequest = response;
-        isSubmitting = false;
-        if (response == StatusRequest.offlineFailure) {
-          _showSnackbar('خطأ', 'تعذّر إرسال التقييم، تحقّق من الاتصال');
-        } else {
-          _showSnackbar('خطأ', 'حدث خطأ أثناء إرسال التقييم');
-        }
-        update();
-      }
+      result.fold(
+        (failure) {
+          statusRequest = failure;
+          isSubmitting = false;
+          if (failure == StatusRequest.offlineFailure) {
+            _showSnackbar('خطأ', 'تعذّر إرسال التقييم، تحقّق من الاتصال');
+          } else {
+            _showSnackbar('خطأ', 'حدث خطأ أثناء إرسال التقييم');
+          }
+          update();
+        },
+        (response) {
+          statusRequest = StatusRequest.success;
+          isSubmitting = false;
+          update();
+          try {
+            Get.find<ReviewPromptController>().markRated();
+          } catch (_) {}
+          _showSnackbar('شكراً', 'شكراً لتقييمك');
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            Get.back<void>();
+          });
+        },
+      );
     } catch (e, stack) {
       try {
         unawaited(FirebaseCrashlytics.instance.recordError(e, stack));

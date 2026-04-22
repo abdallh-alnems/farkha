@@ -24,7 +24,9 @@ class StarRatingInput extends StatelessWidget {
           onPressed: () => onChanged(starIndex),
           icon: Icon(
             isSelected ? Icons.star : Icons.star_border,
-            color: isSelected ? Colors.amber : Colors.grey,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outline,
             size: size.sp,
           ),
         );

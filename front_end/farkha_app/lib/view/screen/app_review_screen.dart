@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 
 import '../../core/class/handling_data.dart';
 import '../../core/class/status_request.dart';
-import '../../core/services/analytics_service.dart';
 import '../../logic/controller/app_review_controller.dart';
 import '../widget/app_review/rating_description.dart';
 import '../widget/app_review/star_rating_input.dart';
@@ -14,11 +13,6 @@ class AppReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    try {
-      Get.find<AnalyticsService>()
-          .logEvent(name: AnalyticsService.appReviewScreenOpened);
-    } catch (_) {}
-
     return Scaffold(
       appBar: AppBar(title: const Text('تقييم التطبيق')),
       body: GetBuilder<AppReviewController>(
@@ -72,7 +66,7 @@ class AppReviewScreen extends StatelessWidget {
                   SizedBox(height: 24.h),
                   if (c.validationError != null)
                     Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
+                      padding: EdgeInsetsDirectional.only(bottom: 12.h),
                       child: Text(
                         c.validationError!,
                         style: TextStyle(
@@ -84,7 +78,7 @@ class AppReviewScreen extends StatelessWidget {
                   if (c.statusRequest == StatusRequest.offlineFailure ||
                       c.statusRequest == StatusRequest.serverFailure)
                     Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
+                      padding: EdgeInsetsDirectional.only(bottom: 12.h),
                       child: TextButton(
                         onPressed: c.submit,
                         child: const Text('إعادة المحاولة'),

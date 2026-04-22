@@ -21,11 +21,19 @@ class AppReviewModel {
     this.updatedAt,
   });
 
+  static int _parseIntSafe(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
   factory AppReviewModel.fromJson(Map<String, dynamic> json) {
+    final rawRating = _parseIntSafe(json['rating']).clamp(1, 5);
     return AppReviewModel(
       id: json['id'] as int?,
       userId: json['user_id'] as int?,
-      rating: json['rating'] as int,
+      rating: rawRating,
       issue: json['issue'] as String?,
       suggestion: json['suggestion'] as String?,
       appVersion: json['app_version'] as String?,

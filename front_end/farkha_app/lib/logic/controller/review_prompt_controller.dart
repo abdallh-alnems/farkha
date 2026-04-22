@@ -32,7 +32,7 @@ class ReviewPromptController extends GetxController {
     }
 
     final lastActive = _box.read<String>(_kLastActive);
-    if (lastActive != null && lastActive != today) {
+    if (lastActive == null || lastActive != today) {
       final currentCount = _box.read<int>(_kUniqueDaysCount) ?? 1;
       _box.write(_kUniqueDaysCount, currentCount + 1);
       _box.write(_kLastActive, today);

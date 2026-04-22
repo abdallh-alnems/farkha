@@ -29,7 +29,6 @@ class ReviewPromptDialog extends StatelessWidget {
             promptController.markDismissed();
             analytics.logEvent(name: AnalyticsService.reviewPromptDismissed);
             Get.back<void>();
-            analytics.logEvent(name: AnalyticsService.reviewPromptDismissed);
           },
           child: const Text('لاحقاً'),
         ),

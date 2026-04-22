@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:farkha_app/core/class/status_request.dart';
 import 'package:farkha_app/data/data_source/remote/app_review_data.dart';
 import 'package:farkha_app/logic/controller/app_review_controller.dart';
@@ -29,10 +30,10 @@ void main() {
     when(() => mockUser.getIdToken()).thenAnswer((_) async => 'fake-token');
 
     when(() => mockReviewData.fetchMine(token: any(named: 'token')))
-        .thenAnswer((_) async => {
+        .thenAnswer((_) async => Right({
               'status': 'success',
               'data': {'review': null}
-            });
+            }));
   });
 
   tearDown(TestHarness.tearDownGetx);
