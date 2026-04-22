@@ -8,6 +8,7 @@ import '../../core/package/upgrade.dart';
 import '../../core/services/initialization.dart';
 import '../../core/services/permission.dart';
 import '../../core/services/test_mode_manager.dart';
+import '../../logic/controller/review_prompt_controller.dart';
 import '../widget/ad/banner.dart';
 import '../widget/ad/native.dart';
 import '../widget/appbar/appbar_home.dart';
@@ -49,6 +50,18 @@ class _HomeState extends State<Home> {
       await permissionController.showPermissionsIntroIfNeeded(context);
       if (!mounted) return;
       _showTutorialIfNeeded();
+      _maybeShowReviewPrompt();
+    });
+  }
+
+  void _maybeShowReviewPrompt() {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        try {
+          final promptController = Get.find<ReviewPromptController>();
+          promptController.maybeShowPrompt(context);
+        } catch (_) {}
+      }
     });
   }
 

@@ -4,6 +4,7 @@ import '../../core/package/rating_app.dart';
 import '../../core/services/permission.dart';
 import '../controller/internet_controller.dart';
 import '../controller/price_controller/prices_card/prices_card_controller.dart';
+import '../controller/review_prompt_controller.dart';
 import '../controller/tools_controller/favorite_tools_controller.dart';
 
 class HomeBindings extends Bindings {
@@ -23,5 +24,9 @@ class HomeBindings extends Bindings {
 
     // ================================ tools (Home) ============================
     Get.put(FavoriteToolsController(), permanent: true);
+
+    // ============================== app review ================================
+    Get.put(ReviewPromptController(), permanent: true);
+    Get.find<ReviewPromptController>().registerActivity();
   }
 }

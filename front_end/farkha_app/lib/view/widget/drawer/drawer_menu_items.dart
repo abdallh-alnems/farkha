@@ -36,6 +36,11 @@ class DrawerMenuItems extends StatelessWidget {
     rateController.launchStore();
   }
 
+  void _handleAppReview(BuildContext context) {
+    Navigator.pop(context);
+    Get.toNamed<void>(AppRoute.appReview);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -62,6 +67,12 @@ class DrawerMenuItems extends StatelessWidget {
           onTap: () => _handleRateApp(context),
           title: 'قيمنا ',
           icon: Icons.star,
+          color: const Color(0xFFFFC107),
+        ),
+        DrawerItem(
+          onTap: () => _handleAppReview(context),
+          title: 'قيّم التطبيق',
+          icon: Icons.star_outline,
           color: const Color(0xFFFFC107),
         ),
       ],

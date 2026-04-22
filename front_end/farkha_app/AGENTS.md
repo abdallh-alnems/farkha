@@ -157,4 +157,5 @@ Before coding, commit to a clear aesthetic: refined minimal, warm organic, bold 
 - `flutter_test` (SDK) · `mocktail ^1.0.x` (dev dep) · `integration_test` (SDK, dev dep)
 
 ## Recent Changes
+- 003-app-reviews: Added in-app review feature — AppReviewScreen (drawer entry), ReviewPromptController (auto-prompt after 30d + 10 unique days), offline retry, PHP backend endpoints, 29 tests
 - 001-testing-setup: Added test infrastructure — mocktail, integration_test SDK, test helpers, controller DI refactor, 52 tests (unit + widget + integration)

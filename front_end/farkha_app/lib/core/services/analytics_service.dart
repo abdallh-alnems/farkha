@@ -37,4 +37,10 @@ class AnalyticsService extends GetxService {
   Future<void> logToolPageView({required String toolName}) async {
     await logEvent(name: 'tool_page_view', parameters: {'tool_name': toolName});
   }
+
+  static const String appReviewScreenOpened = 'app_review_screen_opened';
+  static const String appReviewSubmitted = 'app_review_submitted';
+  static const String reviewPromptShown = 'review_prompt_shown';
+  static const String reviewPromptAccepted = 'review_prompt_accepted';
+  static const String reviewPromptDismissed = 'review_prompt_dismissed';
 }

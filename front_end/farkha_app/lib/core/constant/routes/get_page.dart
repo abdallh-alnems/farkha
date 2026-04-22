@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
 
 import '../../../logic/bindings/home_binding.dart';
+import '../../../logic/bindings/app_review_binding.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../../logic/controller/cycle_sales_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 import '../../../logic/controller/weather_controller.dart';
+import '../../../view/screen/app_review_screen.dart';
 import '../../../view/screen/auth/login_screen.dart';
 import '../../../view/screen/cycle/add_cycle.dart';
 import '../../../view/screen/cycle/cycle_closeout_report.dart';
@@ -164,6 +166,11 @@ List<GetPage<dynamic>> pages = [
 
   // ================================ drawer ==================================
   GetPage(name: AppRoute.suggestion, page: () => const Suggestion()),
+  GetPage(
+    name: AppRoute.appReview,
+    page: () => const AppReviewScreen(),
+    binding: AppReviewBinding(),
+  ),
 
   // ========================== view follow up tools ===========================
   GetPage(

@@ -71,6 +71,8 @@ flutter clean && flutter pub get
 - `flutter_test` (SDK)
 - `mocktail ^1.0.x` (dev dep)
 - `integration_test` (SDK, dev dep)
+- Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x على MAMP · MySQL 5.7+/MariaDB (المزوَّد مع MAMP) + GetX 4.7.2 · `get_storage: ^2.1.1` (موجود مسبقاً في `pubspec.yaml`) · Firebase (Core/Auth/Analytics/Crashlytics/Remote Config) · `http` عبر `core/class/crud.dart` · `flutter_screenutil` · `flutter_dotenv` · `package_info_plus` (لقراءة `app_version`) · `dart:io Platform` (لـ `platform`) (003-app-reviews)
+- MySQL جدول جديد `app_reviews` في نفس قاعدة البيانات المحلية على MAMP · `get_storage` للقيم المحلية الخاصة بالنافذة التلقائية · لا Firebase Firestore ولا Realtime DB في هذه الميزة (003-app-reviews)
 
 ## Recent Changes
 - 001-testing-setup: Added test infrastructure — mocktail, test helpers, controller DI refactor, 52 tests
