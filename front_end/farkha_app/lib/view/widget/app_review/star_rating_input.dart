@@ -20,14 +20,17 @@ class StarRatingInput extends StatelessWidget {
       children: List.generate(5, (index) {
         final starIndex = index + 1;
         final isSelected = starIndex <= value;
-        return IconButton(
-          onPressed: () => onChanged(starIndex),
-          icon: Icon(
-            isSelected ? Icons.star : Icons.star_border,
-            color: isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.outline,
-            size: size.sp,
+        return GestureDetector(
+          onTap: () => onChanged(starIndex),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Icon(
+              isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
+              color: isSelected
+                  ? const Color(0xFFFFA726)
+                  : Theme.of(context).colorScheme.outline.withValues(alpha: 0.4),
+              size: size.sp,
+            ),
           ),
         );
       }),

@@ -5,6 +5,8 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/package/rating_app.dart';
 import '../../../core/services/open_gmail.dart';
+import '../../../logic/bindings/app_review_binding.dart';
+import '../../widget/app_review/app_review_dialog.dart';
 import 'drawer_item.dart';
 
 class DrawerMenuItems extends StatelessWidget {
@@ -38,7 +40,12 @@ class DrawerMenuItems extends StatelessWidget {
 
   void _handleAppReview(BuildContext context) {
     Navigator.pop(context);
-    Get.toNamed<void>(AppRoute.appReview);
+    final binding = AppReviewBinding();
+    binding.dependencies();
+    showDialog<void>(
+      context: context,
+      builder: (_) => const AppReviewDialog(),
+    );
   }
 
   @override

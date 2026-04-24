@@ -329,16 +329,8 @@ final class Queries {
     }
 
     // App Review queries
-    public static function upsertAppReviewQuery(): string {
-        return AppReviewQueries::upsert();
-    }
-
-    public static function fetchAppReviewByUserIdQuery(): string {
-        return AppReviewQueries::fetchByUserId();
-    }
-
-    public static function fetchAppReviewIdByUserIdQuery(): string {
-        return AppReviewQueries::fetchIdByUserId();
+    public static function insertAppReviewQuery(): string {
+        return AppReviewQueries::insert();
     }
 }
 

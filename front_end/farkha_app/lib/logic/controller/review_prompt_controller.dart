@@ -5,14 +5,15 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../core/services/analytics_service.dart';
-import '../../view/widget/app_review/review_prompt_dialog.dart';
+import '../../core/services/test_mode_manager.dart';
+import '../../view/widget/app_review/app_review_dialog.dart';
+import '../../../logic/bindings/app_review_binding.dart';
 
 class ReviewPromptController extends GetxController {
   static const String _kFirstLaunch = 'first_launch_at';
   static const String _kLastActive = 'last_active_date';
   static const String _kUniqueDaysCount = 'unique_active_days_count';
   static const String _kDismissedAt = 'review_prompt_dismissed_at';
-  static const String _kHasRatedLocal = 'user_has_rated_local';
 
   final GetStorage _box;
 
@@ -40,7 +41,7 @@ class ReviewPromptController extends GetxController {
   }
 
   void markRated() {
-    _box.write(_kHasRatedLocal, true);
+    _box.write(_kDismissedAt, DateTime.now().toIso8601String());
   }
 
   void markDismissed() {
@@ -52,27 +53,25 @@ class ReviewPromptController extends GetxController {
   }
 
   Future<bool> shouldShowPrompt() async {
-    final hasRated = _box.read<bool>(_kHasRatedLocal) ?? false;
-    if (hasRated) return false;
+    if (TestModeManager.shouldAlwaysShowReviewPrompt) return true;
 
-    final firstLaunchStr = _box.read<String>(_kFirstLaunch);
-    if (firstLaunchStr == null) return false;
-    final firstLaunch = DateTime.tryParse(firstLaunchStr);
+    final firstLaunch = _box.read<String>(_kFirstLaunch);
     if (firstLaunch == null) return false;
-
-    final daysSinceInstall = DateTime.now().difference(firstLaunch).inDays;
-    if (daysSinceInstall < 30) return false;
 
     final uniqueDays = _box.read<int>(_kUniqueDaysCount) ?? 0;
     if (uniqueDays < 10) return false;
 
-    final dismissedAtStr = _box.read<String>(_kDismissedAt);
-    if (dismissedAtStr != null) {
-      final dismissedAt = DateTime.tryParse(dismissedAtStr);
-      if (dismissedAt != null) {
-        final daysSinceDismiss = DateTime.now().difference(dismissedAt).inDays;
-        if (daysSinceDismiss < 30) return false;
-      }
+    final firstLaunchDate = DateTime.parse(firstLaunch);
+    final daysSinceInstall = DateTime.now().difference(firstLaunchDate).inDays;
+    if (daysSinceInstall < 30) return false;
+
+    final dismissedAt = _box.read<String>(_kDismissedAt);
+    final isRepeatPrompt = dismissedAt != null;
+    if (isRepeatPrompt) {
+      final dismissedDate = DateTime.parse(dismissedAt);
+      final daysSinceDismiss = DateTime.now().difference(dismissedDate).inDays;
+      if (daysSinceDismiss < 60) return false;
+      if (uniqueDays < 20) return false;
     }
 
     return true;
@@ -90,9 +89,11 @@ class ReviewPromptController extends GetxController {
     await analytics.logEvent(name: AnalyticsService.reviewPromptShown);
 
     if (context.mounted) {
+      AppReviewBinding().dependencies();
       unawaited(showDialog<void>(
         context: context,
-        builder: (_) => const ReviewPromptDialog(),
+        barrierDismissible: false,
+        builder: (_) => const AppReviewDialog(autoPrompted: true),
       ));
     }
   }

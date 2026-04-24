@@ -276,9 +276,9 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
 
   Future<void> _deleteAccount() async {
     bool loadingShown = false;
+    final theme = Get.theme;
     final dialogBg =
-        Theme.of(context).dialogTheme.backgroundColor ??
-        Theme.of(context).colorScheme.surface;
+        theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface;
 
     void closeLoading() {
       if (loadingShown && Get.isDialogOpen == true) {

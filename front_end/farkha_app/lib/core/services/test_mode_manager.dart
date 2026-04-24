@@ -5,8 +5,13 @@ class TestModeManager {
 
   static const bool _showTutorialEveryTime = false;
 
+  static const bool _alwaysShowReviewPrompt = false;
+
   static bool get shouldUseTestAds => _isAppInDevelopment || _isAdsInTestMode;
 
   static bool get shouldShowTutorialEveryTime =>
       _isAppInDevelopment || _showTutorialEveryTime;
+
+  static bool get shouldAlwaysShowReviewPrompt =>
+      _isAppInDevelopment || _alwaysShowReviewPrompt;
 }

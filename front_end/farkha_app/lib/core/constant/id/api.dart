@@ -30,7 +30,6 @@ class Api {
   // ============================== app reviews ================================
   static final String _appReviews = '$_serverName/app/app_reviews';
   static String upsertAppReview = '$_appReviews/upsert_review.php';
-  static String getMyAppReview = '$_appReviews/get_my_review.php';
 
   // ================================ articles =================================
   static String articleDetail = '$_articles/article_detail.php';

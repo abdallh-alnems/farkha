@@ -23,15 +23,36 @@ class RatingDescription extends StatelessWidget {
     }
   }
 
+  Color _getColor(BuildContext context) {
+    switch (rating) {
+      case 1:
+        return Colors.redAccent;
+      case 2:
+        return Colors.deepOrange;
+      case 3:
+        return Colors.amber.shade700;
+      case 4:
+        return Colors.lightGreen;
+      case 5:
+        return Colors.green;
+      default:
+        return Theme.of(context).colorScheme.primary;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (rating == 0) return const SizedBox.shrink();
-    return Text(
-      _getText(),
-      style: TextStyle(
-        fontSize: 15.sp,
-        fontWeight: FontWeight.w500,
-        color: Theme.of(context).colorScheme.primary,
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: Text(
+        _getText(),
+        key: ValueKey(rating),
+        style: TextStyle(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+          color: _getColor(context),
+        ),
       ),
     );
   }

@@ -67,11 +67,21 @@ void main() {
   });
 
   group('shouldShowPrompt', () {
-    test('يُرجع false إذا user_has_rated_local == true', () async {
+    test('يُرجع false إذا قيّم مؤخرًا (أقل من 60 يوم)', () async {
       _setupEligibleUser(storage);
-      storage.write('user_has_rated_local', true);
+      storage.write('review_prompt_dismissed_at',
+          DateTime.now().subtract(const Duration(days: 10)).toIso8601String());
 
       expect(await controller.shouldShowPrompt(), isFalse);
+    });
+
+    test('يُرجع true إذا قيّم قبل أكثر من 60 يوم و unique_days >= 20', () async {
+      _setupEligibleUser(storage);
+      storage.write('unique_active_days_count', 20);
+      storage.write('review_prompt_dismissed_at',
+          DateTime.now().subtract(const Duration(days: 61)).toIso8601String());
+
+      expect(await controller.shouldShowPrompt(), isTrue);
     });
 
     test('يُرجع false إذا لم تمض 30 يوم', () async {
@@ -95,7 +105,7 @@ void main() {
       expect(await controller.shouldShowPrompt(), isTrue);
     });
 
-    test('يُرجع false إذا dismissed خلال آخر 30 يوم', () async {
+    test('يُرجع false إذا dismissed خلال آخر 60 يوم', () async {
       _setupEligibleUser(storage);
       storage.write('review_prompt_dismissed_at',
           DateTime.now().subtract(const Duration(days: 5)).toIso8601String());
@@ -103,12 +113,22 @@ void main() {
       expect(await controller.shouldShowPrompt(), isFalse);
     });
 
-    test('يُرجع true إذا dismissed قبل أكثر من 30 يوم', () async {
+    test('يُرجع true إذا dismissed قبل أكثر من 60 يوم و unique_days >= 20', () async {
       _setupEligibleUser(storage);
+      storage.write('unique_active_days_count', 20);
       storage.write('review_prompt_dismissed_at',
-          DateTime.now().subtract(const Duration(days: 31)).toIso8601String());
+          DateTime.now().subtract(const Duration(days: 61)).toIso8601String());
 
       expect(await controller.shouldShowPrompt(), isTrue);
+    });
+
+    test('يُرجع false إذا dismissed قبل أكثر من 60 يوم لكن unique_days < 20', () async {
+      _setupEligibleUser(storage);
+      storage.write('unique_active_days_count', 15);
+      storage.write('review_prompt_dismissed_at',
+          DateTime.now().subtract(const Duration(days: 61)).toIso8601String());
+
+      expect(await controller.shouldShowPrompt(), isFalse);
     });
 
     test('يُرجع false إذا لا يوجد first_launch_at', () async {
@@ -117,9 +137,9 @@ void main() {
   });
 
   group('markRated', () {
-    test('يضبط user_has_rated_local = true', () {
+    test('يضبط review_prompt_dismissed_at', () {
       controller.markRated();
-      expect(storage.read<bool>('user_has_rated_local'), isTrue);
+      expect(storage.read<String>('review_prompt_dismissed_at'), isNotNull);
     });
   });
 
@@ -136,7 +156,6 @@ void _setupEligibleUser(GetStorage storage) {
       DateTime.now().subtract(const Duration(days: 31)).toIso8601String());
   storage.write('unique_active_days_count', 12);
   storage.write('last_active_date', _todayKey());
-  storage.write('user_has_rated_local', false);
 }
 
 String _todayKey() {
