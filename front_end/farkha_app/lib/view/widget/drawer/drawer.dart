@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'drawer_about_app.dart';
@@ -63,6 +64,25 @@ class _HomeDrawerState extends State<HomeDrawer> {
               ),
             ),
             _buildSocialIcons(context),
+            FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const SizedBox.shrink();
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: Text(
+                    'v${snapshot.data!.version}',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.4),
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

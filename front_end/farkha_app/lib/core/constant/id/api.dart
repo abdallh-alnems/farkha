@@ -24,9 +24,6 @@ class Api {
   static String pricesCard = '$_cardPrices/card_prices.php';
   static String types = '$_cardPrices/types.php';
 
-  // =============================== suggestion ================================
-  static String suggestion = '$_read/suggestions.php';
-
   // ============================== app reviews ================================
   static final String _appReviews = '$_serverName/app/app_reviews';
   static String upsertAppReview = '$_appReviews/upsert_review.php';

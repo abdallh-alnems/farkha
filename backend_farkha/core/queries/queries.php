@@ -4,7 +4,6 @@ include_once __DIR__ . "/price_queries.php";
 include_once __DIR__ . "/type_queries.php";
 include_once __DIR__ . "/article_queries.php";
 include_once __DIR__ . "/analytics_queries.php";
-include_once __DIR__ . "/suggestion_queries.php";
 include_once __DIR__ . "/user_queries.php";
 include_once __DIR__ . "/cycle_queries.php";
 include_once __DIR__ . "/app_review_queries.php";
@@ -77,14 +76,6 @@ final class Queries {
 
     public static function getUnifiedToolsUsageAnalyticsQuery(): string {
         return AnalyticsQueries::fetchUnifiedToolsUsageAnalytics();
-    }
-
-    public static function insertSuggestionQuery(): string {
-        return SuggestionQueries::insert();
-    }
-
-    public static function getSuggestionsListQuery(): string {
-        return SuggestionQueries::fetchList();
     }
 
     // User Queries

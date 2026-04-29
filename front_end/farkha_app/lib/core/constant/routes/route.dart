@@ -28,10 +28,6 @@ class AppRoute {
   static const String cycleSales = '/cycleSales';
   static const String cycleCloseoutReport = '/cycle-closeout-report';
   static const String cycleComparison = '/cycle-comparison';
-  // ================================ drawer ===================================
-
-  static const String suggestion = '/suggestion';
-
   // ========================== view follow up tools ===========================
 
   static const String broilerChickenRequirements =

@@ -56,7 +56,6 @@ import '../../../view/screen/tools/vaccination_schedule.dart';
 import '../../../view/screen/tools/water_consumption.dart';
 import '../../../view/screen/tools/weather_screen.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
-import '../../../view/widget/drawer/suggestion.dart';
 import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
 
@@ -176,9 +175,6 @@ List<GetPage<dynamic>> pages = [
     page: () => const CycleComparisonScreen(),
     middlewares: [AuthMiddleware()],
   ),
-
-  // ================================ drawer ==================================
-  GetPage(name: AppRoute.suggestion, page: () => const Suggestion()),
 
   // ========================== view follow up tools ===========================
   GetPage(

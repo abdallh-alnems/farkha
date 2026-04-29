@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/constant/routes/route.dart';
+
 import '../../../core/package/rating_app.dart';
 import '../../../core/services/open_gmail.dart';
 import '../../../logic/bindings/app_review_binding.dart';
@@ -25,11 +25,6 @@ class DrawerMenuItems extends StatelessWidget {
   void _handleOpenGmail(BuildContext context) {
     Navigator.pop(context);
     openGmail();
-  }
-
-  void _handleSuggestion(BuildContext context) {
-    Navigator.pop(context);
-    Get.toNamed<void>(AppRoute.suggestion);
   }
 
   void _handleRateApp(BuildContext context) {
@@ -63,12 +58,6 @@ class DrawerMenuItems extends StatelessWidget {
           title: 'البريد الإلكتروني',
           icon: Icons.mail,
           color: const Color(0xFFE91E63),
-        ),
-        DrawerItem(
-          onTap: () => _handleSuggestion(context),
-          title: 'اقتراح',
-          icon: Icons.lightbulb,
-          color: const Color(0xFFFF9800),
         ),
         DrawerItem(
           onTap: () => _handleRateApp(context),

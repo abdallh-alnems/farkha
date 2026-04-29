@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
-import '../../../core/constant/routes/route.dart';
 import '../../../core/services/open_gmail.dart';
 
 class DrawerSupportContact extends StatefulWidget {
@@ -26,11 +24,6 @@ class _DrawerSupportContactState extends State<DrawerSupportContact> {
   Future<void> _handleEmail() async {
     Navigator.pop(context);
     unawaited(openGmail());
-  }
-
-  Future<void> _handleSuggestion() async {
-    Navigator.pop(context);
-    unawaited(Get.toNamed<void>(AppRoute.suggestion));
   }
 
   @override
@@ -59,12 +52,6 @@ class _DrawerSupportContactState extends State<DrawerSupportContact> {
                 'البريد الإلكتروني',
                 style: TextStyle(fontSize: 15.sp),
               ),
-              shape: const Border(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-            ),
-            ListTile(
-              onTap: _handleSuggestion,
-              title: Text('إرسال اقتراح', style: TextStyle(fontSize: 15.sp)),
               shape: const Border(),
               contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
             ),
