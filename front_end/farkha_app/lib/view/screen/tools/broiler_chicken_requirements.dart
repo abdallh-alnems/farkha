@@ -23,10 +23,7 @@ class BroilerChickenRequirements extends StatelessWidget {
             ? Get.find<BroilerController>()
             : Get.put(BroilerController());
 
-    logToolPageViewOnce(
-      widgetType: BroilerChickenRequirements,
-      toolName: 'متطلبات فراخ التسمين',
-    );
+    logToolPageViewOnce(widgetType: BroilerChickenRequirements, toolId: 13);
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

@@ -44,10 +44,7 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: BirdNetProfitScreen,
-      toolName: 'الربح الصافي للطائر',
-    );
+    logToolPageViewOnce(widgetType: BirdNetProfitScreen, toolId: 18);
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

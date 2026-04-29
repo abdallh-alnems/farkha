@@ -27,10 +27,7 @@ class BirdProductionCostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: BirdProductionCostScreen,
-      toolName: 'تكلفة إنتاج الفرخ',
-    );
+    logToolPageViewOnce(widgetType: BirdProductionCostScreen, toolId: 15);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

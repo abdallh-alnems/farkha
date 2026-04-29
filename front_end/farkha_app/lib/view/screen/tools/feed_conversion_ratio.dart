@@ -62,10 +62,7 @@ class _FeedConversionRatioState extends State<FeedConversionRatio> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: FeedConversionRatio,
-      toolName: 'معامل التحويل الغذائي',
-    );
+    logToolPageViewOnce(widgetType: FeedConversionRatio, toolId: 1);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

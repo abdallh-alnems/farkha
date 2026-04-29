@@ -1,5 +1,10 @@
 RewriteEngine On
 
+# Pass HTTP Basic Authentication to PHP (required for CGI/FastCGI like MAMP)
+# Must be repeated here because RewriteEngine On overrides parent inheritance.
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
 # Handle API requests
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

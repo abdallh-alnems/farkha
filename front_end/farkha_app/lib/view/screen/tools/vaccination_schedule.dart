@@ -18,10 +18,7 @@ class VaccinationSchedule extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(VaccinationController());
 
-    logToolPageViewOnce(
-      widgetType: VaccinationSchedule,
-      toolName: 'جدول التحصينات',
-    );
+    logToolPageViewOnce(widgetType: VaccinationSchedule, toolId: 10);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

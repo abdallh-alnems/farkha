@@ -23,10 +23,7 @@ class TotalFarmWeightScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: TotalFarmWeightScreen,
-      toolName: 'الوزن الإجمالي',
-    );
+    logToolPageViewOnce(widgetType: TotalFarmWeightScreen, toolId: 21);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/functions/tool_page_view.dart';
 import '../../../../logic/controller/tools_controller/disease_controller.dart';
 import '../../../widget/appbar/custom_appbar.dart';
 import '../../../widget/tools/disease/diagnosis_diseases/disease_answer.dart';
@@ -18,11 +17,6 @@ class DiagnosisDiseases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: DiagnosisDiseases,
-      toolName: 'تشخيص المرض',
-    );
-
     return Scaffold(
       body: Column(
         children: [

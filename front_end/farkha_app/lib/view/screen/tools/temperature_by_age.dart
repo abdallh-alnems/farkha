@@ -44,10 +44,7 @@ class _TemperatureByAgeScreenState extends State<TemperatureByAgeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: TemperatureByAgeScreen,
-      toolName: 'درجة الحرارة حسب العمر',
-    );
+    logToolPageViewOnce(widgetType: TemperatureByAgeScreen, toolId: 7);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

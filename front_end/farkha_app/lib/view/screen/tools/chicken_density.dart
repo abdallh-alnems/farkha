@@ -21,10 +21,7 @@ class ChickenDensity extends StatelessWidget {
       ChickenDensityController(),
     );
 
-    logToolPageViewOnce(
-      widgetType: ChickenDensity,
-      toolName: 'كثافة الفراخ',
-    );
+    logToolPageViewOnce(widgetType: ChickenDensity, toolId: 3);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

@@ -35,6 +35,10 @@ class Api {
   static final String _cycleFeedbacks = '$_serverName/app/cycle_feedbacks';
   static String submitCycleFeedback = '$_cycleFeedbacks/submit_feedback.php';
 
+  // =============================== analytics ================================
+  static final String _analytics = '$_serverName/analytics';
+  static String recordToolsUsage = '$_analytics/record_tools_usage.php';
+
   // ================================ articles =================================
   static String articleDetail = '$_articles/article_detail.php';
   static String articlesList = '$_articles/articles_list.php';

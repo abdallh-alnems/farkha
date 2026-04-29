@@ -62,10 +62,7 @@ class _AverageDailyGainState extends State<AverageDailyGain> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: AverageDailyGain,
-      toolName: 'متوسط النمو اليومي',
-    );
+    logToolPageViewOnce(widgetType: AverageDailyGain, toolId: 2);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

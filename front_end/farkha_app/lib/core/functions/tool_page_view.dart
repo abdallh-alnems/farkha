@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import '../services/analytics_service.dart';
+import '../services/tools_usage_service.dart';
 
-void logToolPageViewOnce({required Type widgetType, required String toolName}) {
+final Map<int, DateTime> _lastLogged = {};
+
+void logToolPageViewOnce({required Type widgetType, required int toolId}) {
+  final now = DateTime.now();
+  final lastLog = _lastLogged[toolId];
+  if (lastLog != null && now.difference(lastLog).inSeconds < 2) return;
+  _lastLogged[toolId] = now;
+
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    final analyticsService = Get.find<AnalyticsService>();
-    analyticsService.logToolPageView(toolName: toolName);
+    ToolsUsageService.recordUsage(toolId);
   });
 }

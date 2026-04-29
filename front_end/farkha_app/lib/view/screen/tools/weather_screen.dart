@@ -21,7 +21,7 @@ class WeatherScreen extends StatelessWidget {
             ? Get.find<WeatherController>()
             : Get.put(WeatherController());
 
-    logToolPageViewOnce(widgetType: WeatherScreen, toolName: 'الطقس');
+    logToolPageViewOnce(widgetType: WeatherScreen, toolId: 24);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

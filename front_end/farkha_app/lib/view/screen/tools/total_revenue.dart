@@ -25,10 +25,7 @@ class TotalRevenueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: TotalRevenueScreen,
-      toolName: 'إجمالي الإيرادات',
-    );
+    logToolPageViewOnce(widgetType: TotalRevenueScreen, toolId: 22);
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

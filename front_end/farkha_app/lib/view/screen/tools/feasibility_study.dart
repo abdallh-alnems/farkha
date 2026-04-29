@@ -113,7 +113,7 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(widgetType: FeasibilityStudy, toolName: 'دراسة جدوي');
+    logToolPageViewOnce(widgetType: FeasibilityStudy, toolId: 14);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {

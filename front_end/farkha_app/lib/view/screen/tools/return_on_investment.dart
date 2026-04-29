@@ -31,10 +31,7 @@ class ReturnOnInvestment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: ReturnOnInvestment,
-      toolName: 'العائد على الاستثمار',
-    );
+    logToolPageViewOnce(widgetType: ReturnOnInvestment, toolId: 19);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

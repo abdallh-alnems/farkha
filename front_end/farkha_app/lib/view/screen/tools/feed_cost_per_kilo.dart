@@ -59,10 +59,7 @@ class FeedCostPerKiloScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: FeedCostPerKiloScreen,
-      toolName: 'تكلفة العلف لكل كيلو وزن',
-    );
+    logToolPageViewOnce(widgetType: FeedCostPerKiloScreen, toolId: 17);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final resultColor =

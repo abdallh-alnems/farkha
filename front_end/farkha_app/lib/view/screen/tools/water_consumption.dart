@@ -21,10 +21,7 @@ class WaterConsumption extends StatelessWidget {
       WaterConsumptionController(),
     );
 
-    logToolPageViewOnce(
-      widgetType: WaterConsumption,
-      toolName: 'استهلاك الماء',
-    );
+    logToolPageViewOnce(widgetType: WaterConsumption, toolId: 23);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

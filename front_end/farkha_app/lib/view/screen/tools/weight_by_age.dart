@@ -24,10 +24,7 @@ class _WeightByAgeScreenState extends State<WeightByAgeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: WeightByAgeScreen,
-      toolName: 'الوزن حسب العمر',
-    );
+    logToolPageViewOnce(widgetType: WeightByAgeScreen, toolId: 6);
 
     return Scaffold(
       appBar: const CustomAppBar(text: 'الوزن حسب العمر', favoriteToolName: 'الوزن حسب العمر'),

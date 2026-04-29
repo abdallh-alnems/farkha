@@ -34,11 +34,7 @@ class AnalyticsService extends GetxService {
     debugPrint('📊 Analytics Event: $name');
   }
 
-  Future<void> logToolPageView({required String toolName}) async {
-    await logEvent(name: 'tool_page_view', parameters: {'tool_name': toolName});
-  }
-
-  Future<void> logPhoneOtpSent() async {
+Future<void> logPhoneOtpSent() async {
     await logEvent(name: 'phone_otp_sent', parameters: {'phone_country': 'EG'});
   }
 

@@ -37,10 +37,7 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: FanOperationScreen,
-      toolName: 'تشغيل الشفاطات',
-    );
+    logToolPageViewOnce(widgetType: FanOperationScreen, toolId: 9);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final btnColor =

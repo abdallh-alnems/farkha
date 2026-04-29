@@ -22,10 +22,7 @@ class DarknessLevelsView extends StatelessWidget {
       DarknessLevelsController(),
     );
 
-    logToolPageViewOnce(
-      widgetType: DarknessLevelsView,
-      toolName: 'ساعات الإظلام',
-    );
+    logToolPageViewOnce(widgetType: DarknessLevelsView, toolId: 8);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

@@ -26,10 +26,7 @@ class FeedCostPerBirdScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: FeedCostPerBirdScreen,
-      toolName: 'تكلفة العلف لكل طائر',
-    );
+    logToolPageViewOnce(widgetType: FeedCostPerBirdScreen, toolId: 16);
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

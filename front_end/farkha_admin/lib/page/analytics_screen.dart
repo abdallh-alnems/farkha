@@ -40,6 +40,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     20: 'نسبة النفوق',
     21: 'الوزن الإجمالي',
     22: 'إجمالي الإيرادات',
+    23: 'استهلاك الماء',
+    24: 'الطقس',
   };
 
   final List<Map<String, String>> periods = [

@@ -18,7 +18,7 @@ class ArticlesList extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(ArticlesListController());
 
-    logToolPageViewOnce(widgetType: ArticlesList, toolName: 'مقالات');
+    logToolPageViewOnce(widgetType: ArticlesList, toolId: 11);
 
     return Scaffold(
       appBar: const CustomAppBar(text: 'مقالات', favoriteToolName: 'مقالات'),

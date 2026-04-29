@@ -35,10 +35,7 @@ class _TotalFeedConsumptionState extends State<TotalFeedConsumption> {
       TotalFeedConsumptionController(),
     );
 
-    logToolPageViewOnce(
-      widgetType: TotalFeedConsumption,
-      toolName: 'استهلاك العلف الكلي',
-    );
+    logToolPageViewOnce(widgetType: TotalFeedConsumption, toolId: 5);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;

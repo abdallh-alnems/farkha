@@ -14,7 +14,7 @@ class Disease extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(widgetType: Disease, toolName: 'الأمراض');
+    logToolPageViewOnce(widgetType: Disease, toolId: 12);
 
     return Scaffold(
       body: Column(

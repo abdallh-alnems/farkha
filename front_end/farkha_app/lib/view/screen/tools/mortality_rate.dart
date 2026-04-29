@@ -25,10 +25,7 @@ class MortalityRateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(
-      widgetType: MortalityRateScreen,
-      toolName: 'نسبة النفوق',
-    );
+    logToolPageViewOnce(widgetType: MortalityRateScreen, toolId: 20);
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

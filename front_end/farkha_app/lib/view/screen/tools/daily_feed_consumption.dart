@@ -21,10 +21,7 @@ class DailyFeedConsumption extends StatelessWidget {
       DailyFeedConsumptionController(),
     );
 
-    logToolPageViewOnce(
-      widgetType: DailyFeedConsumption,
-      toolName: 'استهلاك العلف اليومي',
-    );
+    logToolPageViewOnce(widgetType: DailyFeedConsumption, toolId: 4);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
