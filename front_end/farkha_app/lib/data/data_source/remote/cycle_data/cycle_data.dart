@@ -24,8 +24,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {
         'token': token,
@@ -73,8 +72,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {
         'token': token,
@@ -113,8 +111,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {
         'token': token,
@@ -156,8 +153,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = <String, dynamic>{
         'token': token,
@@ -200,8 +196,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {'token': token, 'cycle_id': cycleId};
 
@@ -232,8 +227,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {'token': token};
 
@@ -269,8 +263,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = <String, dynamic>{
         'token': token,
@@ -316,8 +309,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {'token': token, 'cycle_id': cycleId};
 
@@ -332,11 +324,9 @@ class CycleData {
             jsonDecode(response.body) as Map<String, dynamic>;
         return Right(responseBody);
       } else {
-        print('getCycleDetails FAILED: \${response.statusCode} -> \${response.body}');
         return const Left(StatusRequest.serverFailure);
       }
     } catch (e) {
-      print('getCycleDetails ERROR: $e');
       return const Left(StatusRequest.serverFailure);
     }
   }
@@ -355,8 +345,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {
         'token': token,
@@ -400,8 +389,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {
         'token': token,
@@ -442,8 +430,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {'token': token, 'cycle_id': cycleId, 'content': content};
 
@@ -475,8 +462,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {'token': token, 'cycle_id': cycleId};
 
@@ -509,8 +495,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {'token': token, 'cycle_id': cycleId, 'note_id': noteId};
 
@@ -544,8 +529,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
       final body = {
         'token': token,
@@ -581,8 +565,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.addMember),
         headers: myHeaders,
@@ -617,17 +600,12 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
-      print('📤 Sending leave cycle request to: ${Api.leaveCycle}');
-      print('📤 Body: {token: $token, cycle_id: $cycleId}');
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.leaveCycle),
         headers: myHeaders,
         body: jsonEncode({'token': token, 'cycle_id': cycleId}),
       );
-      print('📥 Response Status: ${response.statusCode}');
-      print('📥 Response Body: ${response.body}');
       final Map<String, dynamic> body =
           jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200 ||
@@ -638,10 +616,8 @@ class CycleData {
           response.statusCode == 404) {
         return Right(body);
       }
-      print('❌ Response status ${response.statusCode} not in accepted list');
       return const Left(StatusRequest.serverFailure);
     } catch (e) {
-      print('❌ Exception in leaveCycle: $e');
       return const Left(StatusRequest.serverFailure);
     }
   }
@@ -653,8 +629,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.createInvitation),
         headers: myHeaders,
@@ -684,8 +659,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.joinByCode),
         headers: myHeaders,
@@ -715,8 +689,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.searchUsers),
         headers: myHeaders,
@@ -738,8 +711,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.getInvitations),
         headers: myHeaders,
@@ -764,8 +736,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.respondToInvitation),
         headers: myHeaders,
@@ -794,8 +765,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.removeMember),
         headers: myHeaders,
@@ -830,8 +800,7 @@ class CycleData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
-      myHeaders['Content-Type'] = 'application/json';
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       final response = await http.post(
         Uri.parse(Api.updateMemberRole),
         headers: myHeaders,

@@ -18,7 +18,7 @@ class DeleteAccountData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       myHeaders['Content-Type'] = 'application/json';
 
       final response = await http.post(

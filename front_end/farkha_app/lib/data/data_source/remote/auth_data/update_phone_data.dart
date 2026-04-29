@@ -20,7 +20,7 @@ class UpdatePhoneData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       myHeaders['Content-Type'] = 'application/json';
 
       final Map<String, dynamic> body = {'token': token};

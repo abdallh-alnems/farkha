@@ -10,6 +10,7 @@ include __DIR__ . '/../../core/queries/queries.php';
 
 // 🔒 حماية الـ API endpoint
 checkAuthenticate();
+requirePostMethod();
 
 // قراءة البيانات المرسلة
 $input = json_decode(file_get_contents('php://input'), true);
@@ -50,7 +51,7 @@ try {
     }
 
     // التحقق من صلاحيات المستخدم - يجب أن يكون owner
-    $stmt = $con->prepare(Queries::checkUserAccessQuery());
+    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
         ':user_id' => $userId

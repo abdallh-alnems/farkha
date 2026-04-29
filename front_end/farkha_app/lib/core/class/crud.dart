@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,30 +8,20 @@ import 'status_request.dart';
 
 class Crud {
   Future<Either<StatusRequest, Map<String, dynamic>>> postData(String linkUrl, Map<String, dynamic> data) async {
-    final Map<String, String> myHeaders = getMyHeaders();
-    
-    try {
-      final appCheckToken = await FirebaseAppCheck.instance.getToken();
-      if (appCheckToken != null) {
-        myHeaders['X-Firebase-AppCheck'] = appCheckToken;
-      }
-    } catch (_) {
-      // Ignore errors fetching App Check token
-    }
+    final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
 
     final bool isConnected = await InternetChecker.checkConnection();
     if (isConnected) {
       try {
         final http.Response response;
 
-        // Use GET if data is empty, otherwise use POST
         if (data.isEmpty) {
           response = await http.get(Uri.parse(linkUrl), headers: myHeaders);
         } else {
           response = await http.post(
             Uri.parse(linkUrl),
             headers: myHeaders,
-            body: data,
+            body: jsonEncode(data),
           );
         }
 

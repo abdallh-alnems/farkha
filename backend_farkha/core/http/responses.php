@@ -22,14 +22,20 @@ class ApiResponse {
     }
 
     public static function error($message = 'Error', $code = 400, $details = null) {
-        $errorUrl = "/core/error.php?code=" . $code;
-        if ($details) {
-            $errorUrl .= "&details=" . urlencode(json_encode($details));
+        http_response_code($code);
+        header('Content-Type: application/json; charset=utf-8');
+
+        $response = [
+            'status' => 'error',
+            'code' => $code,
+            'message' => $message
+        ];
+
+        if ($details !== null) {
+            error_log('API Error details: ' . json_encode($details));
         }
-        if ($message !== 'Error') {
-            $errorUrl .= "&message=" . urlencode($message);
-        }
-        header("Location: " . $errorUrl);
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
         exit;
     }
 

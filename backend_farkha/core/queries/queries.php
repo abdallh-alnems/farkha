@@ -124,6 +124,14 @@ final class Queries {
         return CycleQueries::checkUserAccess();
     }
 
+    public static function checkUserReadAccessQuery(): string {
+        return CycleQueries::checkUserReadAccess();
+    }
+
+    public static function checkUserWriteAccessQuery(): string {
+        return CycleQueries::checkUserWriteAccess();
+    }
+
     public static function leaveCycleQuery(): string {
         return CycleQueries::leaveCycleQuery();
     }

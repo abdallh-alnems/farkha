@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../core/wasender_client.php';
 require_once __DIR__ . '/../../core/queries/queries.php';
 
 checkAuthenticate();
+requirePostMethod();
 
 $input = json_decode(file_get_contents('php://input'), true);
 $token = $input['token'] ?? null;

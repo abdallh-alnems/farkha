@@ -11,6 +11,7 @@ require_once __DIR__ . '/../../core/fcm_sender.php';
 
 // 🔒 حماية الـ API endpoint
 checkAuthenticate();
+requirePostMethod();
 
 // قراءة البيانات المرسلة
 $input = json_decode(file_get_contents('php://input'), true);

@@ -85,7 +85,8 @@ try {
     $stmt->execute([
         'user_id' => $targetUser['id'],
         'cycle_id' => $cycle_id,
-        'role' => $roleInput
+        'role' => $roleInput,
+        'status' => 'pending'
     ]);
 
     // 6. إرسال إشعار للمستخدم المضاف
@@ -114,6 +115,7 @@ try {
     http_response_code(401);
     echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
 } catch (Exception $e) {
+    error_log('add_member error: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
 }

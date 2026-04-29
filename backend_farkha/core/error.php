@@ -105,9 +105,6 @@ if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'error.php') {
 
     // Set headers
     header('Content-Type: application/json; charset=utf-8');
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 
     // Error logged to PHP error log
     if ($errorCode >= 500) {

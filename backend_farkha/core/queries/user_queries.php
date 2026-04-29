@@ -31,7 +31,7 @@ final class UserQueries {
     }
 
     public static function searchByPhoneExcludeUid(): string {
-        return "SELECT id, name, phone FROM users WHERE phone LIKE :search_term AND firebase_uid != :firebase_uid LIMIT 10";
+        return "SELECT id, phone FROM users WHERE phone LIKE :search_term AND firebase_uid != :firebase_uid LIMIT 10";
     }
 
     public static function updatePhoneVerified(): string {

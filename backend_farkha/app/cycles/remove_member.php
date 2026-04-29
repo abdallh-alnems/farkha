@@ -38,7 +38,7 @@ try {
     }
 
     // 🛡️ التحقق من أن القائم بالعملية هو الـ Owner
-    $stmt = $con->prepare(Queries::checkUserAccessQuery());
+    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
         ':user_id' => $userId

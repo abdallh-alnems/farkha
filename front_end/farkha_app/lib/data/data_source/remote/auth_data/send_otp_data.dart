@@ -20,7 +20,7 @@ class SendOtpData {
     }
 
     try {
-      final Map<String, String> myHeaders = getMyHeaders();
+      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
       myHeaders['Content-Type'] = 'application/json';
 
       dev.log('[send_otp] POST ${Api.sendOtp} phone=$phone token_len=${token.length}', name: 'OTP');

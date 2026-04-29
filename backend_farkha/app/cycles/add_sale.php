@@ -10,6 +10,7 @@ include __DIR__ . '/../../core/queries/queries.php';
 
 // 🔒 حماية الـ API endpoint
 checkAuthenticate();
+requirePostMethod();
 
 // قراءة البيانات المرسلة
 $input = json_decode(file_get_contents('php://input'), true);
@@ -57,7 +58,7 @@ try {
     }
 
     // التحقق من صلاحيات المستخدم على الدورة
-    $stmt = $con->prepare(Queries::checkUserAccessQuery());
+    $stmt = $con->prepare(Queries::checkUserWriteAccessQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
         ':user_id' => $userId
@@ -102,10 +103,11 @@ try {
         'message' => 'Invalid or expired token'
     ]);
 } catch (PDOException $e) {
+    error_log('add_sale DB error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Database error: ' . $e->getMessage()
+        'message' => 'Database error'
     ]);
 } catch (Exception $e) {
     http_response_code(500);

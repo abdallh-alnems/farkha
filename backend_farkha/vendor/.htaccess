@@ -1,0 +1,8 @@
+# Block direct web access to vendor/ directory
+# PHP require_once/include bypasses Apache - this only blocks HTTP requests
+
+<IfModule mod_authz_core.c>
+    <Files "*">
+        Require all denied
+    </Files>
+</IfModule>

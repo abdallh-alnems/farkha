@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../core/firebase_verifier.php';
 require_once __DIR__ . '/../../core/queries/queries.php';
 
 checkAuthenticate();
+requirePostMethod();
 
 $input = json_decode(file_get_contents('php://input'), true);
 $token = $input['token'] ?? null;

@@ -53,7 +53,7 @@ try {
     }
 
     // التحقق من صلاحيات المستخدم على الدورة
-    $stmt = $con->prepare(Queries::checkUserAccessQuery());
+    $stmt = $con->prepare(Queries::checkUserWriteAccessQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
         ':user_id' => $userId

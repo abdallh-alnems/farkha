@@ -13,8 +13,12 @@ final class CycleQueries {
      * إضافة مستخدم إلى دورة (owner أو member)
      */
     public static function insertCycleUser(string $status = 'accepted'): string {
+        $allowedStatuses = ['accepted', 'pending'];
+        if (!in_array($status, $allowedStatuses)) {
+            $status = 'pending';
+        }
         return "INSERT INTO cycle_users (user_id, cycle_id, role, status)
-                VALUES (:user_id, :cycle_id, :role, '$status')";
+                VALUES (:user_id, :cycle_id, :role, :status)";
     }
 
     public static function leaveCycleQuery(): string {
@@ -131,12 +135,29 @@ final class CycleQueries {
     }
 
     /**
-     * التحقق من صلاحيات المستخدم على الدورة
+     * التحقق من صلاحيات المستخدم على الدورة (قراءة فقط)
+     */
+    public static function checkUserReadAccess(): string {
+        return "SELECT role FROM cycle_users 
+                WHERE cycle_id = :cycle_id AND user_id = :user_id AND status = 'accepted'
+                LIMIT 1";
+    }
+
+    /**
+     * التحقق من صلاحيات المستخدم على الدورة (كتابة)
+     */
+    public static function checkUserWriteAccess(): string {
+        return "SELECT role FROM cycle_users 
+                WHERE cycle_id = :cycle_id AND user_id = :user_id 
+                AND status = 'accepted' AND role IN ('owner', 'admin')
+                LIMIT 1";
+    }
+
+    /**
+     * @deprecated Use checkUserReadAccess() or checkUserWriteAccess() instead
      */
     public static function checkUserAccess(): string {
-        return "SELECT role FROM cycle_users 
-                WHERE cycle_id = :cycle_id AND user_id = :user_id
-                LIMIT 1";
+        return self::checkUserReadAccess();
     }
 
     /**

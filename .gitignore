@@ -1,2 +1,6 @@
 .VSCodeCounter
 .idea
+*.sql
+test_*.php
+describe_*.php
+alter_*.php

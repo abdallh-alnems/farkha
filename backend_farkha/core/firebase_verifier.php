@@ -29,8 +29,7 @@ function getFirebaseAuth() {
 function verifyToken(string $token) {
     $auth = getFirebaseAuth();
     
-    // استخدام leeway = 300 ثانية للسماح بفرق زمني في السيرفر المحلي
-    return $auth->verifyIdToken($token, $checkIfRevoked = false, $leewayInSeconds = 300);
+    return $auth->verifyIdToken($token, $checkIfRevoked = true, $leewayInSeconds = 60);
 }
 
 /**
@@ -51,15 +50,14 @@ function requireValidToken(?string $token) {
     } catch (FailedToVerifyToken $e) {
         http_response_code(401);
         echo json_encode([
-            'error' => 'Invalid or expired token',
-            'details' => $e->getMessage()
+            'error' => 'Invalid or expired token'
         ]);
         exit;
     } catch (Exception $e) {
+        error_log('Token verification error: ' . $e->getMessage());
         http_response_code(500);
         echo json_encode([
-            'error' => 'Authentication failed',
-            'details' => $e->getMessage()
+            'error' => 'Authentication failed'
         ]);
         exit;
     }

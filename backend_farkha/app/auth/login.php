@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../core/firebase_verifier.php';
 
 // 🔒 حماية الـ API endpoint
 checkAuthenticate();
+requirePostMethod();
 
 // قراءة البيانات المرسلة
 $input = json_decode(file_get_contents('php://input'), true);
@@ -63,21 +64,20 @@ try {
     http_response_code(401);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Invalid or expired token',
-        'error_detail' => $e->getMessage()
+        'message' => 'Invalid or expired token'
     ]);
 } catch (PDOException $e) {
+    error_log('Login DB error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Database error',
-        'error_detail' => $e->getMessage()
+        'message' => 'Database error'
     ]);
 } catch (Exception $e) {
+    error_log('Login error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Server error',
-        'error_detail' => $e->getMessage()
+        'message' => 'Server error'
     ]);
 }

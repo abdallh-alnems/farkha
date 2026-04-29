@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../core/otp_utils.php';
 require_once __DIR__ . '/../../core/queries/queries.php';
 
 checkAuthenticate();
+requirePostMethod();
 
 $input = json_decode(file_get_contents('php://input'), true);
 $token = $input['token'] ?? null;

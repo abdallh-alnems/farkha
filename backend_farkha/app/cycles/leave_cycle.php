@@ -35,7 +35,7 @@ try {
         exit;
     }
 
-    $stmt = $con->prepare(Queries::checkUserAccessQuery());
+    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
         ':user_id' => $userId
@@ -91,9 +91,6 @@ try {
     error_log($errorMsg);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Server error',
-        'debug_error' => $e->getMessage(),
-        'debug_file' => $e->getFile(),
-        'debug_line' => $e->getLine()
+        'message' => 'Server error'
     ]);
 }

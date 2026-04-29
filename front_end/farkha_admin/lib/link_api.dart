@@ -29,5 +29,5 @@ Map<String, String> getMyHeaders() {
   String securityKey = dotenv.get("SECURITY_KEY");
   String basicAuth =
       'Basic ${base64Encode(utf8.encode('$securityUser:$securityKey'))}';
-  return {'authorization': basicAuth};
+  return {'authorization': basicAuth, 'Content-Type': 'application/json'};
 }

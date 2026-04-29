@@ -108,7 +108,8 @@ try {
         $stmt->execute([
             ':user_id' => $userId,
             ':cycle_id' => $cycleId,
-            ':role' => 'owner'
+            ':role' => 'owner',
+            ':status' => 'accepted'
         ]);
 
         // تأكيد المعاملة

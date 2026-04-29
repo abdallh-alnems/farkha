@@ -5,7 +5,10 @@ class ApiValidator {
         if (is_array($input)) {
             return array_map([self::class, 'sanitizeInput'], $input);
         }
-        return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+        if (!is_string($input)) {
+            return $input;
+        }
+        return trim($input);
     }
 }
 
@@ -38,7 +41,3 @@ class ValidationHelper {
         return $type > 0 ? $type : null;
     }
 }
-
-?>
-
-

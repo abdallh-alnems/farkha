@@ -150,7 +150,7 @@ class NotificationService extends GetxService
   Future<void> syncToken() async {
     Future<void> sendToServer(String fToken, String dToken) async {
       try {
-        final headers = getMyHeaders();
+        final headers = await getMyHeadersWithAppCheck();
         headers['Content-Type'] = 'application/json';
         await http.post(
           Uri.parse(Api.updateFcmToken),

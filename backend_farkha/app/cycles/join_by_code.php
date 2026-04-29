@@ -67,7 +67,8 @@ try {
     $stmt->execute([
         'user_id' => $user['id'],
         'cycle_id' => $invitation['cycle_id'],
-        'role' => 'member'
+        'role' => 'member',
+        'status' => 'accepted'
     ]);
 
     // 6. جلب اسم الدورة للعرض
@@ -85,6 +86,7 @@ try {
     http_response_code(401);
     echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
 } catch (Exception $e) {
+    error_log('join_by_code error: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
 }

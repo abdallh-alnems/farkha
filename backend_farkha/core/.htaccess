@@ -1,0 +1,16 @@
+# Block direct web access to core/ directory files
+# This does NOT affect PHP require_once/include (those bypass Apache)
+# Only blocks HTTP requests directly to files in this directory
+
+# Deny all direct access by default
+<IfModule mod_authz_core.c>
+    # Allow error.php (needed for ErrorDocument)
+    <Files "error.php">
+        Require all granted
+    </Files>
+
+    # Deny everything else from direct web access
+    <Files "*">
+        Require all denied
+    </Files>
+</IfModule>

@@ -32,11 +32,8 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # CORS Headers for API
 <IfModule mod_headers.c>
-    # Allow CORS for API endpoints
+    # CORS handled by PHP - only set security headers here
     <FilesMatch "\.(php)$">
-        Header always set Access-Control-Allow-Origin "*"
-        Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-        Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
         Header always set Access-Control-Max-Age "3600"
     </FilesMatch>
 </IfModule>
@@ -84,6 +81,14 @@ RewriteRule ^(.*)$ $1 [R=200,L]
 <Files ".env*">
     Require all denied
 </Files>
+
+<Files "firebase_credentials.json">
+    Require all denied
+</Files>
+
+<FilesMatch "\.(json)$">
+    Require all denied
+</FilesMatch>
 
 # Directory Browsing - Disable directory listing
 Options -Indexes
@@ -138,7 +143,7 @@ ErrorDocument 500 /core/error.php?code=500
     # Session security
     php_value session.cookie_httponly 1
     php_value session.use_strict_mode 1
-    php_value session.cookie_secure 0
+    php_value session.cookie_secure 1
     
     # Additional security
     php_value expose_php Off

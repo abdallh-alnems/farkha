@@ -20,8 +20,8 @@ if (!$token || !$search_term) {
     exit;
 }
 
-// Ignore very short queries to save resources
-if (strlen($search_term) < 2) {
+// Require at least 8 digits to prevent enumeration
+if (strlen($search_term) < 8) {
     echo json_encode(['status' => 'success', 'data' => []]);
     exit;
 }
@@ -49,6 +49,7 @@ try {
     http_response_code(401);
     echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
 } catch (Exception $e) {
+    error_log('search_users error: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
 }
