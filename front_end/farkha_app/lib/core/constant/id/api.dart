@@ -31,6 +31,10 @@ class Api {
   static final String _appReviews = '$_serverName/app/app_reviews';
   static String upsertAppReview = '$_appReviews/upsert_review.php';
 
+  // ============================ cycle feedbacks =============================
+  static final String _cycleFeedbacks = '$_serverName/app/cycle_feedbacks';
+  static String submitCycleFeedback = '$_cycleFeedbacks/submit_feedback.php';
+
   // ================================ articles =================================
   static String articleDetail = '$_articles/article_detail.php';
   static String articlesList = '$_articles/articles_list.php';

@@ -8,6 +8,7 @@ include_once __DIR__ . "/suggestion_queries.php";
 include_once __DIR__ . "/user_queries.php";
 include_once __DIR__ . "/cycle_queries.php";
 include_once __DIR__ . "/app_review_queries.php";
+include_once __DIR__ . "/cycle_feedback_queries.php";
 
 final class Queries {
     public static function getFeasibilityStudyPrices(): string {
@@ -331,6 +332,11 @@ final class Queries {
     // App Review queries
     public static function insertAppReviewQuery(): string {
         return AppReviewQueries::insert();
+    }
+
+    // Cycle Feedback queries
+    public static function insertCycleFeedbackQuery(): string {
+        return CycleFeedbackQueries::insert();
     }
 }
 

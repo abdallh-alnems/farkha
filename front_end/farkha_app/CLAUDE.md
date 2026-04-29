@@ -70,6 +70,8 @@ flutter clean && flutter pub get
 - Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x for backend + GetX 4.7.2 · Firebase (Auth/Analytics/Crashlytics/Remote Config) · `http` via `core/class/crud.dart` · `flutter_screenutil` · `flutter_dotenv` · `pin_code_fields` · `flutter_svg` · `get_storage: ^2.1.1` · `package_info_plus`
 - `flutter_test` (SDK) · `mocktail ^1.0.x` (dev dep) · `integration_test` (SDK, dev dep)
 - MySQL `app_reviews` table · `get_storage` for review prompt local state
+- Dart 3.7.2+ / Flutter SDK (channel stable) · PHP 8.x على MAMP · MySQL 5.7+/MariaDB (المزوَّد مع MAMP) + GetX 4.7.2 · `get_storage: ^2.1.1` (موجود مسبقاً) · Firebase (Core/Auth/Analytics/Crashlytics/Remote Config) · `http` عبر `core/class/crud.dart` · `flutter_screenutil` · `flutter_dotenv` · `package_info_plus: ^9.0.0` (موجود مسبقاً — لقراءة `app_version`) · `dart:io Platform` (لـ `platform`) (004-cycle-rating)
+- MySQL جدول جديد `cycle_feedbacks` على نفس قاعدة بيانات MAMP · `get_storage` لمفتاحين جديدين (`cycle_review_shown_at`, `cycle_review_submitted`) بجانب `first_launch_at` المشترك · لا Firebase Firestore ولا Realtime DB · **لا Firebase Analytics events** لهذه الميزة (قرار Clarification 2026-04-24) (004-cycle-rating)
 
 ## Recent Changes
 - 001-testing-setup: Added test infrastructure — mocktail, test helpers, controller DI refactor, 52 tests

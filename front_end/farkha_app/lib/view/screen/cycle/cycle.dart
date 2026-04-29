@@ -11,6 +11,7 @@ import '../../../core/constant/theme/colors.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
+import '../../../logic/controller/cycle_feedback_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
 import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 import '../../../logic/controller/weather_controller.dart';
@@ -112,7 +113,22 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
       if (mounted) {
         _initializeCycleData();
       }
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) _triggerCycleFeedback();
+      });
     });
+  }
+
+  void _triggerCycleFeedback() {
+    if (!mounted) return;
+    if (!Get.isRegistered<CycleFeedbackController>()) return;
+    try {
+      final ctrl = Get.find<CycleFeedbackController>();
+      ctrl.recordCycleOpen();
+      ctrl.maybeShowDialog();
+    } catch (e) {
+      debugPrint('CycleFeedback trigger error: $e');
+    }
   }
 
   void _initializeCycleData() {
