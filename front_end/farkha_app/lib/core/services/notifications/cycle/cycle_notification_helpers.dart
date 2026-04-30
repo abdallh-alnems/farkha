@@ -113,6 +113,7 @@ mixin CycleNotificationHelpers {
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
+        sound: 'notification_sound.caf',
       );
 
       final details = NotificationDetails(

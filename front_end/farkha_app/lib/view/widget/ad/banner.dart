@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -37,7 +38,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // لا تعرض شيء إذا الإعلان لم يُحمّل
+    if (defaultTargetPlatform != TargetPlatform.android) return const SizedBox.shrink();
     if (!_isAdLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
@@ -50,7 +51,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   }
 
   Future<void> _loadAdaptiveAd() async {
-    if (!mounted) return;
+    if (!mounted || defaultTargetPlatform != TargetPlatform.android) return;
 
     // Get adaptive banner size based on screen width
     final int adWidth = MediaQuery.of(context).size.width.truncate();

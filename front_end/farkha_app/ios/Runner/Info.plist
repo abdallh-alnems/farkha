@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Farkha App</string>
+	<string>فرخة</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,10 +22,19 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>ni.nims.frkha.farkha</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>farkha</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
@@ -57,12 +66,8 @@
 	</dict>
 	<key>NSContactsUsageDescription</key>
 	<string>يحتاج التطبيق لصلاحية الوصول لجهات الاتصال لاختيار رقم هاتف لإضافته كعضو في الدورة</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We need your location to show relevant data.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We need your location to show relevant data.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to show relevant data.</string>
+	<string>نحتاج موقعك لعرض البيانات المرتبطة بمزرعتك (الطقس، الأسعار المحلية)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

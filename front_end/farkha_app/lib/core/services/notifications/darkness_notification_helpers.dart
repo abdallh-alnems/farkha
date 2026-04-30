@@ -77,6 +77,9 @@ mixin DarknessNotificationHelpers {
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
+        sound: 'notification_sound.caf',
+        interruptionLevel: InterruptionLevel.timeSensitive,
+        categoryIdentifier: 'darkness_alarm',
       );
 
       final details = NotificationDetails(

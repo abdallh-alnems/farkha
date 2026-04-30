@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../core/constant/id/ad_id.dart';
@@ -18,6 +18,7 @@ class InterstitialAdService {
 
   /// تحميل الإعلان مسبقاً (استدعه عند بدء التطبيق أو بعد الإغلاق)
   void load() {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
     InterstitialAd.load(
       adUnitId: AdManager.idInterstitial,
       request: const AdRequest(),
@@ -40,6 +41,10 @@ class InterstitialAdService {
 
   /// اعرض الإعلان إذا كان جاهزاً، ثم نفّذ [onComplete]
   void show({VoidCallback? onComplete}) {
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      onComplete?.call();
+      return;
+    }
     _openCount++;
 
     // تحقق من عدد المرات

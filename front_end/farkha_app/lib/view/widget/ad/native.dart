@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -32,12 +33,11 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // لا تعرض شيء إذا الإعلان لم يُحمّل
+    if (defaultTargetPlatform != TargetPlatform.android) return const SizedBox.shrink();
     if (!_isAdLoaded || _nativeAd == null) {
       return const SizedBox.shrink();
     }
 
-    // Responsive height based on screen width (for medium template)
     final double screenWidth = MediaQuery.of(context).size.width;
     final double adHeight = (screenWidth * 0.75).clamp(280.0, 350.0);
 
@@ -49,7 +49,7 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   }
 
   void _loadAd() {
-    if (!mounted) return;
+    if (!mounted || defaultTargetPlatform != TargetPlatform.android) return;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

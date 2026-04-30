@@ -14,6 +14,7 @@ import '../../../core/services/notification_service.dart';
 import '../../../core/services/permission.dart';
 import '../../../core/shared/dialogs/app_alert_dialog.dart';
 import '../../../view/widget/cycle/darkness_settings_sheet.dart';
+import '../../../view/widget/cycle/time_sensitive_hint_sheet.dart';
 import 'darkness_schedule_controller.dart';
 
 class DarknessAlarmHelper {
@@ -41,6 +42,8 @@ class DarknessAlarmHelper {
 
     await _scheduleTransitionNotifications();
     await _schedulePhaseNotifications();
+
+    unawaited(TimeSensitiveHintSheet.showIfNeeded());
   }
 
   Future<void> _schedulePhaseNotifications() async {

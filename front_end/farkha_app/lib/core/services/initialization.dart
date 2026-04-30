@@ -65,10 +65,12 @@ class MyServices extends GetxService {
     // Initialize deep link service
     await Get.putAsync(() => DeepLinkService().init());
 
-    // Initialize Google Mobile Ads SDK
-    MobileAds.instance.initialize().then((_) {
-      InterstitialAdService.instance.load();
-    });
+    // Initialize Google Mobile Ads SDK (Android only — ads disabled on iOS)
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      MobileAds.instance.initialize().then((_) {
+        InterstitialAdService.instance.load();
+      });
+    }
 
     return this;
   }

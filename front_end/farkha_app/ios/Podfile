@@ -39,5 +39,16 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    target.build_configurations.each do |config|
+      definitions = ['$(inherited)', 'PERMISSION_LOCATION_WHENINUSE=1', 'PERMISSION_NOTIFICATIONS=1', 'PERMISSION_CONTACTS=1']
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+      existing = config.build_settings['GCC_PREPROCESSOR_DEFINITIONS']
+      definitions.each do |flag|
+        unless existing.include?(flag)
+          existing << flag
+        end
+      end
+    end
   end
 end

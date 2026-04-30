@@ -39,6 +39,7 @@ class StorageKeys {
   static const String darknessAlarmShownPrefix = 'darkness_alarm_shown_';
   static const String darknessPhasesDonePrefix = 'darkness_phases_done_';
   static const String darknessSuggestionShown = 'darkness_suggestion_shown';
+  static const String timeSensitiveHintShown = 'time_sensitive_hint_shown';
 
   // ── Location ──
   static const String locationEnabled = 'location_enabled';

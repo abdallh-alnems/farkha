@@ -155,7 +155,10 @@ Before coding, commit to a clear aesthetic: refined minimal, warm organic, bold 
 ## Active Technologies
 - Dart 3.7.2+ / Flutter SDK stable
 - `flutter_test` (SDK) · `mocktail ^1.0.x` (dev dep) · `integration_test` (SDK, dev dep)
+- **iOS 15.0+** supported (iPhone only) — AdMob disabled on iOS via `Platform.isAndroid` guards
+- Bundle ID: `ni.nims.frkha` (unified across Android/iOS)
 
 ## Recent Changes
+- 005-ios-platform-parity: iOS support — Bundle ID unified, Firebase iOS app, Push Notifications with Time-Sensitive darkness alarms, Universal Links + custom scheme `farkha://`, privacy manifest, AdMob disabled on iOS, Arabic usage descriptions, notification sound `.caf`, TimeSensitiveHintSheet
 - 003-app-reviews: Added in-app review feature — AppReviewScreen (drawer entry), ReviewPromptController (auto-prompt after 30d + 10 unique days), offline retry, PHP backend endpoints, 29 tests
 - 001-testing-setup: Added test infrastructure — mocktail, integration_test SDK, test helpers, controller DI refactor, 52 tests (unit + widget + integration)
