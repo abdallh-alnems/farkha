@@ -1,12 +1,8 @@
-import '../../../../core/class/crud.dart';
 import '../../../../core/constant/id/api.dart';
+import '../base_remote_data.dart';
 
-class TypesData {
-  Crud crud;
-  TypesData(this.crud);
+class TypesData extends BaseRemoteData {
+  TypesData(super.crud);
 
-  Future<Object> getTypes() async {
-    final response = await crud.postData(Api.types, {});
-    return response.fold((l) => l, (r) => r);
-  }
+  Future<dynamic> getTypes() => request(url: Api.types);
 }

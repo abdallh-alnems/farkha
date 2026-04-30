@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/delete_account_data.dart';
@@ -35,7 +36,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
       if (attempt > 5) {
         // إذا فشلت جميع المحاولات، استخدم Get.snackbar كبديل
         Get.snackbar(
-          isError ? 'خطأ' : 'نجاح',
+          isError ? AppStrings.error : 'نجاح',
           message,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor:
@@ -145,7 +146,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('إلغاء'),
+                child: const Text(AppStrings.cancel),
               ),
               TextButton(
                 onPressed:
@@ -222,17 +223,17 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
 
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
-        title: const Text('تسجيل الخروج'),
+        title: const Text(AppStrings.logout),
         content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text('إلغاء'),
+            child: const Text(AppStrings.cancel),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('تسجيل الخروج'),
+            child: const Text(AppStrings.logout),
           ),
         ],
       ),
@@ -259,12 +260,12 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text('إلغاء'),
+            child: const Text(AppStrings.cancel),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -449,7 +450,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
                 ListTile(
                   onTap: _handleSignOut,
                   title: Text(
-                    'تسجيل الخروج',
+                    AppStrings.logout,
                     style: TextStyle(fontSize: 15.sp),
                   ),
                   shape: const Border(),

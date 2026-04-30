@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/handling_data.dart';
 import '../../../core/constant/routes/route.dart';
-import '../../../core/shared/action_button.dart';
+import '../../../core/shared/buttons/app_button.dart';
 import '../../../logic/controller/price_controller/main_types_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
@@ -27,7 +27,7 @@ class MainTypes extends StatelessWidget {
                 return HandlingDataView(
                   statusRequest: controller.statusRequest,
                   widget: ListView.builder(
-                    itemCount: controller.mainTypesList.length + 1,
+                    itemCount: controller.items.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return Padding(
@@ -35,9 +35,9 @@ class MainTypes extends StatelessWidget {
                           child: const AdNativeWidget(),
                         );
                       } else {
-                        final mainTypes = controller.mainTypesList[index - 1];
-                        return ActionButton(
-                          onTap:
+                        final mainTypes = controller.items[index - 1];
+                        return AppButton(
+                          onPressed:
                               () => Get.toNamed<void>(
                                 AppRoute.pricesByType,
                                 arguments: {
@@ -45,7 +45,7 @@ class MainTypes extends StatelessWidget {
                                   'main_name': (mainTypes['name'] ?? '').toString(),
                                 },
                               ),
-                          text: (mainTypes['name'] ?? '').toString(),
+                          label: (mainTypes['name'] ?? '').toString(),
                         );
                       }
                     },

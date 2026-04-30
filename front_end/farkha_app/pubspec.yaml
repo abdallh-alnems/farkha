@@ -47,7 +47,6 @@ dependencies:
   # Network & API
   http: ^1.3.0
   flutter_dotenv: ^6.0.0
-  connectivity_plus: ^7.0.0
 
   # Location Services
   geolocator: ^14.0.1
@@ -68,7 +67,6 @@ dependencies:
   package_info_plus: ^9.0.0
   firebase_remote_config: ^6.1.3
   font_awesome_flutter: ^10.12.0
-  percent_indicator: ^4.2.5
   fl_chart: ^0.69.0
   app_links: ^7.0.0
   flutter_contacts: ^1.1.9+2

@@ -61,9 +61,9 @@ class InternetDataLoaderService {
     final controller = Get.find<MainTypesController>();
     if (_shouldReloadData(
       controller.statusRequest,
-      controller.mainTypesList.isEmpty,
+      controller.items.isEmpty,
     )) {
-      await controller.getDataMainTypes();
+      await controller.load();
     }
   }
 
@@ -73,7 +73,7 @@ class InternetDataLoaderService {
     final controller = Get.find<PricesByTypeController>();
     if (_shouldReloadData(
       controller.statusRequest,
-      controller.pricesByTypeList.isEmpty,
+      controller.items.isEmpty,
     )) {
       if (Get.arguments != null && Get.arguments['main_id'] != null) {
         final String mainId = Get.arguments['main_id'].toString();
@@ -109,9 +109,9 @@ class InternetDataLoaderService {
     final controller = Get.find<ArticlesListController>();
     if (_shouldReloadData(
       controller.statusRequest,
-      controller.articlesList.isEmpty,
+      controller.items.isEmpty,
     )) {
-      await controller.getArticles();
+      await controller.load();
     }
   }
 

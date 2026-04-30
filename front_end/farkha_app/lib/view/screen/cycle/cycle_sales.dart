@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_sales_controller.dart';
@@ -473,7 +474,7 @@ class CycleSalesScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.r)),
                         ),
                         child: Text(
-                          'إلغاء',
+                          AppStrings.cancel,
                           style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontWeight: FontWeight.bold, fontSize: 16.sp),
                         ),
                       ),
@@ -567,7 +568,7 @@ class CycleSalesScreen extends StatelessWidget {
 
   void _showDeleteConfirmation(BuildContext context, CycleSalesController controller, SalesItem sale) {
     Get.defaultDialog<void>(
-      title: 'تأكيد الحذف',
+      title: AppStrings.confirmDelete,
       titlePadding: EdgeInsets.only(top: 24.h, bottom: 10.h),
       contentPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
       middleText: 'هل أنت متأكد من حذف حركة البيع المحددة؟ لا يمكن التراجع عن هذا الإجراء.',
@@ -596,7 +597,7 @@ class CycleSalesScreen extends StatelessWidget {
           Get.back<void>(); // إغلاق الحوار
           controller.deleteSale(sale.id); // استدعاء دالة الحذف
         },
-        child: const Text('حذف', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        child: const Text(AppStrings.delete, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       cancel: TextButton(
         style: TextButton.styleFrom(
@@ -605,7 +606,7 @@ class CycleSalesScreen extends StatelessWidget {
         ),
         onPressed: () => Get.back<void>(),
         child: Text(
-          'إلغاء',
+          AppStrings.cancel,
           style: TextStyle(
             color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[400] : Colors.grey[600],
             fontWeight: FontWeight.bold,

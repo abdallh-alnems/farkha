@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../core/constant/strings/app_strings.dart';
 import '../../core/class/status_request.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
@@ -121,7 +122,7 @@ class CycleSalesController extends GetxController {
     final int? cycleId = int.tryParse(cycleIdRaw?.toString() ?? '');
     
     if (cycleId == null) {
-      _showSnackbar('خطأ', 'لم يتم العثور على معرف الدورة');
+      _showSnackbar(AppStrings.error, 'لم يتم العثور على معرف الدورة');
       return;
     }
 
@@ -133,7 +134,7 @@ class CycleSalesController extends GetxController {
     final user = _auth.currentUser;
     if (user == null) {
       statusRequest.value = StatusRequest.failure;
-      _showSnackbar('خطأ', 'يجب تسجيل الدخول أولاً');
+      _showSnackbar(AppStrings.error, 'يجب تسجيل الدخول أولاً');
       update();
       return;
     }
@@ -141,7 +142,7 @@ class CycleSalesController extends GetxController {
     final token = await user.getIdToken();
     if (token == null) {
       statusRequest.value = StatusRequest.failure;
-      _showSnackbar('خطأ', 'فشل الحصول على رمز الدخول');
+      _showSnackbar(AppStrings.error, 'فشل الحصول على رمز الدخول');
       update();
       return;
     }
@@ -158,7 +159,7 @@ class CycleSalesController extends GetxController {
     response.fold(
       (l) {
         statusRequest.value = l;
-        _showSnackbar('خطأ', 'فشل تسجيل عملية البيع: ${l.toString()}');
+        _showSnackbar(AppStrings.error, 'فشل تسجيل عملية البيع: ${l.toString()}');
       },
       (r) {
         if (r['status'] == 'success') {
@@ -199,7 +200,7 @@ class CycleSalesController extends GetxController {
         } else {
           statusRequest.value = StatusRequest.failure;
           Get.back<void>(); // إغلاق الدايالوج قبل عرض الـ Snackbar
-          _showSnackbar('خطأ', r['message']?.toString() ?? 'فشل تسجيل عملية البيع');
+          _showSnackbar(AppStrings.error, r['message']?.toString() ?? 'فشل تسجيل عملية البيع');
         }
       }
     );
@@ -211,13 +212,13 @@ class CycleSalesController extends GetxController {
     final int? cycleId = int.tryParse(currentCycle['cycle_id']?.toString() ?? currentCycle['id']?.toString() ?? '');
     
     if (cycleId == null) {
-      _showSnackbar('خطأ', 'بيانات الدورة غير مكتملة');
+      _showSnackbar(AppStrings.error, 'بيانات الدورة غير مكتملة');
       return;
     }
 
     final token = await _auth.currentUser?.getIdToken();
     if (token == null) {
-      _showSnackbar('خطأ', 'الرجاء تسجيل الدخول أولاً');
+      _showSnackbar(AppStrings.error, 'الرجاء تسجيل الدخول أولاً');
       return;
     }
 
@@ -235,7 +236,7 @@ class CycleSalesController extends GetxController {
     response.fold(
       (l) {
         statusRequest.value = l;
-        _showSnackbar('خطأ', 'فشل حذف البيع: ${l.toString()}');
+        _showSnackbar(AppStrings.error, 'فشل حذف البيع: ${l.toString()}');
       },
       (r) {
         if (r['status'] == 'success') {
@@ -258,7 +259,7 @@ class CycleSalesController extends GetxController {
           _showSnackbar('نجاح', 'تم الحذف بنجاح', isSuccess: true);
         } else {
           statusRequest.value = StatusRequest.failure;
-          _showSnackbar('خطأ', r['message']?.toString() ?? 'فشل مجهول');
+          _showSnackbar(AppStrings.error, r['message']?.toString() ?? 'فشل مجهول');
         }
       },
     );

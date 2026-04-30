@@ -58,7 +58,7 @@ class TablePricesByType extends StatelessWidget {
               3: FlexColumnWidth(),
             },
             children:
-                controller.pricesByTypeList
+                controller.items
                     .map((price) => _buildTableRow(price))
                     .toList(),
           ),

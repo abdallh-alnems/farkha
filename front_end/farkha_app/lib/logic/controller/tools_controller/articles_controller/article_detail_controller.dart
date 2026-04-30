@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
 import '../../../../core/constant/theme/colors.dart';
-import '../../../../core/functions/handing_data_controller.dart';
+import '../../../../core/functions/handling_data_controller.dart';
 import '../../../../data/data_source/remote/tools/articles_data.dart';
 import '../../../../data/data_source/static/chicken_data.dart';
 

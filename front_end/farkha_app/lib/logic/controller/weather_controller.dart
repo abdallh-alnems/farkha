@@ -8,7 +8,7 @@ import 'package:get_storage/get_storage.dart';
 
 import '../../core/class/status_request.dart';
 import '../../core/constant/storage_keys.dart';
-import '../../core/functions/handing_data_controller.dart';
+import '../../core/functions/handling_data_controller.dart';
 import '../../core/services/permission.dart';
 import '../../core/services/weather.dart';
 

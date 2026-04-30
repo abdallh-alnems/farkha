@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
-import '../../../core/functions/handing_data_controller.dart';
+import '../../../core/functions/handling_data_controller.dart';
 import '../../../data/data_source/remote/tools/feasibility_study_data.dart';
 import '../../../data/model/feasibility_model.dart';
 

@@ -40,7 +40,7 @@ class ArticlesList extends StatelessWidget {
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        final article = controller.articlesList[index];
+                        final article = controller.items[index];
                         return ArticleCard(
                           title: (article['title'] ?? '').toString(),
                           onTap: () => Get.toNamed<void>(
@@ -52,7 +52,7 @@ class ArticlesList extends StatelessWidget {
                           ),
                         );
                       },
-                      childCount: controller.articlesList.length,
+                      childCount: controller.items.length,
                     ),
                   ),
                 ),

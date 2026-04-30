@@ -1,35 +1,17 @@
 import 'package:get/get.dart';
 
-import '../../../core/class/status_request.dart';
-import '../../../core/functions/handing_data_controller.dart';
 import '../../../data/data_source/remote/prices_data/main_types_data.dart';
+import '../base/base_list_controller.dart';
 
-class MainTypesController extends GetxController {
-  late StatusRequest statusRequest;
+class MainTypesController extends BaseListController {
   MainDataData mainDataData = MainDataData(Get.find());
-  List<Map<String, dynamic>> mainTypesList = [];
 
-  Future<void> getDataMainTypes() async {
-    statusRequest = StatusRequest.loading;
-    update();
-    final response = await mainDataData.getData();
-    statusRequest = handlingData(response);
-    if (statusRequest == StatusRequest.success) {
-      final mapResponse = response as Map<String, dynamic>;
-      if (mapResponse['status'] == 'success') {
-        final data = mapResponse['data'] as List<dynamic>;
-        mainTypesList = data.map((item) => item as Map<String, dynamic>).toList();
-      } else {
-        statusRequest = StatusRequest.failure;
-      }
-    }
-
-    update();
-  }
+  @override
+  Future<dynamic> fetchData() => mainDataData.getData();
 
   @override
   void onInit() {
-    getDataMainTypes();
+    load();
     super.onInit();
   }
 }

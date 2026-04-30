@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:farkha_app/logic/controller/cycle_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,9 +13,8 @@ import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../core/services/permission.dart';
 import '../../../data/data_source/static/chicken_data.dart';
+import '../../../core/shared/dialogs/app_alert_dialog.dart';
 import '../../../view/widget/cycle/darkness_settings_sheet.dart';
-import '../../../view/widget/dialog/darkness_permission_dialog.dart';
-import '../../../view/widget/dialog/darkness_suggestion_dialog.dart';
 
 class DarknessScheduleSegment {
   const DarknessScheduleSegment({
@@ -1027,12 +1027,18 @@ class DarknessScheduleController extends GetxController {
 
     // Wait for dialog result: true = enabled/requested, false = later/dismissed
     final bool? result = await Get.dialog<bool>(
-      DarknessPermissionDialog(
-        onEnable: () async {
-          // Close dialog and return true to indicate intent to enable
+      AppAlertDialog(
+        icon: Icons.alarm_on_rounded,
+        iconColor: Colors.deepPurple,
+        title: 'تنبيهات الإظلام',
+        description:
+            'لضمان ظهور منبه الإظلام في الوقت المحدد، يرجى منح صلاحية "الظهور فوق التطبيقات".',
+        primaryActionLabel: 'منح الصلاحيات',
+        primaryAction: () async {
           if (Get.isDialogOpen ?? false) Get.back<bool>(result: true);
         },
-        onLater: () {
+        secondaryActionLabel: 'لاحقاً',
+        secondaryAction: () {
           if (Get.isDialogOpen ?? false) Get.back<bool>(result: false);
         },
       ),
@@ -1068,8 +1074,14 @@ class DarknessScheduleController extends GetxController {
     _storage.write(StorageKeys.darknessSuggestionShown, true);
 
     await Get.dialog<void>(
-      DarknessSuggestionDialog(
-        onSetTime: () async {
+      AppAlertDialog(
+        icon: Icons.lightbulb_outline_rounded,
+        iconColor: Colors.amber,
+        title: 'تنبيه الإظلام',
+        description:
+            'بدأ برنامج الإظلام اليوم! يمكنك ضبط منبه لتذكيرك بمواعيد الإضاءة والإظلام لضمان راحة الطيور.',
+        primaryActionLabel: 'ضبط المنبه',
+        primaryAction: () async {
           if (Get.isDialogOpen ?? false) Get.back<void>();
 
           final bool granted = await requirePermissions();
@@ -1080,7 +1092,8 @@ class DarknessScheduleController extends GetxController {
             );
           }
         },
-        onLater: () {
+        secondaryActionLabel: 'لاحقاً',
+        secondaryAction: () {
           if (Get.isDialogOpen ?? false) Get.back<void>();
         },
       ),

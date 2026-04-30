@@ -1,22 +1,18 @@
-import '../../../../core/class/crud.dart';
 import '../../../../core/constant/id/api.dart';
+import '../base_remote_data.dart';
 
-class PriceHistoryData {
-  PriceHistoryData(this.crud);
+class PriceHistoryData extends BaseRemoteData {
+  PriceHistoryData(super.crud);
 
-  final Crud crud;
-
-  Future<Object> getPriceHistory({
+  Future<dynamic> getPriceHistory({
     required int typeId,
     int limit = 30,
     String? beforeDate,
-  }) async {
+  }) {
     final buffer = StringBuffer('${Api.priceHistory}?type_id=$typeId&limit=$limit');
     if (beforeDate != null && beforeDate.isNotEmpty) {
       buffer.write('&before_date=${Uri.encodeComponent(beforeDate)}');
     }
-    final url = buffer.toString();
-    final response = await crud.postData(url, {});
-    return response.fold((l) => l, (r) => r);
+    return request(url: buffer.toString());
   }
 }

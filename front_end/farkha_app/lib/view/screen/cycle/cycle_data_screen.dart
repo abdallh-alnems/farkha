@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../data/data_source/static/vaccination_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
@@ -2982,7 +2983,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -2995,7 +2996,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -3015,7 +3016,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -3032,7 +3033,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -3045,7 +3046,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -3074,7 +3075,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -3091,7 +3092,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -3104,7 +3105,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -3122,7 +3123,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -3139,7 +3140,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -3152,7 +3153,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -3172,7 +3173,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -3237,7 +3238,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -3932,7 +3933,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -3945,7 +3946,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -3965,7 +3966,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -3987,7 +3988,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -4000,7 +4001,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -4021,7 +4022,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),

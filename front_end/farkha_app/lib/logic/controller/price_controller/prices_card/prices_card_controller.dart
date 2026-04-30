@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
 import '../../../../core/constant/storage_keys.dart';
-import '../../../../core/functions/handing_data_controller.dart';
+import '../../../../core/functions/handling_data_controller.dart';
 import '../../../../core/services/initialization.dart';
 import '../../../../data/data_source/remote/prices_data/prices_card_data.dart';
 

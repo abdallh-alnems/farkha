@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/class/status_request.dart';
+import '../../core/constant/strings/app_strings.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
@@ -156,7 +157,6 @@ class CycleController extends GetxController {
 
   // Pagination Variables (للسجل فقط)
   int _currentHistoryPage = 1;
-  static const int _historyLimit = 5;
   final RxBool isLoadingMore = false.obs;
   final RxBool hasMoreData = true.obs;
   final RxString searchQuery = ''.obs;
@@ -1218,7 +1218,6 @@ class CycleController extends GetxController {
     final averageWeightEntries = <Map<String, dynamic>>[];
     final medicationEntries = <Map<String, dynamic>>[];
     final feedConsumptionEntries = <Map<String, dynamic>>[];
-    final waterConsumptionEntries = <Map<String, dynamic>>[];
     final customDataEntries = <Map<String, dynamic>>[];
 
     // معالجة cycle_data إذا كانت موجودة
@@ -1778,48 +1777,110 @@ class CycleController extends GetxController {
       final cycleId = currentCycle['cycle_id'];
       final cycleName = currentCycle['name']?.toString();
 
-      // محاولة حذف الدورة من API إذا كان cycle_id موجوداً
-      bool apiDeleteFailed = false;
-      if (cycleId != null) {
-        try {
-          final isLoggedIn =
-              myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
-          if (isLoggedIn) {
-            final user = _auth.currentUser;
-            if (user != null) {
-              final token = await user.getIdToken();
-              if (token != null && token.isNotEmpty) {
-                final cycleIdInt =
-                    cycleId is int
-                        ? cycleId
-                        : int.tryParse(cycleId.toString()) ?? 0;
-                if (cycleIdInt > 0) {
-                  await _cycleData.deleteCycle(
-                    token: token,
-                    cycleId: cycleIdInt,
-                  );
-                }
-              }
+      final cycleIdInt =
+          cycleId is int
+              ? cycleId
+              : (cycleId != null ? int.tryParse(cycleId.toString()) : null);
+      final hasServerCycle = cycleIdInt != null && cycleIdInt > 0;
+
+      debugPrint(
+        '[deleteCycle] cycleName=$cycleName, cycleIdRaw=$cycleId, '
+        'cycleIdInt=$cycleIdInt, hasServerCycle=$hasServerCycle',
+      );
+
+      // إذا كانت الدورة موجودة على السيرفر، يجب أن ينجح API قبل الحذف المحلي
+      if (hasServerCycle) {
+        final isLoggedIn =
+            myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
+        debugPrint('[deleteCycle] isLoggedIn=$isLoggedIn');
+        if (!isLoggedIn) {
+          debugPrint('[deleteCycle] FAIL: not logged in');
+          cycleDeleteStatus.value = StatusRequest.failure;
+          Future.delayed(const Duration(milliseconds: 2000), () {
+            if (cycleDeleteStatus.value == StatusRequest.failure) {
+              cycleDeleteStatus.value = StatusRequest.none;
             }
-          }
-        } catch (e) {
-          // في حالة فشل API، استمر في الحذف المحلي
-          apiDeleteFailed = true;
+          });
+          return false;
+        }
+
+        final user = _auth.currentUser;
+        debugPrint('[deleteCycle] firebaseUser=${user?.uid}');
+        if (user == null) {
+          debugPrint('[deleteCycle] FAIL: no firebase user');
+          cycleDeleteStatus.value = StatusRequest.failure;
+          Future.delayed(const Duration(milliseconds: 2000), () {
+            if (cycleDeleteStatus.value == StatusRequest.failure) {
+              cycleDeleteStatus.value = StatusRequest.none;
+            }
+          });
+          return false;
+        }
+
+        final token = await user.getIdToken();
+        debugPrint('[deleteCycle] tokenEmpty=${token == null || token.isEmpty}');
+        if (token == null || token.isEmpty) {
+          debugPrint('[deleteCycle] FAIL: empty token');
+          cycleDeleteStatus.value = StatusRequest.failure;
+          Future.delayed(const Duration(milliseconds: 2000), () {
+            if (cycleDeleteStatus.value == StatusRequest.failure) {
+              cycleDeleteStatus.value = StatusRequest.none;
+            }
+          });
+          return false;
+        }
+
+        debugPrint('[deleteCycle] calling API with cycleId=$cycleIdInt');
+        final result = await _cycleData.deleteCycle(
+          token: token,
+          cycleId: cycleIdInt,
+        );
+
+        StatusRequest? failureStatus;
+        result.fold(
+          (failure) {
+            debugPrint('[deleteCycle] API LEFT failure=$failure');
+            failureStatus = failure;
+          },
+          (response) {
+            debugPrint('[deleteCycle] API RIGHT response=$response');
+            if (response['status'] != 'success') {
+              failureStatus = StatusRequest.serverFailure;
+            }
+          },
+        );
+
+        if (failureStatus != null) {
+          debugPrint('[deleteCycle] FAIL: API failed -> $failureStatus');
+          cycleDeleteStatus.value = failureStatus!;
+          Future.delayed(const Duration(milliseconds: 2000), () {
+            if (cycleDeleteStatus.value == failureStatus) {
+              cycleDeleteStatus.value = StatusRequest.none;
+            }
+          });
+          return false;
+        }
+        debugPrint('[deleteCycle] API success, proceeding to local delete');
+      }
+
+      // الحذف المحلي يحدث فقط بعد نجاح API (أو للدورات المحلية فقط)
+      if (cycleName != null && cycleName.isNotEmpty) {
+        _deleteCycleRelatedData(cycleName);
+
+        final deletedCycles =
+            myServices.getStorage.read<List<dynamic>>(StorageKeys.deletedCycles) ??
+            <dynamic>[];
+        if (!deletedCycles.contains(cycleName)) {
+          deletedCycles.add(cycleName);
+          unawaited(
+            myServices.getStorage.write(StorageKeys.deletedCycles, deletedCycles),
+          );
         }
       }
 
-      // حذف جميع البيانات المرتبطة بالدورة من GetStorage
-      if (cycleName != null && cycleName.isNotEmpty) {
-        _deleteCycleRelatedData(cycleName);
-      }
-
-      // Cancel notifications
       await NotificationService.instance.cancelCycleNotifications();
 
-      // حذف الدورة محلياً
       cycles.removeAt(idx);
-
-      // حفظ محلياً
       await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
       if (cycles.isNotEmpty) {
@@ -1828,22 +1889,12 @@ class CycleController extends GetxController {
         currentCycle.clear();
       }
 
-      // تحديد حالة الحذف بناءً على نجاح/فشل API
-      if (apiDeleteFailed) {
-        cycleDeleteStatus.value = StatusRequest.serverFailure;
-        Future.delayed(const Duration(milliseconds: 2000), () {
-          if (cycleDeleteStatus.value == StatusRequest.serverFailure) {
-            cycleDeleteStatus.value = StatusRequest.none;
-          }
-        });
-      } else {
-        cycleDeleteStatus.value = StatusRequest.success;
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (cycleDeleteStatus.value == StatusRequest.success) {
-            cycleDeleteStatus.value = StatusRequest.none;
-          }
-        });
-      }
+      cycleDeleteStatus.value = StatusRequest.success;
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (cycleDeleteStatus.value == StatusRequest.success) {
+          cycleDeleteStatus.value = StatusRequest.none;
+        }
+      });
 
       return cycles.isEmpty;
     } catch (e) {
@@ -2761,8 +2812,8 @@ class CycleController extends GetxController {
       Get.defaultDialog<void>(
         title: 'حذف عضو',
         middleText: 'هل أنت متأكد من حذف هذا العضو من الدورة؟',
-        textConfirm: 'حذف',
-        textCancel: 'إلغاء',
+        textConfirm: AppStrings.delete,
+        textCancel: AppStrings.cancel,
         confirmTextColor: Colors.white,
         buttonColor: Colors.red,
         onConfirm: () async {
@@ -2785,7 +2836,7 @@ class CycleController extends GetxController {
             (failure) {
               cycleLeaveStatus.value = StatusRequest.serverFailure;
               update();
-              Get.snackbar('خطأ', 'فشل الاتصال بالسيرفر');
+              Get.snackbar(AppStrings.error, 'فشل الاتصال بالسيرفر');
             },
             (result) {
               if (result['status'] == 'success') {
@@ -2945,7 +2996,7 @@ class CycleController extends GetxController {
     try {
       final user = _auth.currentUser;
       if (user == null) {
-        Get.snackbar('خطأ', 'يجب تسجيل الدخول أولاً');
+        Get.snackbar(AppStrings.error, 'يجب تسجيل الدخول أولاً');
         return;
       }
       final token = await user.getIdToken();
@@ -2955,7 +3006,7 @@ class CycleController extends GetxController {
 
       response.fold(
         (failure) {
-          Get.snackbar('خطأ', 'فشل الاتصال بالسيرفر');
+          Get.snackbar(AppStrings.error, 'فشل الاتصال بالسيرفر');
         },
         (result) {
           if (result['status'] == 'success') {
@@ -2971,7 +3022,7 @@ class CycleController extends GetxController {
       );
     } catch (e) {
       if (Get.isDialogOpen ?? false) Get.back<void>();
-      Get.snackbar('خطأ', 'حدث خطأ: $e');
+      Get.snackbar(AppStrings.error, 'حدث خطأ: $e');
     }
   }
 

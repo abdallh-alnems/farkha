@@ -1,4 +1,4 @@
-import 'package:farkha_app/view/widget/home/card_cycle.dart';
+import 'package:farkha_app/view/widget/home/cycle_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

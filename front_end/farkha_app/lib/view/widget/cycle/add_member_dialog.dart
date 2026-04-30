@@ -5,6 +5,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
@@ -729,7 +730,7 @@ class _MemberCardState extends State<_MemberCard> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('إلغاء'),
+            child: const Text(AppStrings.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -773,7 +774,7 @@ class _MemberCardState extends State<_MemberCard> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('إلغاء'),
+            child: const Text(AppStrings.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -1644,7 +1645,7 @@ class _ContactPickerDialogState extends State<_ContactPickerDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('إلغاء'),
+          child: const Text(AppStrings.cancel),
         ),
       ],
     );

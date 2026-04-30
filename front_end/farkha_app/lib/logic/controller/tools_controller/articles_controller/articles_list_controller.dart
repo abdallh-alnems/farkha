@@ -3,35 +3,35 @@ import 'dart:math';
 import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
-import '../../../../core/functions/handing_data_controller.dart';
+import '../../../../core/functions/handling_data_controller.dart';
 import '../../../../data/data_source/remote/tools/articles_data.dart';
+import '../../base/base_list_controller.dart';
 
-class ArticlesListController extends GetxController {
-  late StatusRequest statusRequest;
+class ArticlesListController extends BaseListController {
   ArticlesData articlesData = ArticlesData(Get.find());
-  List<Map<String, dynamic>> articlesList = [];
 
   @override
-  void onInit() {
-    super.onInit();
-    getArticles();
-  }
+  Future<dynamic> fetchData() => articlesData.getArticlesList();
 
-  Future<void> getArticles() async {
+  @override
+  Future<void> load() async {
     statusRequest = StatusRequest.loading;
     update();
-    final response = await articlesData.getArticlesList();
+
+    final response = await fetchData();
     statusRequest = handlingData(response);
-    if (StatusRequest.success == statusRequest) {
+
+    if (statusRequest == StatusRequest.success) {
       final mapResponse = response as Map<String, dynamic>;
       if (mapResponse['status'] == 'success') {
         final articles =
             (mapResponse['data'] as List).cast<Map<String, dynamic>>();
-        articlesList = _shuffleArticles(articles);
+        items = _shuffleArticles(articles);
       } else {
         statusRequest = StatusRequest.failure;
       }
     }
+
     update();
   }
 
@@ -49,5 +49,11 @@ class ArticlesListController extends GetxController {
     }
 
     return shuffledList;
+  }
+
+  @override
+  void onInit() {
+    load();
+    super.onInit();
   }
 }

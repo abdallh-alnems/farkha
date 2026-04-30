@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/notification_service.dart';
@@ -53,7 +54,7 @@ class LoginController extends GetxController {
       if (attempt > 5) {
         // إذا فشلت جميع المحاولات، استخدم Get.snackbar كبديل
         Get.snackbar(
-          isError ? 'خطأ' : 'نجاح',
+          isError ? AppStrings.error : 'نجاح',
           message,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor:

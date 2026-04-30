@@ -1,14 +1,8 @@
-import '../../../../core/class/crud.dart';
 import '../../../../core/constant/id/api.dart';
+import '../base_remote_data.dart';
 
-class BroilerPriceData {
-  Crud crud;
-  BroilerPriceData(this.crud);
+class BroilerPriceData extends BaseRemoteData {
+  BroilerPriceData(super.crud);
 
-  Future<Object> getBroilerPrice() async {
-    final url = Api.broilerChicken;
-    final response = await crud.postData(url, {});
-    return response.fold((l) => l, (r) => r);
-  }
+  Future<dynamic> getBroilerPrice() => request(url: Api.broilerChicken);
 }
-

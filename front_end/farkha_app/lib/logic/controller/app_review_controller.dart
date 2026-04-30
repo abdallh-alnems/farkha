@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/class/status_request.dart';
 import '../../../data/data_source/remote/app_review_data.dart';
 import 'review_prompt_controller.dart';
@@ -84,9 +85,9 @@ class AppReviewController extends GetxController {
         (failure) {
           isSubmitting = false;
           if (failure == StatusRequest.offlineFailure) {
-            _showSnackbar('خطأ', 'تعذّر إرسال التقييم، تحقّق من الاتصال');
+            _showSnackbar(AppStrings.error, 'تعذّر إرسال التقييم، تحقّق من الاتصال');
           } else {
-            _showSnackbar('خطأ', 'حدث خطأ أثناء إرسال التقييم');
+            _showSnackbar(AppStrings.error, 'حدث خطأ أثناء إرسال التقييم');
           }
           update();
         },
@@ -104,7 +105,7 @@ class AppReviewController extends GetxController {
         unawaited(FirebaseCrashlytics.instance.recordError(e, stack));
       } catch (_) {}
       isSubmitting = false;
-      _showSnackbar('خطأ', 'حدث خطأ أثناء إرسال التقييم');
+      _showSnackbar(AppStrings.error, 'حدث خطأ أثناء إرسال التقييم');
       update();
     }
   }

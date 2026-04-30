@@ -1,21 +1,13 @@
-import '../../../../core/class/crud.dart';
 import '../../../../core/constant/id/api.dart';
+import '../base_remote_data.dart';
 
-class ArticlesData {
-  Crud crud;
-  ArticlesData(this.crud);
-  Future<Object> getArticlesList() async {
-    final response = await crud.postData(Api.articlesList, {});
-    return response.fold((l) => l, (r) => r);
-  }
+class ArticlesData extends BaseRemoteData {
+  ArticlesData(super.crud);
+  Future<dynamic> getArticlesList() => request(url: Api.articlesList);
 }
 
-class ArticleDetailData {
-  Crud crud;
-  ArticleDetailData(this.crud);
-  Future<Object> getArticleDetail(String articleId) async {
-    final urlWithId = '${Api.articleDetail}?id=$articleId';
-    final response = await crud.postData(urlWithId, {});
-    return response.fold((l) => l, (r) => r);
-  }
+class ArticleDetailData extends BaseRemoteData {
+  ArticleDetailData(super.crud);
+  Future<dynamic> getArticleDetail(String articleId) =>
+      request(url: '${Api.articleDetail}?id=$articleId');
 }

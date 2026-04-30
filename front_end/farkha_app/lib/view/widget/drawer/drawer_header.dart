@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 
@@ -115,7 +116,7 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'تسجيل الدخول',
+                        AppStrings.login,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

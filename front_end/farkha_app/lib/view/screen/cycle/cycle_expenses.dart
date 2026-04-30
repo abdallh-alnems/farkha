@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
@@ -1069,7 +1070,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -1121,7 +1122,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -1134,7 +1135,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -1152,7 +1153,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),
@@ -1175,7 +1176,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
           ),
@@ -1188,7 +1189,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.grey[400] : Colors.grey[600],
               ),
@@ -1209,7 +1210,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-            child: const Text('حذف'),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),

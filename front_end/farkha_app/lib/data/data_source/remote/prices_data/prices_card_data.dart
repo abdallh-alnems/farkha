@@ -1,13 +1,9 @@
-import '../../../../core/class/crud.dart';
 import '../../../../core/constant/id/api.dart';
+import '../base_remote_data.dart';
 
-class PricesCardData {
-  Crud crud;
-  PricesCardData(this.crud);
+class PricesCardData extends BaseRemoteData {
+  PricesCardData(super.crud);
 
-  Future<Object> getDataWithTypeIds(List<int> typeIds) async {
-    final url = '${Api.pricesCard}?type_ids=${typeIds.join(',')}';
-    final response = await crud.postData(url, {'type_ids': typeIds.join(',')});
-    return response.fold((l) => l, (r) => r);
-  }
+  Future<dynamic> getDataWithTypeIds(List<int> typeIds) =>
+      request(url: '${Api.pricesCard}?type_ids=${typeIds.join(',')}');
 }

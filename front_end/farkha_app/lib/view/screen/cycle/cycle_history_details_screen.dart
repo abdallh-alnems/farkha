@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/pdf/pdf_export_service.dart';
 import '../../../logic/controller/cycle_controller.dart';
@@ -29,8 +30,8 @@ class CycleHistoryDetailsScreen extends StatelessWidget {
               await PdfExportService.exportCycleReport(cycle);
             } catch (e) {
               Get.snackbar(
-                'خطأ في التصدير',
-                'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
+                AppStrings.exportError,
+                AppStrings.exportPdfErrorMsg,
                 backgroundColor: Colors.red,
                 colorText: Colors.white,
               );

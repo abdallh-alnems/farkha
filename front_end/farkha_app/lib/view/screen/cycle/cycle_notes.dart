@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_notes_controller.dart';
@@ -291,7 +292,7 @@ class CycleNotesScreen extends StatelessWidget {
                     child: TextButton(
                       onPressed: () => Get.back<void>(),
                       style: TextButton.styleFrom(foregroundColor: Colors.grey),
-                      child: const Text('إلغاء'),
+                      child: const Text(AppStrings.cancel),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -389,7 +390,7 @@ class CycleNotesScreen extends StatelessWidget {
                     child: TextButton(
                       onPressed: () => Get.back<void>(),
                       style: TextButton.styleFrom(foregroundColor: Colors.grey),
-                      child: const Text('إلغاء'),
+                      child: const Text(AppStrings.cancel),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -455,7 +456,7 @@ class CycleNotesScreen extends StatelessWidget {
                 ? AppColors.darkSurfaceColor
                 : Colors.white,
         title: Text(
-          'تأكيد الحذف',
+          AppStrings.confirmDelete,
           style: TextStyle(
             color:
                 Theme.of(context).brightness == Brightness.dark
@@ -475,14 +476,14 @@ class CycleNotesScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Get.back<void>(),
-            child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+            child: const Text(AppStrings.cancel, style: TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () {
               ctrl.deleteNote(id);
               Get.back<void>();
             },
-            child: const Text('حذف', style: TextStyle(color: Colors.red)),
+            child: const Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

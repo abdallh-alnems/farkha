@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/class/handling_data.dart';
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../cycle/add_member_dialog.dart';
 import '../../../logic/controller/cycle_controller.dart';
@@ -120,7 +121,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                          TextButton(
                            onPressed: () => Get.back(result: false),
                            child: Text(
-                             'إلغاء',
+                             AppStrings.cancel,
                              style: TextStyle(color: onBackground),
                            ),
                          ),
@@ -398,8 +399,8 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                         await PdfExportService.exportCycleReport(cycle);
                       } catch (e) {
                         Get.snackbar(
-                          'خطأ في التصدير',
-                          'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
+                          AppStrings.exportError,
+                          AppStrings.exportPdfErrorMsg,
                           backgroundColor: Colors.red,
                           colorText: Colors.white,
                         );
@@ -409,8 +410,8 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                         await ExcelExportService.exportCycleReport(cycle);
                       } catch (e) {
                         Get.snackbar(
-                          'خطأ في التصدير',
-                          'حدث خطأ أثناء تصدير ملف Excel.',
+                          AppStrings.exportError,
+                          AppStrings.exportExcelError,
                           backgroundColor: Colors.red,
                           colorText: Colors.white,
                         );
@@ -461,7 +462,7 @@ class AppBarCycle extends StatelessWidget implements PreferredSizeWidget {
                    _menuItem(
                      context,
                      'delete',
-                     'حذف',
+                     AppStrings.delete,
                      color: colorScheme.error,
                    )
                  else

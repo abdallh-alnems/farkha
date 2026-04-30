@@ -131,3 +131,35 @@ class AppTheme {
     ),
   );
 }
+
+class AppDimens {
+  AppDimens._();
+
+  static double get radiusSm => 8.r;
+  static double get radiusMd => 12.r;
+  static double get radiusLg => 16.r;
+  static double get radiusXl => 20.r;
+
+  static BorderRadius get borderSm => BorderRadius.circular(radiusSm);
+  static BorderRadius get borderMd => BorderRadius.circular(radiusMd);
+  static BorderRadius get borderLg => BorderRadius.circular(radiusLg);
+  static BorderRadius get borderXl => BorderRadius.circular(radiusXl);
+}
+
+class AppSpacing {
+  AppSpacing._();
+
+  static double get xs => 4.h;
+  static double get sm => 8.h;
+  static double get md => 12.h;
+  static double get lg => 16.h;
+  static double get xl => 24.h;
+
+  static EdgeInsets get padSm => EdgeInsets.all(sm);
+  static EdgeInsets get padMd => EdgeInsets.all(md);
+  static EdgeInsets get padLg => EdgeInsets.all(lg);
+  static EdgeInsets get padXl => EdgeInsets.all(xl);
+
+  static EdgeInsets hPad(double v) => EdgeInsets.symmetric(horizontal: v.w);
+  static EdgeInsets vPad(double v) => EdgeInsets.symmetric(vertical: v.h);
+}

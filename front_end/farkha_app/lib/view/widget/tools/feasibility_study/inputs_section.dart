@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
+import '../../../../core/constant/strings/app_strings.dart';
 import '../../../../core/constant/theme/colors.dart';
 import '../../../../logic/controller/tools_controller/feasibility_study_controller.dart';
 import '../../../../core/shared/input_fields/input_field.dart';
@@ -530,7 +531,7 @@ class InputsSection extends StatelessWidget {
           TextButton(
             onPressed: () => Get.back<void>(),
             child: Text(
-              'إلغاء',
+              AppStrings.cancel,
               style: TextStyle(
                 color: isDark ? Colors.white70 : Colors.grey[700],
                 fontSize: 14.sp,

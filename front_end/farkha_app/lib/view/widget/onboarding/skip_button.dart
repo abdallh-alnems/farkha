@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../data/data_source/static/onboarding_static.dart';
 import '../../../logic/controller/onboarding_controller.dart';
 
@@ -21,7 +22,7 @@ class SkipButton extends GetView<OnBoardingControllerImp> {
                       controller.skip();
                     },
                     child: Text(
-                      'تخطي',
+                      AppStrings.skip,
                       style: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).colorScheme.onSurface,

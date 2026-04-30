@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/class/status_request.dart';
@@ -200,11 +201,18 @@ class CycleData {
 
       final body = {'token': token, 'cycle_id': cycleId};
 
+      debugPrint('[deleteCycle.api] POST ${Api.deleteCycle}');
+      debugPrint('[deleteCycle.api] headers=$myHeaders');
+      debugPrint('[deleteCycle.api] body=${jsonEncode(body)}');
+
       final response = await http.post(
         Uri.parse(Api.deleteCycle),
         headers: myHeaders,
         body: jsonEncode(body),
       );
+
+      debugPrint('[deleteCycle.api] statusCode=${response.statusCode}');
+      debugPrint('[deleteCycle.api] body=${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseBody =
@@ -213,7 +221,8 @@ class CycleData {
       } else {
         return const Left(StatusRequest.serverFailure);
       }
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('[deleteCycle.api] EXCEPTION: $e\n$st');
       return const Left(StatusRequest.serverFailure);
     }
   }

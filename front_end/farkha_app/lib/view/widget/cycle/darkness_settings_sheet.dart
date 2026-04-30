@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 
@@ -275,7 +276,7 @@ class _PhaseSection extends StatelessWidget {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay(hour: hour, minute: minute),
-      cancelText: 'إلغاء',
+      cancelText: AppStrings.cancel,
       confirmText: 'تأكيد',
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(

@@ -80,28 +80,30 @@ try {
     // بدء المعاملة
     $con->beginTransaction();
 
+    $currentStep = 'init';
     try {
         // 1. حذف بيانات الدورة
+        $currentStep = 'deleteCycleData';
         $stmt = $con->prepare(Queries::deleteCycleDataQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
         // 2. حذف مصاريف الدورة
+        $currentStep = 'deleteCycleExpenses';
         $stmt = $con->prepare(Queries::deleteCycleExpensesQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
         // 3. حذف ملاحظات الدورة
+        $currentStep = 'deleteCycleNotes';
         $stmt = $con->prepare(Queries::deleteCycleNotesQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // 3.5 حذف مخزون الدورة
-        $stmt = $con->prepare(Queries::deleteCycleInventoryQuery());
-        $stmt->execute([':cycle_id' => (int)$cycleId]);
-
         // 4. حذف مستخدمي الدورة
+        $currentStep = 'deleteCycleUsers';
         $stmt = $con->prepare(Queries::deleteCycleUsersQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
         // 4. حذف الدورة نفسها
+        $currentStep = 'deleteCycle';
         $stmt = $con->prepare(Queries::deleteCycleQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
@@ -116,7 +118,15 @@ try {
 
     } catch (PDOException $e) {
         $con->rollBack();
-        throw $e;
+        error_log("[delete.php] PDO failed at step={$currentStep}: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'fail',
+            'message' => 'Database error',
+            'debug_step' => $currentStep,
+            'debug_error' => $e->getMessage(),
+        ]);
+        exit;
     }
 
 } catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
@@ -126,16 +136,20 @@ try {
         'message' => 'Invalid or expired token'
     ]);
 } catch (PDOException $e) {
+    error_log("[delete.php] outer PDO: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Database error'
+        'message' => 'Database error',
+        'debug_error' => $e->getMessage(),
     ]);
 } catch (Exception $e) {
+    error_log("[delete.php] outer Exception: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Server error'
+        'message' => 'Server error',
+        'debug_error' => $e->getMessage(),
     ]);
 }
 ?>

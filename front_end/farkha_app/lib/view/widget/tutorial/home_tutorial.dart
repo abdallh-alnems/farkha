@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
+import '../../../../core/constant/strings/app_strings.dart';
 import '../../../../core/constant/storage_keys.dart';
 import '../../../../core/services/initialization.dart';
 import '../../../../core/services/permission.dart';
@@ -79,7 +80,7 @@ class HomeTutorial {
       _tutorial = TutorialCoachMark(
         targets: targets,
         colorShadow: Colors.black.withValues(alpha: 0.3),
-        textSkip: 'تخطي',
+        textSkip: AppStrings.skip,
         textStyleSkip: TextStyle(color: isDark ? Colors.white : Colors.black),
         paddingFocus: 0, // أصغر قيمة ممكنة
         opacityShadow: 0.3,

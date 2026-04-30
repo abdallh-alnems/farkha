@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/excel/excel_export_service.dart';
 import '../../../core/services/pdf/pdf_export_service.dart';
@@ -447,7 +448,7 @@ class CloseoutReportScreen extends StatelessWidget {
               try {
                 await PdfExportService.exportCycleReport(cycle);
               } catch (e) {
-                Get.snackbar('خطأ', 'فشل تصدير PDF', backgroundColor: Colors.red, colorText: Colors.white);
+                Get.snackbar(AppStrings.error, 'فشل تصدير PDF', backgroundColor: Colors.red, colorText: Colors.white);
               }
             },
             icon: Icon(Icons.picture_as_pdf_outlined, size: 18.sp),
@@ -467,7 +468,7 @@ class CloseoutReportScreen extends StatelessWidget {
               try {
                 await ExcelExportService.exportCycleReport(cycle);
               } catch (e) {
-                Get.snackbar('خطأ', 'فشل تصدير Excel', backgroundColor: Colors.red, colorText: Colors.white);
+                Get.snackbar(AppStrings.error, 'فشل تصدير Excel', backgroundColor: Colors.red, colorText: Colors.white);
               }
             },
             icon: Icon(Icons.table_chart_outlined, size: 18.sp),

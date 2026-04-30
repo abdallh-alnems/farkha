@@ -3,117 +3,125 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constant/theme/colors.dart';
 
-class PageTurningTips extends StatelessWidget {
+class PageTurningTips extends StatefulWidget {
   final Animation<Offset> arrowAnimation;
 
-  const PageTurningTips({super.key, required this.arrowAnimation});
+  const PageTurningTips({
+    super.key,
+    required this.arrowAnimation,
+  });
+
+  @override
+  State<PageTurningTips> createState() => _PageTurningTipsState();
+}
+
+class _PageTurningTipsState extends State<PageTurningTips>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _entryController;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _entryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _scaleAnimation = CurvedAnimation(
+      parent: _entryController,
+      curve: Curves.elasticOut,
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1.5),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _entryController, curve: Curves.easeOutCubic),
+    );
+
+    _entryController.forward();
+  }
+
+  @override
+  void dispose() {
+    _entryController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    const primaryColor = AppColors.primaryColor;
-    final backgroundColor =
-        isDark ? AppColors.darkSurfaceElevatedColor : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    const accentColor = primaryColor;
 
-    return IgnorePointer(
-      child: Center(
+    return SlideTransition(
+      position: _slideAnimation,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20.w),
-          padding: EdgeInsets.all(20.w),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(color: accentColor.withValues(alpha: 0.3), width: 2),
+            color: isDark
+                ? const Color(0xFF1E1E2E).withValues(alpha: 0.95)
+                : Colors.white.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(
+              color: AppColors.primaryColor.withValues(alpha: 0.4),
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-                spreadRadius: 2,
-              ),
-              BoxShadow(
-                color: accentColor.withValues(alpha: 0.1),
-                blurRadius: 15,
+                color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.15),
+                blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: Column(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // أيقونة السحب المحسّنة
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      accentColor.withValues(alpha: 0.2),
-                      accentColor.withValues(alpha: 0.1),
-                    ],
+              SlideTransition(
+                position: widget.arrowAnimation,
+                child: Container(
+                  padding: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
                   ),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: accentColor.withValues(alpha: 0.3),
-                    width: 2,
-                  ),
-                ),
-                child: SlideTransition(
-                  position: arrowAnimation,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.arrow_back_ios,
-                        size: 20.sp,
-                        color: accentColor,
-                      ),
-                      SizedBox(width: 8.w),
-                      Container(
-                        width: 4.w,
-                        height: 4.w,
-                        decoration: const BoxDecoration(
-                          color: accentColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 20.sp,
-                        color: accentColor,
-                      ),
-                    ],
+                  child: Icon(
+                    Icons.swipe,
+                    size: 22.sp,
+                    color: AppColors.primaryColor,
                   ),
                 ),
               ),
-              SizedBox(height: 16.h),
-              // النص الرئيسي
-              Text(
-                'اسحب للتنقل بين الدورات',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
-                  letterSpacing: 0.3,
+              SizedBox(width: 10.w),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'اسحب للتنقل بين الدورات',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? Colors.white : Colors.black87,
+                        height: 1.3,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      'يمكنك التمرير يميناً ويساراً للتبديل',
+                      style: TextStyle(
+                        fontSize: 10.5.sp,
+                        fontWeight: FontWeight.w400,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 8.h),
-              // النص التوضيحي
-              Text(
-                'يمكنك السحب يميناً ويساراً للتنقل بين الدورات المختلفة',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  height: 1.4,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
               ),
             ],
           ),

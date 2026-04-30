@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/class/status_request.dart';
 import '../../../logic/controller/cycle_feedback_controller.dart';
 import '../app_review/rating_description.dart';
@@ -121,7 +122,7 @@ class CycleFeedbackDialog extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () => controller.skip(),
-                    child: Text('تخطي'),
+                    child: Text(AppStrings.skip),
                   ),
                   ElevatedButton(
                     onPressed: controller.statusRequest == StatusRequest.loading

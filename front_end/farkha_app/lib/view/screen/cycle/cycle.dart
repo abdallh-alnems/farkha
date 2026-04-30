@@ -384,53 +384,64 @@ class _CycleState extends State<Cycle> with TickerProviderStateMixin {
                 final cycle = cycles[i];
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: 17.w),
-                  child: Stack(
-                    children: [
-                      RefreshIndicator(
-                        onRefresh: () => cycleCtrl.forceRefreshCurrentCycle(),
-                        child: SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          child: Column(
-                            children: [
-                              CycleStatsBar(
-                                startDateRaw: cycle['startDateRaw'] as String,
-                              ),
-                              SizedBox(height: 12.h),
-                              const EnvironmentStatus(),
-                              SizedBox(height: 12.h),
-                              const AdNativeWidget(),
-                              SizedBox(height: 12.h),
-                              const PerformanceMetricsCard(),
-                              SizedBox(height: 12.h),
-                              const GrowthCurveCard(),
-                              SizedBox(height: 12.h),
-                              const FeedConsumptionCard(),
-                              SizedBox(height: 12.h),
-                              const WaterConsumptionCard(),
-                              SizedBox(height: 12.h),
-                              const FinancialSummaryCard(),
-                              SizedBox(height: 12.h),
-                              const AreaDarknessCard(),
-                              SizedBox(height: 12.h),
-                              const DarknessScheduleCard(),
-                              SizedBox(height: 11.h),
-                            ],
-                          ),
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (_) {
+                      if (_showTutorialOverlay && mounted) {
+                        setState(() {
+                          _showTutorialOverlay = false;
+                        });
+                      }
+                      return false;
+                    },
+                    child: RefreshIndicator(
+                      onRefresh: () => cycleCtrl.forceRefreshCurrentCycle(),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          children: [
+                            CycleStatsBar(
+                              startDateRaw:
+                                  cycle['startDateRaw'] as String,
+                            ),
+                            SizedBox(height: 12.h),
+                            const EnvironmentStatus(),
+                            SizedBox(height: 12.h),
+                            const AdNativeWidget(),
+                            SizedBox(height: 12.h),
+                            const PerformanceMetricsCard(),
+                            SizedBox(height: 12.h),
+                            const GrowthCurveCard(),
+                            SizedBox(height: 12.h),
+                            const FeedConsumptionCard(),
+                            SizedBox(height: 12.h),
+                            const WaterConsumptionCard(),
+                            SizedBox(height: 12.h),
+                            const FinancialSummaryCard(),
+                            SizedBox(height: 12.h),
+                            const AreaDarknessCard(),
+                            SizedBox(height: 12.h),
+                            const DarknessScheduleCard(),
+                            SizedBox(height: 11.h),
+                          ],
                         ),
                       ),
-                      if (_showTutorialOverlay && _currentPage == 1)
-                        Positioned.fill(
-                          child: Center(
-                            child: PageTurningTips(
-                              arrowAnimation: _arrowAnimation,
-                            ),
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
                 );
               },
             ),
+            if (_showTutorialOverlay && _currentPage == 1)
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: 17.w,
+                right: 17.w,
+                child: Center(
+                  child: PageTurningTips(
+                    arrowAnimation: _arrowAnimation,
+                  ),
+                ),
+              ),
             // Overlay للتحميل وأخطاء تفاصيل الدورة (لا يمنع التنقل)
             Obx(() {
               final detailsStatus = cycleCtrl.cycleDetailsStatus.value;

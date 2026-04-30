@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/crud.dart';
 import '../../../core/class/status_request.dart';
-import '../../../core/functions/handing_data_controller.dart';
+import '../../../core/functions/handling_data_controller.dart';
 import '../../../data/data_source/remote/prices_data/broiler_price_data.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import '../weather_controller.dart';

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/initialization.dart';
@@ -625,8 +626,8 @@ class _CardCycleState extends State<CardCycle> {
                                 await PdfExportService.exportCycleReport(updatedCycle);
                               } catch (e) {
                                 Get.snackbar(
-                                  'خطأ في التصدير',
-                                  'حدث خطأ غير متوقع، ربما تحتاج لإعادة فتح التطبيق ليتم تفعيل ميزة الطباعة.',
+                                  AppStrings.exportError,
+                                  AppStrings.exportPdfErrorMsg,
                                   backgroundColor: Colors.red,
                                   colorText: Colors.white,
                                 );
@@ -636,8 +637,8 @@ class _CardCycleState extends State<CardCycle> {
                                 await ExcelExportService.exportCycleReport(updatedCycle);
                               } catch (e) {
                                 Get.snackbar(
-                                  'خطأ في التصدير',
-                                  'حدث خطأ أثناء تصدير ملف Excel.',
+                                  AppStrings.exportError,
+                                  AppStrings.exportExcelError,
                                   backgroundColor: Colors.red,
                                   colorText: Colors.white,
                                 );
@@ -766,7 +767,7 @@ class _CardCycleState extends State<CardCycle> {
                              value: 'delete',
                              child: Text(
                                updatedCycle['role'] == 'owner'
-                                   ? 'حذف'
+                                   ? AppStrings.delete
                                    : 'مغادرة الدورة',
                                style: TextStyle(
                                  fontSize: 14.sp,

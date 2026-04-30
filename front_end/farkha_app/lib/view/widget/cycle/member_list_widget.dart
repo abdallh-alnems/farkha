@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/cycle_controller.dart';
+import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
@@ -338,7 +339,7 @@ class MemberListWidget extends StatelessWidget {
                       );
                     } else {
                       Get.snackbar(
-                        'خطأ',
+                        AppStrings.error,
                         result?['message']?.toString() ??
                             'فشل تغيير الدور',
                         snackPosition: SnackPosition.BOTTOM,
@@ -352,7 +353,7 @@ class MemberListWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Get.back<void>(),
-            child: const Text('إلغاء', style: TextStyle(fontFamily: 'Cairo')),
+            child: const Text(AppStrings.cancel, style: TextStyle(fontFamily: 'Cairo')),
           ),
         ],
       ),
@@ -396,7 +397,7 @@ class MemberListWidget extends StatelessWidget {
           TextButton(
               onPressed: () => Get.back<void>(),
               child:
-                  const Text('إلغاء', style: TextStyle(fontFamily: 'Cairo'))),
+                  const Text(AppStrings.cancel, style: TextStyle(fontFamily: 'Cairo'))),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor),
@@ -429,8 +430,8 @@ class MemberListWidget extends StatelessWidget {
     Get.defaultDialog<void>(
       title: 'حذف عضو',
       middleText: 'هل أنت متأكد من حذف $memberName من الدورة؟',
-      textConfirm: 'حذف',
-      textCancel: 'إلغاء',
+      textConfirm: AppStrings.delete,
+      textCancel: AppStrings.cancel,
       confirmTextColor: Colors.white,
       buttonColor: Colors.red,
       onConfirm: () {
@@ -448,7 +449,7 @@ class MemberListWidget extends StatelessWidget {
       title: 'مغادرة الدورة',
       middleText: 'هل أنت متأكد من رغبتك في مغادرة هذه الدورة؟',
       textConfirm: 'مغادرة',
-      textCancel: 'إلغاء',
+      textCancel: AppStrings.cancel,
       confirmTextColor: Colors.white,
       buttonColor: Colors.red,
       onConfirm: () {
