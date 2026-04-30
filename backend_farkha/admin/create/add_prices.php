@@ -1,15 +1,15 @@
     <?php
 
-    
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-
     require_once __DIR__ . '/../../core/connect.php';
     include "../../core/queries/queries.php";
     include "../../notification/fcm_sender.php";
     include "../../notification/topic_manager.php";
 
 class AddPricesAPI extends BaseAPI {
+
+    protected function checkAuthentication() {
+        checkAppCheckRequired();
+    }
     
     public function __construct() {
         parent::__construct();

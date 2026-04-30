@@ -3,6 +3,10 @@ require_once __DIR__ . '/../../core/connect.php';
 include "../../core/queries/queries.php";
 
 class DeletePriceAPI extends BaseAPI {
+
+    protected function checkAuthentication() {
+        checkAppCheckRequired();
+    }
     
     public function __construct() {
         parent::__construct();
@@ -11,15 +15,12 @@ class DeletePriceAPI extends BaseAPI {
     
     private function handleRequest() {
         $this->handleApiRequest(function() {
-            // Validate HTTP method
             if (!$this->validateHttpMethod()) return;
             
             $type = $this->getType();
             
-            // Validate type using common method
             if (!$this->validateRequiredNumeric($type, 'type')) return;
             
-            // Single query to delete price with validation
             $this->deletePriceWithValidation($type);
         });
     }
@@ -41,20 +42,15 @@ class DeletePriceAPI extends BaseAPI {
                 return;
             }
             
-            // Price deleted successfully
-            
             $this->sendSuccess(null);
-            
         } catch (Exception $e) {
             throw $e;
         }
     }
 }
 
-// Initialize the API
 try {
     new DeletePriceAPI();
 } catch (Exception $e) {
     handleApiError($e, ['context' => 'delete_price_api']);
 }
-?>

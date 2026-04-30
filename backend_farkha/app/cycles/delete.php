@@ -1,23 +1,19 @@
 <?php
 /**
  * Delete Cycle API
- * حذف دورة والبيانات المرتبطة بها
  */
 
 require_once __DIR__ . '/../../core/connect.php';
 require_once __DIR__ . '/../../core/firebase_verifier.php';
 include __DIR__ . '/../../core/queries/queries.php';
 
-// 🔒 حماية الـ API endpoint
 checkAuthenticate();
 requirePostMethod();
 
-// قراءة البيانات المرسلة
 $input = json_decode(file_get_contents('php://input'), true);
 $token = $input['token'] ?? null;
 $cycleId = $input['cycle_id'] ?? null;
 
-// التحقق من وجود Token
 if (!$token) {
     http_response_code(400);
     echo json_encode([
@@ -27,7 +23,6 @@ if (!$token) {
     exit;
 }
 
-// التحقق من وجود cycle_id
 if (!$cycleId || !is_numeric($cycleId)) {
     http_response_code(400);
     echo json_encode([
@@ -38,7 +33,6 @@ if (!$cycleId || !is_numeric($cycleId)) {
 }
 
 try {
-    // 🔐 التحقق من Firebase Token والحصول على user_id
     $userId = getUserIdFromToken($token, $con);
     
     if (!$userId) {
@@ -50,7 +44,6 @@ try {
         exit;
     }
 
-    // التحقق من صلاحيات المستخدم - يجب أن يكون owner
     $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
     $stmt->execute([
         ':cycle_id' => (int)$cycleId,
@@ -67,7 +60,6 @@ try {
         exit;
     }
 
-    // التحقق من أن المستخدم هو owner فقط
     if ($access['role'] !== 'owner') {
         http_response_code(403);
         echo json_encode([
@@ -77,40 +69,26 @@ try {
         exit;
     }
 
-    // بدء المعاملة
     $con->beginTransaction();
 
-    $currentStep = 'init';
     try {
-        // 1. حذف بيانات الدورة
-        $currentStep = 'deleteCycleData';
         $stmt = $con->prepare(Queries::deleteCycleDataQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // 2. حذف مصاريف الدورة
-        $currentStep = 'deleteCycleExpenses';
         $stmt = $con->prepare(Queries::deleteCycleExpensesQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // 3. حذف ملاحظات الدورة
-        $currentStep = 'deleteCycleNotes';
         $stmt = $con->prepare(Queries::deleteCycleNotesQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // 4. حذف مستخدمي الدورة
-        $currentStep = 'deleteCycleUsers';
         $stmt = $con->prepare(Queries::deleteCycleUsersQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // 4. حذف الدورة نفسها
-        $currentStep = 'deleteCycle';
         $stmt = $con->prepare(Queries::deleteCycleQuery());
         $stmt->execute([':cycle_id' => (int)$cycleId]);
 
-        // تأكيد المعاملة
         $con->commit();
 
-        // ✅ إرسال الرد
         echo json_encode([
             'status' => 'success',
             'message' => 'Cycle and all related data deleted successfully'
@@ -118,13 +96,11 @@ try {
 
     } catch (PDOException $e) {
         $con->rollBack();
-        error_log("[delete.php] PDO failed at step={$currentStep}: " . $e->getMessage());
+        error_log("[delete.php] PDO failed: " . $e->getMessage());
         http_response_code(500);
         echo json_encode([
             'status' => 'fail',
-            'message' => 'Database error',
-            'debug_step' => $currentStep,
-            'debug_error' => $e->getMessage(),
+            'message' => 'Database error'
         ]);
         exit;
     }
@@ -136,21 +112,17 @@ try {
         'message' => 'Invalid or expired token'
     ]);
 } catch (PDOException $e) {
-    error_log("[delete.php] outer PDO: " . $e->getMessage());
+    error_log("[delete.php] PDO: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Database error',
-        'debug_error' => $e->getMessage(),
+        'message' => 'Database error'
     ]);
 } catch (Exception $e) {
-    error_log("[delete.php] outer Exception: " . $e->getMessage());
+    error_log("[delete.php] Exception: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
-        'message' => 'Server error',
-        'debug_error' => $e->getMessage(),
+        'message' => 'Server error'
     ]);
 }
-?>
-

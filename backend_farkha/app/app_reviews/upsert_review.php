@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../core/connect.php';
+require_once __DIR__ . '/../../core/firebase_verifier.php';
 include __DIR__ . '/../../core/queries/queries.php';
 
 checkAuthenticate();
@@ -11,6 +12,18 @@ if (empty($input)) {
     $input = json_decode($raw, true);
     if (!is_array($input)) {
         parse_str($raw, $input);
+    }
+}
+
+$token = $input['token'] ?? null;
+$deviceId = $input['device_id'] ?? null;
+
+$userId = null;
+if ($token) {
+    try {
+        $userId = getUserIdFromToken($token, $con);
+    } catch (Exception $e) {
+        $userId = null;
     }
 }
 
@@ -65,16 +78,17 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    error_log('upsert_review error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
         'message' => 'Database error'
     ]);
 } catch (Exception $e) {
+    error_log('upsert_review error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
         'message' => 'Server error'
     ]);
 }
-?>

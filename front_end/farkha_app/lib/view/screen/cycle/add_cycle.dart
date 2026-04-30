@@ -9,8 +9,8 @@ import '../../../core/constant/theme/colors.dart';
 import '../../../core/functions/input_validation.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
-class AddCycle extends StatelessWidget {
-  AddCycle({super.key});
+class AddCycleScreen extends StatelessWidget {
+  AddCycleScreen({super.key});
   final CycleController controller = Get.find<CycleController>();
 
   bool _isDarkMode(BuildContext context) {

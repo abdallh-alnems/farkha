@@ -37,9 +37,14 @@ function enforceIpRateLimit(int $maxRequests, int $windowSeconds): void {
     $file = $cacheDir . '/' . $key;
     $now = time();
 
+    $fp = fopen($file, 'c+');
+    if (!$fp) return;
+
+    flock($fp, LOCK_EX);
     $data = [];
-    if (file_exists($file)) {
-        $data = json_decode(file_get_contents($file), true) ?: [];
+    $content = stream_get_contents($fp);
+    if ($content) {
+        $data = json_decode($content, true) ?: [];
     }
 
     $data = array_filter($data, function ($ts) use ($now, $windowSeconds) {
@@ -47,6 +52,8 @@ function enforceIpRateLimit(int $maxRequests, int $windowSeconds): void {
     });
 
     if (count($data) >= $maxRequests) {
+        flock($fp, LOCK_UN);
+        fclose($fp);
         http_response_code(429);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['status' => 'fail', 'message' => 'Rate limit exceeded. Try again later.']);
@@ -54,5 +61,9 @@ function enforceIpRateLimit(int $maxRequests, int $windowSeconds): void {
     }
 
     $data[] = $now;
-    file_put_contents($file, json_encode($data), LOCK_EX);
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode($data));
+    flock($fp, LOCK_UN);
+    fclose($fp);
 }

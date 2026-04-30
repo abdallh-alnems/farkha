@@ -13,8 +13,8 @@ import '../../widget/tools/notes_card.dart';
 import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tools/tools_result_card.dart';
 
-class DarknessLevelsView extends StatelessWidget {
-  const DarknessLevelsView({super.key});
+class DarknessLevelsScreen extends StatelessWidget {
+  const DarknessLevelsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class DarknessLevelsView extends StatelessWidget {
       DarknessLevelsController(),
     );
 
-    logToolPageViewOnce(widgetType: DarknessLevelsView, toolId: 8);
+    logToolPageViewOnce(widgetType: DarknessLevelsScreen, toolId: 8);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

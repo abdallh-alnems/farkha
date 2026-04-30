@@ -1,6 +1,5 @@
 <?php
 /**
- * تحديث FCM Token للمستخدم
  * Update User FCM Token
  */
 
@@ -32,6 +31,7 @@ try {
     http_response_code(401);
     echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
 } catch (Exception $e) {
+    error_log('FCM token update error: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
 }

@@ -56,6 +56,35 @@ class ApiResponse {
     }
 }
 
-?>
+function authenticateUser(PDO $con): array {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $token = $input['token'] ?? null;
+    if (!$token) {
+        ApiResponse::fail('Token is required', 400);
+    }
+    $userId = getUserIdFromToken($token, $con);
+    if (!$userId) {
+        ApiResponse::fail('Invalid token or user not found', 401);
+    }
+    return ['user_id' => $userId, 'input' => $input];
+}
 
+function requireCycleWriteAccess(PDO $con, int $cycleId, int $userId): array {
+    $stmt = $con->prepare(Queries::checkUserWriteAccessQuery());
+    $stmt->execute([':cycle_id' => $cycleId, ':user_id' => $userId]);
+    $access = $stmt->fetch();
+    if (!$access) {
+        ApiResponse::fail('Access denied to this cycle', 403);
+    }
+    return $access;
+}
 
+function requireCycleReadAccess(PDO $con, int $cycleId, int $userId): array {
+    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
+    $stmt->execute([':cycle_id' => $cycleId, ':user_id' => $userId]);
+    $access = $stmt->fetch();
+    if (!$access) {
+        ApiResponse::fail('Access denied to this cycle', 403);
+    }
+    return $access;
+}

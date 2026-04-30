@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/functions/tool_page_view.dart';
 import '../../../core/shared/input_fields/chicken_age_count_input.dart';
+import '../../../core/shared/tools/tool_input_card.dart';
 import '../../../logic/controller/tools_controller/water_consumption_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
@@ -39,33 +40,7 @@ class WaterConsumption extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color:
-                      isDark
-                          ? AppColors.darkSurfaceElevatedColor
-                          : AppColors.lightSurfaceColor,
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color:
-                        isDark
-                            ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                            : AppColors.lightOutlineColor.withValues(
-                              alpha: 0.3,
-                            ),
-                  ),
-                  boxShadow:
-                      isDark
-                          ? null
-                          : [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                ),
+              ToolInputCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

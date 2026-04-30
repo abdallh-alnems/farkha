@@ -333,6 +333,14 @@ final class Queries {
         return AppReviewQueries::insert();
     }
 
+    public static function fetchAppReviewByUserIdQuery(): string {
+        return AppReviewQueries::fetchByUserId();
+    }
+
+    public static function fetchAppReviewByDeviceIdQuery(): string {
+        return AppReviewQueries::fetchByDeviceId();
+    }
+
     // Cycle Feedback queries
     public static function insertCycleFeedbackQuery(): string {
         return CycleFeedbackQueries::insert();

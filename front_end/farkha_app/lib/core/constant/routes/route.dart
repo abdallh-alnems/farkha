@@ -1,7 +1,5 @@
 class AppRoute {
   static const String home = '/';
-  static const String test = '/test';
-  static const String test2 = '/test2';
   static const String onBoarding = '/onboarding';
 
   // ================================= auth ====================================

@@ -15,14 +15,14 @@ import '../../widget/tools/feasibility_study/results_section.dart';
 import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tutorial/feasibility_tutorial.dart';
 
-class FeasibilityStudy extends StatefulWidget {
-  const FeasibilityStudy({super.key});
+class FeasibilityStudyScreen extends StatefulWidget {
+  const FeasibilityStudyScreen({super.key});
 
   @override
-  State<FeasibilityStudy> createState() => _FeasibilityStudyState();
+  State<FeasibilityStudyScreen> createState() => _FeasibilityStudyState();
 }
 
-class _FeasibilityStudyState extends State<FeasibilityStudy> {
+class _FeasibilityStudyState extends State<FeasibilityStudyScreen> {
   final FeasibilityController controller = Get.put(FeasibilityController());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
@@ -114,7 +114,7 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(widgetType: FeasibilityStudy, toolId: 14);
+    logToolPageViewOnce(widgetType: FeasibilityStudyScreen, toolId: 14);
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {

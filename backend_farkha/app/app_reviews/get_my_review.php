@@ -81,16 +81,17 @@ try {
     }
 
 } catch (PDOException $e) {
+    error_log('get_my_review error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
         'message' => 'Database error'
     ]);
 } catch (Exception $e) {
+    error_log('get_my_review error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
         'message' => 'Server error'
     ]);
 }
-?>

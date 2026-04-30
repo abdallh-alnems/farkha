@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/functions/number_format.dart';
 import '../../../core/functions/tool_page_view.dart';
+import '../../../core/shared/tools/tool_input_card.dart';
+import '../../../core/shared/tools/tool_result_card.dart';
 import '../../../logic/controller/tools_controller/total_farm_weight_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
@@ -26,7 +28,6 @@ class TotalFarmWeightScreen extends StatelessWidget {
     logToolPageViewOnce(widgetType: TotalFarmWeightScreen, toolId: 21);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final colorScheme = Theme.of(context).colorScheme;
     final resultColor =
         isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
 
@@ -38,28 +39,7 @@ class TotalFarmWeightScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurfaceElevatedColor
-                      : AppColors.lightSurfaceColor,
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                        : AppColors.lightOutlineColor.withValues(alpha: 0.3),
-                  ),
-                  boxShadow: isDark
-                      ? null
-                      : [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                ),
+              ToolInputCard(
                 child: Form(
                   key: _formKey,
                   child: TwoInputFields(
@@ -93,46 +73,10 @@ class TotalFarmWeightScreen extends StatelessWidget {
                 final totalWeight = controller.totalWeight.value;
                 if (totalWeight <= 0) return const SizedBox.shrink();
 
-                return Container(
-                  margin: EdgeInsets.only(bottom: 16.h),
-                  padding: EdgeInsets.all(18.w),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        resultColor.withValues(alpha: isDark ? 0.22 : 0.1),
-                        resultColor.withValues(alpha: isDark ? 0.12 : 0.05),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(14.r),
-                    border: Border.all(
-                      color: resultColor.withValues(alpha: 0.45),
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'الوزن الإجمالي للقطيع',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface.withValues(alpha: 0.85),
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        '${formatDecimal(totalWeight, decimals: 0)} كيلو جرام',
-                        style: TextStyle(
-                          fontSize: 26.sp,
-                          fontWeight: FontWeight.bold,
-                          color: resultColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                return ToolResultCard(
+                  title: 'الوزن الإجمالي للقطيع',
+                  value: '${formatDecimal(totalWeight, decimals: 0)} كيلو جرام',
+                  resultColor: resultColor,
                 );
               }),
               SizedBox(height: 16.h),

@@ -1,20 +1,12 @@
 import 'dart:async';
 
-import 'package:farkha_app/logic/controller/cycle_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/storage_keys.dart';
-import '../../../core/services/notification_service.dart';
-import '../../../core/services/permission.dart';
 import '../../../data/data_source/static/chicken_data.dart';
-import '../../../core/shared/dialogs/app_alert_dialog.dart';
-import '../../../view/widget/cycle/darkness_settings_sheet.dart';
+import 'darkness_alarm_helper.dart';
 
 class DarknessScheduleSegment {
   const DarknessScheduleSegment({
@@ -52,26 +44,22 @@ class DarknessScheduleSnapshot {
 }
 
 class DarknessScheduleController extends GetxController {
-  static const int _maxDarknessBlockMinutes = 120; // 2 hours
+  static const int _maxDarknessBlockMinutes = 120;
   static const int _scheduleDayMinutes = 24 * 60;
 
-  // Keep the old IDs style for phase alarms (5001..5199), and use a separate
-  // range for transition reminders (5500..5599) to avoid collisions.
   static int phaseReminderId(int phaseIndex1Based) =>
-      _phaseReminderIdStart + phaseIndex1Based;
+      DarknessAlarmHelper.phaseReminderId(phaseIndex1Based);
 
   static int transitionReminderId(int index0Based) =>
-      _transitionReminderIdStart + index0Based;
+      DarknessAlarmHelper.transitionReminderId(index0Based);
 
-  static const int _phaseReminderIdStart = 5000;
-  static const int _transitionReminderIdStart = 5500;
-
-  // ── Defaults ──
   static const int _kDefaultDayStartHour = 6;
   static const int _kDefaultAlertMinutesBefore = 10;
   static const bool _kDefaultNotificationsEnabled = true;
 
   final GetStorage _storage = GetStorage();
+
+  late final DarknessAlarmHelper _alarmHelper;
 
   final Rx<DarknessScheduleSnapshot?> snapshotRx =
       Rx<DarknessScheduleSnapshot?>(null);
@@ -81,27 +69,29 @@ class DarknessScheduleController extends GetxController {
   final RxInt alertMinutesBeforeRx = RxInt(_kDefaultAlertMinutesBefore);
   final RxBool notificationsEnabledRx = RxBool(_kDefaultNotificationsEnabled);
 
-  /// Triggers UI rebuilds for phase reminder list.
   final RxInt phaseReminderUpdateTrigger = 0.obs;
 
-  /// Manual "start darkness" countdown: active and end time.
   final RxBool manualDarknessActive = false.obs;
   final Rx<DateTime?> manualDarknessEndTime = Rx<DateTime?>(null);
 
-  /// Ticks every second when manual darkness is active so UI updates countdown.
   final RxInt manualDarknessTicker = 0.obs;
 
-  /// عدد مراحل الإظلام المكتملة اليوم (يُحدَّث عند انتهاء العدّ).
   final RxInt phasesCompletedToday = 0.obs;
 
   Timer? _ticker;
   String? _lastStartDateRaw;
   int? _lastAgeInDays;
 
-  // Tracks if darkness permissions are granted (Notification + Exact Alarm)
   final RxBool permissionsGranted = false.obs;
 
-  /// Remaining time when manual darkness is active; null when inactive or expired.
+  int? get lastAgeInDays => _lastAgeInDays;
+
+  String get cycleDayKeyForToday => _cycleDayKeyForToday();
+
+  DateTime? get cycleDayDateForToday => _cycleDayDateForToday();
+
+  DarknessAlarmHelper get alarmHelper => _alarmHelper;
+
   Duration? get remainingManualDarkness {
     final DateTime? end = manualDarknessEndTime.value;
     if (end == null || !manualDarknessActive.value) return null;
@@ -133,7 +123,7 @@ class DarknessScheduleController extends GetxController {
     notificationsEnabledRx.value = value;
     _storage.write(StorageKeys.darknessNotificationsEnabled, value);
     if (!value) {
-      unawaited(_cancelDarknessNotifications());
+      unawaited(_alarmHelper.cancelDarknessNotifications());
     } else {
       _refresh();
     }
@@ -142,6 +132,7 @@ class DarknessScheduleController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _alarmHelper = DarknessAlarmHelper(this);
     dayStartHourRx.value =
         _storage.read<int>(StorageKeys.darknessDayStartHour) ?? _kDefaultDayStartHour;
     alertMinutesBeforeRx.value =
@@ -166,7 +157,7 @@ class DarknessScheduleController extends GetxController {
       snapshotRx.value = null;
       phasesCompletedToday.value = 0;
       _ticker?.cancel();
-      unawaited(_cancelDarknessNotifications());
+      unawaited(_alarmHelper.cancelDarknessNotifications());
       return;
     }
 
@@ -185,13 +176,17 @@ class DarknessScheduleController extends GetxController {
     _loadPhasesCompletedForToday();
     _recomputeSnapshot();
     _startTicker();
-    unawaited(_rescheduleAllNotifications());
+    unawaited(_alarmHelper.rescheduleAllNotifications());
   }
 
   void _refresh() {
     if (_lastStartDateRaw == null || _lastAgeInDays == null) return;
     _recomputeSnapshot();
-    unawaited(_rescheduleAllNotifications());
+    unawaited(_alarmHelper.rescheduleAllNotifications());
+  }
+
+  void refresh() {
+    _refresh();
   }
 
   void _startTicker() {
@@ -206,7 +201,7 @@ class DarknessScheduleController extends GetxController {
           _ticker?.cancel();
           _ticker = Timer.periodic(const Duration(minutes: 1), (_) {
             _recomputeSnapshot();
-            _checkForegroundPhaseAlarm();
+            _alarmHelper.checkForegroundPhaseAlarm();
           });
           return;
         }
@@ -214,7 +209,7 @@ class DarknessScheduleController extends GetxController {
         return;
       }
       _recomputeSnapshot();
-      _checkForegroundPhaseAlarm();
+      _alarmHelper.checkForegroundPhaseAlarm();
     }
 
     if (manualDarknessActive.value) {
@@ -224,7 +219,6 @@ class DarknessScheduleController extends GetxController {
     }
   }
 
-  /// Start manual darkness: one period (from total hours / phases, max 2h). Countdown runs until stop or end.
   void startManualDarkness() {
     if (manualDarknessActive.value) return;
 
@@ -261,23 +255,14 @@ class DarknessScheduleController extends GetxController {
         );
         _savePhasesCompletedForToday();
 
-        // Trigger finish notification/alarm
         if (notificationsEnabled) {
-          Get.toNamed<void>(
-            AppRoute.darknessAlarm,
-            arguments: <String, dynamic>{
-              'type': 'darkness_alarm',
-              'title': 'انتهى وقت الإظلام',
-              'body': 'لقد انتهت فترة الإظلام المحددة',
-              'phase': phasesCompletedToday.value,
-            },
-          );
+          _alarmHelper.checkForegroundPhaseAlarm();
         }
 
         _ticker?.cancel();
         _ticker = Timer.periodic(const Duration(minutes: 1), (_) {
           _recomputeSnapshot();
-          _checkForegroundPhaseAlarm();
+          _alarmHelper.checkForegroundPhaseAlarm();
         });
         return;
       }
@@ -341,16 +326,14 @@ class DarknessScheduleController extends GetxController {
     return _numberOfPhases(h);
   }
 
-  /// Returns the next scheduled alarm time (sorted earliest first).
   DateTime? get nextAlarmTime {
     if (!notificationsEnabled) return null;
-    final List<DateTime> times = _getPhaseReminderTimesNext();
+    final List<DateTime> times = _alarmHelper.getPhaseReminderTimesNext();
     if (times.isEmpty) return null;
     times.sort();
     return times.first;
   }
 
-  /// مدة كل مرحلة بالساعات (للعرض)، أقصاها 2 ساعة.
   double get periodLengthHoursForDisplay {
     final int h = darknessHoursForDayRx.value;
     if (h <= 0) return 0;
@@ -362,7 +345,7 @@ class DarknessScheduleController extends GetxController {
   static int _numberOfPhases(int totalDarknessHours) {
     final int h = totalDarknessHours.clamp(0, 24);
     if (h <= 0) return 0;
-    if (h <= 2) return h; // 1h => 1 phase, 2h => 2 phases
+    if (h <= 2) return h;
     final int minutes = h * 60;
     return (minutes / _maxDarknessBlockMinutes).ceil();
   }
@@ -373,12 +356,10 @@ class DarknessScheduleController extends GetxController {
     );
     if (list != null && phase1Based <= list.length) {
       final Object? v = list[phase1Based - 1];
-      // Check for null or invalid value explicitly if needed, but here we expect valid ints or nulls in list
       if (v == null) return null;
       final int? h = (v is num) ? v.toInt() : int.tryParse(v.toString());
       if (h != null && h >= 0 && h <= 23) return h;
     }
-    // Return null instead of default to indicate "not set"
     return null;
   }
 
@@ -424,7 +405,6 @@ class DarknessScheduleController extends GetxController {
             .toList();
 
     while (intHours.length < phase1Based) {
-      // Add nulls for unset phases
       intHours.add(null);
       intMinutes.add(null);
     }
@@ -514,241 +494,6 @@ class DarknessScheduleController extends GetxController {
     _storage.write('$StorageKeys.darknessPhasesDonePrefix$key', phasesCompletedToday.value);
   }
 
-  List<DateTime> _getPhaseReminderTimesNext() {
-    final int n = numberOfPhasesForToday;
-    if (n <= 0) return <DateTime>[];
-    final DateTime? cycleDay = _cycleDayDateForToday();
-    if (cycleDay == null) return <DateTime>[];
-
-    final DateTime now = DateTime.now();
-    final List<DateTime> times = <DateTime>[];
-    for (int phase = 1; phase <= n; phase++) {
-      final int? hour = getPhaseReminderHour(phase);
-      final int? minute = getPhaseReminderMinute(phase);
-      if (hour == null || minute == null) continue; // Skip if not set
-
-      DateTime at = DateTime(
-        cycleDay.year,
-        cycleDay.month,
-        cycleDay.day,
-        hour,
-        minute,
-      );
-      if (!at.isAfter(now)) {
-        at = at.add(const Duration(days: 1));
-      }
-      times.add(at);
-    }
-    return times;
-  }
-
-  Future<void> _rescheduleAllNotifications() async {
-    if (!notificationsEnabled || !Get.isRegistered<NotificationService>()) {
-      return;
-    }
-
-    await _cancelDarknessNotifications();
-
-    await _scheduleTransitionNotifications();
-    await _schedulePhaseNotifications();
-  }
-
-  Future<void> _schedulePhaseNotifications() async {
-    final int n = numberOfPhasesForToday;
-    if (n <= 0) return;
-
-    final DateTime now = DateTime.now();
-    for (int phase = 1; phase <= n; phase++) {
-      final int? hour = getPhaseReminderHour(phase);
-      final int? minute = getPhaseReminderMinute(phase);
-      if (hour == null || minute == null) continue;
-
-      final String todayStr = _cycleDayKeyForToday();
-      if (todayStr.isEmpty) continue; // Should not happen if n > 0
-
-      // Calculate scheduled time for today
-      // NOTE: We assume cycle day = today. If cycle day != today (e.g. historical viewing), we probably shouldn't schedule real alarms?
-      // But numberOfPhasesForToday checks _effectiveAgeForNow.
-      // If effectiveAge is for today, then we schedule for today (or tomorrow).
-
-      DateTime scheduledAt = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        hour,
-        minute,
-      );
-
-      if (!scheduledAt.isAfter(now)) {
-        scheduledAt = scheduledAt.add(const Duration(days: 1));
-      }
-
-      String? cycleName;
-      if (Get.isRegistered<CycleController>()) {
-        cycleName = Get.find<CycleController>().currentCycle['name'] as String?;
-      }
-
-      // Use alarm set time as startTime
-      final DateFormat fmt = DateFormat('h:mm a', 'ar');
-      final String startTimeStr = fmt.format(scheduledAt);
-
-      String? endTimeStr;
-      String? durationStr;
-      int? phaseDurationMinutes;
-
-      final snapshot = snapshotRx.value;
-      if (snapshot != null) {
-        final darkSegments = snapshot.segments.where((s) => s.isDark).toList();
-        if (phase <= darkSegments.length) {
-          final seg = darkSegments[phase - 1];
-          phaseDurationMinutes = seg.end.difference(seg.start).inMinutes;
-          final DateTime endTime = scheduledAt.add(
-            Duration(minutes: phaseDurationMinutes),
-          );
-          endTimeStr = fmt.format(endTime);
-          final int dh = phaseDurationMinutes ~/ 60;
-          final int dm = phaseDurationMinutes % 60;
-          durationStr =
-              dh > 0 ? '$dh ساعة${dm > 0 ? ' و $dm دقيقة' : ''}' : '$dm دقيقة';
-        }
-      }
-
-      final int totalDarknessHours = darknessHoursForDayRx.value;
-      final int totalPhases = n;
-
-      await NotificationService.instance.scheduleDarknessNotification(
-        id: phaseReminderId(phase),
-        scheduledAt: scheduledAt,
-        title: 'حان وقت مرحلة الإظلام $phase',
-        body: 'ابدأ المرحلة $phase من الإظلام',
-        phase: phase,
-        cycleName: cycleName,
-        startTime: startTimeStr,
-        endTime: endTimeStr,
-        duration: durationStr,
-        totalPhases: totalPhases,
-        age: _lastAgeInDays,
-        totalDarknessHours: totalDarknessHours,
-      );
-    }
-  }
-
-  Future<void> _checkForegroundPhaseAlarm() async {
-    if (!notificationsEnabled) return;
-    final int totalPhases = numberOfPhasesForToday;
-    if (totalPhases <= 0) return;
-
-    final DateTime now = DateTime.now();
-    final String todayStr =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-
-    final int? currentAge = _lastAgeInDays;
-
-    for (int phase = 1; phase <= totalPhases; phase++) {
-      final int? h = getPhaseReminderHour(phase);
-      final int? m = getPhaseReminderMinute(phase);
-      if (h == null || m == null) continue;
-
-      final DateTime scheduledToday = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        h,
-        m,
-      );
-      if (!now.isBefore(scheduledToday)) {
-        final Duration diff = now.difference(scheduledToday);
-        if (diff <= const Duration(minutes: 2)) {
-          final String key = '$StorageKeys.darknessAlarmShownPrefix${todayStr}_$phase';
-          if (_storage.read<bool>(key) != true) {
-            _storage.write(key, true);
-
-            // Invoke background launch
-            if (GetPlatform.isAndroid) {
-              try {
-                const MethodChannel platform = MethodChannel(
-                  'com.example.farkha_app/alarm',
-                );
-                await platform.invokeMethod('bringAppToForeground');
-              } catch (e) {
-                // Ignore platform channel errors
-              }
-            }
-
-            String? cycleName;
-            if (Get.isRegistered<CycleController>()) {
-              cycleName =
-                  Get.find<CycleController>().currentCycle['name'] as String?;
-            }
-
-            // Use alarm set time as startTime
-            final DateFormat fmt = DateFormat('h:mm a', 'ar');
-            final String startTimeStr = fmt.format(scheduledToday);
-
-            // Calculate phase duration and end time from dark segments
-            String? endTimeStr;
-            String? durationStr;
-            int? phaseDurationMinutes;
-
-            final snapshot = snapshotRx.value;
-            if (snapshot != null) {
-              final darkSegments =
-                  snapshot.segments.where((s) => s.isDark).toList();
-              if (phase <= darkSegments.length) {
-                final seg = darkSegments[phase - 1];
-                phaseDurationMinutes = seg.end.difference(seg.start).inMinutes;
-                final DateTime endTime = scheduledToday.add(
-                  Duration(minutes: phaseDurationMinutes),
-                );
-                endTimeStr = fmt.format(endTime);
-                final int dh = phaseDurationMinutes ~/ 60;
-                final int dm = phaseDurationMinutes % 60;
-                durationStr =
-                    dh > 0
-                        ? '$dh ساعة${dm > 0 ? ' و $dm دقيقة' : ''}'
-                        : '$dm دقيقة';
-              }
-            }
-
-            final int totalDarknessHours = darknessHoursForDayRx.value;
-
-            Get.toNamed<void>(
-              AppRoute.darknessAlarm,
-              arguments: <String, dynamic>{
-                'type': 'darkness_alarm',
-                'title': 'حان وقت مرحلة الإظلام $phase',
-                'body': 'ابدأ المرحلة $phase من الإظلام',
-                'phase': phase,
-                if (cycleName != null) 'cycleName': cycleName,
-                'startTime': startTimeStr,
-                if (endTimeStr != null) 'endTime': endTimeStr,
-                if (durationStr != null) 'duration': durationStr,
-                if (phaseDurationMinutes != null)
-                  'phaseDurationMinutes': phaseDurationMinutes,
-                'totalPhases': totalPhases,
-                if (currentAge != null) 'age': currentAge,
-                'totalDarknessHours': totalDarknessHours,
-              },
-            );
-          }
-        }
-      }
-    }
-  }
-
-  Future<void> minimizeApp() async {
-    if (GetPlatform.isAndroid) {
-      try {
-        const MethodChannel platform = MethodChannel(
-          'com.example.farkha_app/alarm',
-        );
-        await platform.invokeMethod('moveTaskToBack');
-      } catch (e) {
-        // Ignore
-      }
-    }
-  }
-
   static int _effectiveAgeForNow({
     required String startDateRaw,
     required int ageInDays,
@@ -778,8 +523,6 @@ class DarknessScheduleController extends GetxController {
     return DateTime(dayDate.year, dayDate.month, dayDate.day, dayStartHour);
   }
 
-  /// Builds the 24h schedule starting at [dayStart].
-  /// Darkness is split into blocks of max 2 hours, then distributed across the day.
   static List<DarknessScheduleSegment> buildDailySchedule({
     required DateTime dayStart,
     required int totalDarknessHours,
@@ -928,38 +671,7 @@ class DarknessScheduleController extends GetxController {
     return List<int>.generate(parts, (int i) => base + (i < remainder ? 1 : 0));
   }
 
-  Future<void> _scheduleTransitionNotifications() async {
-    final DarknessScheduleSnapshot? snap = snapshotRx.value;
-    if (snap == null) return;
-
-    final int minutesBefore = alertMinutesBefore.clamp(0, 180);
-    final DateTime now = DateTime.now();
-    final List<DateTime> transitions = _transitionTimes(snap.segments);
-
-    for (int i = 0; i < transitions.length; i++) {
-      final DateTime at = transitions[i];
-      final DateTime scheduledAt =
-          minutesBefore > 0
-              ? at.subtract(Duration(minutes: minutesBefore))
-              : at;
-      if (!scheduledAt.isAfter(now)) continue;
-
-      final bool isDarkStarting = _isDarkAtOrAfter(at, snap.segments);
-      final String title =
-          isDarkStarting ? 'سيبدأ الإظلام قريباً' : 'سيبدأ وقت الإضاءة قريباً';
-      final String body =
-          minutesBefore > 0 ? 'بعد $minutesBefore دقائق' : 'الآن';
-
-      await NotificationService.instance.scheduleDarknessNotification(
-        id: transitionReminderId(i),
-        scheduledAt: scheduledAt,
-        title: title,
-        body: body,
-      );
-    }
-  }
-
-  static List<DateTime> _transitionTimes(
+  static List<DateTime> transitionTimes(
     List<DarknessScheduleSegment> segments,
   ) {
     if (segments.length < 2) return <DateTime>[];
@@ -974,7 +686,7 @@ class DarknessScheduleController extends GetxController {
     return out;
   }
 
-  static bool _isDarkAtOrAfter(
+  static bool isDarkAtOrAfter(
     DateTime at,
     List<DarknessScheduleSegment> segments,
   ) {
@@ -1002,135 +714,16 @@ class DarknessScheduleController extends GetxController {
     return next?.isDark ?? false;
   }
 
-  Future<void> _cancelDarknessNotifications() async {
-    if (!Get.isRegistered<NotificationService>()) return;
-    await NotificationService.instance.cancelDarknessNotifications();
-  }
-
   static Duration? durationUntil(DateTime? target) {
     if (target == null) return null;
     final Duration d = target.difference(DateTime.now());
     return d.isNegative ? null : d;
   }
-  // ── Permissions Logic ──
 
-  /// Checks if permissions are granted. If not, shows dialog. If granted, enables notifications.
-  /// Checks if permissions are granted. If not, shows dialog. If granted, enables notifications.
-  Future<bool> requirePermissions() async {
-    bool permissionsGranted = await _checkIfPermissionsGranted();
-    if (permissionsGranted) {
-      notificationsEnabled = true;
-      return true;
-    }
+  Future<bool> requirePermissions() => _alarmHelper.requirePermissions();
 
-    if (Get.isDialogOpen ?? false) return false;
+  Future<void> checkDarknessFeatureSuggestion(int ageInDays) =>
+      _alarmHelper.checkDarknessFeatureSuggestion(ageInDays);
 
-    // Wait for dialog result: true = enabled/requested, false = later/dismissed
-    final bool? result = await Get.dialog<bool>(
-      AppAlertDialog(
-        icon: Icons.alarm_on_rounded,
-        iconColor: Colors.deepPurple,
-        title: 'تنبيهات الإظلام',
-        description:
-            'لضمان ظهور منبه الإظلام في الوقت المحدد، يرجى منح صلاحية "الظهور فوق التطبيقات".',
-        primaryActionLabel: 'منح الصلاحيات',
-        primaryAction: () async {
-          if (Get.isDialogOpen ?? false) Get.back<bool>(result: true);
-        },
-        secondaryActionLabel: 'لاحقاً',
-        secondaryAction: () {
-          if (Get.isDialogOpen ?? false) Get.back<bool>(result: false);
-        },
-      ),
-    );
-
-    if (result == true) {
-      await _requestMissingPermissions();
-      // Check again after request
-      permissionsGranted = await _checkIfPermissionsGranted();
-      if (permissionsGranted) {
-        notificationsEnabled = true;
-        return true;
-      }
-    }
-
-    // If we are here, either dismissed or permissions still denied
-    notificationsEnabled = false;
-    return false;
-  }
-
-  /// Checks if we should suggest the darkness alarm feature (Day 5).
-  Future<void> checkDarknessFeatureSuggestion(int ageInDays) async {
-    // Only suggest on the first day of darkness (Day 5, index 4)
-    if (ageInDays != 5) return;
-
-    // Check if already shown or alarms already enabled
-    if (_storage.read<bool>(StorageKeys.darknessSuggestionShown) == true) return;
-    if (notificationsEnabled) return;
-
-    if (Get.isDialogOpen ?? false) return;
-
-    // Mark as shown so we don't annoy user every time they enter screen on Day 5
-    _storage.write(StorageKeys.darknessSuggestionShown, true);
-
-    await Get.dialog<void>(
-      AppAlertDialog(
-        icon: Icons.lightbulb_outline_rounded,
-        iconColor: Colors.amber,
-        title: 'تنبيه الإظلام',
-        description:
-            'بدأ برنامج الإظلام اليوم! يمكنك ضبط منبه لتذكيرك بمواعيد الإضاءة والإظلام لضمان راحة الطيور.',
-        primaryActionLabel: 'ضبط المنبه',
-        primaryAction: () async {
-          if (Get.isDialogOpen ?? false) Get.back<void>();
-
-          final bool granted = await requirePermissions();
-          if (granted) {
-            Get.bottomSheet<void>(
-              DarknessSettingsSheet(controller: this),
-              isScrollControlled: true,
-            );
-          }
-        },
-        secondaryActionLabel: 'لاحقاً',
-        secondaryAction: () {
-          if (Get.isDialogOpen ?? false) Get.back<void>();
-        },
-      ),
-    );
-  }
-
-  Future<bool> _checkIfPermissionsGranted() async {
-    final bool notif = await Permission.notification.isGranted;
-    bool exact = true;
-    if (GetPlatform.isAndroid) {
-      if (await Permission.scheduleExactAlarm.status.isDenied) {
-        exact = false;
-      }
-      if (await Permission.systemAlertWindow.status.isDenied) {
-        exact = false;
-      }
-    }
-    permissionsGranted.value = notif && exact;
-    return notif && exact;
-  }
-
-  Future<void> _requestMissingPermissions() async {
-    final PermissionController permCtrl = Get.find<PermissionController>();
-
-    if (!await Permission.notification.isGranted) {
-      await permCtrl.checkAndRequestNotificationPermission();
-    }
-
-    if (GetPlatform.isAndroid) {
-      if (!await Permission.scheduleExactAlarm.isGranted) {
-        await permCtrl.checkAndRequestExactAlarmPermission();
-      }
-      if (!await Permission.systemAlertWindow.isGranted) {
-        await permCtrl.checkAndRequestSystemAlertWindowPermission();
-      }
-    }
-
-    _refresh();
-  }
+  Future<void> minimizeApp() => _alarmHelper.minimizeApp();
 }

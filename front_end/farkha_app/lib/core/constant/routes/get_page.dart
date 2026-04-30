@@ -66,14 +66,11 @@ List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
   GetPage(
     name: '/',
-    page: () => const Home(),
+    page: () => const HomeScreen(),
     middlewares: [OnboardingMiddleWare()],
     binding: HomeBindings(),
   ),
 
-  // ============================== Test =======================================
-  // GetPage(name: AppRoute.test, page: () => const Test()),
-  // GetPage(name: AppRoute.test2, page: () => const Test2()),
   GetPage(name: AppRoute.onBoarding, page: () => const OnBoarding()),
 
   // ================================= auth ====================================
@@ -103,13 +100,13 @@ List<GetPage<dynamic>> pages = [
   // ================================ cycle ====================================
   GetPage(
     name: AppRoute.addCycle,
-    page: () => AddCycle(),
+    page: () => AddCycleScreen(),
     middlewares: [AuthMiddleware()],
   ),
 
   GetPage(
     name: AppRoute.cycle,
-    page: () => const Cycle(),
+    page: () => const CycleScreen(),
     binding: BindingsBuilder<void>(() {
       if (!Get.isRegistered<CycleController>()) {
         Get.put(CycleController(), permanent: true);
@@ -181,11 +178,11 @@ List<GetPage<dynamic>> pages = [
   // ========================== view follow up tools ===========================
   GetPage(
     name: AppRoute.broilerChickenRequirements,
-    page: () => BroilerChickenRequirements(),
+    page: () => BroilerChickenRequirementsScreen(),
   ),
 
   // ! disease
-  GetPage(name: AppRoute.diseases, page: () => const Disease()),
+  GetPage(name: AppRoute.diseases, page: () => const DiseasesScreen()),
 
   GetPage(name: AppRoute.diseaseDetails, page: () => const DiseaseDetails()),
 
@@ -201,7 +198,7 @@ List<GetPage<dynamic>> pages = [
   // ! feasibility study
   GetPage(
     name: AppRoute.feasibilityStudy,
-    page: () => const FeasibilityStudy(),
+    page: () => const FeasibilityStudyScreen(),
   ),
 
   GetPage(name: AppRoute.chickenDensity, page: () => const ChickenDensity()),
@@ -240,7 +237,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.darknessLevels,
-    page: () => const DarknessLevelsView(),
+    page: () => const DarknessLevelsScreen(),
   ),
   GetPage(name: AppRoute.totalFarmWeight, page: () => TotalFarmWeightScreen()),
   GetPage(name: AppRoute.totalRevenue, page: () => TotalRevenueScreen()),

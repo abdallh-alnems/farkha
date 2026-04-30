@@ -12,8 +12,8 @@ import '../../widget/appbar/custom_appbar.dart';
 import '../../widget/tools/broiler_chicken_requirements/items_broiler_chicken_requirements.dart';
 import '../../widget/tools/related_articles_section.dart';
 
-class BroilerChickenRequirements extends StatelessWidget {
-  BroilerChickenRequirements({super.key});
+class BroilerChickenRequirementsScreen extends StatelessWidget {
+  BroilerChickenRequirementsScreen({super.key});
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -23,7 +23,7 @@ class BroilerChickenRequirements extends StatelessWidget {
             ? Get.find<BroilerController>()
             : Get.put(BroilerController());
 
-    logToolPageViewOnce(widgetType: BroilerChickenRequirements, toolId: 13);
+    logToolPageViewOnce(widgetType: BroilerChickenRequirementsScreen, toolId: 13);
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;

@@ -5,11 +5,12 @@ import 'package:get/get.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/functions/number_format.dart';
 import '../../../core/functions/tool_page_view.dart';
+import '../../../core/shared/input_fields/three_input_fields.dart';
+import '../../../core/shared/tools/tool_input_card.dart';
 import '../../../logic/controller/tools_controller/feed_cost_per_kilo_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
-import '../../../core/shared/input_fields/three_input_fields.dart';
 import '../../widget/tools/related_articles_section.dart';
 import '../../widget/tools/tools_button.dart';
 
@@ -73,28 +74,7 @@ class FeedCostPerKiloScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurfaceElevatedColor
-                      : AppColors.lightSurfaceColor,
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                        : AppColors.lightOutlineColor.withValues(alpha: 0.3),
-                  ),
-                  boxShadow: isDark
-                      ? null
-                      : [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                ),
+              ToolInputCard(
                 child: Form(
                   key: _formKey,
                   child: ThreeInputFields(

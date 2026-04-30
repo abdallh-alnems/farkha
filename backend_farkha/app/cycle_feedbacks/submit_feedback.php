@@ -1,7 +1,10 @@
 <?php
 
 require_once __DIR__ . '/../../core/connect.php';
+require_once __DIR__ . '/../../core/firebase_verifier.php';
 include __DIR__ . '/../../core/queries/queries.php';
+
+checkAuthenticate();
 
 $input = $_POST;
 if (empty($input)) {
@@ -10,6 +13,27 @@ if (empty($input)) {
     if (!is_array($input)) {
         parse_str($raw, $input);
     }
+}
+
+$token = $input['token'] ?? null;
+
+if (!$token) {
+    http_response_code(400);
+    echo json_encode([
+        'status' => 'fail',
+        'message' => 'Token is required'
+    ]);
+    exit;
+}
+
+$userId = getUserIdFromToken($token, $con);
+if (!$userId) {
+    http_response_code(401);
+    echo json_encode([
+        'status' => 'fail',
+        'message' => 'Invalid token or user not found'
+    ]);
+    exit;
 }
 
 $rating = $input['rating'] ?? null;
@@ -89,16 +113,17 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    error_log('submit_feedback error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
         'message' => 'Database error'
     ]);
 } catch (Exception $e) {
+    error_log('submit_feedback error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'fail',
         'message' => 'Server error'
     ]);
 }
-?>

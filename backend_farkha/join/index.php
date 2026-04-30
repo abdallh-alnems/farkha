@@ -94,7 +94,7 @@ $playStoreUrl = "https://play.google.com/store/apps/details?id=ni.nims.frkha";
         // Auto-try to open app on page load
         <?php if ($code): ?>
         setTimeout(function() {
-            window.location.href = "<?php echo $appScheme; ?>";
+            window.location.href = <?php echo json_encode($appScheme); ?>;
         }, 500);
         <?php endif; ?>
     </script>

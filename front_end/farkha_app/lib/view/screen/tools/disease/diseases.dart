@@ -9,12 +9,12 @@ import '../../../widget/tools/disease/disease_card.dart';
 import '../../../widget/tools/disease/question_card.dart';
 import '../../../widget/tools/related_articles_section.dart';
 
-class Disease extends StatelessWidget {
-  const Disease({super.key});
+class DiseasesScreen extends StatelessWidget {
+  const DiseasesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    logToolPageViewOnce(widgetType: Disease, toolId: 12);
+    logToolPageViewOnce(widgetType: DiseasesScreen, toolId: 12);
 
     return Scaffold(
       body: Column(

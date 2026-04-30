@@ -10,6 +10,7 @@ include __DIR__ . '/../../core/queries/queries.php';
 
 // 🔒 حماية الـ API endpoint
 checkAuthenticate();
+requirePostMethod();
 
 // قراءة البيانات المرسلة
 $input = json_decode(file_get_contents('php://input'), true);

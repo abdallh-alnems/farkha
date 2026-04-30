@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../core/class/status_request.dart';
 import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
-import '../../data/data_source/remote/cycle_data/cycle_data.dart';
+import '../../data/data_source/remote/cycle_data/cycle_note_data.dart';
 import 'cycle_controller.dart';
 
 class NoteItem {
@@ -33,21 +33,21 @@ class NoteItem {
 
 class CycleNotesController extends GetxController {
   CycleNotesController({
-    CycleData? cycleData,
+    CycleNoteData? cycleData,
     FirebaseAuth? auth,
     MyServices? myServices,
   })  : _cycleDataOverride = cycleData,
         _authOverride = auth,
         _myServicesOverride = myServices;
 
-  final CycleData? _cycleDataOverride;
+  final CycleNoteData? _cycleDataOverride;
   final FirebaseAuth? _authOverride;
   final MyServices? _myServicesOverride;
 
   final RxList<NoteItem> notes = <NoteItem>[].obs;
   late final MyServices myServices;
   late final FirebaseAuth _auth;
-  late final CycleData _cycleData;
+  late final CycleNoteData _cycleData;
 
   // حالة التحميل
   final Rx<StatusRequest> notesStatus = StatusRequest.none.obs;
@@ -56,7 +56,7 @@ class CycleNotesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _cycleData = _cycleDataOverride ?? CycleData();
+    _cycleData = _cycleDataOverride ?? CycleNoteData();
     _auth = _authOverride ?? FirebaseAuth.instance;
     myServices = _myServicesOverride ?? Get.find<MyServices>();
     _loadNotes();

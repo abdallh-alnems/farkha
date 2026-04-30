@@ -19,14 +19,14 @@ import '../widget/home/tools_section.dart';
 import '../widget/home/invitation_card.dart';
 import '../widget/tutorial/home_tutorial.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeScreen> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<HomeScreen> {
   bool _isTutorialActive = false;
   MyServices myServices = Get.find();
 

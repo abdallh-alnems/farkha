@@ -29,14 +29,14 @@ import '../../widget/cycle/water_consumption_card.dart';
 import '../../widget/cycle/page_turning_tips.dart';
 import '../../widget/cycle/performance_metrics_card.dart';
 
-class Cycle extends StatefulWidget {
-  const Cycle({super.key});
+class CycleScreen extends StatefulWidget {
+  const CycleScreen({super.key});
 
   @override
-  State<Cycle> createState() => _CycleState();
+  State<CycleScreen> createState() => _CycleState();
 }
 
-class _CycleState extends State<Cycle> with TickerProviderStateMixin {
+class _CycleState extends State<CycleScreen> with TickerProviderStateMixin {
   late final CycleController cycleCtrl;
   late final BroilerController broilerCtrl;
 

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/fake_cycle_data.dart';
+import '../../helpers/fake_cycle_note_data.dart';
 import '../../helpers/test_harness.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
@@ -15,6 +16,7 @@ class MockMyServices extends Mock implements MyServices {}
 
 void main() {
   late FakeCycleData fakeCycleData;
+  late FakeCycleNoteData fakeCycleNoteData;
   late CycleNotesController controller;
   late MockFirebaseAuth mockAuth;
   late MockUser mockUser;
@@ -29,6 +31,7 @@ void main() {
     mockAuth = MockFirebaseAuth();
     mockUser = MockUser();
     fakeCycleData = FakeCycleData();
+    fakeCycleNoteData = FakeCycleNoteData();
     mockMyServices = MockMyServices();
 
     final storage = await TestHarness.getStorage();
@@ -50,7 +53,7 @@ void main() {
     Get.put<CycleController>(fakeCycleCtrl);
 
     controller = CycleNotesController(
-      cycleData: fakeCycleData,
+      cycleData: fakeCycleNoteData,
       auth: mockAuth,
       myServices: mockMyServices,
     );
@@ -61,7 +64,7 @@ void main() {
 
   group('CycleNotesController DI', () {
     test('يقبل cycleData مخصّص', () {
-      final ctrl = CycleNotesController(cycleData: fakeCycleData);
+      final ctrl = CycleNotesController(cycleData: fakeCycleNoteData);
       expect(ctrl, isNotNull);
     });
 
