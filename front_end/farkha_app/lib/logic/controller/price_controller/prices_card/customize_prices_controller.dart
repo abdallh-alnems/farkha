@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/class/status_request.dart';
+import '../../../../../core/constant/storage_keys.dart';
 import '../../../../../core/functions/handing_data_controller.dart';
 import '../../../../../core/services/initialization.dart';
 import '../../../../../core/services/notification_service.dart';
@@ -19,8 +20,6 @@ class CustomizePricesController extends GetxController {
   TypesData typesData = TypesData(Get.find());
 
   final MyServices _myServices = Get.find();
-  static const String _selectedTypesKey = 'selected_price_types';
-  static const String _notificationTypesKey = 'notification_enabled_types';
 
   @override
   void onInit() {
@@ -31,7 +30,7 @@ class CustomizePricesController extends GetxController {
 
   List<int> _loadSelectedTypes() {
     final savedTypes = _myServices.getStorage.read<List<dynamic>>(
-      _selectedTypesKey,
+      StorageKeys.selectedPriceTypes,
     );
 
     if (savedTypes != null && savedTypes.isNotEmpty) {
@@ -47,7 +46,7 @@ class CustomizePricesController extends GetxController {
 
   List<String> _loadNotificationEnabledTypes() {
     final savedNotifications = _myServices.getStorage.read<List<dynamic>>(
-      _notificationTypesKey,
+      StorageKeys.notificationEnabledTypes,
     );
 
     if (savedNotifications != null && savedNotifications.isNotEmpty) {
@@ -228,7 +227,7 @@ class CustomizePricesController extends GetxController {
             .toList();
 
     _myServices.getStorage.write(
-      _notificationTypesKey,
+      StorageKeys.notificationEnabledTypes,
       notificationEnabledTopics,
     );
   }
@@ -244,7 +243,7 @@ class CustomizePricesController extends GetxController {
       selectedTypes.add(1);
     }
 
-    _myServices.getStorage.write(_selectedTypesKey, selectedTypes);
+    _myServices.getStorage.write(StorageKeys.selectedPriceTypes, selectedTypes);
   }
 
   void _updatePricesCardController() {
@@ -267,6 +266,6 @@ class CustomizePricesController extends GetxController {
       final String typeName = item['name'] as String;
       namesMap[typeId.toString()] = typeName;
     }
-    _myServices.getStorage.write('type_names', namesMap);
+    _myServices.getStorage.write(StorageKeys.typeNames, namesMap);
   }
 }

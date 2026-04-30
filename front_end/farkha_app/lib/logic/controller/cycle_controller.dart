@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../core/class/status_request.dart';
 import '../../core/constant/routes/route.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../core/services/notification_service.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
@@ -127,8 +128,6 @@ class CycleController extends GetxController {
   final TextEditingController dateRawController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  static const String _storageKey = 'cycles';
-  static const String _deletedCyclesKey = 'deleted_cycles';
 
   // Data
   final RxList<Map<String, dynamic>> cycles = <Map<String, dynamic>>[].obs;
@@ -229,7 +228,7 @@ class CycleController extends GetxController {
 
   void _loadCycles() {
     // قراءة الدورات من GetStorage (البيانات الأساسية فقط بدون تفاصيل)
-    final saved = myServices.getStorage.read<List<dynamic>>(_storageKey);
+    final saved = myServices.getStorage.read<List<dynamic>>(StorageKeys.cycles);
     if (saved != null && saved.isNotEmpty) {
       final loadedCycles =
           saved.map((item) {
@@ -629,7 +628,7 @@ class CycleController extends GetxController {
 
             // فلترة الدورات المحذوفة محلياً (تم حذفها عند إنهائها)
             final deletedCycles =
-                myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ??
+                myServices.getStorage.read<List<dynamic>>(StorageKeys.deletedCycles) ??
                 <dynamic>[];
             if (deletedCycles.isNotEmpty) {
               cycles.removeWhere((cycle) {
@@ -710,7 +709,7 @@ class CycleController extends GetxController {
             }
 
             // حفظ الدورات في GetStorage بعد تحديثها من API
-            myServices.getStorage.write(_storageKey, cycles.toList());
+            myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
             // تحديث UI بعد الفلترة والحفظ
             cycles.refresh();
@@ -865,7 +864,7 @@ class CycleController extends GetxController {
       if (!silent) cycleDetailsStatus.value = StatusRequest.loading;
 
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) {
         _loadingCycleDetails.remove(cycleId);
         if (!silent) cycleDetailsStatus.value = StatusRequest.none;
@@ -1076,7 +1075,7 @@ class CycleController extends GetxController {
       historicCycleStatus.value = StatusRequest.loading;
 
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) {
         historicCycleStatus.value = StatusRequest.none;
         return;
@@ -1567,7 +1566,7 @@ class CycleController extends GetxController {
 
       // حفظ محلياً فقط للدورات المحلية (بدون cycle_id)
       if (entry['cycle_id'] == null) {
-        await myServices.getStorage.write(_storageKey, cycles.toList());
+        await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
       }
       clearFields();
 
@@ -1595,11 +1594,11 @@ class CycleController extends GetxController {
     try {
       // التحقق من تسجيل الدخول
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) {
         // إذا لم يكن المستخدم مسجل دخول، احفظ محلياً فقط
         cycles.add(entry);
-        await myServices.getStorage.write(_storageKey, cycles.toList());
+        await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
         clearFields();
         cycleSaveStatus.value = StatusRequest.none;
         isCreatingCycle.value = false;
@@ -1647,7 +1646,7 @@ class CycleController extends GetxController {
         (failure) {
           // في حالة فشل API، احفظ محلياً على أي حال
           cycles.add(entry);
-          myServices.getStorage.write(_storageKey, cycles.toList());
+          myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
           if (failure == StatusRequest.offlineFailure) {
             cycleSaveStatus.value = StatusRequest.offlineFailure;
           } else if (failure == StatusRequest.serverFailure) {
@@ -1677,7 +1676,7 @@ class CycleController extends GetxController {
           }
 
           cycles.add(entry);
-          myServices.getStorage.write(_storageKey, cycles.toList());
+          myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
           cycleSaveStatus.value = StatusRequest.success;
 
           // Schedule notifications
@@ -1715,7 +1714,7 @@ class CycleController extends GetxController {
     } catch (e) {
       // في حالة أي خطأ، احفظ محلياً
       cycles.add(entry);
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
       isCreatingCycle.value = false;
       cycleSaveStatus.value = StatusRequest.serverFailure;
       clearFields();
@@ -1748,19 +1747,19 @@ class CycleController extends GetxController {
   void _deleteCycleRelatedData(String cycleName) {
     try {
       // حذف المصروفات
-      final expensesKey = 'expenses_$cycleName';
+      final expensesKey = '${StorageKeys.expensesPrefix}$cycleName';
       if (myServices.getStorage.hasData(expensesKey)) {
         myServices.getStorage.remove(expensesKey);
       }
 
       // حذف البيانات المخصصة
-      final customDataKey = 'custom_data_$cycleName';
+      final customDataKey = '${StorageKeys.customDataPrefix}$cycleName';
       if (myServices.getStorage.hasData(customDataKey)) {
         myServices.getStorage.remove(customDataKey);
       }
 
       // حذف الملاحظات
-      final notesKey = 'notes_$cycleName';
+      final notesKey = '${StorageKeys.notesPrefix}$cycleName';
       if (myServices.getStorage.hasData(notesKey)) {
         myServices.getStorage.remove(notesKey);
       }
@@ -1784,7 +1783,7 @@ class CycleController extends GetxController {
       if (cycleId != null) {
         try {
           final isLoggedIn =
-              myServices.getStorage.read<bool>('is_logged_in') ?? false;
+              myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
           if (isLoggedIn) {
             final user = _auth.currentUser;
             if (user != null) {
@@ -1821,7 +1820,7 @@ class CycleController extends GetxController {
       cycles.removeAt(idx);
 
       // حفظ محلياً
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
       if (cycles.isNotEmpty) {
         currentCycle.assignAll(cycles.last);
@@ -1905,18 +1904,18 @@ class CycleController extends GetxController {
 
       // إضافة اسم الدورة إلى قائمة الدورات المحذوفة لمنع إعادة إضافتها من API
       final deletedCycles =
-          myServices.getStorage.read<List<dynamic>>(_deletedCyclesKey) ??
+          myServices.getStorage.read<List<dynamic>>(StorageKeys.deletedCycles) ??
           <dynamic>[];
       if (!deletedCycles.contains(cycleName)) {
         deletedCycles.add(cycleName);
         unawaited(
-          myServices.getStorage.write(_deletedCyclesKey, deletedCycles),
+          myServices.getStorage.write(StorageKeys.deletedCycles, deletedCycles),
         );
       }
     }
 
     // حفظ التغييرات فوراً (يمكن انتظاره لأنه ليس بطيئاً جداً، لكنه يأتي بعد تحديث الواجهة)
-    await myServices.getStorage.write(_storageKey, cycles.toList());
+    await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
     cycleEndStatus.value = StatusRequest.loading;
 
@@ -1942,7 +1941,7 @@ class CycleController extends GetxController {
   }) async {
     try {
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) {
         cycleEndStatus.value = StatusRequest.success;
         Future.delayed(const Duration(milliseconds: 500), () {
@@ -2091,7 +2090,7 @@ class CycleController extends GetxController {
 
     // حفظ محلياً فقط للدورات المحلية (بدون cycle_id)
     if (cycles[idx]['cycle_id'] == null) {
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
     }
   }
 
@@ -2115,7 +2114,7 @@ class CycleController extends GetxController {
       }
 
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) return;
 
       final user = _auth.currentUser;
@@ -2147,7 +2146,7 @@ class CycleController extends GetxController {
     Future<void>(() async {
       try {
         final isLoggedIn =
-            myServices.getStorage.read<bool>('is_logged_in') ?? false;
+            myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
         if (!isLoggedIn) return;
 
         final user = _auth.currentUser;
@@ -2210,7 +2209,7 @@ class CycleController extends GetxController {
       cycles.refresh();
 
       // حفظ في GetStorage دائماً (للدورات المحلية والمن API)
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
       // إرسال البيانات إلى API
       await _sendDataToServer(
@@ -2262,7 +2261,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
+    unawaited(myServices.getStorage.write(StorageKeys.cycles, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
@@ -2319,7 +2318,7 @@ class CycleController extends GetxController {
       cycles.refresh();
 
       // حفظ في GetStorage دائماً (للدورات المحلية والمن API)
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
       // إرسال البيانات إلى API
       await _sendDataToServer(label: 'التحصينات', value: text);
@@ -2366,7 +2365,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
+    unawaited(myServices.getStorage.write(StorageKeys.cycles, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
@@ -2423,7 +2422,7 @@ class CycleController extends GetxController {
       cycles.refresh();
 
       // حفظ في GetStorage دائماً (للدورات المحلية والمن API)
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
       // إرسال البيانات إلى API
       await _sendDataToServer(label: 'استهلاك العلف', value: amount.toString());
@@ -2477,7 +2476,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
+    unawaited(myServices.getStorage.write(StorageKeys.cycles, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];
@@ -2552,7 +2551,7 @@ class CycleController extends GetxController {
       cycles.refresh();
 
       // حفظ في GetStorage دائماً (للدورات المحلية والمن API)
-      await myServices.getStorage.write(_storageKey, cycles.toList());
+      await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
       // إرسال البيانات إلى API
       await _sendDataToServer(label: 'عدد النافق', value: count.toString());
@@ -2607,7 +2606,7 @@ class CycleController extends GetxController {
     cycles.refresh();
 
     // حفظ محلياً
-    unawaited(myServices.getStorage.write(_storageKey, cycles.toList()));
+    unawaited(myServices.getStorage.write(StorageKeys.cycles, cycles.toList()));
 
     // حذف من API في الخلفية
     final cycleId = currentCycle['cycle_id'];

@@ -7,9 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import '../../logic/controller/remote_config_controller.dart';
+import '../../view/widget/ad/interstitial.dart';
 import '../constant/firebase_options.dart';
 import 'analytics_service.dart';
 import 'dark_light_service.dart';
@@ -62,6 +64,11 @@ class MyServices extends GetxService {
 
     // Initialize deep link service
     await Get.putAsync(() => DeepLinkService().init());
+
+    // Initialize Google Mobile Ads SDK
+    MobileAds.instance.initialize().then((_) {
+      InterstitialAdService.instance.load();
+    });
 
     return this;
   }

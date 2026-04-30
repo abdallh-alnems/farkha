@@ -4,17 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/analytics_service.dart';
 import '../../core/services/test_mode_manager.dart';
 import '../../view/widget/app_review/app_review_dialog.dart';
 import '../../../logic/bindings/app_review_binding.dart';
 
 class ReviewPromptController extends GetxController {
-  static const String _kFirstLaunch = 'first_launch_at';
-  static const String _kLastActive = 'last_active_date';
-  static const String _kUniqueDaysCount = 'unique_active_days_count';
-  static const String _kDismissedAt = 'review_prompt_dismissed_at';
-
   final GetStorage _box;
 
   ReviewPromptController({GetStorage? storage})
@@ -24,28 +20,28 @@ class ReviewPromptController extends GetxController {
     final now = DateTime.now();
     final today = _dateKey(now);
 
-    final firstLaunch = _box.read<String>(_kFirstLaunch);
+    final firstLaunch = _box.read<String>(StorageKeys.firstLaunchAt);
     if (firstLaunch == null) {
-      _box.write(_kFirstLaunch, now.toIso8601String());
-      _box.write(_kUniqueDaysCount, 1);
-      _box.write(_kLastActive, today);
+      _box.write(StorageKeys.firstLaunchAt, now.toIso8601String());
+      _box.write(StorageKeys.uniqueActiveDaysCount, 1);
+      _box.write(StorageKeys.lastActiveDate, today);
       return;
     }
 
-    final lastActive = _box.read<String>(_kLastActive);
+    final lastActive = _box.read<String>(StorageKeys.lastActiveDate);
     if (lastActive == null || lastActive != today) {
-      final currentCount = _box.read<int>(_kUniqueDaysCount) ?? 1;
-      _box.write(_kUniqueDaysCount, currentCount + 1);
-      _box.write(_kLastActive, today);
+      final currentCount = _box.read<int>(StorageKeys.uniqueActiveDaysCount) ?? 1;
+      _box.write(StorageKeys.uniqueActiveDaysCount, currentCount + 1);
+      _box.write(StorageKeys.lastActiveDate, today);
     }
   }
 
   void markRated() {
-    _box.write(_kDismissedAt, DateTime.now().toIso8601String());
+    _box.write(StorageKeys.reviewPromptDismissedAt, DateTime.now().toIso8601String());
   }
 
   void markDismissed() {
-    _box.write(_kDismissedAt, DateTime.now().toIso8601String());
+    _box.write(StorageKeys.reviewPromptDismissedAt, DateTime.now().toIso8601String());
   }
 
   void acceptPrompt() {
@@ -55,17 +51,17 @@ class ReviewPromptController extends GetxController {
   Future<bool> shouldShowPrompt() async {
     if (TestModeManager.shouldAlwaysShowReviewPrompt) return true;
 
-    final firstLaunch = _box.read<String>(_kFirstLaunch);
+    final firstLaunch = _box.read<String>(StorageKeys.firstLaunchAt);
     if (firstLaunch == null) return false;
 
-    final uniqueDays = _box.read<int>(_kUniqueDaysCount) ?? 0;
+    final uniqueDays = _box.read<int>(StorageKeys.uniqueActiveDaysCount) ?? 0;
     if (uniqueDays < 10) return false;
 
     final firstLaunchDate = DateTime.parse(firstLaunch);
     final daysSinceInstall = DateTime.now().difference(firstLaunchDate).inDays;
     if (daysSinceInstall < 30) return false;
 
-    final dismissedAt = _box.read<String>(_kDismissedAt);
+    final dismissedAt = _box.read<String>(StorageKeys.reviewPromptDismissedAt);
     final isRepeatPrompt = dismissedAt != null;
     if (isRepeatPrompt) {
       final dismissedDate = DateTime.parse(dismissedAt);

@@ -17,7 +17,8 @@ class ToolsUsageAPI extends BaseAPI {
     }
 }
 
-$toolId = RequestHelper::getField('tool_id', 0);
+$input = json_decode(file_get_contents('php://input'), true);
+$toolId = $input['tool_id'] ?? 0;
 $api = new ToolsUsageAPI();
 $api->recordUsage($toolId);
 

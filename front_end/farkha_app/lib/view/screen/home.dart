@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/constant/routes/route.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/package/alert_exit_app.dart';
 import '../../core/package/upgrade.dart';
 import '../../core/services/initialization.dart';
@@ -35,10 +36,10 @@ class _HomeState extends State<Home> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final pending = myServices.getStorage.read<Map<dynamic, dynamic>>(
-        'pending_darkness_alarm',
+        StorageKeys.pendingDarknessAlarm,
       );
       if (pending != null && mounted) {
-        await myServices.getStorage.remove('pending_darkness_alarm');
+        await myServices.getStorage.remove(StorageKeys.pendingDarknessAlarm);
         final args = Map<String, dynamic>.from(
           pending.map((k, v) => MapEntry(k.toString(), v)),
         );
@@ -67,7 +68,7 @@ class _HomeState extends State<Home> {
 
   void _showTutorialIfNeeded() {
     final hasSeenTutorial =
-        myServices.getStorage.read<bool>('home_tutorial_seen') ?? false;
+        myServices.getStorage.read<bool>(StorageKeys.homeTutorialSeen) ?? false;
 
     final shouldShowTutorial =
         !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../logic/controller/cycle_controller.dart';
 
@@ -568,7 +569,7 @@ class _MembersTabState extends State<_MembersTab> {
     final cycleCtrl = Get.find<CycleController>();
     final myServices = Get.find<MyServices>();
     final String currentUserPhone =
-        myServices.getStorage.read<String>('user_phone') ?? '';
+        myServices.getStorage.read<String>(StorageKeys.userPhone) ?? '';
 
     return Obx(() {
       final cycle = _findCycle(cycleCtrl);

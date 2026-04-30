@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/functions/tool_page_view.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/test_mode_manager.dart';
@@ -53,7 +54,7 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
   void _showTutorialIfNeeded() {
     // التحقق من أن المستخدم لم يشاهد الـ tutorial من قبل
     final hasSeenTutorial =
-        myServices.getStorage.read<bool>('feasibility_tutorial_seen') ?? false;
+        myServices.getStorage.read<bool>(StorageKeys.feasibilityTutorialSeen) ?? false;
 
     // إظهار الشرح إذا لم يشاهده من قبل أو إذا كان في وضع الاختبار
     final shouldShowTutorial =
@@ -92,14 +93,14 @@ class _FeasibilityStudyState extends State<FeasibilityStudy> {
       return;
     }
     _hasShownUsageTips = true;
-    UsageTipsDialog.showDialogIfNotShown('feasibilityStudyDialog');
+    UsageTipsDialog.showDialogIfNotShown(StorageKeys.feasibilityStudyDialog);
   }
 
   // دالة لإعادة تعيين الـ tutorial للاختبار
   // ignore: unused_element
   static void resetTutorialForTesting() {
     final myServices = Get.find<MyServices>();
-    myServices.getStorage.remove('feasibility_tutorial_seen');
+    myServices.getStorage.remove(StorageKeys.feasibilityTutorialSeen);
   }
 
   @override

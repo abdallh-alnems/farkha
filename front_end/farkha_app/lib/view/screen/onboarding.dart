@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/constant/routes/route.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../logic/controller/onboarding_controller.dart';
 import '../widget/onboarding/custom_button.dart';
@@ -23,10 +24,10 @@ class _OnBoardingState extends State<OnBoarding> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final myServices = Get.find<MyServices>();
       final pending = myServices.getStorage.read<Map<dynamic, dynamic>>(
-        'pending_darkness_alarm',
+        StorageKeys.pendingDarknessAlarm,
       );
       if (pending != null && mounted) {
-        myServices.getStorage.remove('pending_darkness_alarm');
+        myServices.getStorage.remove(StorageKeys.pendingDarknessAlarm);
         final args = Map<String, dynamic>.from(
           pending.map((k, v) => MapEntry(k.toString(), v)),
         );

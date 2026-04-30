@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
 import 'cycle_controller.dart';
@@ -291,7 +292,7 @@ class CycleCustomDataController extends GetxController {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
     final cycleId = cycle['name'] ?? 'default';
-    final storageKey = 'custom_data_$cycleId';
+    final storageKey = '${StorageKeys.customDataPrefix}$cycleId';
 
     // التحقق من أن الدورة موجودة فعلاً في cycles (لم يتم حذفها)
     final cycleExists = cycleCtrl.cycles.any((c) => c['name'] == cycleId);
@@ -317,7 +318,7 @@ class CycleCustomDataController extends GetxController {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
     final cycleId = cycle['name'] ?? 'default';
-    final storageKey = 'custom_data_$cycleId';
+    final storageKey = '${StorageKeys.customDataPrefix}$cycleId';
 
     final itemsJson = customDataItems.map((e) => e.toJson()).toList();
     _storage.write(storageKey, itemsJson);
@@ -333,7 +334,7 @@ class CycleCustomDataController extends GetxController {
       if (cycleId == null) return;
 
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) return;
 
       final user = _auth.currentUser;
@@ -434,7 +435,7 @@ class CycleCustomDataController extends GetxController {
     Future<void>(() async {
       try {
         final isLoggedIn =
-            myServices.getStorage.read<bool>('is_logged_in') ?? false;
+            myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
         if (!isLoggedIn) return;
 
         final user = _auth.currentUser;

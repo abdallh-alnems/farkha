@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../data/data_source/remote/auth_data/login_data.dart';
@@ -42,7 +43,7 @@ class LoginController extends GetxController {
     if (Get.isRegistered<MyServices>()) {
       final myServices = Get.find<MyServices>();
       isLoggedIn.value =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
     }
   }
 
@@ -219,14 +220,14 @@ class LoginController extends GetxController {
         if (isSuccess && data['user'] != null) {
           final userData = data['user'] as Map<String, dynamic>;
           final myServices = Get.find<MyServices>();
-          myServices.getStorage.write('user_name', userData['name']);
+          myServices.getStorage.write(StorageKeys.userName, userData['name']);
           if (userData['phone'] != null) {
             myServices.getStorage.write(
-              'user_phone',
+              StorageKeys.userPhone,
               userData['phone'].toString(),
             );
           }
-          myServices.getStorage.write('is_logged_in', true);
+          myServices.getStorage.write(StorageKeys.isLoggedIn, true);
           isLoggedIn.value = true; // تحديث observable
           return true;
         }
@@ -242,9 +243,9 @@ class LoginController extends GetxController {
     final myServices = Get.find<MyServices>();
 
     // 1. حذف بيانات المستخدم
-    await myServices.getStorage.remove('user_name');
-    await myServices.getStorage.remove('user_phone');
-    await myServices.getStorage.write('is_logged_in', false);
+    await myServices.getStorage.remove(StorageKeys.userName);
+    await myServices.getStorage.remove(StorageKeys.userPhone);
+    await myServices.getStorage.write(StorageKeys.isLoggedIn, false);
 
     // 2. حذف كل الدورات والمصاريف والبيانات المخصصة
     if (Get.isRegistered<CycleController>()) {
@@ -256,13 +257,13 @@ class LoginController extends GetxController {
         final cycleId = cycle['id'];
 
         if (cycleName != null) {
-          await myServices.getStorage.remove('expenses_$cycleName');
-          await myServices.getStorage.remove('custom_data_$cycleName');
-          await myServices.getStorage.remove('notes_$cycleName');
+          await myServices.getStorage.remove('${StorageKeys.expensesPrefix}$cycleName');
+          await myServices.getStorage.remove('${StorageKeys.customDataPrefix}$cycleName');
+          await myServices.getStorage.remove('${StorageKeys.notesPrefix}$cycleName');
         }
 
         if (cycleId != null) {
-          await myServices.getStorage.remove('custom_data_$cycleId');
+          await myServices.getStorage.remove('${StorageKeys.customDataPrefix}$cycleId');
         }
       }
 
@@ -272,11 +273,11 @@ class LoginController extends GetxController {
     }
 
     // حذف الدورات والدورات المحذوفة
-    await myServices.getStorage.remove('cycles');
-    await myServices.getStorage.remove('deleted_cycles');
+    await myServices.getStorage.remove(StorageKeys.cycles);
+    await myServices.getStorage.remove(StorageKeys.deletedCycles);
 
     // 3. حذف المفضلات
-    await myServices.getStorage.remove('favorite_tools_order');
+    await myServices.getStorage.remove(StorageKeys.favoriteToolsOrder);
     if (Get.isRegistered<FavoriteToolsController>()) {
       Get.find<FavoriteToolsController>().favoriteToolsOrder.clear();
     }

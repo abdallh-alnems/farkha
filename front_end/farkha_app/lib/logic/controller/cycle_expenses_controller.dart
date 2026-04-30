@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/class/status_request.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
 import 'cycle_controller.dart';
@@ -447,7 +448,7 @@ class CycleExpensesController extends GetxController {
       if (cycleId == null) return null;
 
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) return null;
 
       final user = _auth.currentUser;
@@ -638,8 +639,7 @@ class CycleExpensesController extends GetxController {
         }
 
         // حفظ في GetStorage
-        const cycleStorageKey = 'cycles';
-        myServices.getStorage.write(cycleStorageKey, cycleCtrl.cycles.toList());
+        myServices.getStorage.write(StorageKeys.cycles, cycleCtrl.cycles.toList());
 
         // تحديث cycles لإعادة بناء الواجهة (فقط عند التغيير)
         cycleCtrl.cycles.refresh();
@@ -663,7 +663,7 @@ class CycleExpensesController extends GetxController {
     Future<void>(() async {
       try {
         final isLoggedIn =
-            myServices.getStorage.read<bool>('is_logged_in') ?? false;
+            myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
         if (!isLoggedIn) return;
 
         final user = _auth.currentUser;

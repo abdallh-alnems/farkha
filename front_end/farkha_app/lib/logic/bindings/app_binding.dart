@@ -1,23 +1,18 @@
 import 'package:get/get.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../core/class/crud.dart';
-import '../../view/widget/ad/interstitial.dart';
-import 'cycle_feedback_binding.dart';
+import '../../core/package/rating_app.dart';
+import '../../core/services/permission.dart';
+import '../controller/internet_controller.dart';
+import '../controller/tools_controller/favorite_tools_controller.dart';
 
 class AppBindings extends Bindings {
   @override
   void dependencies() {
-    // ================================ curd ===================================
     Get.put(Crud());
-
-    // ================================ ads ====================================
-    MobileAds.instance.initialize().then((_) {
-      // تحميل الإعلان البيني بعد تهيئة AdMob مباشرة
-      InterstitialAdService.instance.load();
-    });
-
-    // ========================= cycle feedback ===============================
-    CycleFeedbackBinding().dependencies();
+    Get.put(PermissionController(), permanent: true);
+    Get.put(InternetController(), permanent: true);
+    Get.put(RateMyAppController(), permanent: true);
+    Get.put(FavoriteToolsController(), permanent: true);
   }
 }

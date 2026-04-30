@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 
 class DrawerHeaderWidget extends StatefulWidget {
@@ -27,8 +28,8 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
   Widget build(BuildContext context) {
     final myServices = Get.find<MyServices>();
     final isLoggedIn =
-        myServices.getStorage.read<bool>('is_logged_in') ?? false;
-    final userName = myServices.getStorage.read<String>('user_name');
+        myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
+    final userName = myServices.getStorage.read<String>(StorageKeys.userName);
 
     return Container(
       width: double.infinity,

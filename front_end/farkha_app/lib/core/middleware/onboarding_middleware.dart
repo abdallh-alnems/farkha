@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../constant/storage_keys.dart';
 import '../services/initialization.dart';
 
 class OnboardingMiddleWare extends GetMiddleware {
@@ -9,12 +10,12 @@ class OnboardingMiddleWare extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     // إذا كان المستخدم لم يكمل الـ onboarding بعد
-    if (myServices.getStorage.read<String>('step') != '1') {
+    if (myServices.getStorage.read<String>(StorageKeys.step) != '1') {
       return const RouteSettings(name: '/onboarding');
     }
 
     // إذا كان المستخدم يحاول الوصول إلى الـ onboarding بعد إكماله
-    if (route == '/onboarding' && myServices.getStorage.read<String>('step') == '1') {
+    if (route == '/onboarding' && myServices.getStorage.read<String>(StorageKeys.step) == '1') {
       return const RouteSettings(name: '/');
     }
 

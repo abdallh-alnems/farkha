@@ -6,13 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
 
 /// Full-screen alarm page for darkness phase reminders.
 class DarknessAlarmScreen extends StatefulWidget {
-  static const String pendingAlarmKey = 'pending_darkness_alarm';
-
   const DarknessAlarmScreen({
     super.key,
     this.title,
@@ -100,7 +99,7 @@ class _DarknessAlarmScreenState extends State<DarknessAlarmScreen>
 
   void _onStartDarkness() {
     _ringtonePlayer.stop();
-    GetStorage().remove(DarknessAlarmScreen.pendingAlarmKey);
+    GetStorage().remove(StorageKeys.pendingDarknessAlarm);
     try {
       final isFinish = widget.title?.contains('انتهى') ?? false;
       if (!isFinish) {
@@ -116,7 +115,7 @@ class _DarknessAlarmScreenState extends State<DarknessAlarmScreen>
 
   void _onLater() {
     _ringtonePlayer.stop();
-    GetStorage().remove(DarknessAlarmScreen.pendingAlarmKey);
+    GetStorage().remove(StorageKeys.pendingDarknessAlarm);
     if (widget.fromBackground) {
       // Alarm brought the app from background → minimize
       final ctrl =

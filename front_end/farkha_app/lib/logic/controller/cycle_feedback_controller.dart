@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/class/status_request.dart';
 import '../../../data/data_source/remote/cycle_feedback_data.dart';
@@ -26,10 +27,6 @@ class CycleFeedbackController extends GetxController {
 
   final GetStorage _box = GetStorage();
 
-  static const String _kFirstCycleOpen = 'cycle_fb_first_cycle_open';
-  static const String _kLastShown = 'cycle_fb_last_shown';
-  static const String _kCycleOpensSinceLastShown = 'cycle_fb_opens_since_last';
-
   static const Duration _firstDelay = Duration(days: 25);
   static const Duration _interval = Duration(days: 60);
   static const int _requiredOpens = 25;
@@ -44,11 +41,11 @@ class CycleFeedbackController extends GetxController {
   }
 
   void recordCycleOpen() {
-    if (_box.read<String>(_kFirstCycleOpen) == null) {
-      _box.write(_kFirstCycleOpen, DateTime.now().toIso8601String());
+    if (_box.read<String>(StorageKeys.cycleFbFirstCycleOpen) == null) {
+      _box.write(StorageKeys.cycleFbFirstCycleOpen, DateTime.now().toIso8601String());
     }
-    final count = _box.read<int>(_kCycleOpensSinceLastShown) ?? 0;
-    _box.write(_kCycleOpensSinceLastShown, count + 1);
+    final count = _box.read<int>(StorageKeys.cycleFbOpensSinceLast) ?? 0;
+    _box.write(StorageKeys.cycleFbOpensSinceLast, count + 1);
   }
 
   Future<void> _loadAppVersion() async {
@@ -67,8 +64,8 @@ class CycleFeedbackController extends GetxController {
   Future<void> maybeShowDialog() async {
     if (!_shouldShow()) return;
 
-    _box.write(_kLastShown, DateTime.now().toIso8601String());
-    _box.write(_kCycleOpensSinceLastShown, 0);
+    _box.write(StorageKeys.cycleFbLastShown, DateTime.now().toIso8601String());
+    _box.write(StorageKeys.cycleFbOpensSinceLast, 0);
 
     try {
       unawaited(Get.dialog<void>(
@@ -83,17 +80,17 @@ class CycleFeedbackController extends GetxController {
   }
 
   bool _shouldShow() {
-    final opens = _box.read<int>(_kCycleOpensSinceLastShown) ?? 0;
+    final opens = _box.read<int>(StorageKeys.cycleFbOpensSinceLast) ?? 0;
     if (opens < _requiredOpens) return false;
 
-    final firstOpenStr = _box.read<String>(_kFirstCycleOpen);
+    final firstOpenStr = _box.read<String>(StorageKeys.cycleFbFirstCycleOpen);
     if (firstOpenStr == null) return false;
 
     final firstOpen = DateTime.tryParse(firstOpenStr);
     if (firstOpen == null) return false;
 
     final now = DateTime.now();
-    final lastShownStr = _box.read<String>(_kLastShown);
+    final lastShownStr = _box.read<String>(StorageKeys.cycleFbLastShown);
 
     if (lastShownStr == null) {
       return now.difference(firstOpen) >= _firstDelay;

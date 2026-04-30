@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../core/constant/storage_keys.dart';
+
 class FavoriteToolsController extends GetxController {
   final GetStorage _storage = Get.find<GetStorage>();
   final RxList<String> favoriteToolsOrder = <String>[].obs;
 
-  static const String _storageKey = 'favorite_tools_order';
   static const int maxFavorites = 10;
 
   @override
@@ -16,7 +17,7 @@ class FavoriteToolsController extends GetxController {
   }
 
   void _loadFavorites() {
-    final List<dynamic>? favorites = _storage.read(_storageKey);
+    final List<dynamic>? favorites = _storage.read(StorageKeys.favoriteToolsOrder);
     if (favorites != null) {
       favoriteToolsOrder.assignAll(favorites.cast<String>());
     }
@@ -55,7 +56,7 @@ class FavoriteToolsController extends GetxController {
   }
 
   void _saveFavorites() {
-    _storage.write(_storageKey, favoriteToolsOrder);
+    _storage.write(StorageKeys.favoriteToolsOrder, favoriteToolsOrder);
   }
 
   List<String> getFavoritesList() {

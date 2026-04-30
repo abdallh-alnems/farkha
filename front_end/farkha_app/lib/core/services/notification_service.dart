@@ -12,6 +12,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:http/http.dart' as http;
 
 import '../constant/headers.dart';
+import '../constant/storage_keys.dart';
 import '../constant/id/api.dart';
 import '../constant/routes/route.dart';
 import '../../logic/controller/cycle_controller.dart';
@@ -23,7 +24,7 @@ import 'notifications/price_notification_helpers.dart';
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   final storage = GetStorage();
-  final enabled = storage.read<bool>('notifications_enabled') ?? true;
+  final enabled = storage.read<bool>(StorageKeys.notificationsEnabled) ?? true;
   if (enabled) {
     await NotificationService.instance.showNotification(message);
   }
@@ -46,9 +47,6 @@ class NotificationService extends GetxService
   static const String _channelName = 'إشعارات فرخة';
   static const String _channelDescription =
       'إشعارات تحديثات أسعار الدجاج والأخبار';
-
-  static const String _notificationTypesKey = 'notification_enabled_types';
-  static const String _notificationsEnabledKey = 'notifications_enabled';
 
   // Darkness (IDs 5000–5999)
   static const int _darknessNotificationIdMin = 5000;
@@ -79,9 +77,9 @@ class NotificationService extends GetxService
   @override
   String get channelDescription => _channelDescription;
   @override
-  String get notificationTypesKey => _notificationTypesKey;
+  String get notificationTypesKey => StorageKeys.notificationEnabledTypes;
   @override
-  String get notificationsEnabledKey => _notificationsEnabledKey;
+  String get notificationsEnabledKey => StorageKeys.notificationsEnabled;
 
   // Darkness mixin
   @override
@@ -220,7 +218,7 @@ class NotificationService extends GetxService
   Future<void> _configureFirebaseMessaging() async {
     FirebaseMessaging.onMessage.listen((message) {
       final storage = GetStorage();
-      final enabled = storage.read<bool>(_notificationsEnabledKey) ?? true;
+      final enabled = storage.read<bool>(StorageKeys.notificationsEnabled) ?? true;
       if (enabled) showNotification(message);
 
       // Refresh invitations list transparently in background
@@ -325,7 +323,7 @@ class NotificationService extends GetxService
 
     final darknessArgs = _parseDarknessAlarmPayload(payload);
     if (darknessArgs != null) {
-      await GetStorage().write('pending_darkness_alarm', darknessArgs);
+      await GetStorage().write(StorageKeys.pendingDarknessAlarm, darknessArgs);
     }
   }
 }

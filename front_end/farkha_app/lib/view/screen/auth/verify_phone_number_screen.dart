@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/handling_data.dart';
 import '../../../core/constant/phone_verification_strings.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../logic/controller/auth/phone_verification_controller.dart';
 import '../../widget/auth/country_prefix_label.dart';
@@ -174,8 +175,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
     }
 
     final myServices = Get.find<MyServices>();
-    final currentPhone = myServices.getStorage.read<String>('user_phone');
-    final hasVerifiedPhone = myServices.getStorage.read<bool>('phone_verified') ?? false;
+    final currentPhone = myServices.getStorage.read<String>(StorageKeys.userPhone);
+    final hasVerifiedPhone = myServices.getStorage.read<bool>(StorageKeys.phoneVerified) ?? false;
 
     if (currentPhone != null && currentPhone.isNotEmpty && hasVerifiedPhone) {
       _showReplaceDialog(() {

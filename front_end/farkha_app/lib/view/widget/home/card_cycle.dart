@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/excel/excel_export_service.dart';
@@ -71,7 +72,7 @@ class _CardCycleState extends State<CardCycle> {
  double _getCycleTotalExpenses(String cycleName) {
    try {
      final storage = GetStorage();
-     final storageKey = 'expenses_$cycleName';
+     final storageKey = '${StorageKeys.expensesPrefix}$cycleName';
      final saved = storage.read<List<dynamic>>(storageKey);
      if (saved != null && saved.isNotEmpty) {
        double total = 0.0;
@@ -110,7 +111,7 @@ class _CardCycleState extends State<CardCycle> {
      if (Get.isRegistered<MyServices>()) {
        final myServices = Get.find<MyServices>();
        final storedValue =
-           myServices.getStorage.read<bool>('is_logged_in') ?? false;
+           myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
        if (loginCtrl.isLoggedIn.value != storedValue) {
          loginCtrl.isLoggedIn.value = storedValue;
        }

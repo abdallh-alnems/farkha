@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 
 class MemberListWidget extends StatelessWidget {
@@ -15,7 +16,7 @@ class MemberListWidget extends StatelessWidget {
         : Get.put(CycleController());
     final MyServices myServices = Get.find<MyServices>();
     final String currentUserPhone =
-        myServices.getStorage.read<String>('user_phone') ?? '';
+        myServices.getStorage.read<String>(StorageKeys.userPhone) ?? '';
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 

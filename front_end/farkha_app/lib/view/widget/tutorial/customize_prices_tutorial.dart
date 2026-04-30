@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
+import '../../../../core/constant/storage_keys.dart';
 import '../../../../core/services/initialization.dart';
 import '../../../../core/services/test_mode_manager.dart';
 import 'widgets/tutorial_action_buttons.dart';
@@ -25,7 +26,7 @@ class CustomizePricesTutorial {
     // التحقق من أن المستخدم لم يشاهد الـ tutorial من قبل
     final myServices = Get.find<MyServices>();
     final hasSeenTutorial =
-        myServices.getStorage.read<bool>('customize_prices_tutorial_seen') ??
+        myServices.getStorage.read<bool>(StorageKeys.customizePricesTutorialSeen) ??
         false;
 
     // إظهار الشرح إذا لم يشاهده من قبل أو إذا كان في وضع الاختبار
@@ -124,7 +125,7 @@ class CustomizePricesTutorial {
 
     // حفظ حالة المشاهدة فقط إذا لم يكن في وضع الاختبار
     if (!TestModeManager.shouldShowTutorialEveryTime) {
-      myServices.getStorage.write('customize_prices_tutorial_seen', true);
+      myServices.getStorage.write(StorageKeys.customizePricesTutorialSeen, true);
     }
 
     // استدعاء callback إذا كان موجود
@@ -134,7 +135,7 @@ class CustomizePricesTutorial {
   // دالة لإعادة تعيين الـ tutorial (للاستخدام في الاختبار)
   static void resetTutorial() {
     final myServices = Get.find<MyServices>();
-    myServices.getStorage.remove('customize_prices_tutorial_seen');
+    myServices.getStorage.remove(StorageKeys.customizePricesTutorialSeen);
   }
 
   // دالة لإلغاء الشرح عند الخروج من الصفحة

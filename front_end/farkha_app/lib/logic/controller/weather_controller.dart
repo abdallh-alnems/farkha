@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../core/class/status_request.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/functions/handing_data_controller.dart';
 import '../../core/services/permission.dart';
 import '../../core/services/weather.dart';
@@ -64,7 +65,7 @@ class WeatherController extends GetxController {
     // التحقق من حالة الموقع المحلية (من GetStorage)
     final storage = GetStorage();
     final isLocationEnabledLocally =
-        storage.read<bool>('location_enabled') ?? true;
+        storage.read<bool>(StorageKeys.locationEnabled) ?? true;
 
     // إذا كانت الموقع معطلة محلياً، لا نستخدم الموقع
     if (!isLocationEnabledLocally) {

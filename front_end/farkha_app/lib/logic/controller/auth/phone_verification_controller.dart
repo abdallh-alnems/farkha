@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/phone_verification_strings.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/phone_verification_status_data.dart';
 import '../../../data/data_source/remote/auth_data/resend_otp_data.dart';
@@ -58,9 +59,6 @@ class PhoneVerificationController extends GetxController {
     super.onClose();
   }
 
-  static const String _kCooldownUntilKey = 'phone_cooldown_until_ms';
-  static const String _kCooldownPhoneKey = 'phone_cooldown_phone';
-
   String _formatCooldownMessage(int remaining) {
     final mins = remaining ~/ 60;
     return mins > 0
@@ -72,16 +70,16 @@ class PhoneVerificationController extends GetxController {
     try {
       final until = DateTime.now().millisecondsSinceEpoch + retryAfterSeconds * 1000;
       final box = Get.find<MyServices>().getStorage;
-      box.write(_kCooldownUntilKey, until);
-      box.write(_kCooldownPhoneKey, phone);
+      box.write(StorageKeys.phoneCooldownUntilMs, until);
+      box.write(StorageKeys.phoneCooldownPhone, phone);
     } catch (_) {}
   }
 
   void _clearCooldownStorage() {
     try {
       final box = Get.find<MyServices>().getStorage;
-      box.remove(_kCooldownUntilKey);
-      box.remove(_kCooldownPhoneKey);
+      box.remove(StorageKeys.phoneCooldownUntilMs);
+      box.remove(StorageKeys.phoneCooldownPhone);
     } catch (_) {}
   }
 
@@ -106,8 +104,8 @@ class PhoneVerificationController extends GetxController {
   void loadCachedCooldown() {
     try {
       final box = Get.find<MyServices>().getStorage;
-      final until = box.read<int>(_kCooldownUntilKey);
-      final phone = box.read<String>(_kCooldownPhoneKey) ?? '';
+      final until = box.read<int>(StorageKeys.phoneCooldownUntilMs);
+      final phone = box.read<String>(StorageKeys.phoneCooldownPhone) ?? '';
       if (until == null) return;
       final remaining = ((until - DateTime.now().millisecondsSinceEpoch) / 1000).floor();
       if (remaining > 0) {
@@ -417,8 +415,8 @@ class PhoneVerificationController extends GetxController {
           final phone = data?['phone'] as String? ?? phoneNumber.value;
 
           final myServices = Get.find<MyServices>();
-          myServices.getStorage.write('user_phone', phone);
-          myServices.getStorage.write('phone_verified', true);
+          myServices.getStorage.write(StorageKeys.userPhone, phone);
+          myServices.getStorage.write(StorageKeys.phoneVerified, true);
 
           status.value = StatusRequest.success;
           Get.until((route) => route.settings.name == AppRoute.home || route.isFirst);

@@ -9,17 +9,6 @@ const Color _introLocationAccent = Color(0xFF0D9488);
 const Color _introNotificationAccent = Color(0xFFEA580C);
 const Color _introThemeAccent = Color(0xFF7C3AED);
 
-/// Keys for storage: each intro is tracked separately.
-class PermissionsIntroDialog {
-  PermissionsIntroDialog._();
-
-  static const String locationIntroShownKey =
-      'permissions_intro_location_shown';
-  static const String notificationIntroShownKey =
-      'permissions_intro_notification_shown';
-  static const String themeIntroShownKey = 'permissions_intro_theme_shown';
-}
-
 /// Step 1: Location permission intro.
 class LocationIntroDialog extends StatelessWidget {
   const LocationIntroDialog({

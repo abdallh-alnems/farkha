@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
+import '../../../../core/constant/storage_keys.dart';
 import '../../../../core/functions/handing_data_controller.dart';
 import '../../../../core/services/initialization.dart';
 import '../../../../data/data_source/remote/prices_data/prices_card_data.dart';
@@ -13,7 +14,6 @@ class PricesCardController extends GetxController {
   PricesCardData pricesCardData = PricesCardData(Get.find());
 
   final MyServices _myServices = Get.find();
-  static const String _selectedTypesKey = 'selected_price_types';
 
   final RxList<int> selectedTypeIds = <int>[1, 7].obs;
 
@@ -89,7 +89,7 @@ class PricesCardController extends GetxController {
 
   void _loadSelectedTypes() {
     final savedTypes = _myServices.getStorage.read<List<dynamic>>(
-      _selectedTypesKey,
+      StorageKeys.selectedPriceTypes,
     );
 
     if (savedTypes != null && savedTypes.isNotEmpty) {
@@ -109,12 +109,12 @@ class PricesCardController extends GetxController {
     if (!types.contains(1)) {
       types.add(1);
     }
-    _myServices.getStorage.write(_selectedTypesKey, types);
+    _myServices.getStorage.write(StorageKeys.selectedPriceTypes, types);
   }
 
   void _loadTypeNames() {
     final savedNames = _myServices.getStorage.read<Map<String, dynamic>>(
-      'type_names',
+      StorageKeys.typeNames,
     );
     if (savedNames != null) {
       typeNames = savedNames.map(

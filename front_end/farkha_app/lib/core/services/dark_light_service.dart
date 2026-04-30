@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../constant/storage_keys.dart';
+
 class DarkLightService extends GetxService {
   DarkLightService() : storage = Get.find<GetStorage>();
 
   final GetStorage storage;
-  static const String _storageKey = 'theme_mode';
+
   final Rx<ThemeMode> themeMode = ThemeMode.system.obs;
 
   @override
@@ -38,7 +40,7 @@ class DarkLightService extends GetxService {
   }
 
   ThemeMode _readSavedMode() {
-    final String? savedMode = storage.read<String>(_storageKey);
+    final String? savedMode = storage.read<String>(StorageKeys.themeMode);
     if (savedMode == ThemeMode.dark.name) {
       return ThemeMode.dark;
     }
@@ -51,7 +53,7 @@ class DarkLightService extends GetxService {
 
   void _applyTheme(ThemeMode mode) {
     themeMode.value = mode;
-    storage.write(_storageKey, mode.name);
+    storage.write(StorageKeys.themeMode, mode.name);
     Get.changeThemeMode(mode);
   }
 

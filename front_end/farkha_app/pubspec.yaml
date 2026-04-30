@@ -14,7 +14,6 @@ dependencies:
     sdk: flutter
 
   # UI & Design
-  cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.10+1
   lottie: ^3.3.0
@@ -39,7 +38,6 @@ dependencies:
 
   # Ads
   google_mobile_ads: ^7.0.0
-  gma_mediation_meta: ^1.5.1
 
   # Notifications
   flutter_local_notifications: ^19.5.0

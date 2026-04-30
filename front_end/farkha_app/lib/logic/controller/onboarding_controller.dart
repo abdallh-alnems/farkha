@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/static/onboarding_static.dart';
 
@@ -22,7 +23,7 @@ class OnBoardingControllerImp extends OnBoardingController {
     currentPage.value++;
 
     if (currentPage.value > onBoardingList.length - 1) {
-      myServices.getStorage.write('step', '1');
+      myServices.getStorage.write(StorageKeys.step, '1');
       Get.offAllNamed<void>('/');
     } else {
       pageController.animateToPage(
@@ -36,7 +37,7 @@ class OnBoardingControllerImp extends OnBoardingController {
 
   @override
   void skip() {
-    myServices.getStorage.write('step', '1');
+    myServices.getStorage.write(StorageKeys.step, '1');
     update();
     Get.offAllNamed<void>('/');
   }

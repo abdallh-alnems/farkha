@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/handling_data.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/test_mode_manager.dart';
@@ -42,7 +43,7 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
   void _showTutorialIfNeeded() {
     // التحقق من أن المستخدم لم يشاهد الـ tutorial من قبل
     final hasSeenTutorial =
-        myServices.getStorage.read<bool>('customize_prices_tutorial_seen') ??
+        myServices.getStorage.read<bool>(StorageKeys.customizePricesTutorialSeen) ??
         false;
 
     // إظهار الشرح إذا لم يشاهده من قبل أو إذا كان في وضع الاختبار

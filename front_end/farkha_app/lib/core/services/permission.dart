@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../constant/storage_keys.dart';
 import '../../core/shared/permissions_intro_dialog.dart';
 import '../../core/shared/snackbar_message.dart';
 
@@ -164,15 +165,15 @@ class PermissionController extends GetxController {
     if (ctx == null || !ctx.mounted) return;
 
     final showLocation = await _shouldShowStep(
-      PermissionsIntroDialog.locationIntroShownKey,
+      StorageKeys.permissionsIntroLocationShown,
       Permission.location.status,
     );
     final showNotification = await _shouldShowStep(
-      PermissionsIntroDialog.notificationIntroShownKey,
+      StorageKeys.permissionsIntroNotificationShown,
       Permission.notification.status,
     );
     final showTheme =
-        _storage.read<bool>(PermissionsIntroDialog.themeIntroShownKey) != true;
+        _storage.read<bool>(StorageKeys.permissionsIntroThemeShown) != true;
 
     if (!showLocation && !showNotification && !showTheme) {
       return;
@@ -184,13 +185,13 @@ class PermissionController extends GetxController {
       await Get.dialog<void>(
         LocationIntroDialog(
           onEnable: () async {
-            _storage.write(PermissionsIntroDialog.locationIntroShownKey, true);
+            _storage.write(StorageKeys.permissionsIntroLocationShown, true);
             // انتظار نتيجة طلب الإذن من النظام قبل إكمال
             await checkAndRequestLocationPermission();
             locationCompleter.complete();
           },
           onLater: () {
-            _storage.write(PermissionsIntroDialog.locationIntroShownKey, true);
+            _storage.write(StorageKeys.permissionsIntroLocationShown, true);
             locationCompleter.complete();
           },
         ),
@@ -207,7 +208,7 @@ class PermissionController extends GetxController {
         NotificationIntroDialog(
           onEnable: () async {
             _storage.write(
-              PermissionsIntroDialog.notificationIntroShownKey,
+              StorageKeys.permissionsIntroNotificationShown,
               true,
             );
             await checkAndRequestNotificationPermission();
@@ -215,7 +216,7 @@ class PermissionController extends GetxController {
           },
           onLater: () {
             _storage.write(
-              PermissionsIntroDialog.notificationIntroShownKey,
+              StorageKeys.permissionsIntroNotificationShown,
               true,
             );
             notificationCompleter.complete();
@@ -231,7 +232,7 @@ class PermissionController extends GetxController {
       await Get.dialog<void>(
         ThemeIntroDialog(
           onDone: () {
-            _storage.write(PermissionsIntroDialog.themeIntroShownKey, true);
+            _storage.write(StorageKeys.permissionsIntroThemeShown, true);
           },
         ),
         barrierDismissible: false,

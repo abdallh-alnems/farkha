@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 import '../../core/class/status_request.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
 import 'cycle_controller.dart';
@@ -77,7 +78,7 @@ class CycleNotesController extends GetxController {
   Future<String?> _getToken() async {
     try {
       final isLoggedIn =
-          myServices.getStorage.read<bool>('is_logged_in') ?? false;
+          myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
       if (!isLoggedIn) return null;
 
       final user = _auth.currentUser;

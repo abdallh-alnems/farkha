@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../core/services/permission.dart';
 import '../../../data/data_source/static/chicken_data.dart';
@@ -65,16 +66,6 @@ class DarknessScheduleController extends GetxController {
   static const int _phaseReminderIdStart = 5000;
   static const int _transitionReminderIdStart = 5500;
 
-  // ── Storage keys ──
-  static const String _kDayStartHour = 'darkness_day_start_hour';
-  static const String _kAlertMinutesBefore = 'darkness_alert_minutes_before';
-  static const String _kNotificationsEnabled = 'darkness_notifications_enabled';
-  static const String _kPhaseReminderHours = 'darkness_phase_reminder_hours';
-  static const String _kPhaseReminderMinutes =
-      'darkness_phase_reminder_minutes';
-  static const String _kAlarmShownPrefix = 'darkness_alarm_shown_';
-  static const String _kDarknessSuggestionShown = 'darkness_suggestion_shown';
-
   // ── Defaults ──
   static const int _kDefaultDayStartHour = 6;
   static const int _kDefaultAlertMinutesBefore = 10;
@@ -103,9 +94,6 @@ class DarknessScheduleController extends GetxController {
   /// عدد مراحل الإظلام المكتملة اليوم (يُحدَّث عند انتهاء العدّ).
   final RxInt phasesCompletedToday = 0.obs;
 
-  static const String _kPausedEndTime = 'darkness_paused_end_time';
-  static const String _kPhasesCompletedPrefix = 'darkness_phases_done_';
-
   Timer? _ticker;
   String? _lastStartDateRaw;
   int? _lastAgeInDays;
@@ -126,7 +114,7 @@ class DarknessScheduleController extends GetxController {
   set dayStartHour(int value) {
     final int clamped = value.clamp(0, 23);
     dayStartHourRx.value = clamped;
-    _storage.write(_kDayStartHour, clamped);
+    _storage.write(StorageKeys.darknessDayStartHour, clamped);
     _refresh();
   }
 
@@ -135,7 +123,7 @@ class DarknessScheduleController extends GetxController {
   set alertMinutesBefore(int value) {
     final int clamped = value.clamp(0, 180);
     alertMinutesBeforeRx.value = clamped;
-    _storage.write(_kAlertMinutesBefore, clamped);
+    _storage.write(StorageKeys.darknessAlertMinutesBefore, clamped);
     _refresh();
   }
 
@@ -143,7 +131,7 @@ class DarknessScheduleController extends GetxController {
 
   set notificationsEnabled(bool value) {
     notificationsEnabledRx.value = value;
-    _storage.write(_kNotificationsEnabled, value);
+    _storage.write(StorageKeys.darknessNotificationsEnabled, value);
     if (!value) {
       unawaited(_cancelDarknessNotifications());
     } else {
@@ -155,11 +143,11 @@ class DarknessScheduleController extends GetxController {
   void onInit() {
     super.onInit();
     dayStartHourRx.value =
-        _storage.read<int>(_kDayStartHour) ?? _kDefaultDayStartHour;
+        _storage.read<int>(StorageKeys.darknessDayStartHour) ?? _kDefaultDayStartHour;
     alertMinutesBeforeRx.value =
-        _storage.read<int>(_kAlertMinutesBefore) ?? _kDefaultAlertMinutesBefore;
+        _storage.read<int>(StorageKeys.darknessAlertMinutesBefore) ?? _kDefaultAlertMinutesBefore;
     notificationsEnabledRx.value =
-        _storage.read<bool>(_kNotificationsEnabled) ??
+        _storage.read<bool>(StorageKeys.darknessNotificationsEnabled) ??
         _kDefaultNotificationsEnabled;
   }
 
@@ -214,7 +202,7 @@ class DarknessScheduleController extends GetxController {
         if (end != null && DateTime.now().isAfter(end)) {
           manualDarknessActive.value = false;
           manualDarknessEndTime.value = null;
-          _storage.remove(_kPausedEndTime);
+          _storage.remove(StorageKeys.darknessPausedEndTime);
           _ticker?.cancel();
           _ticker = Timer.periodic(const Duration(minutes: 1), (_) {
             _recomputeSnapshot();
@@ -265,7 +253,7 @@ class DarknessScheduleController extends GetxController {
       if (DateTime.now().isAfter(end)) {
         manualDarknessActive.value = false;
         manualDarknessEndTime.value = null;
-        _storage.remove(_kPausedEndTime);
+        _storage.remove(StorageKeys.darknessPausedEndTime);
         final int n = numberOfPhasesForToday;
         phasesCompletedToday.value = (phasesCompletedToday.value + 1).clamp(
           0,
@@ -301,7 +289,7 @@ class DarknessScheduleController extends GetxController {
     if (!manualDarknessActive.value) return;
     manualDarknessActive.value = false;
     manualDarknessEndTime.value = null;
-    _storage.remove(_kPausedEndTime);
+    _storage.remove(StorageKeys.darknessPausedEndTime);
     _ticker?.cancel();
     _startTicker();
   }
@@ -381,7 +369,7 @@ class DarknessScheduleController extends GetxController {
 
   int? getPhaseReminderHour(int phase1Based) {
     final List<dynamic>? list = _storage.read<List<dynamic>>(
-      _kPhaseReminderHours,
+      StorageKeys.darknessPhaseReminderHours,
     );
     if (list != null && phase1Based <= list.length) {
       final Object? v = list[phase1Based - 1];
@@ -396,7 +384,7 @@ class DarknessScheduleController extends GetxController {
 
   int? getPhaseReminderMinute(int phase1Based) {
     final List<dynamic>? list = _storage.read<List<dynamic>>(
-      _kPhaseReminderMinutes,
+      StorageKeys.darknessPhaseReminderMinutes,
     );
     if (list != null && phase1Based <= list.length) {
       final Object? v = list[phase1Based - 1];
@@ -412,9 +400,9 @@ class DarknessScheduleController extends GetxController {
     final int m = minute.clamp(0, 59);
 
     final List<dynamic> hoursList =
-        _storage.read<List<dynamic>>(_kPhaseReminderHours) ?? <dynamic>[];
+        _storage.read<List<dynamic>>(StorageKeys.darknessPhaseReminderHours) ?? <dynamic>[];
     final List<dynamic> minutesList =
-        _storage.read<List<dynamic>>(_kPhaseReminderMinutes) ?? <dynamic>[];
+        _storage.read<List<dynamic>>(StorageKeys.darknessPhaseReminderMinutes) ?? <dynamic>[];
 
     final List<int?> intHours =
         hoursList
@@ -444,8 +432,8 @@ class DarknessScheduleController extends GetxController {
     intHours[phase1Based - 1] = h;
     intMinutes[phase1Based - 1] = m;
 
-    _storage.write(_kPhaseReminderHours, intHours);
-    _storage.write(_kPhaseReminderMinutes, intMinutes);
+    _storage.write(StorageKeys.darknessPhaseReminderHours, intHours);
+    _storage.write(StorageKeys.darknessPhaseReminderMinutes, intMinutes);
 
     phaseReminderUpdateTrigger.value++;
     _refresh();
@@ -453,9 +441,9 @@ class DarknessScheduleController extends GetxController {
 
   void clearPhaseReminderTime(int phase1Based) {
     final List<dynamic> hoursList =
-        _storage.read<List<dynamic>>(_kPhaseReminderHours) ?? <dynamic>[];
+        _storage.read<List<dynamic>>(StorageKeys.darknessPhaseReminderHours) ?? <dynamic>[];
     final List<dynamic> minutesList =
-        _storage.read<List<dynamic>>(_kPhaseReminderMinutes) ?? <dynamic>[];
+        _storage.read<List<dynamic>>(StorageKeys.darknessPhaseReminderMinutes) ?? <dynamic>[];
 
     final List<int?> intHours =
         hoursList
@@ -484,8 +472,8 @@ class DarknessScheduleController extends GetxController {
     intHours[phase1Based - 1] = null;
     intMinutes[phase1Based - 1] = null;
 
-    _storage.write(_kPhaseReminderHours, intHours);
-    _storage.write(_kPhaseReminderMinutes, intMinutes);
+    _storage.write(StorageKeys.darknessPhaseReminderHours, intHours);
+    _storage.write(StorageKeys.darknessPhaseReminderMinutes, intMinutes);
 
     phaseReminderUpdateTrigger.value++;
     _refresh();
@@ -517,13 +505,13 @@ class DarknessScheduleController extends GetxController {
     final String key = _cycleDayKeyForToday();
     if (key.isEmpty) return;
     phasesCompletedToday.value =
-        _storage.read<int>('$_kPhasesCompletedPrefix$key') ?? 0;
+        _storage.read<int>('$StorageKeys.darknessPhasesDonePrefix$key') ?? 0;
   }
 
   void _savePhasesCompletedForToday() {
     final String key = _cycleDayKeyForToday();
     if (key.isEmpty) return;
-    _storage.write('$_kPhasesCompletedPrefix$key', phasesCompletedToday.value);
+    _storage.write('$StorageKeys.darknessPhasesDonePrefix$key', phasesCompletedToday.value);
   }
 
   List<DateTime> _getPhaseReminderTimesNext() {
@@ -671,7 +659,7 @@ class DarknessScheduleController extends GetxController {
       if (!now.isBefore(scheduledToday)) {
         final Duration diff = now.difference(scheduledToday);
         if (diff <= const Duration(minutes: 2)) {
-          final String key = '$_kAlarmShownPrefix${todayStr}_$phase';
+          final String key = '$StorageKeys.darknessAlarmShownPrefix${todayStr}_$phase';
           if (_storage.read<bool>(key) != true) {
             _storage.write(key, true);
 
@@ -1071,13 +1059,13 @@ class DarknessScheduleController extends GetxController {
     if (ageInDays != 5) return;
 
     // Check if already shown or alarms already enabled
-    if (_storage.read<bool>(_kDarknessSuggestionShown) == true) return;
+    if (_storage.read<bool>(StorageKeys.darknessSuggestionShown) == true) return;
     if (notificationsEnabled) return;
 
     if (Get.isDialogOpen ?? false) return;
 
     // Mark as shown so we don't annoy user every time they enter screen on Day 5
-    _storage.write(_kDarknessSuggestionShown, true);
+    _storage.write(StorageKeys.darknessSuggestionShown, true);
 
     await Get.dialog<void>(
       DarknessSuggestionDialog(

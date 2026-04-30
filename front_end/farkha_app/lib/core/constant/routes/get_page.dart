@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../../logic/bindings/cycle_feedback_binding.dart';
 import '../../../logic/bindings/home_binding.dart';
 import '../../../logic/bindings/phone_verification_binding.dart';
 import '../../../logic/controller/cycle_controller.dart';
@@ -128,6 +129,7 @@ List<GetPage<dynamic>> pages = [
       if (!Get.isRegistered<WeatherController>()) {
         Get.put(WeatherController(), permanent: true);
       }
+      CycleFeedbackBinding().dependencies();
     }),
   ),
   GetPage(

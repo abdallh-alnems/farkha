@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/routes/route.dart';
+import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
 import '../../../data/data_source/remote/auth_data/delete_account_data.dart';
 import '../../../data/data_source/remote/auth_data/update_name_data.dart';
@@ -102,7 +103,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
 
   Future<void> _handleEditName() async {
     final myServices = Get.find<MyServices>();
-    final currentName = myServices.getStorage.read<String>('user_name') ?? '';
+    final currentName = myServices.getStorage.read<String>(StorageKeys.userName) ?? '';
 
     final nameController = TextEditingController(text: '');
 
@@ -193,7 +194,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
           final data = success;
           if (data['success'] == true || data['status'] == 'success') {
             final myServices = Get.find<MyServices>();
-            myServices.getStorage.write('user_name', name);
+            myServices.getStorage.write(StorageKeys.userName, name);
             _showSnackbar('تم تحديث الاسم بنجاح');
             if (mounted) {
               setState(() {});
@@ -376,7 +377,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
   Widget build(BuildContext context) {
     final myServices = Get.find<MyServices>();
     final isLoggedIn =
-        myServices.getStorage.read<bool>('is_logged_in') ?? false;
+        myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 13).r,
@@ -414,7 +415,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
                   builder: (context) {
                     final myServices = Get.find<MyServices>();
                     final currentPhone =
-                        myServices.getStorage.read<String>('user_phone')?.toString();
+                        myServices.getStorage.read<String>(StorageKeys.userPhone)?.toString();
                     final isAdding =
                         currentPhone == null || currentPhone.isEmpty;
 
