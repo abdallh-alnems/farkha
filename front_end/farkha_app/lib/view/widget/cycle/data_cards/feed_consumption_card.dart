@@ -4,17 +4,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constant/strings/app_strings.dart';
-import '../../../../core/constant/theme/colors.dart';
-import '../../../../data/model/cycle/weight_entry.dart';
-import '../../../../data/model/cycle/medication_entry.dart';
 import '../../../../data/model/cycle/feed_consumption_entry.dart';
-import '../../../../data/model/cycle/mortality_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
 
 class FeedConsumptionCard extends StatefulWidget {
-  final bool isDark;
-
-  const FeedConsumptionCard({super.key, required this.isDark});
+  const FeedConsumptionCard({super.key});
 
   @override
   State<FeedConsumptionCard> createState() => _FeedConsumptionCardState();
@@ -51,7 +45,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final isDark = widget.isDark;
+      final colorScheme = Theme.of(context).colorScheme;
+      final isDark = colorScheme.brightness == Brightness.dark;
       final entries = cycleCtrl.getFeedConsumptionEntries();
       final lastEntry = entries.isNotEmpty ? entries.last : null;
       final sortedEntries = List<FeedConsumptionEntry>.from(entries)
@@ -60,12 +55,10 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
       return Container(
         margin: EdgeInsets.only(bottom: 10.h),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isDark
-                ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
+            color: colorScheme.outline.withValues(alpha: 0.1),
           ),
           boxShadow: isDark
               ? []
@@ -87,7 +80,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                     ? null
                     : LinearGradient(
                         colors: [
-                          AppColors.primaryColor.withValues(alpha: 0.03),
+                          colorScheme.primary.withValues(alpha: 0.03),
                           Colors.transparent,
                         ],
                         begin: Alignment.topRight,
@@ -106,15 +99,15 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                       gradient: LinearGradient(
                         colors: isDark
                             ? [
-                                AppColors.darkPrimaryColor
+                                colorScheme.primary
                                     .withValues(alpha: 0.2),
-                                AppColors.darkPrimaryColor
+                                colorScheme.primary
                                     .withValues(alpha: 0.15),
                               ]
                             : [
-                                AppColors.primaryColor
+                                colorScheme.primary
                                     .withValues(alpha: 0.15),
-                                AppColors.primaryColor
+                                colorScheme.primary
                                     .withValues(alpha: 0.08),
                               ],
                         begin: Alignment.topLeft,
@@ -125,7 +118,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           ? []
                           : [
                               BoxShadow(
-                                color: AppColors.primaryColor
+                                color: colorScheme.primary
                                     .withValues(alpha: 0.1),
                                 blurRadius: 3,
                                 offset: const Offset(0, 2),
@@ -134,9 +127,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                     ),
                     child: Icon(
                       Icons.grain,
-                      color: isDark
-                          ? AppColors.darkPrimaryColor
-                          : AppColors.primaryColor,
+                      color: colorScheme.primary,
                       size: 20.sp,
                     ),
                   ),
@@ -151,9 +142,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                             fontSize: 15.sp,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.1,
-                            color: isDark
-                                ? AppColors.darkPrimaryColor
-                                : AppColors.primaryColor,
+                            color: colorScheme.primary,
                           ),
                         ),
                         Builder(
@@ -174,9 +163,9 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: isDark
-                                            ? AppColors.darkPrimaryColor
+                                            ? colorScheme.primary
                                                 .withValues(alpha: 0.2)
-                                            : AppColors.primaryColor
+                                            : colorScheme.primary
                                                 .withValues(alpha: 0.1),
                                         borderRadius:
                                             BorderRadius.circular(5.r),
@@ -186,9 +175,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                         style: TextStyle(
                                           fontSize: 11.sp,
                                           fontWeight: FontWeight.w600,
-                                          color: isDark
-                                              ? AppColors.darkPrimaryColor
-                                              : AppColors.primaryColor,
+                                          color: colorScheme.primary,
                                         ),
                                       ),
                                     ),
@@ -215,16 +202,16 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                             color: _isHistoryExpanded.value
-                                ? AppColors.primaryColor
+                                ? colorScheme.primary
                                     .withValues(alpha: 0.3)
                                 : isDark
-                                    ? AppColors.darkPrimaryColor
+                                    ? colorScheme.primary
                                         .withValues(alpha: 0.25)
-                                    : AppColors.primaryColor
+                                    : colorScheme.primary
                                         .withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.primaryColor
+                              color: colorScheme.primary
                                   .withValues(alpha: 0.4),
                               width: 1.5,
                             ),
@@ -234,9 +221,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                 ? Icons.expand_less_rounded
                                 : Icons.history_rounded,
                             size: 14.sp,
-                            color: isDark
-                                ? AppColors.darkPrimaryColor
-                                : AppColors.primaryColor,
+                            color: colorScheme.primary,
                             shadows: [
                               Shadow(
                                 color:
@@ -255,9 +240,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
             Divider(
               height: 1,
               thickness: 1,
-              color: isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                  : Colors.grey.withValues(alpha: 0.15),
+              color: colorScheme.outline.withValues(alpha: 0.15),
             ),
             if (lastEntry != null && !_isHistoryExpanded.value)
               Padding(
@@ -269,14 +252,14 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                     gradient: LinearGradient(
                       colors: isDark
                           ? [
-                              AppColors.darkSurfaceElevatedColor,
-                              AppColors.darkSurfaceElevatedColor
+                              colorScheme.surfaceContainerHighest,
+                              colorScheme.surfaceContainerHighest
                                   .withValues(alpha: 0.8),
                             ]
                           : [
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.08),
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.04),
                             ],
                       begin: Alignment.topLeft,
@@ -285,9 +268,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
                       color: isDark
-                          ? AppColors.darkOutlineColor
-                              .withValues(alpha: 0.3)
-                          : AppColors.primaryColor
+                          ? colorScheme.outline.withValues(alpha: 0.3)
+                          : colorScheme.primary
                               .withValues(alpha: 0.2),
                     ),
                   ),
@@ -299,8 +281,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor
+                              colorScheme.primary,
+                              colorScheme.primary
                                   .withValues(alpha: 0.7),
                             ],
                             begin: Alignment.topCenter,
@@ -309,7 +291,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor
+                              color: colorScheme.primary
                                   .withValues(alpha: 0.3),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
@@ -331,9 +313,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     height: 1,
-                                    color: isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                    color: colorScheme.primary,
                                   ),
                                 ),
                                 Padding(
@@ -346,9 +326,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                                     ),
                                   ),
                                 ),
@@ -360,9 +338,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                 Icon(
                                   Icons.calendar_today,
                                   size: 9.sp,
-                                  color: isDark
-                                      ? Colors.grey[500]
-                                      : Colors.grey[500],
+                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                                 ),
                                 SizedBox(width: 3.w),
                                 Text(
@@ -370,9 +346,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                       .format(lastEntry.date),
                                   style: TextStyle(
                                     fontSize: 9.sp,
-                                    color: isDark
-                                        ? Colors.grey[500]
-                                        : Colors.grey[500],
+                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -392,14 +366,14 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                 color:
-                                    Colors.red.withValues(alpha: 0.1),
+                                    colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius:
                                     BorderRadius.circular(6.r),
                               ),
                               child: Icon(
                                 Icons.delete_outline,
                                 size: 14.sp,
-                                color: Colors.red[500],
+                                color: colorScheme.error,
                               ),
                             ),
                           ),
@@ -425,14 +399,14 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                     gradient: LinearGradient(
                       colors: isDark
                           ? [
-                              AppColors.darkSurfaceElevatedColor,
-                              AppColors.darkSurfaceElevatedColor
+                              colorScheme.surfaceContainerHighest,
+                              colorScheme.surfaceContainerHighest
                                   .withValues(alpha: 0.8),
                             ]
                           : [
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.08),
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.04),
                             ],
                       begin: Alignment.topLeft,
@@ -441,9 +415,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
                       color: isDark
-                          ? AppColors.darkOutlineColor
-                              .withValues(alpha: 0.3)
-                          : AppColors.primaryColor
+                          ? colorScheme.outline.withValues(alpha: 0.3)
+                          : colorScheme.primary
                               .withValues(alpha: 0.2),
                     ),
                   ),
@@ -455,8 +428,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor
+                              colorScheme.primary,
+                              colorScheme.primary
                                   .withValues(alpha: 0.7),
                             ],
                             begin: Alignment.topCenter,
@@ -465,7 +438,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor
+                              color: colorScheme.primary
                                   .withValues(alpha: 0.3),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
@@ -488,9 +461,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     height: 1,
-                                    color: isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                    color: colorScheme.primary,
                                   ),
                                 ),
                                 Padding(
@@ -503,9 +474,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                                     ),
                                   ),
                                 ),
@@ -517,9 +486,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                 Icon(
                                   Icons.calendar_today,
                                   size: 9.sp,
-                                  color: isDark
-                                      ? Colors.grey[500]
-                                      : Colors.grey[500],
+                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                                 ),
                                 SizedBox(width: 3.w),
                                 Text(
@@ -527,9 +494,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                       .format(entry.date),
                                   style: TextStyle(
                                     fontSize: 9.sp,
-                                    color: isDark
-                                        ? Colors.grey[500]
-                                        : Colors.grey[500],
+                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -549,14 +514,14 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                 color:
-                                    Colors.red.withValues(alpha: 0.1),
+                                    colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius:
                                     BorderRadius.circular(6.r),
                               ),
                               child: Icon(
                                 Icons.delete_outline,
                                 size: 14.sp,
-                                color: Colors.red[500],
+                                color: colorScheme.error,
                               ),
                             ),
                           ),
@@ -576,7 +541,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                       : LinearGradient(
                           colors: [
                             Colors.transparent,
-                            AppColors.primaryColor
+                            colorScheme.primary
                                 .withValues(alpha: 0.02),
                           ],
                           begin: Alignment.topLeft,
@@ -599,35 +564,26 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           hintText: 'أدخل استهلاك العلف',
                           hintStyle: TextStyle(
                             fontSize: 12.sp,
-                            color:
-                                isDark ? Colors.grey[500] : Colors.grey[400],
+                            color: colorScheme.onSurface.withValues(alpha: 0.5),
                           ),
                           filled: true,
-                          fillColor: isDark
-                              ? AppColors.darkSurfaceElevatedColor
-                              : Colors.white,
+                          fillColor: colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide(
-                              color: isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
+                              color: colorScheme.outline.withValues(alpha: 0.5),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide(
-                              color: isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
+                              color: colorScheme.outline.withValues(alpha: 0.5),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide(
-                              color: isDark
-                                  ? AppColors.darkPrimaryColor
-                                  : AppColors.primaryColor,
+                              color: colorScheme.primary,
                               width: 2,
                             ),
                           ),
@@ -639,25 +595,22 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           suffixStyle: TextStyle(
                             fontSize: 11.sp,
                             fontWeight: FontWeight.w500,
-                            color:
-                                isDark ? Colors.grey[400] : Colors.grey[600],
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: isDark
-                              ? AppColors.darkPrimaryColor
-                              : Colors.black87,
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ),
                     SizedBox(width: 8.w),
                     Material(
-                      color: AppColors.primaryColor,
+                      color: colorScheme.primary,
                       borderRadius: BorderRadius.circular(10.r),
                       elevation: 2,
-                      shadowColor: AppColors.primaryColor
+                      shadowColor: colorScheme.primary
                           .withValues(alpha: 0.3),
                       child: InkWell(
                         onTap: () {
@@ -677,8 +630,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.primaryColor,
-                                AppColors.primaryColor
+                                colorScheme.primary,
+                                colorScheme.primary
                                     .withValues(alpha: 0.8),
                               ],
                               begin: Alignment.topLeft,
@@ -687,7 +640,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                             borderRadius: BorderRadius.circular(10.r),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryColor
+                                color: colorScheme.primary
                                     .withValues(alpha: 0.3),
                                 blurRadius: 6,
                                 offset: const Offset(0, 3),
@@ -696,7 +649,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                           ),
                           child: Icon(
                             Icons.add_rounded,
-                            color: Colors.white,
+                            color: colorScheme.onPrimary,
                             size: 22.sp,
                           ),
                         ),
@@ -721,24 +674,23 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
   }
 
   void _showDeleteConfirmDialog(FeedConsumptionEntry entry) {
-    final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           AppStrings.confirmDelete,
           style: TextStyle(
-            color:
-                isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
+            color: colorScheme.primary,
           ),
         ),
         content: Text(
           'هل تريد حذف ${_formatWeight(entry.amount)} كيلو من قسم استهلاك العلف؟',
-          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.black87),
+          style: TextStyle(color: colorScheme.onSurface),
         ),
         actions: [
           TextButton(
@@ -746,7 +698,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -756,8 +708,8 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
               cycleCtrl.removeFeedConsumptionEntry(entry.id);
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withValues(alpha: 0.1),
+              foregroundColor: colorScheme.error,
+              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),

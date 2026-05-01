@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../constant/theme/colors.dart';
+import '../../constant/theme/theme.dart';
 
 class AppAlertDialog extends StatelessWidget {
   final IconData icon;
@@ -29,16 +29,15 @@ class AppAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppColors.darkSurfaceColor : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final bodyTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final bgColor = colorScheme.surface;
     final effectiveIconBgColor =
-        iconBgColor ?? iconColor.withValues(alpha: isDark ? 0.2 : 0.1);
+        iconBgColor ?? iconColor.withValues(alpha: 0.12);
 
     return Dialog(
       backgroundColor: bgColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      shape: RoundedRectangleBorder(borderRadius: AppDimens.borderXl),
       child: Padding(
         padding: EdgeInsets.all(24.w),
         child: Column(
@@ -50,43 +49,43 @@ class AppAlertDialog extends StatelessWidget {
                 color: effectiveIconBgColor,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, size: 40.sp, color: iconColor),
+              child: Icon(icon, size: 36.sp, color: iconColor),
             ),
             SizedBox(height: 20.h),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                color: textColor,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: colorScheme.onSurface,
               ),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 12.h),
             Text(
               description,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.sp,
-                height: 1.5,
-                color: bodyTextColor,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             SizedBox(height: 24.h),
-            _buildActions(),
+            _buildActions(colorScheme, theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildActions() {
+  Widget _buildActions(ColorScheme colorScheme, ThemeData theme) {
     if (secondaryActionLabel != null && secondaryAction != null) {
       return Row(
         children: [
           Expanded(
             child: TextButton(
               onPressed: secondaryAction,
-              style: TextButton.styleFrom(foregroundColor: Colors.grey),
+              style: TextButton.styleFrom(
+                foregroundColor: colorScheme.onSurface.withValues(alpha: 0.6),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+              ),
               child: Text(
                 secondaryActionLabel!,
                 style: TextStyle(fontSize: 14.sp),
@@ -94,29 +93,27 @@ class AppAlertDialog extends StatelessWidget {
             ),
           ),
           SizedBox(width: 12.w),
-          Expanded(child: _buildPrimaryButton()),
+          Expanded(child: _buildPrimaryButton(colorScheme, theme)),
         ],
       );
     }
 
-    return SizedBox(width: double.infinity, child: _buildPrimaryButton());
+    return SizedBox(width: double.infinity, child: _buildPrimaryButton(colorScheme, theme));
   }
 
-  Widget _buildPrimaryButton() {
+  Widget _buildPrimaryButton(ColorScheme colorScheme, ThemeData theme) {
     return ElevatedButton(
       onPressed: primaryAction,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.r),
-        ),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        elevation: AppElevation.none,
+        shape: RoundedRectangleBorder(borderRadius: AppDimens.borderMd),
         padding: EdgeInsets.symmetric(vertical: 12.h),
       ),
       child: Text(
         primaryActionLabel,
-        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
       ),
     );
   }

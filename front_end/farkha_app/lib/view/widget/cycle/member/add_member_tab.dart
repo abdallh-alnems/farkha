@@ -47,6 +47,7 @@ class AddMemberTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     if (!isOwner) return const SizedBox.shrink();
 
     return Padding(
@@ -57,7 +58,7 @@ class AddMemberTab extends StatelessWidget {
           Text(
             'أدخل رقم هاتف المستخدم المسجل في التطبيق',
             style: TextStyle(
-              color: isDark ? Colors.white70 : Colors.black54,
+              color: colorScheme.onSurface.withValues(alpha: 0.55),
               fontSize: 12.sp,
             ),
           ),
@@ -70,7 +71,7 @@ class AddMemberTab extends StatelessWidget {
                   keyboardType: TextInputType.phone,
                   maxLength: 11,
                   style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: colorScheme.onSurface,
                     fontSize: 15.sp,
                     letterSpacing: 2,
                   ),
@@ -80,7 +81,7 @@ class AddMemberTab extends StatelessWidget {
                     prefixIcon: Icon(Icons.phone_android_rounded,
                         color: AppColors.primaryColor, size: 20.sp),
                     filled: true,
-                    fillColor: isDark ? Colors.black12 : Colors.white,
+                    fillColor: colorScheme.surfaceContainerHighest,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide(
@@ -161,9 +162,7 @@ class AddMemberTab extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.03)
-                    : Colors.white,
+                color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
                     color: AppColors.primaryColor.withValues(alpha: 0.3)),
@@ -192,7 +191,7 @@ class AddMemberTab extends StatelessWidget {
                         Text(
                           selectedUser!['phone']?.toString() ?? '',
                           style: TextStyle(
-                            color: isDark ? Colors.white70 : Colors.black54,
+                            color: colorScheme.onSurface.withValues(alpha: 0.55),
                             fontSize: 12.sp,
                           ),
                           textDirection: ui.TextDirection.ltr,
@@ -207,7 +206,7 @@ class AddMemberTab extends StatelessWidget {
             Text(
               'اختر الصلاحية للمستخدم',
               style: TextStyle(
-                color: isDark ? Colors.white : Colors.black87,
+                color: colorScheme.onSurface,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -332,6 +331,7 @@ class _RoleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final bool isSelected = selectedRole == role;
     return GestureDetector(
       onTap: onTap,
@@ -341,12 +341,12 @@ class _RoleButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primaryColor.withValues(alpha: 0.1)
-              : (isDark ? Colors.white.withValues(alpha: 0.03) : Colors.white),
+              : colorScheme.surface,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             color: isSelected
                 ? AppColors.primaryColor
-                : (isDark ? Colors.white24 : Colors.grey[300]!),
+                : colorScheme.outline.withValues(alpha: 0.3),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -357,7 +357,7 @@ class _RoleButton extends StatelessWidget {
                 size: 18.sp,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : (isDark ? Colors.white54 : Colors.grey[500])),
+                    : colorScheme.onSurface.withValues(alpha: 0.45)),
             SizedBox(width: 6.w),
             Text(
               label,
@@ -366,7 +366,7 @@ class _RoleButton extends StatelessWidget {
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : (isDark ? Colors.white70 : Colors.grey[600]),
+                    : colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             )
           ],

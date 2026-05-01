@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../constant/theme/colors.dart';
+import '../../constant/theme/theme.dart';
 
 class ToolInputCard extends StatelessWidget {
   final Widget child;
@@ -10,29 +10,20 @@ class ToolInputCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkSurfaceElevatedColor
-            : AppColors.lightSurfaceColor,
-        borderRadius: BorderRadius.circular(14.r),
+        color: colorScheme.surface,
+        borderRadius: AppDimens.borderLg,
         border: Border.all(
-          color: isDark
-              ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-              : AppColors.lightOutlineColor.withValues(alpha: 0.3),
+          color: colorScheme.outline.withValues(alpha: 0.4),
         ),
         boxShadow: isDark
             ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+            : [AppElevation.shadow(opacity: 0.06)],
       ),
       child: child,
     );

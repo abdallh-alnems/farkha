@@ -193,6 +193,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final bool showAddButton = _selectedUser != null && !_isSearching;
 
     return Dialog(
@@ -205,9 +206,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
           maxHeight: MediaQuery.of(context).size.height * 0.88,
         ),
         decoration: BoxDecoration(
-          color: widget.isDark
-              ? AppColors.darkSurfaceColor
-              : AppColors.lightSurfaceColor,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
@@ -236,7 +235,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                       Text(
                         'إدارة الأعضاء',
                         style: TextStyle(
-                          color: widget.isDark ? Colors.white : Colors.black87,
+                          color: colorScheme.onSurface,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -247,9 +246,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                     left: 0,
                     child: IconButton(
                       icon: Icon(Icons.close,
-                          color: widget.isDark
-                              ? Colors.white54
-                              : Colors.black54,
+                          color: colorScheme.onSurface.withValues(alpha: 0.55),
                           size: 20.sp),
                       onPressed: () => Navigator.of(context).pop(),
                       padding: EdgeInsets.zero,
@@ -262,9 +259,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
             Divider(
               height: 1,
-              color: widget.isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.grey.withValues(alpha: 0.15),
+              color: colorScheme.onSurface.withValues(alpha: 0.1),
             ),
 
             Flexible(
@@ -314,9 +309,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                               children: [
                                 Expanded(
                                   child: Divider(
-                                    color: widget.isDark
-                                        ? Colors.white12
-                                        : Colors.black12,
+                                    color: colorScheme.onSurface.withValues(alpha: 0.05),
                                   ),
                                 ),
                                 Padding(
@@ -389,9 +382,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
               Container(
                 padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
                 decoration: BoxDecoration(
-                  color: widget.isDark
-                      ? AppColors.darkSurfaceColor
-                      : AppColors.lightSurfaceColor,
+                  color: colorScheme.surface,
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(20.r)),
                   boxShadow: [

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
-import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../widget/ad/banner.dart';
@@ -45,29 +44,22 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
     final cycle = cycleCtrl.currentCycle;
     final isViewer = cycle['role']?.toString() == 'viewer';
     final expensesCtrl = Get.find<CycleExpensesController>();
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackGroundColor : AppColors.appBackGroundColor,
       appBar: AppBar(
-        backgroundColor:
-            isDark
-                ? AppColors.darkSurfaceElevatedColor
-                : AppColors.primaryColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+            color: colorScheme.onPrimary,
           ),
           onPressed: () => Get.back<void>(),
         ),
         title: Text(
           'مصروفات ${cycle['name'] ?? 'الدورة'}',
           style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+            color: colorScheme.onPrimary,
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
           ),
@@ -78,9 +70,9 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
             IconButton(
               icon: Icon(
                 Icons.add,
-                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+                color: colorScheme.onPrimary,
               ),
-              onPressed: () => showAddExpenseDialog(expensesCtrl, isDark),
+              onPressed: () => showAddExpenseDialog(expensesCtrl),
             ),
         ],
       ),
@@ -101,11 +93,10 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTotalCard(expensesCtrl, isDark),
+                  _buildTotalCard(expensesCtrl),
                   SizedBox(height: 12.h),
                   _buildExpensesSection(
                     expensesCtrl,
-                    isDark,
                     isViewer: isViewer,
                   ),
                 ],
@@ -119,10 +110,10 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
   }
 
   Widget _buildExpensesSection(
-    CycleExpensesController controller,
-    bool isDark, {
+    CycleExpensesController controller, {
     bool isViewer = false,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -135,7 +126,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
                   'لا توجد مصروفات',
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ),
@@ -153,7 +144,6 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
                       child: ExpenseCard(
                         index: index,
                         expense: expense,
-                        isDark: isDark,
                         isViewer: isViewer,
                       ),
                     ),
@@ -172,15 +162,13 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
     );
   }
 
-  Widget _buildTotalCard(CycleExpensesController controller, bool isDark) {
+  Widget _buildTotalCard(CycleExpensesController controller) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Obx(() {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
-          color:
-              isDark
-                  ? AppColors.darkSurfaceElevatedColor
-                  : AppColors.primaryColor,
+          color: colorScheme.primary,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Row(
@@ -189,7 +177,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
             Text(
               'إجمالي المصروفات',
               style: TextStyle(
-                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+                color: colorScheme.onPrimary,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -197,7 +185,7 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
             Text(
               '${controller.totalExpenses.value.round()} جنيه',
               style: TextStyle(
-                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+                color: colorScheme.onPrimary,
                 fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
               ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../constant/theme/colors.dart';
+import '../../constant/theme/theme.dart';
 
 enum AppButtonVariant { primary, outlined, text }
 
@@ -36,22 +36,25 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = theme.colorScheme;
 
     if (variant == AppButtonVariant.text) {
       return TextButton(
         onPressed: loading ? null : onPressed,
         style: TextButton.styleFrom(
-          foregroundColor: foregroundColor ?? theme.colorScheme.onSurface,
+          foregroundColor: foregroundColor ?? colorScheme.primary,
+          padding: padding ??
+              EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius.r),
+          ),
         ),
-        child: _buildChild(theme, isText: true),
+        child: _buildChild(colorScheme, isText: true),
       );
     }
 
-    final bgColor = backgroundColor ??
-        (isDark ? AppColors.primaryColor : theme.colorScheme.primary);
-    final fgColor =
-        foregroundColor ?? (isDark ? Colors.white : theme.colorScheme.onPrimary);
+    final bgColor = backgroundColor ?? colorScheme.primary;
+    final fgColor = foregroundColor ?? colorScheme.onPrimary;
 
     Widget button = ElevatedButton(
       onPressed: loading ? null : onPressed,
@@ -60,6 +63,10 @@ class AppButton extends StatelessWidget {
             variant == AppButtonVariant.outlined ? Colors.transparent : bgColor,
         foregroundColor:
             variant == AppButtonVariant.outlined ? bgColor : fgColor,
+        disabledBackgroundColor:
+            variant == AppButtonVariant.outlined
+                ? Colors.transparent
+                : bgColor.withValues(alpha: 0.5),
         padding: padding ??
             EdgeInsets.symmetric(vertical: 14.h, horizontal: 24.w),
         shape: RoundedRectangleBorder(
@@ -68,9 +75,9 @@ class AppButton extends StatelessWidget {
               ? BorderSide(color: bgColor, width: 1.5)
               : BorderSide.none,
         ),
-        elevation: variant == AppButtonVariant.outlined ? 0 : 2,
+        elevation: variant == AppButtonVariant.outlined ? 0 : AppElevation.sm,
       ),
-      child: _buildChild(theme),
+      child: _buildChild(colorScheme),
     );
 
     if (fullWidth) {
@@ -80,19 +87,24 @@ class AppButton extends StatelessWidget {
     return button;
   }
 
-  Widget _buildChild(ThemeData theme, {bool isText = false}) {
+  Widget _buildChild(ColorScheme colorScheme, {bool isText = false}) {
     if (loading) {
       return SizedBox(
         height: 20.h,
         width: 20.h,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          color: isText ? theme.colorScheme.onSurface : Colors.white,
+          color:
+              isText
+                  ? colorScheme.onSurface
+                  : variant == AppButtonVariant.outlined
+                  ? colorScheme.primary
+                  : colorScheme.onPrimary,
         ),
       );
     }
 
-    final effectiveFontSize = fontSize ?? 16.sp;
+    final effectiveFontSize = fontSize ?? 15.sp;
     final child = Text(
       label,
       style: TextStyle(

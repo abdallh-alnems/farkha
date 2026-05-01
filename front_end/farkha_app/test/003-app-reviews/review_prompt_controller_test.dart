@@ -1,13 +1,9 @@
-import 'package:farkha_app/core/services/analytics_service.dart';
 import 'package:farkha_app/logic/controller/review_prompt_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:mocktail/mocktail.dart';
 
 import '../helpers/test_harness.dart';
-
-class MockAnalyticsService extends Mock implements AnalyticsService {}
 
 void main() {
   late GetStorage storage;
@@ -18,13 +14,6 @@ void main() {
     await TestHarness.ensureGetStorage();
     storage = await TestHarness.getStorage();
     await storage.erase();
-
-    final analytics = MockAnalyticsService();
-    when(() => analytics.logEvent(
-          name: any(named: 'name'),
-          parameters: any(named: 'parameters'),
-        )).thenAnswer((_) async {});
-    Get.lazyPut<AnalyticsService>(() => analytics);
 
     controller = ReviewPromptController(storage: storage);
   });

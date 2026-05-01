@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../core/constant/storage_keys.dart';
-import '../../core/services/analytics_service.dart';
 import '../../core/services/test_mode_manager.dart';
 import '../../view/widget/app_review/app_review_dialog.dart';
 import '../../../logic/bindings/app_review_binding.dart';
@@ -80,9 +79,6 @@ class ReviewPromptController extends GetxController {
     final shouldShow = await shouldShowPrompt();
     if (!shouldShow) return;
     if (!context.mounted) return;
-
-    final analytics = Get.find<AnalyticsService>();
-    await analytics.logEvent(name: AnalyticsService.reviewPromptShown);
 
     if (context.mounted) {
       AppReviewBinding().dependencies();

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/constant/theme/colors.dart';
 import '../ad/interstitial.dart';
 
 class ToolsButton extends StatelessWidget {
@@ -13,17 +12,12 @@ class ToolsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor =
-        isDark ? AppColors.primaryColor : colorScheme.primary;
-    final foregroundColor = isDark ? Colors.white : colorScheme.onPrimary;
 
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
           FocusScope.of(context).unfocus();
-          // عرض الإعلان البيني، وعند إغلاقه يتم حساب النتيجة
           InterstitialAdService.instance.show(onComplete: onPressed);
         },
         style: ElevatedButton.styleFrom(
@@ -31,8 +25,8 @@ class ToolsButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.r),
           ),
-          backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           elevation: 2,
         ),
         child: Text(

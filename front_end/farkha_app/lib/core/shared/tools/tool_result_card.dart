@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../constant/theme/theme.dart';
+
 class ToolResultCard extends StatelessWidget {
   final String title;
   final String value;
@@ -32,7 +34,7 @@ class ToolResultCard extends StatelessWidget {
             resultColor.withValues(alpha: isDark ? 0.12 : 0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: AppDimens.borderLg,
         border: Border.all(
           color: resultColor.withValues(alpha: 0.45),
           width: 1.2,
@@ -53,7 +55,7 @@ class ToolResultCard extends StatelessWidget {
             value,
             style: TextStyle(
               fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
               color: resultColor,
             ),
           ),
@@ -63,7 +65,7 @@ class ToolResultCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
               decoration: BoxDecoration(
                 color: resultColor.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(16.r),
+                borderRadius: AppDimens.borderXl,
               ),
               child: Text(
                 badgeLabel!,

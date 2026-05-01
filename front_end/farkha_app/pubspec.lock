@@ -217,30 +217,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
-  firebase_analytics:
-    dependency: "direct main"
-    description:
-      name: firebase_analytics
-      sha256: "6993e54441e96b4de1dd85a159b236bbcd2c2487215c9d02b12c1685ddfded73"
-      url: "https://pub.dev"
-    source: hosted
-    version: "12.3.0"
-  firebase_analytics_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_analytics_platform_interface
-      sha256: ac2a17484daf380b2247b9874e675ff9e4ac611d839a10b91b7445f764756760
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.1"
-  firebase_analytics_web:
-    dependency: transitive
-    description:
-      name: firebase_analytics_web
-      sha256: "167a3115e71501ba6706235f00e370072920ee8d26b44fbfb9dc8e63c98a8d9b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.1+5"
   firebase_app_check:
     dependency: "direct main"
     description:
@@ -402,10 +378,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_contacts
-      sha256: "388d32cd33f16640ee169570128c933b45f3259bddbfae7a100bb49e5ffea9ae"
+      sha256: be8e6de65fa7ae4332c812bcd4e8b90c0d74093fbda972ce3ca2f9f34f65e93c
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.9+2"
+    version: "2.0.2"
   flutter_dotenv:
     dependency: "direct main"
     description:

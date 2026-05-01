@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/storage_keys.dart';
-import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/initialization.dart';
 import '../../../logic/controller/auth/login_controller.dart';
 import '../../../logic/controller/cycle_controller.dart';
@@ -47,19 +46,20 @@ class _CardCycleState extends State<CardCycle> {
     return 2;
   }
 
-  Color _getStageColor(int stageIndex, bool isDark) {
+  Color _getStageColor(int stageIndex, ColorScheme colorScheme) {
+    final isDark = colorScheme.brightness == Brightness.dark;
     switch (stageIndex) {
       case 0:
-        return isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+        return colorScheme.primary;
       case 1:
-        return isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+        return colorScheme.primary;
       case 2:
         return isDark
             ? (Colors.orange[300] ?? Colors.orange)
             : (Colors.orange[600] ?? Colors.orange);
       default:
         return isDark
-            ? AppColors.darkSurfaceColor.withValues(alpha: 0.5)
+            ? colorScheme.surface.withValues(alpha: 0.5)
             : Colors.grey[300]!;
     }
   }
@@ -90,6 +90,7 @@ class _CardCycleState extends State<CardCycle> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     final cycleCtrl =
         Get.isRegistered<CycleController>()
@@ -126,10 +127,7 @@ class _CardCycleState extends State<CardCycle> {
           margin: const EdgeInsets.all(17),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.r),
-            color:
-                isDark
-                    ? AppColors.darkSurfaceColor
-                    : AppColors.lightSurfaceColor,
+            color: colorScheme.surface,
             border: Border.all(),
           ),
           child: Center(
@@ -143,10 +141,7 @@ class _CardCycleState extends State<CardCycle> {
                   Icon(
                     Icons.lock_outline_rounded,
                     size: 24.sp,
-                    color:
-                        isDark
-                            ? AppColors.darkPrimaryColor
-                            : AppColors.primaryColor,
+                    color: colorScheme.primary,
                   ),
                   SizedBox(width: 8.w),
                   Text(
@@ -154,7 +149,7 @@ class _CardCycleState extends State<CardCycle> {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : Colors.black87,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -171,10 +166,7 @@ class _CardCycleState extends State<CardCycle> {
           margin: const EdgeInsets.all(17),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.r),
-            color:
-                isDark
-                    ? AppColors.darkSurfaceColor
-                    : AppColors.lightSurfaceColor,
+            color: colorScheme.surface,
             border: Border.all(),
           ),
           child: Stack(
@@ -190,10 +182,7 @@ class _CardCycleState extends State<CardCycle> {
                       Icon(
                         Icons.add_circle_outline,
                         size: 24.sp,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : AppColors.primaryColor,
+                        color: colorScheme.primary,
                       ),
                       SizedBox(width: 8.w),
                       Text(
@@ -201,7 +190,7 @@ class _CardCycleState extends State<CardCycle> {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : Colors.black87,
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -214,26 +203,14 @@ class _CardCycleState extends State<CardCycle> {
                 bottom: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                    color:
-                        isDark
-                            ? AppColors.darkSurfaceElevatedColor.withValues(
-                              alpha: 0.6,
-                            )
-                            : AppColors.primaryColor.withValues(alpha: 0.1),
+                    color: colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(8.r),
                       bottomRight: Radius.circular(8.r),
                     ),
                     border: Border(
                       right: BorderSide(
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor.withValues(
-                                  alpha: 0.4,
-                                )
-                                : AppColors.primaryColor.withValues(
-                                  alpha: 0.5,
-                                ),
+                        color: colorScheme.primary.withValues(alpha: 0.4),
                         width: 1.5,
                       ),
                     ),
@@ -241,7 +218,7 @@ class _CardCycleState extends State<CardCycle> {
                   child: IconButton(
                     icon: Icon(
                       Icons.history,
-                      color: isDark ? Colors.white : AppColors.primaryColor,
+                      color: colorScheme.onPrimary,
                       size: 20.sp,
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -292,6 +269,7 @@ class _CardCycleState extends State<CardCycle> {
     int index,
     bool isDark,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     final cycleCtrl =
         Get.isRegistered<CycleController>()
             ? Get.find<CycleController>()
@@ -356,10 +334,7 @@ class _CardCycleState extends State<CardCycle> {
           margin: const EdgeInsets.all(17),
           padding: const EdgeInsets.symmetric(horizontal: 9),
           decoration: BoxDecoration(
-            color:
-                isDark
-                    ? AppColors.darkSurfaceColor
-                    : AppColors.lightSurfaceColor,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(8.r),
             border: Border.all(),
             boxShadow: [
@@ -386,21 +361,15 @@ class _CardCycleState extends State<CardCycle> {
                             vertical: 1.h,
                           ),
                           decoration: BoxDecoration(
-                            color: _getStageColor(stageIndex, isDark),
+                            color: _getStageColor(stageIndex, colorScheme),
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color:
-                                  isDark
-                                      ? AppColors.darkPrimaryColor
-                                      : AppColors.primaryColor,
+                              color: colorScheme.primary,
                               width: 1.5,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: (isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor)
-                                    .withValues(alpha: 0.3),
+                                color: colorScheme.primary.withValues(alpha: 0.3),
                                 blurRadius: 4,
                                 offset: const Offset(0, 2),
                               ),
@@ -411,10 +380,7 @@ class _CardCycleState extends State<CardCycle> {
                             style: TextStyle(
                               fontSize: 9.sp,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  isDark
-                                      ? AppColors.darkBackGroundColor
-                                      : Colors.white,
+                              color: colorScheme.onPrimary,
                             ),
                           ),
                         ),
@@ -427,7 +393,7 @@ class _CardCycleState extends State<CardCycle> {
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
-                          color: isDark ? Colors.white : Colors.black87,
+                          color: colorScheme.onSurface,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -456,10 +422,7 @@ class _CardCycleState extends State<CardCycle> {
                     child: Text(
                       'ستبدأ الدورة في : ${DateFormat('MM-dd').format(start)} (${DateFormat('EEEE', 'ar').format(start)})',
                       style: TextStyle(
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : AppColors.primaryColor,
+                        color: colorScheme.primary,
                         fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
                       ),
@@ -475,7 +438,6 @@ class _CardCycleState extends State<CardCycle> {
                   liveCount: chickCount - mortality,
                   totalExpenses: totalExpenses,
                   costPerChick: costPerChick,
-                  isDark: isDark,
                 ),
             ],
           ),

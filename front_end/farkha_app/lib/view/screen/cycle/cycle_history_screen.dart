@@ -49,6 +49,7 @@ class _CycleHistoryScreenState extends State<CycleHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,7 +71,7 @@ class _CycleHistoryScreenState extends State<CycleHistoryScreen> {
             icon: Icon(
               Icons.compare,
               size: 23.sp,
-              color: isDark ? Colors.white : Colors.black87,
+              color: colorScheme.onSurface,
             ),
             tooltip: 'مقارنة الدورات',
           ),
@@ -106,9 +107,7 @@ class _CycleHistoryScreenState extends State<CycleHistoryScreen> {
                                             : Icons.history,
                                         size: 64.sp,
                                         color:
-                                            isDark
-                                                ? Colors.grey[700]
-                                                : Colors.grey[300],
+                                            colorScheme.outline.withValues(alpha: 0.5),
                                       ),
                                       SizedBox(height: 16.h),
                                       Text(
@@ -118,9 +117,7 @@ class _CycleHistoryScreenState extends State<CycleHistoryScreen> {
                                         style: TextStyle(
                                           fontSize: 16.sp,
                                           color:
-                                              isDark
-                                                  ? Colors.grey[500]
-                                                  : Colors.grey[500],
+                                              colorScheme.onSurface.withValues(alpha: 0.5),
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),

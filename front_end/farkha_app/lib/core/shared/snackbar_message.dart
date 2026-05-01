@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
-import '../constant/theme/colors.dart';
+import '../constant/theme/theme.dart';
 
 enum SnackbarType { error, success, info, warning }
 
 class SnackbarMessage {
   static bool _isShowing = false;
 
-  /// Show a snackbar message with custom icon and color
   static void show(
     BuildContext? context,
     String message, {
@@ -30,7 +30,8 @@ class SnackbarMessage {
     _isShowing = true;
     ScaffoldMessenger.maybeOf(ctx)?.clearSnackBars();
 
-    final bgColor = backgroundColor ?? AppColors.primaryColor;
+    final colorScheme = Theme.of(ctx).colorScheme;
+    final bgColor = backgroundColor ?? colorScheme.primary;
     final snackDuration = duration ?? const Duration(seconds: 3);
 
     OverlayEntry? overlayEntry;
@@ -73,13 +74,9 @@ class SnackbarMessage {
                           ),
                           decoration: BoxDecoration(
                             color: bgColor,
-                            borderRadius: BorderRadius.circular(9),
+                            borderRadius: AppDimens.borderMd,
                             boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
+                              AppElevation.shadow(opacity: 0.25),
                             ],
                           ),
                           child: Row(
@@ -122,7 +119,6 @@ class SnackbarMessage {
     });
   }
 
-  /// Show an error message
   static void showError(
     BuildContext? context,
     String message, {
@@ -132,12 +128,11 @@ class SnackbarMessage {
       context,
       message,
       icon: Icons.error_outline,
-      backgroundColor: Colors.red,
+      backgroundColor: AppColors.errorColor,
       duration: duration ?? const Duration(seconds: 3),
     );
   }
 
-  /// Show a success message
   static void showSuccess(
     BuildContext? context,
     String message, {
@@ -147,12 +142,11 @@ class SnackbarMessage {
       context,
       message,
       icon: Icons.check_circle,
-      backgroundColor: Colors.green,
+      backgroundColor: AppColors.successColor,
       duration: duration ?? const Duration(seconds: 2),
     );
   }
 
-  /// Show an info message
   static void showInfo(
     BuildContext? context,
     String message, {
@@ -162,12 +156,11 @@ class SnackbarMessage {
       context,
       message,
       icon: Icons.info_outline,
-      backgroundColor: Colors.blue,
+      backgroundColor: AppColors.infoColor,
       duration: duration ?? const Duration(seconds: 3),
     );
   }
 
-  /// Show a warning message
   static void showWarning(
     BuildContext? context,
     String message, {
@@ -177,7 +170,7 @@ class SnackbarMessage {
       context,
       message,
       icon: Icons.warning_amber_rounded,
-      backgroundColor: Colors.orange,
+      backgroundColor: AppColors.warningColor,
       duration: duration ?? const Duration(seconds: 3),
     );
   }

@@ -4,17 +4,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/constant/strings/app_strings.dart';
-import '../../../../core/constant/theme/colors.dart';
-import '../../../../data/model/cycle/weight_entry.dart';
-import '../../../../data/model/cycle/medication_entry.dart';
-import '../../../../data/model/cycle/feed_consumption_entry.dart';
 import '../../../../data/model/cycle/mortality_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
 
 class MortalityCard extends StatefulWidget {
-  final bool isDark;
-
-  const MortalityCard({super.key, required this.isDark});
+  const MortalityCard({super.key});
 
   @override
   State<MortalityCard> createState() => _MortalityCardState();
@@ -49,7 +43,8 @@ class _MortalityCardState extends State<MortalityCard> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final isDark = widget.isDark;
+      final colorScheme = Theme.of(context).colorScheme;
+      final isDark = colorScheme.brightness == Brightness.dark;
       final cycle = cycleCtrl.currentCycle;
       final entries = cycleCtrl.getMortalityEntries();
       final lastEntry = entries.isNotEmpty ? entries.last : null;
@@ -64,12 +59,10 @@ class _MortalityCardState extends State<MortalityCard> {
       return Container(
         margin: EdgeInsets.only(bottom: 10.h),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isDark
-                ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                : Colors.grey.withValues(alpha: 0.1),
+            color: colorScheme.outline.withValues(alpha: 0.1),
           ),
           boxShadow: isDark
               ? []
@@ -91,7 +84,7 @@ class _MortalityCardState extends State<MortalityCard> {
                     ? null
                     : LinearGradient(
                         colors: [
-                          AppColors.primaryColor.withValues(alpha: 0.03),
+                          colorScheme.primary.withValues(alpha: 0.03),
                           Colors.transparent,
                         ],
                         begin: Alignment.topRight,
@@ -110,19 +103,10 @@ class _MortalityCardState extends State<MortalityCard> {
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: isDark
-                                ? [
-                                    AppColors.darkPrimaryColor.withValues(
-                                        alpha: 0.2),
-                                    AppColors.darkPrimaryColor.withValues(
-                                        alpha: 0.15),
-                                  ]
-                                : [
-                                    AppColors.primaryColor
-                                        .withValues(alpha: 0.15),
-                                    AppColors.primaryColor
-                                        .withValues(alpha: 0.08),
-                                  ],
+                            colors: [
+                              colorScheme.primary.withValues(alpha: 0.15),
+                              colorScheme.primary.withValues(alpha: 0.08),
+                            ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -131,7 +115,7 @@ class _MortalityCardState extends State<MortalityCard> {
                               ? []
                               : [
                                   BoxShadow(
-                                    color: AppColors.primaryColor
+                                    color: colorScheme.primary
                                         .withValues(alpha: 0.1),
                                     blurRadius: 3,
                                     offset: const Offset(0, 2),
@@ -140,9 +124,7 @@ class _MortalityCardState extends State<MortalityCard> {
                         ),
                         child: Icon(
                           Icons.cancel_outlined,
-                          color: isDark
-                              ? AppColors.darkPrimaryColor
-                              : AppColors.primaryColor,
+                          color: colorScheme.primary,
                           size: 20.sp,
                         ),
                       ),
@@ -154,9 +136,7 @@ class _MortalityCardState extends State<MortalityCard> {
                             fontSize: 15.sp,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.1,
-                            color: isDark
-                                ? AppColors.darkPrimaryColor
-                                : AppColors.primaryColor,
+                            color: colorScheme.primary,
                           ),
                         ),
                       ),
@@ -168,9 +148,7 @@ class _MortalityCardState extends State<MortalityCard> {
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 fontWeight: FontWeight.bold,
-                                color: isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
+                                color: colorScheme.primary,
                               ),
                             ),
                             SizedBox(width: 4.w),
@@ -179,9 +157,7 @@ class _MortalityCardState extends State<MortalityCard> {
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w600,
-                                color: isDark
-                                    ? Colors.grey[400]
-                                    : Colors.grey[600],
+                                color: colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                             ),
                           ],
@@ -201,16 +177,13 @@ class _MortalityCardState extends State<MortalityCard> {
                               padding: EdgeInsets.all(10.w),
                               decoration: BoxDecoration(
                                 color: _isHistoryExpanded.value
-                                    ? AppColors.primaryColor
+                                    ? colorScheme.primary
                                         .withValues(alpha: 0.3)
-                                    : isDark
-                                        ? AppColors.darkPrimaryColor
-                                            .withValues(alpha: 0.25)
-                                        : AppColors.primaryColor
-                                            .withValues(alpha: 0.2),
+                                    : colorScheme.primary
+                                        .withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.primaryColor
+                                  color: colorScheme.primary
                                       .withValues(alpha: 0.4),
                                   width: 1.5,
                                 ),
@@ -220,9 +193,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                     ? Icons.expand_less_rounded
                                     : Icons.history_rounded,
                                 size: 14.sp,
-                                color: isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
+                                color: colorScheme.primary,
                                 shadows: [
                                   Shadow(
                                     color:
@@ -243,9 +214,7 @@ class _MortalityCardState extends State<MortalityCard> {
             Divider(
               height: 1,
               thickness: 1,
-              color: isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                  : Colors.grey.withValues(alpha: 0.15),
+              color: colorScheme.outline.withValues(alpha: 0.15),
             ),
             if (lastEntry != null && !_isHistoryExpanded.value)
               Padding(
@@ -257,14 +226,14 @@ class _MortalityCardState extends State<MortalityCard> {
                     gradient: LinearGradient(
                       colors: isDark
                           ? [
-                              AppColors.darkSurfaceElevatedColor,
-                              AppColors.darkSurfaceElevatedColor
+                              colorScheme.surfaceContainerHighest,
+                              colorScheme.surfaceContainerHighest
                                   .withValues(alpha: 0.8),
                             ]
                           : [
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.08),
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.04),
                             ],
                       begin: Alignment.topLeft,
@@ -272,11 +241,7 @@ class _MortalityCardState extends State<MortalityCard> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: isDark
-                          ? AppColors.darkOutlineColor
-                              .withValues(alpha: 0.3)
-                          : AppColors.primaryColor
-                              .withValues(alpha: 0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Row(
@@ -287,8 +252,8 @@ class _MortalityCardState extends State<MortalityCard> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor
+                              colorScheme.primary,
+                              colorScheme.primary
                                   .withValues(alpha: 0.7),
                             ],
                             begin: Alignment.topCenter,
@@ -297,7 +262,7 @@ class _MortalityCardState extends State<MortalityCard> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor
+                              color: colorScheme.primary
                                   .withValues(alpha: 0.3),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
@@ -319,9 +284,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     height: 1,
-                                    color: isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                    color: colorScheme.primary,
                                   ),
                                 ),
                                 Padding(
@@ -334,9 +297,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                                     ),
                                   ),
                                 ),
@@ -348,9 +309,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                 Icon(
                                   Icons.calendar_today,
                                   size: 9.sp,
-                                  color: isDark
-                                      ? Colors.grey[500]
-                                      : Colors.grey[500],
+                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                                 ),
                                 SizedBox(width: 3.w),
                                 Text(
@@ -358,9 +317,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                       .format(lastEntry.date),
                                   style: TextStyle(
                                     fontSize: 9.sp,
-                                    color: isDark
-                                        ? Colors.grey[500]
-                                        : Colors.grey[500],
+                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -380,14 +337,14 @@ class _MortalityCardState extends State<MortalityCard> {
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                 color:
-                                    Colors.red.withValues(alpha: 0.1),
+                                    colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius:
                                     BorderRadius.circular(6.r),
                               ),
                               child: Icon(
                                 Icons.delete_outline,
                                 size: 14.sp,
-                                color: Colors.red[500],
+                                color: colorScheme.error,
                               ),
                             ),
                           ),
@@ -413,14 +370,14 @@ class _MortalityCardState extends State<MortalityCard> {
                     gradient: LinearGradient(
                       colors: isDark
                           ? [
-                              AppColors.darkSurfaceElevatedColor,
-                              AppColors.darkSurfaceElevatedColor
+                              colorScheme.surfaceContainerHighest,
+                              colorScheme.surfaceContainerHighest
                                   .withValues(alpha: 0.8),
                             ]
                           : [
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.08),
-                              AppColors.primaryColor
+                              colorScheme.primary
                                   .withValues(alpha: 0.04),
                             ],
                       begin: Alignment.topLeft,
@@ -428,11 +385,7 @@ class _MortalityCardState extends State<MortalityCard> {
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color: isDark
-                          ? AppColors.darkOutlineColor
-                              .withValues(alpha: 0.3)
-                          : AppColors.primaryColor
-                              .withValues(alpha: 0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Row(
@@ -443,8 +396,8 @@ class _MortalityCardState extends State<MortalityCard> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor
+                              colorScheme.primary,
+                              colorScheme.primary
                                   .withValues(alpha: 0.7),
                             ],
                             begin: Alignment.topCenter,
@@ -453,7 +406,7 @@ class _MortalityCardState extends State<MortalityCard> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor
+                              color: colorScheme.primary
                                   .withValues(alpha: 0.3),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
@@ -476,9 +429,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     height: 1,
-                                    color: isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                    color: colorScheme.primary,
                                   ),
                                 ),
                                 Padding(
@@ -491,9 +442,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                     style: TextStyle(
                                       fontSize: 11.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: isDark
-                                          ? Colors.grey[400]
-                                          : Colors.grey[600],
+                                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                                     ),
                                   ),
                                 ),
@@ -505,9 +454,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                 Icon(
                                   Icons.calendar_today,
                                   size: 9.sp,
-                                  color: isDark
-                                      ? Colors.grey[500]
-                                      : Colors.grey[500],
+                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                                 ),
                                 SizedBox(width: 3.w),
                                 Text(
@@ -515,9 +462,7 @@ class _MortalityCardState extends State<MortalityCard> {
                                       .format(entry.date),
                                   style: TextStyle(
                                     fontSize: 9.sp,
-                                    color: isDark
-                                        ? Colors.grey[500]
-                                        : Colors.grey[500],
+                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -537,14 +482,14 @@ class _MortalityCardState extends State<MortalityCard> {
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
                                 color:
-                                    Colors.red.withValues(alpha: 0.1),
+                                    colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius:
                                     BorderRadius.circular(6.r),
                               ),
                               child: Icon(
                                 Icons.delete_outline,
                                 size: 14.sp,
-                                color: Colors.red[500],
+                                color: colorScheme.error,
                               ),
                             ),
                           ),
@@ -564,7 +509,7 @@ class _MortalityCardState extends State<MortalityCard> {
                       : LinearGradient(
                           colors: [
                             Colors.transparent,
-                            AppColors.primaryColor
+                            colorScheme.primary
                                 .withValues(alpha: 0.02),
                           ],
                           begin: Alignment.topLeft,
@@ -585,35 +530,26 @@ class _MortalityCardState extends State<MortalityCard> {
                           hintText: 'أدخل العدد',
                           hintStyle: TextStyle(
                             fontSize: 12.sp,
-                            color:
-                                isDark ? Colors.grey[500] : Colors.grey[400],
+                            color: colorScheme.onSurface.withValues(alpha: 0.5),
                           ),
                           filled: true,
-                          fillColor: isDark
-                              ? AppColors.darkSurfaceElevatedColor
-                              : Colors.white,
+                          fillColor: colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide(
-                              color: isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
+                              color: colorScheme.outline.withValues(alpha: 0.5),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide(
-                              color: isDark
-                                  ? AppColors.darkOutlineColor
-                                  : Colors.grey[300]!,
+                              color: colorScheme.outline.withValues(alpha: 0.5),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.r),
                             borderSide: BorderSide(
-                              color: isDark
-                                  ? AppColors.darkPrimaryColor
-                                  : AppColors.primaryColor,
+                              color: colorScheme.primary,
                               width: 2,
                             ),
                           ),
@@ -625,25 +561,22 @@ class _MortalityCardState extends State<MortalityCard> {
                           suffixStyle: TextStyle(
                             fontSize: 11.sp,
                             fontWeight: FontWeight.w500,
-                            color:
-                                isDark ? Colors.grey[400] : Colors.grey[600],
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: isDark
-                              ? AppColors.darkPrimaryColor
-                              : Colors.black87,
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ),
                     SizedBox(width: 8.w),
                     Material(
-                      color: AppColors.primaryColor,
+                      color: colorScheme.primary,
                       borderRadius: BorderRadius.circular(10.r),
                       elevation: 2,
-                      shadowColor: AppColors.primaryColor
+                      shadowColor: colorScheme.primary
                           .withValues(alpha: 0.3),
                       child: InkWell(
                         onTap: () {
@@ -663,8 +596,8 @@ class _MortalityCardState extends State<MortalityCard> {
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                AppColors.primaryColor,
-                                AppColors.primaryColor
+                                colorScheme.primary,
+                                colorScheme.primary
                                     .withValues(alpha: 0.8),
                               ],
                               begin: Alignment.topLeft,
@@ -673,7 +606,7 @@ class _MortalityCardState extends State<MortalityCard> {
                             borderRadius: BorderRadius.circular(10.r),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primaryColor
+                                color: colorScheme.primary
                                     .withValues(alpha: 0.3),
                                 blurRadius: 6,
                                 offset: const Offset(0, 3),
@@ -682,7 +615,7 @@ class _MortalityCardState extends State<MortalityCard> {
                           ),
                           child: Icon(
                             Icons.add_rounded,
-                            color: Colors.white,
+                            color: colorScheme.onPrimary,
                             size: 22.sp,
                           ),
                         ),
@@ -707,24 +640,23 @@ class _MortalityCardState extends State<MortalityCard> {
   }
 
   void _showDeleteConfirmDialog(MortalityEntry entry) {
-    final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           AppStrings.confirmDelete,
           style: TextStyle(
-            color:
-                isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
+            color: colorScheme.primary,
           ),
         ),
         content: Text(
           'هل تريد حذف ${entry.count} فرخ من قسم عدد النافق؟',
-          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.black87),
+          style: TextStyle(color: colorScheme.onSurface),
         ),
         actions: [
           TextButton(
@@ -732,7 +664,7 @@ class _MortalityCardState extends State<MortalityCard> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -742,8 +674,8 @@ class _MortalityCardState extends State<MortalityCard> {
               cycleCtrl.removeMortalityEntry(entry.id);
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withValues(alpha: 0.1),
+              foregroundColor: colorScheme.error,
+              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),

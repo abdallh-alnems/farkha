@@ -21,6 +21,7 @@ class HistoryCycleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final name = cycle['name']?.toString() ?? 'دورة بدون اسم';
     final startDate = cycle['startDate']?.toString() ?? '-';
     final endDate = cycle['endDate']?.toString() ?? '-';
@@ -62,18 +63,15 @@ class HistoryCycleItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only(bottom: 20.h),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(24.r),
           border: Border.all(
-            color:
-                isDark
-                    ? Colors.white.withOpacity(0.05)
-                    : Colors.black.withOpacity(0.05),
+            color: colorScheme.outline.withValues(alpha: 0.05),
             width: 0.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
               offset: const Offset(0, 8),
               blurRadius: 24,
             ),
@@ -83,8 +81,8 @@ class HistoryCycleItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(24.r),
           child: Column(
             children: [
-              _buildHeader(name, breed, systemType, mortality, mortalityRate),
-              _buildDates(startDate, endDate, cycleAge),
+              _buildHeader(name, breed, systemType, colorScheme),
+              _buildDates(startDate, endDate, cycleAge, colorScheme),
               _buildMetrics(
                 chickCount,
                 liveCount.toString(),
@@ -93,12 +91,14 @@ class HistoryCycleItem extends StatelessWidget {
                 costPerBird,
                 fcr,
                 averageWeight,
+                colorScheme,
               ),
               _buildFooter(
                 totalFeed,
                 totalExpenses,
                 totalSales,
                 netProfit,
+                colorScheme,
               ),
             ],
           ),
@@ -111,19 +111,15 @@ class HistoryCycleItem extends StatelessWidget {
     String name,
     String breed,
     String systemType,
-    String mortality,
-    String mortalityRate,
+    ColorScheme colorScheme,
   ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color:
-            isDark
-                ? AppColors.darkSurfaceElevatedColor
-                : Colors.grey[50]?.withOpacity(0.8),
+        color: colorScheme.surface,
         border: Border(
           bottom: BorderSide(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+            color: colorScheme.outline.withValues(alpha: 0.3),
             width: 0.5,
           ),
         ),
@@ -137,7 +133,7 @@ class HistoryCycleItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
-                color: isDark ? Colors.white : Colors.black87,
+                color: colorScheme.onSurface,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -153,10 +149,10 @@ class HistoryCycleItem extends StatelessWidget {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent.withOpacity(0.1),
+                    color: Colors.blueAccent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
-                      color: Colors.blueAccent.withOpacity(0.2),
+                      color: Colors.blueAccent.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Text(
@@ -174,10 +170,10 @@ class HistoryCycleItem extends StatelessWidget {
                   vertical: 6.h,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.sunsetGradientEnd.withOpacity(0.1),
+                  color: AppColors.sunsetGradientEnd.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                    color: AppColors.sunsetGradientEnd.withOpacity(0.2),
+                    color: AppColors.sunsetGradientEnd.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
@@ -193,7 +189,7 @@ class HistoryCycleItem extends StatelessWidget {
               PopupMenuButton<String>(
                 icon: Icon(
                   Icons.more_vert,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   size: 20.sp,
                 ),
                 padding: EdgeInsets.zero,
@@ -204,9 +200,8 @@ class HistoryCycleItem extends StatelessWidget {
                     Get.snackbar(
                       'قريباً',
                       'ميزة إزالة السجل نهائياً ستكون متاحة قريباً',
-                      backgroundColor:
-                          isDark ? Colors.grey[900] : Colors.white,
-                      colorText: isDark ? Colors.white : Colors.black,
+                      backgroundColor: colorScheme.surface,
+                      colorText: colorScheme.onSurface,
                     );
                   }
                 },
@@ -248,7 +243,7 @@ class HistoryCycleItem extends StatelessWidget {
     );
   }
 
-  Widget _buildDates(String startDate, String endDate, String cycleAge) {
+  Widget _buildDates(String startDate, String endDate, String cycleAge, ColorScheme colorScheme) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Row(
@@ -261,7 +256,7 @@ class HistoryCycleItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.grey[300] : Colors.grey[700],
+                    color: colorScheme.outline.withValues(alpha: 0.5),
                   ),
                 ),
               ],
@@ -273,7 +268,7 @@ class HistoryCycleItem extends StatelessWidget {
               vertical: 8.h,
             ),
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey[800] : Colors.grey[100],
+              color: colorScheme.outline.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -284,7 +279,7 @@ class HistoryCycleItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w800,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -303,6 +298,7 @@ class HistoryCycleItem extends StatelessWidget {
     String costPerBird,
     String fcr,
     double averageWeight,
+    ColorScheme colorScheme,
   ) {
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
@@ -311,6 +307,7 @@ class HistoryCycleItem extends StatelessWidget {
           _buildChickCountCard(
             initialCount: chickCount,
             liveCount: liveCountStr,
+            colorScheme: colorScheme,
           ),
           SizedBox(height: 12.h),
           Row(
@@ -320,6 +317,7 @@ class HistoryCycleItem extends StatelessWidget {
                   label: 'النافق',
                   value: '$mortality ($mortalityRate%)',
                   accentColor: const Color(0xFFF43F5E),
+                  colorScheme: colorScheme,
                 ),
               ),
               SizedBox(width: 12.w),
@@ -328,6 +326,7 @@ class HistoryCycleItem extends StatelessWidget {
                   label: 'تكلفة الفرخ',
                   value: costPerBird,
                   accentColor: const Color(0xFFF59E0B),
+                  colorScheme: colorScheme,
                 ),
               ),
             ],
@@ -340,6 +339,7 @@ class HistoryCycleItem extends StatelessWidget {
                   label: 'معامل التحويل',
                   value: fcr,
                   accentColor: const Color(0xFF6366F1),
+                  colorScheme: colorScheme,
                 ),
               ),
               SizedBox(width: 12.w),
@@ -348,6 +348,7 @@ class HistoryCycleItem extends StatelessWidget {
                   label: 'متوسط الوزن',
                   value: '${averageWeight.toStringAsFixed(1)} كجم',
                   accentColor: const Color(0xFF9333EA),
+                  colorScheme: colorScheme,
                 ),
               ),
             ],
@@ -362,13 +363,14 @@ class HistoryCycleItem extends StatelessWidget {
     double totalExpenses,
     double totalSales,
     double netProfit,
+    ColorScheme colorScheme,
   ) {
     return Container(
       decoration: BoxDecoration(
         color: isDark ? Colors.black12 : const Color(0xFFF8FAFC),
         border: Border(
           top: BorderSide(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+            color: colorScheme.outline.withValues(alpha: 0.3),
           ),
         ),
       ),
@@ -379,20 +381,23 @@ class HistoryCycleItem extends StatelessWidget {
               label: 'العلف',
               value: totalFeed.toStringAsFixed(0),
               unit: 'كجم',
+              colorScheme: colorScheme,
             ),
-            _buildFooterDivider(),
+            _buildFooterDivider(colorScheme),
             _buildFooterStat(
               label: 'المصروفات',
               value: totalExpenses.toStringAsFixed(0),
               unit: 'ج',
+              colorScheme: colorScheme,
             ),
-            _buildFooterDivider(),
+            _buildFooterDivider(colorScheme),
             _buildFooterStat(
               label: 'المبيعات',
               value: totalSales.toStringAsFixed(0),
               unit: 'ج',
+              colorScheme: colorScheme,
             ),
-            _buildFooterDivider(),
+            _buildFooterDivider(colorScheme),
             _buildFooterStat(
               label: 'الصافي',
               value: netProfit.toStringAsFixed(0),
@@ -401,6 +406,7 @@ class HistoryCycleItem extends StatelessWidget {
                   netProfit >= 0
                       ? const Color(0xFF10B981)
                       : const Color(0xFFF43F5E),
+              colorScheme: colorScheme,
             ),
           ],
         ),
@@ -413,6 +419,7 @@ class HistoryCycleItem extends StatelessWidget {
     required String value,
     required String unit,
     Color? valueColor,
+    required ColorScheme colorScheme,
   }) {
     return Expanded(
       child: Padding(
@@ -424,7 +431,7 @@ class HistoryCycleItem extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 10.sp,
-                color: isDark ? Colors.grey[500] : Colors.grey[500],
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -436,8 +443,7 @@ class HistoryCycleItem extends StatelessWidget {
                   value,
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color:
-                        valueColor ?? (isDark ? Colors.white : Colors.black87),
+                    color: valueColor ?? colorScheme.onSurface,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -446,7 +452,7 @@ class HistoryCycleItem extends StatelessWidget {
                   unit,
                   style: TextStyle(
                     fontSize: 9.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -458,28 +464,26 @@ class HistoryCycleItem extends StatelessWidget {
     );
   }
 
-  Widget _buildFooterDivider() {
+  Widget _buildFooterDivider(ColorScheme colorScheme) {
     return Container(
       width: 1,
       height: 30.h,
-      color: isDark ? Colors.grey[800] : Colors.grey[200],
+      color: colorScheme.outline.withValues(alpha: 0.3),
     );
   }
 
   Widget _buildChickCountCard({
     required String initialCount,
     required String liveCount,
+    required ColorScheme colorScheme,
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceElevatedColor : Colors.grey[50],
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color:
-              isDark
-                  ? Colors.white.withOpacity(0.03)
-                  : Colors.black.withOpacity(0.03),
+          color: colorScheme.outline.withValues(alpha: 0.03),
         ),
       ),
       child: Row(
@@ -492,7 +496,7 @@ class HistoryCycleItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w800,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: colorScheme.onSurface,
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -502,7 +506,7 @@ class HistoryCycleItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.grey[500] : Colors.grey[600],
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -511,7 +515,7 @@ class HistoryCycleItem extends StatelessWidget {
           Container(
             width: 1,
             height: 40.h,
-            color: isDark ? Colors.grey[700] : Colors.grey[300],
+            color: colorScheme.outline.withValues(alpha: 0.5),
           ),
           Expanded(
             child: Column(
@@ -531,7 +535,7 @@ class HistoryCycleItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.grey[500] : Colors.grey[600],
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -546,17 +550,15 @@ class HistoryCycleItem extends StatelessWidget {
     required String label,
     required String value,
     required Color accentColor,
+    required ColorScheme colorScheme,
   }) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceElevatedColor : Colors.grey[50],
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color:
-              isDark
-                  ? Colors.white.withOpacity(0.03)
-                  : Colors.black.withOpacity(0.03),
+          color: colorScheme.outline.withValues(alpha: 0.03),
         ),
       ),
       child: Column(
@@ -567,7 +569,7 @@ class HistoryCycleItem extends StatelessWidget {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : Colors.black87,
+              color: colorScheme.onSurface,
               letterSpacing: -0.5,
             ),
             overflow: TextOverflow.ellipsis,
@@ -589,7 +591,7 @@ class HistoryCycleItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.grey[500] : Colors.grey[600],
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ],

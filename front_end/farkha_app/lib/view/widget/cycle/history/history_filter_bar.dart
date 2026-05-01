@@ -20,11 +20,12 @@ class HistoryFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Row(
           children: [
-            Expanded(child: _buildSearchBar()),
+            Expanded(child: _buildSearchBar(colorScheme)),
             GestureDetector(
               onTap: () async {
                 final initialDateRange =
@@ -71,10 +72,8 @@ class HistoryFilterBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color:
                       cycleCtrl.filterDateFrom.value.isNotEmpty
-                          ? AppColors.primaryColor.withOpacity(0.2)
-                          : (isDark
-                              ? AppColors.darkSurfaceColor
-                              : Colors.white),
+                           ? AppColors.primaryColor.withValues(alpha: 0.2)
+                          : colorScheme.surface,
                   borderRadius: BorderRadius.circular(12.r),
                   border:
                       cycleCtrl.filterDateFrom.value.isNotEmpty
@@ -82,7 +81,7 @@ class HistoryFilterBar extends StatelessWidget {
                           : null,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
@@ -93,7 +92,7 @@ class HistoryFilterBar extends StatelessWidget {
                   color:
                       cycleCtrl.filterDateFrom.value.isNotEmpty
                           ? AppColors.primaryColor
-                          : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                          : colorScheme.onSurface.withValues(alpha: 0.6),
                   size: 24.sp,
                 ),
               ),
@@ -113,10 +112,10 @@ class HistoryFilterBar extends StatelessWidget {
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withOpacity(0.1),
+                       color: AppColors.primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: AppColors.primaryColor.withOpacity(0.3),
+                         color: AppColors.primaryColor.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Row(
@@ -132,7 +131,7 @@ class HistoryFilterBar extends StatelessWidget {
                           'من ${cycleCtrl.filterDateFrom.value} إلى ${cycleCtrl.filterDateTo.value}',
                           style: TextStyle(
                             fontSize: 12.sp,
-                            color: isDark ? Colors.white : Colors.black87,
+                            color: colorScheme.onSurface,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -158,11 +157,11 @@ class HistoryFilterBar extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(ColorScheme colorScheme) {
     return Container(
       margin: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
@@ -180,19 +179,19 @@ class HistoryFilterBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'ابحث بإسم الدورة...',
           hintStyle: TextStyle(
-            color: isDark ? Colors.grey[500] : Colors.grey[400],
+            color: colorScheme.onSurface.withValues(alpha: 0.5),
             fontSize: 14.sp,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: isDark ? Colors.grey[400] : Colors.grey[500],
+            color: colorScheme.onSurface.withValues(alpha: 0.5),
           ),
           suffixIcon:
               searchController.text.isNotEmpty
                   ? IconButton(
                     icon: Icon(
                       Icons.clear,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                     onPressed: () {
                       searchController.clear();

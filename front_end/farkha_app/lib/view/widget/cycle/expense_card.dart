@@ -4,20 +4,17 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constant/strings/app_strings.dart';
-import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 
 class ExpenseCard extends StatefulWidget {
   final int index;
   final ExpenseItem expense;
-  final bool isDark;
   final bool isViewer;
 
   const ExpenseCard({
     super.key,
     required this.index,
     required this.expense,
-    required this.isDark,
     this.isViewer = false,
   });
 
@@ -46,19 +43,17 @@ class _ExpenseCardState extends State<ExpenseCard> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = widget.isDark;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
     final expense = widget.expense;
 
     return Container(
       margin: EdgeInsets.only(bottom: 10.h),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color:
-              isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                  : Colors.grey.withValues(alpha: 0.1),
+          color: colorScheme.outline.withValues(alpha: 0.15),
         ),
         boxShadow:
             isDark
@@ -78,10 +73,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
           Divider(
             height: 1,
             thickness: 1,
-            color:
-                isDark
-                    ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.15),
+            color: colorScheme.outline.withValues(alpha: 0.2),
           ),
           _buildPaymentSection(isDark, expense),
           if (!widget.isViewer) _buildInputSection(isDark),
@@ -91,6 +83,8 @@ class _ExpenseCardState extends State<ExpenseCard> {
   }
 
   Widget _buildHeader(bool isDark, ExpenseItem expense) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -99,7 +93,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 ? null
                 : LinearGradient(
                   colors: [
-                    AppColors.primaryColor.withValues(alpha: 0.03),
+                    colorScheme.primary.withValues(alpha: 0.03),
                     Colors.transparent,
                   ],
                   begin: Alignment.topRight,
@@ -116,16 +110,10 @@ class _ExpenseCardState extends State<ExpenseCard> {
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors:
-                    isDark
-                        ? [
-                          AppColors.darkPrimaryColor.withValues(alpha: 0.2),
-                          AppColors.darkPrimaryColor.withValues(alpha: 0.15),
-                        ]
-                        : [
-                          AppColors.primaryColor.withValues(alpha: 0.15),
-                          AppColors.primaryColor.withValues(alpha: 0.08),
-                        ],
+                colors: [
+                  colorScheme.primary.withValues(alpha: 0.15),
+                  colorScheme.primary.withValues(alpha: 0.08),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -135,7 +123,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                       ? []
                       : [
                         BoxShadow(
-                          color: AppColors.primaryColor.withValues(alpha: 0.1),
+                          color: colorScheme.primary.withValues(alpha: 0.1),
                           blurRadius: 3,
                           offset: const Offset(0, 2),
                         ),
@@ -143,10 +131,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             ),
             child: Icon(
               expense.icon,
-              color:
-                  isDark
-                      ? AppColors.darkPrimaryColor
-                      : AppColors.primaryColor,
+              color: colorScheme.primary,
               size: 20.sp,
             ),
           ),
@@ -161,10 +146,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     fontSize: 15.sp,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.1,
-                    color:
-                        isDark
-                            ? AppColors.darkPrimaryColor
-                            : AppColors.primaryColor,
+                    color: colorScheme.primary,
                   ),
                 ),
                 Obx(() {
@@ -180,14 +162,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                               vertical: 2.h,
                             ),
                             decoration: BoxDecoration(
-                              color:
-                                  isDark
-                                      ? AppColors.darkPrimaryColor.withValues(
-                                        alpha: 0.2,
-                                      )
-                                      : AppColors.primaryColor.withValues(
-                                        alpha: 0.1,
-                                      ),
+                              color: colorScheme.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(5.r),
                             ),
                             child: Text(
@@ -195,10 +170,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                               style: TextStyle(
                                 fontSize: 11.sp,
                                 fontWeight: FontWeight.w600,
-                                color:
-                                    isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                color: colorScheme.primary,
                               ),
                             ),
                           ),
@@ -230,21 +202,11 @@ class _ExpenseCardState extends State<ExpenseCard> {
                         decoration: BoxDecoration(
                           color:
                               _isHistoryExpanded.value
-                                  ? AppColors.primaryColor.withValues(
-                                    alpha: 0.3,
-                                  )
-                                  : isDark
-                                  ? AppColors.darkPrimaryColor.withValues(
-                                    alpha: 0.25,
-                                  )
-                                  : AppColors.primaryColor.withValues(
-                                    alpha: 0.2,
-                                  ),
+                                  ? colorScheme.primary.withValues(alpha: 0.3)
+                                  : colorScheme.primary.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(
-                            color: AppColors.primaryColor.withValues(
-                              alpha: 0.4,
-                            ),
+                            color: colorScheme.primary.withValues(alpha: 0.4),
                             width: 1.5,
                           ),
                         ),
@@ -253,10 +215,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                               ? Icons.expand_less_rounded
                               : Icons.history_rounded,
                           size: 14.sp,
-                          color:
-                              isDark
-                                  ? AppColors.darkPrimaryColor
-                                  : AppColors.primaryColor,
+                          color: colorScheme.primary,
                           shadows: [
                             Shadow(
                               color: Colors.black.withValues(alpha: 0.1),
@@ -280,12 +239,12 @@ class _ExpenseCardState extends State<ExpenseCard> {
                       child: Container(
                         padding: EdgeInsets.all(8.w),
                         decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.1),
+                          color: colorScheme.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Icon(
                           Icons.delete_outline,
-                          color: Colors.red[500],
+                          color: colorScheme.error,
                           size: 18.sp,
                         ),
                       ),
@@ -300,6 +259,8 @@ class _ExpenseCardState extends State<ExpenseCard> {
   }
 
   Widget _buildPaymentSection(bool isDark, ExpenseItem expense) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Obx(() {
       if (expense.payments.isEmpty) {
         return const SizedBox.shrink();
@@ -322,14 +283,14 @@ class _ExpenseCardState extends State<ExpenseCard> {
               colors:
                   isDark
                       ? [
-                        AppColors.darkSurfaceElevatedColor,
-                        AppColors.darkSurfaceElevatedColor.withValues(
+                        colorScheme.surfaceContainerHighest,
+                        colorScheme.surfaceContainerHighest.withValues(
                           alpha: 0.8,
                         ),
                       ]
                       : [
-                        AppColors.primaryColor.withValues(alpha: 0.08),
-                        AppColors.primaryColor.withValues(alpha: 0.04),
+                        colorScheme.primary.withValues(alpha: 0.08),
+                        colorScheme.primary.withValues(alpha: 0.04),
                       ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -338,13 +299,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
             border: Border.all(
               color:
                   isDark
-                      ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                      : AppColors.primaryColor.withValues(alpha: 0.2),
+                      ? colorScheme.outline.withValues(alpha: 0.3)
+                      : colorScheme.primary.withValues(alpha: 0.2),
             ),
           ),
           child: Row(
             children: [
-              _buildSideBar(),
+              _buildSideBar(colorScheme),
               SizedBox(width: 8.w),
               Expanded(
                 child: Column(
@@ -352,7 +313,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                   children: [
                     _buildAmountRow(lastPayment.amount, isDark),
                     SizedBox(height: 2.h),
-                    _buildDateRow(lastPayment.date, isDark),
+                    _buildDateRow(lastPayment.date),
                   ],
                 ),
               ),
@@ -373,13 +334,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
                     child: Container(
                       padding: EdgeInsets.all(6.w),
                       decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.1),
+                        color: colorScheme.error.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Icon(
                         Icons.delete_outline,
                         size: 14.sp,
-                        color: Colors.red[500],
+                        color: colorScheme.error,
                       ),
                     ),
                   ),
@@ -394,10 +355,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
           Divider(
             height: 1,
             thickness: 1,
-            color:
-                isDark
-                    ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.15),
+            color: colorScheme.outline.withValues(alpha: 0.2),
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
@@ -417,17 +375,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
                         colors:
                             isDark
                                 ? [
-                                  AppColors.darkSurfaceElevatedColor,
-                                  AppColors.darkSurfaceElevatedColor
+                                  colorScheme.surfaceContainerHighest,
+                                  colorScheme.surfaceContainerHighest
                                       .withValues(alpha: 0.8),
                                 ]
                                 : [
-                                  AppColors.primaryColor.withValues(
-                                    alpha: 0.08,
-                                  ),
-                                  AppColors.primaryColor.withValues(
-                                    alpha: 0.04,
-                                  ),
+                                  colorScheme.primary.withValues(alpha: 0.08),
+                                  colorScheme.primary.withValues(alpha: 0.04),
                                 ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -436,17 +390,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
                       border: Border.all(
                         color:
                             isDark
-                                ? AppColors.darkOutlineColor.withValues(
-                                  alpha: 0.3,
-                                )
-                                : AppColors.primaryColor.withValues(
-                                  alpha: 0.2,
-                                ),
+                                ? colorScheme.outline.withValues(alpha: 0.3)
+                                : colorScheme.primary.withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
                       children: [
-                        _buildSideBar(),
+                        _buildSideBar(colorScheme),
                         SizedBox(width: 8.w),
                         Expanded(
                           child: Column(
@@ -454,7 +404,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                             children: [
                               _buildAmountRow(payment.amount, isDark),
                               SizedBox(height: 2.h),
-                              _buildDateRow(payment.date, isDark),
+                              _buildDateRow(payment.date),
                             ],
                           ),
                         ),
@@ -475,13 +425,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
                               child: Container(
                                 padding: EdgeInsets.all(6.w),
                                 decoration: BoxDecoration(
-                                  color: Colors.red.withValues(alpha: 0.1),
+                                  color: colorScheme.error.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(6.r),
                                 ),
                                 child: Icon(
                                   Icons.delete_outline,
                                   size: 14.sp,
-                                  color: Colors.red[500],
+                                  color: colorScheme.error,
                                 ),
                               ),
                             ),
@@ -496,10 +446,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
           Divider(
             height: 1,
             thickness: 1,
-            color:
-                isDark
-                    ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.15),
+            color: colorScheme.outline.withValues(alpha: 0.2),
           ),
         ],
       );
@@ -507,6 +454,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
   }
 
   Widget _buildInputSection(bool isDark) {
+    final colorScheme = Theme.of(context).colorScheme;
     final controller = Get.find<CycleExpensesController>();
 
     return Container(
@@ -518,7 +466,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 : LinearGradient(
                   colors: [
                     Colors.transparent,
-                    AppColors.primaryColor.withValues(alpha: 0.02),
+                    colorScheme.primary.withValues(alpha: 0.02),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -539,38 +487,26 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 hintText: 'أدخل مبلغ جديد',
                 hintStyle: TextStyle(
                   fontSize: 12.sp,
-                  color: isDark ? Colors.grey[500] : Colors.grey[400],
+                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
                 filled: true,
-                fillColor:
-                    isDark
-                        ? AppColors.darkSurfaceElevatedColor
-                        : Colors.white,
+                fillColor: colorScheme.surface,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
                   borderSide: BorderSide(
-                    color:
-                        isDark
-                            ? AppColors.darkOutlineColor
-                            : Colors.grey[300]!,
+                    color: colorScheme.outline.withValues(alpha: 0.5),
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
                   borderSide: BorderSide(
-                    color:
-                        isDark
-                            ? AppColors.darkOutlineColor
-                            : Colors.grey[300]!,
+                    color: colorScheme.outline.withValues(alpha: 0.5),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
                   borderSide: BorderSide(
-                    color:
-                        isDark
-                            ? AppColors.darkPrimaryColor
-                            : AppColors.primaryColor,
+                    color: colorScheme.primary,
                     width: 2,
                   ),
                 ),
@@ -582,16 +518,13 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 suffixStyle: TextStyle(
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w500,
-                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
-                color:
-                    isDark
-                        ? AppColors.darkPrimaryColor
-                        : Colors.black87,
+                color: colorScheme.onSurface,
               ),
               onSubmitted: (value) {
                 final amount = double.tryParse(value) ?? 0.0;
@@ -605,10 +538,10 @@ class _ExpenseCardState extends State<ExpenseCard> {
           ),
           SizedBox(width: 8.w),
           Material(
-            color: AppColors.primaryColor,
+            color: colorScheme.primary,
             borderRadius: BorderRadius.circular(10.r),
             elevation: 2,
-            shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
+            shadowColor: colorScheme.primary.withValues(alpha: 0.3),
             child: InkWell(
               onTap: () {
                 final value = _textController.text;
@@ -629,8 +562,8 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.primaryColor,
-                      AppColors.primaryColor.withValues(alpha: 0.8),
+                      colorScheme.primary,
+                      colorScheme.primary.withValues(alpha: 0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -638,7 +571,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                   borderRadius: BorderRadius.circular(10.r),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primaryColor.withValues(alpha: 0.3),
+                      color: colorScheme.primary.withValues(alpha: 0.3),
                       blurRadius: 6,
                       offset: const Offset(0, 3),
                     ),
@@ -646,7 +579,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 ),
                 child: Icon(
                   Icons.add_rounded,
-                  color: Colors.white,
+                  color: colorScheme.onPrimary,
                   size: 22.sp,
                 ),
               ),
@@ -657,15 +590,15 @@ class _ExpenseCardState extends State<ExpenseCard> {
     );
   }
 
-  Widget _buildSideBar() {
+  Widget _buildSideBar(ColorScheme colorScheme) {
     return Container(
       width: 2.5.w,
       height: 32.h,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primaryColor,
-            AppColors.primaryColor.withValues(alpha: 0.7),
+            colorScheme.primary,
+            colorScheme.primary.withValues(alpha: 0.7),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -673,7 +606,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
         borderRadius: BorderRadius.circular(2.r),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryColor.withValues(alpha: 0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 2,
             offset: const Offset(0, 1),
           ),
@@ -683,6 +616,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
   }
 
   Widget _buildAmountRow(double amount, bool isDark) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -692,10 +626,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             fontSize: 16.sp,
             fontWeight: FontWeight.bold,
             height: 1,
-            color:
-                isDark
-                    ? AppColors.darkPrimaryColor
-                    : AppColors.primaryColor,
+            color: colorScheme.primary,
           ),
         ),
         Padding(
@@ -705,7 +636,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             style: TextStyle(
               fontSize: 11.sp,
               fontWeight: FontWeight.w500,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),
@@ -713,37 +644,38 @@ class _ExpenseCardState extends State<ExpenseCard> {
     );
   }
 
-  Widget _buildDateRow(DateTime date, bool isDark) {
+  Widget _buildDateRow(DateTime date) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
-        Icon(Icons.calendar_today, size: 9.sp, color: Colors.grey[500]),
+        Icon(Icons.calendar_today, size: 9.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
         SizedBox(width: 3.w),
         Text(
           DateFormat('yyyy-MM-dd').format(date),
-          style: TextStyle(fontSize: 9.sp, color: Colors.grey[500]),
+          style: TextStyle(fontSize: 9.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
         ),
       ],
     );
   }
 
   void _showDeleteConfirmDialog(String label) {
-    final isDark = widget.isDark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           AppStrings.confirmDelete,
           style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
+            color: colorScheme.primary,
           ),
         ),
         content: Text(
           'هل تريد حذف "$label"؟',
-          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.black87),
+          style: TextStyle(color: colorScheme.onSurface),
         ),
         actions: [
           TextButton(
@@ -751,7 +683,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -762,8 +694,8 @@ class _ExpenseCardState extends State<ExpenseCard> {
               controller.removeExpense(widget.index);
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withValues(alpha: 0.1),
+              foregroundColor: colorScheme.error,
+              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
@@ -780,23 +712,23 @@ class _ExpenseCardState extends State<ExpenseCard> {
     double amount,
     String expenseName,
   ) {
-    final isDark = widget.isDark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           AppStrings.confirmDelete,
           style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
+            color: colorScheme.primary,
           ),
         ),
         content: Text(
           'هل تريد حذف دفعة بقيمة ${amount.round()} جنيه من "$expenseName"؟',
-          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.black87),
+          style: TextStyle(color: colorScheme.onSurface),
         ),
         actions: [
           TextButton(
@@ -804,7 +736,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -815,8 +747,8 @@ class _ExpenseCardState extends State<ExpenseCard> {
               controller.removePayment(widget.index, paymentIndex);
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withValues(alpha: 0.1),
+              foregroundColor: colorScheme.error,
+              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),

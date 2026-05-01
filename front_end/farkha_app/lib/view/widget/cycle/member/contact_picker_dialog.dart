@@ -28,8 +28,8 @@ class _ContactPickerDialogState extends State<ContactPickerDialog> {
 
   Future<void> _loadContacts() async {
     try {
-      final contacts = await FlutterContacts.getContacts(
-        withProperties: true,
+      final contacts = await FlutterContacts.getAll(
+        properties: ContactProperty.values.toSet(),
       );
       final withPhones = contacts.where((c) => c.phones.isNotEmpty).toList();
       if (mounted) {
@@ -58,7 +58,7 @@ class _ContactPickerDialogState extends State<ContactPickerDialog> {
         _filtered = _allContacts;
       } else {
         _filtered = _allContacts.where((c) {
-          final name = c.displayName.toLowerCase();
+          final name = (c.displayName ?? '').toLowerCase();
           final phone = c.phones.first.number;
           return name.contains(query.toLowerCase()) || phone.contains(query);
         }).toList();
@@ -68,14 +68,13 @@ class _ContactPickerDialogState extends State<ContactPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AlertDialog(
-      backgroundColor: widget.isDark
-          ? AppColors.darkSurfaceColor
-          : AppColors.lightSurfaceColor,
+      backgroundColor: colorScheme.surface,
       title: Text(
         'اختر جهة اتصال',
         style: TextStyle(
-            color: widget.isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
             fontSize: 16.sp,
             fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
@@ -89,12 +88,12 @@ class _ContactPickerDialogState extends State<ContactPickerDialog> {
               controller: _searchController,
               onChanged: _filter,
               style: TextStyle(
-                  color: widget.isDark ? Colors.white : Colors.black87),
+                  color: colorScheme.onSurface),
               decoration: InputDecoration(
                 hintText: 'بحث...',
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
-                fillColor: widget.isDark ? Colors.black12 : Colors.white,
+                fillColor: colorScheme.surfaceContainerHighest,
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.r),
                     borderSide: BorderSide.none),
@@ -108,30 +107,22 @@ class _ContactPickerDialogState extends State<ContactPickerDialog> {
                       ? Center(
                           child: Text('لا توجد نتائج',
                               style: TextStyle(
-                                  color: widget.isDark
-                                      ? Colors.white54
-                                      : Colors.black54)))
+                                  color: colorScheme.onSurface.withValues(alpha: 0.55))))
                       : ListView.separated(
                           itemCount: _filtered.length,
                           separatorBuilder: (ctx, i) => Divider(
                               height: 1,
-                              color: widget.isDark
-                                  ? Colors.white10
-                                  : Colors.black12),
+                              color: colorScheme.onSurface.withValues(alpha: 0.05)),
                           itemBuilder: (ctx, i) {
                             final c = _filtered[i];
                             return ListTile(
-                              title: Text(c.displayName,
+                              title: Text(c.displayName ?? '',
                                   style: TextStyle(
-                                      color: widget.isDark
-                                          ? Colors.white
-                                          : Colors.black87,
+                                      color: colorScheme.onSurface,
                                       fontSize: 14.sp)),
                               subtitle: Text(c.phones.first.number,
                                   style: TextStyle(
-                                      color: widget.isDark
-                                          ? Colors.white54
-                                          : Colors.black54,
+                                      color: colorScheme.onSurface.withValues(alpha: 0.55),
                                       fontSize: 12.sp),
                                   textDirection: ui.TextDirection.ltr),
                               onTap: () => Navigator.of(context).pop(c),

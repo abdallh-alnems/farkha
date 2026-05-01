@@ -150,7 +150,7 @@ class _AllToolsState extends State<AllTools> {
                       padding: const EdgeInsets.all(20),
                       child: Text(
                         'لا توجد أدوات تطابق البحث',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: 16, color: iconColor.withValues(alpha: 0.6)),
                       ),
                     ),
                   );
@@ -185,8 +185,7 @@ class _AllToolsState extends State<AllTools> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final bool isDark = theme.brightness == Brightness.dark;
-    final Color cardColor =
-        isDark ? AppColors.darkSurfaceElevatedColor : Colors.white;
+    final Color cardColor = colorScheme.surface;
     final Color borderColor = (isDark
             ? AppColors.darkOutlineColor
             : AppColors.lightOutlineColor)
@@ -268,7 +267,7 @@ class _AllToolsState extends State<AllTools> {
                   padding: const EdgeInsets.all(4),
                   child: Icon(
                     isFavorite ? Icons.star : Icons.star_border,
-                    color: isFavorite ? Colors.amber : Colors.grey,
+                    color: isFavorite ? Colors.amber : colorScheme.onSurface.withValues(alpha: 0.4),
                     size: 22,
                   ),
                 ),

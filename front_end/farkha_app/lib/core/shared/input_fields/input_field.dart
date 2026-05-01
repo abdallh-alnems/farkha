@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../constant/theme/colors.dart';
+import '../../constant/theme/theme.dart';
 import '../../functions/input_validation.dart';
 
 void _showHelpPopup(BuildContext anchorContext, String title, String helpText) {
   final renderBox = anchorContext.findRenderObject() as RenderBox?;
   if (renderBox == null) return;
 
-  final isDark = Theme.of(anchorContext).brightness == Brightness.dark;
-  final textColor = isDark ? Colors.white : Colors.grey[800]!;
+  final theme = Theme.of(anchorContext);
+  final colorScheme = theme.colorScheme;
   final position = renderBox.localToGlobal(Offset.zero);
   final size = renderBox.size;
   final screenSize = MediaQuery.sizeOf(anchorContext);
@@ -22,9 +22,9 @@ void _showHelpPopup(BuildContext anchorContext, String title, String helpText) {
   showMenu<void>(
     context: anchorContext,
     position: rect,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    color: isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
-    elevation: 8,
+    shape: RoundedRectangleBorder(borderRadius: AppDimens.borderMd),
+    color: colorScheme.surface,
+    elevation: AppElevation.lg,
     items: [
       PopupMenuItem<void>(
         enabled: false,
@@ -40,7 +40,7 @@ void _showHelpPopup(BuildContext anchorContext, String title, String helpText) {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: textColor,
+                  color: colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 10),
@@ -48,7 +48,7 @@ void _showHelpPopup(BuildContext anchorContext, String title, String helpText) {
                 helpText,
                 style: TextStyle(
                   fontSize: 13,
-                  color: textColor.withValues(alpha: 0.9),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                   height: 1.5,
                 ),
               ),
@@ -60,7 +60,6 @@ void _showHelpPopup(BuildContext anchorContext, String title, String helpText) {
   );
 }
 
-/// Converts Arabic and Persian digits to English as user types.
 class _ArabicToEnglishDigitsFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -139,7 +138,10 @@ class InputField extends StatelessWidget {
                                 child: Icon(
                                   Icons.help_outline,
                                   size: 14.sp,
-                                  color: Colors.grey,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.4),
                                 ),
                               ),
                             ],
@@ -153,28 +155,12 @@ class InputField extends StatelessWidget {
         suffixIcon: suffixIcon,
         suffixIconConstraints: suffixIconConstraints,
         alignLabelWithHint: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 12,
-        ),
       ),
       onChanged: (value) {
-        // Ensure selection is valid after text change
         if (controller != null) {
           final textLength = controller!.text.length;
           final selection = controller!.selection;
 
-          // Fix selection if it's out of bounds
           if (selection.start < 0 ||
               selection.start > textLength ||
               selection.end < 0 ||

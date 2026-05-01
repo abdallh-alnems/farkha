@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/services/analytics_service.dart';
 import '../../../logic/controller/app_review_controller.dart';
 import '../../../logic/controller/review_prompt_controller.dart';
 import 'rating_description.dart';
@@ -208,9 +207,6 @@ class _AppReviewDialogState extends State<AppReviewDialog> {
                             onPressed: () {
                               if (widget.autoPrompted && Get.isRegistered<ReviewPromptController>()) {
                                 Get.find<ReviewPromptController>().markDismissed();
-                              }
-                              if (Get.isRegistered<AnalyticsService>()) {
-                                Get.find<AnalyticsService>().logEvent(name: AnalyticsService.reviewPromptDismissed);
                               }
                               Navigator.of(context).pop();
                             },

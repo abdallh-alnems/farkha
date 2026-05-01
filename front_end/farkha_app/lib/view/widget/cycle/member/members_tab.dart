@@ -81,6 +81,7 @@ class _MembersTabState extends State<MembersTab> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     if (_isFetching) {
       return Center(
         child: Padding(
@@ -113,7 +114,7 @@ class _MembersTabState extends State<MembersTab> {
               style: TextStyle(
                 fontSize: 13.sp,
                 fontWeight: FontWeight.bold,
-                color: widget.isDark ? Colors.white70 : Colors.black87,
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             SizedBox(width: 6.w),
@@ -148,12 +149,12 @@ class _MembersTabState extends State<MembersTab> {
                 children: [
                   Icon(Icons.group_off_rounded,
                       size: 40.sp,
-                      color: widget.isDark ? Colors.white24 : Colors.black26),
+                      color: colorScheme.onSurface.withValues(alpha: 0.2)),
                   SizedBox(height: 8.h),
                   Text(
                     'لا يوجد أعضاء في الدورة',
                     style: TextStyle(
-                      color: widget.isDark ? Colors.white38 : Colors.black45,
+                      color: colorScheme.onSurface.withValues(alpha: 0.4),
                       fontSize: 13.sp,
                     ),
                   ),
@@ -317,6 +318,7 @@ class _MemberCardState extends State<_MemberCard> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final bool isMemberOwner = _memberRole == 'owner';
     final bool isAdmin = _memberRole == 'admin';
     final bool canEdit =
@@ -342,18 +344,14 @@ class _MemberCardState extends State<_MemberCard> {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: widget.isDark
-            ? Colors.white.withValues(alpha: 0.04)
-            : Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
           color: _isPending
               ? Colors.orange.withValues(alpha: 0.4)
               : isMemberOwner
                   ? Colors.amber.withValues(alpha: 0.3)
-                  : (widget.isDark
-                      ? Colors.white.withValues(alpha: 0.08)
-                      : Colors.grey.withValues(alpha: 0.15)),
+                  : colorScheme.onSurface.withValues(alpha: 0.1),
         ),
         boxShadow: [
           BoxShadow(
@@ -384,9 +382,7 @@ class _MemberCardState extends State<_MemberCard> {
                           child: Text(
                             _memberName,
                             style: TextStyle(
-                              color: widget.isDark
-                                  ? Colors.white
-                                  : Colors.black87,
+                              color: colorScheme.onSurface,
                               fontSize: 13.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -422,9 +418,7 @@ class _MemberCardState extends State<_MemberCard> {
                       Text(
                         _memberPhone,
                         style: TextStyle(
-                          color: widget.isDark
-                              ? Colors.white54
-                              : Colors.black45,
+                          color: colorScheme.onSurface.withValues(alpha: 0.45),
                           fontSize: 11.sp,
                         ),
                         textDirection: ui.TextDirection.ltr,
@@ -590,6 +584,7 @@ class _RoleChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final bool isSelected = currentRole == role;
     return GestureDetector(
       onTap: isSelected ? null : onTap,
@@ -599,14 +594,12 @@ class _RoleChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.primaryColor.withValues(alpha: 0.12)
-              : (isDark
-                  ? Colors.white.withValues(alpha: 0.04)
-                  : Colors.grey[50]),
+              : colorScheme.surface,
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
             color: isSelected
                 ? AppColors.primaryColor
-                : (isDark ? Colors.white24 : Colors.grey.shade300),
+                : colorScheme.outline.withValues(alpha: 0.3),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -617,7 +610,7 @@ class _RoleChip extends StatelessWidget {
                 size: 14.sp,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : (isDark ? Colors.white38 : Colors.grey[500])),
+                    : colorScheme.onSurface.withValues(alpha: 0.4)),
             SizedBox(width: 4.w),
             Text(
               label,
@@ -627,7 +620,7 @@ class _RoleChip extends StatelessWidget {
                     isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : (isDark ? Colors.white54 : Colors.grey[600]),
+                    : colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
           ],

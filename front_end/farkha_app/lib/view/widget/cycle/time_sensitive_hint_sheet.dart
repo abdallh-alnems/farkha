@@ -29,6 +29,7 @@ class TimeSensitiveHintSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.w, 24.h, 20.w, 32.h),
       child: Column(
@@ -38,7 +39,7 @@ class TimeSensitiveHintSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey[400],
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(2),
             ),
           ),

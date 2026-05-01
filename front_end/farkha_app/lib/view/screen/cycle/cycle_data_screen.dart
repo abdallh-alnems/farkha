@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/strings/app_strings.dart';
-import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_custom_data_controller.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
@@ -56,22 +55,15 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackGroundColor : AppColors.appBackGroundColor,
       appBar: AppBar(
-        backgroundColor:
-            isDark
-                ? AppColors.darkSurfaceElevatedColor
-                : AppColors.primaryColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+            color: colorScheme.onPrimary,
           ),
           onPressed: () => Get.back<void>(),
         ),
@@ -80,7 +72,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
           return Text(
             'إدخال بيانات ${cycle['name'] ?? 'الدورة'}',
             style: TextStyle(
-              color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+              color: colorScheme.onPrimary,
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
@@ -92,9 +84,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             IconButton(
               icon: Icon(
                 Icons.add,
-                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+                color: colorScheme.onPrimary,
               ),
-              onPressed: () => _showAddDataDialog(isDark),
+              onPressed: () => _showAddDataDialog(),
             ),
         ],
       ),
@@ -113,15 +105,15 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MortalityCard(isDark: isDark),
+                  const MortalityCard(),
                   SizedBox(height: 20.h),
-                  AverageWeightCard(isDark: isDark),
+                  const AverageWeightCard(),
                   SizedBox(height: 20.h),
                   const AdNativeWidget(),
                   SizedBox(height: 20.h),
-                  MedicationCard(isDark: isDark),
+                  const MedicationCard(),
                   SizedBox(height: 20.h),
-                  FeedConsumptionCard(isDark: isDark),
+                  const FeedConsumptionCard(),
                   Obx(() {
                     if (customDataCtrl.customDataItems.isEmpty) {
                       return const SizedBox.shrink();
@@ -136,7 +128,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           return Column(
                             children: [
                               SizedBox(height: 20.h),
-                              _buildCustomDataCard(item, index, isDark),
+                              _buildCustomDataCard(item, index),
                             ],
                           );
                         }),
@@ -153,54 +145,47 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     );
   }
 
-  void _showAddDataDialog(bool isDark) {
+  void _showAddDataDialog() {
+    final colorScheme = Theme.of(context).colorScheme;
     final nameController = TextEditingController();
     const IconData defaultIcon = Icons.note;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           'إضافة بطاقة بيانات جديدة',
-          style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
-          ),
+          style: TextStyle(color: colorScheme.primary),
         ),
         content: TextField(
           controller: nameController,
-          style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : Colors.black87,
-          ),
+          style: TextStyle(color: colorScheme.onSurface),
           decoration: InputDecoration(
             labelText: 'اسم البطاقة',
             labelStyle: TextStyle(
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
             filled: true,
-            fillColor:
-                isDark ? AppColors.darkSurfaceElevatedColor : Colors.grey[50],
+            fillColor: colorScheme.surface,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: isDark ? AppColors.darkOutlineColor : Colors.grey[300]!,
+                color: colorScheme.outline.withValues(alpha: 0.5),
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: isDark ? AppColors.darkOutlineColor : Colors.grey[300]!,
+                color: colorScheme.outline.withValues(alpha: 0.5),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color:
-                    isDark
-                        ? AppColors.darkPrimaryColor
-                        : AppColors.primaryColor,
+                color: colorScheme.primary,
                 width: 2,
               ),
             ),
@@ -213,7 +198,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -228,10 +213,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               }
             },
             style: TextButton.styleFrom(
-              backgroundColor:
-                  isDark
-                      ? AppColors.darkPrimaryColor.withValues(alpha: 0.2)
-                      : AppColors.primaryColor.withValues(alpha: 0.1),
+              backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
@@ -239,10 +221,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             child: Text(
               'إضافة',
               style: TextStyle(
-                color:
-                    isDark
-                        ? AppColors.darkPrimaryColor
-                        : AppColors.primaryColor,
+                color: colorScheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -252,7 +231,9 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     );
   }
 
-  Widget _buildCustomDataCard(CustomDataItem item, int itemIndex, bool isDark) {
+  Widget _buildCustomDataCard(CustomDataItem item, int itemIndex) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
     final textController = TextEditingController();
     final focusNode = FocusNode();
     final isHistoryExpanded = false.obs;
@@ -266,13 +247,10 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
       return Container(
         margin: EdgeInsets.only(bottom: 10.h),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color:
-                isDark
-                    ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.1),
+            color: colorScheme.onSurface.withValues(alpha: 0.05),
           ),
           boxShadow:
               isDark
@@ -296,7 +274,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         ? null
                         : LinearGradient(
                           colors: [
-                            AppColors.primaryColor.withValues(alpha: 0.03),
+                            colorScheme.primary.withValues(alpha: 0.03),
                             Colors.transparent,
                           ],
                           begin: Alignment.topRight,
@@ -316,20 +294,12 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         colors:
                             isDark
                                 ? [
-                                  AppColors.darkPrimaryColor.withValues(
-                                    alpha: 0.2,
-                                  ),
-                                  AppColors.darkPrimaryColor.withValues(
-                                    alpha: 0.15,
-                                  ),
+                                  colorScheme.primary.withValues(alpha: 0.2),
+                                  colorScheme.primary.withValues(alpha: 0.15),
                                 ]
                                 : [
-                                  AppColors.primaryColor.withValues(
-                                    alpha: 0.15,
-                                  ),
-                                  AppColors.primaryColor.withValues(
-                                    alpha: 0.08,
-                                  ),
+                                  colorScheme.primary.withValues(alpha: 0.15),
+                                  colorScheme.primary.withValues(alpha: 0.08),
                                 ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -340,7 +310,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                               ? []
                               : [
                                 BoxShadow(
-                                  color: AppColors.primaryColor.withValues(
+                                  color: colorScheme.primary.withValues(
                                     alpha: 0.1,
                                   ),
                                   blurRadius: 3,
@@ -350,10 +320,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                     ),
                     child: Icon(
                       item.icon,
-                      color:
-                          isDark
-                              ? AppColors.darkPrimaryColor
-                              : AppColors.primaryColor,
+                      color: colorScheme.primary,
                       size: 20.sp,
                     ),
                   ),
@@ -365,10 +332,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         fontSize: 15.sp,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.1,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : AppColors.primaryColor,
+                        color: colorScheme.primary,
                       ),
                     ),
                   ),
@@ -385,21 +349,11 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           decoration: BoxDecoration(
                             color:
                                 isHistoryExpanded.value
-                                    ? AppColors.primaryColor.withValues(
-                                      alpha: 0.3,
-                                    )
-                                    : isDark
-                                    ? AppColors.darkPrimaryColor.withValues(
-                                      alpha: 0.25,
-                                    )
-                                    : AppColors.primaryColor.withValues(
-                                      alpha: 0.2,
-                                    ),
+                                    ? colorScheme.primary.withValues(alpha: 0.3)
+                                    : colorScheme.primary.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(10.r),
                             border: Border.all(
-                              color: AppColors.primaryColor.withValues(
-                                alpha: 0.4,
-                              ),
+                              color: colorScheme.primary.withValues(alpha: 0.4),
                               width: 1.5,
                             ),
                           ),
@@ -408,10 +362,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                 ? Icons.expand_less_rounded
                                 : Icons.history_rounded,
                             size: 14.sp,
-                            color:
-                                isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
+                            color: colorScheme.primary,
                             shadows: [
                               Shadow(
                                 color: Colors.black.withValues(alpha: 0.1),
@@ -438,12 +389,12 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         child: Container(
                           padding: EdgeInsets.all(8.w),
                           decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.1),
+                            color: colorScheme.error.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Icon(
                             Icons.delete_outline,
-                            color: Colors.red[500],
+                            color: colorScheme.error,
                             size: 18.sp,
                           ),
                         ),
@@ -455,10 +406,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             Divider(
               height: 1,
               thickness: 1,
-              color:
-                  isDark
-                      ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                      : Colors.grey.withValues(alpha: 0.15),
+              color: colorScheme.onSurface.withValues(alpha: 0.08),
             ),
             if (lastEntry != null && !isHistoryExpanded.value)
               Padding(
@@ -471,26 +419,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       colors:
                           isDark
                               ? [
-                                AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(
+                                colorScheme.surfaceContainerHighest,
+                                colorScheme.surfaceContainerHighest.withValues(
                                   alpha: 0.8,
                                 ),
                               ]
                               : [
-                                AppColors.primaryColor.withValues(alpha: 0.08),
-                                AppColors.primaryColor.withValues(alpha: 0.04),
+                                colorScheme.primary.withValues(alpha: 0.08),
+                                colorScheme.primary.withValues(alpha: 0.04),
                               ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color:
-                          isDark
-                              ? AppColors.darkOutlineColor.withValues(
-                                alpha: 0.3,
-                              )
-                              : AppColors.primaryColor.withValues(alpha: 0.2),
+                      color: colorScheme.primary.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Row(
@@ -501,8 +444,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withValues(alpha: 0.7),
+                              colorScheme.primary,
+                              colorScheme.primary.withValues(alpha: 0.7),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -510,9 +453,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: colorScheme.primary.withValues(alpha: 0.3),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -530,10 +471,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
                                 height: 1.2,
-                                color:
-                                    isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                color: colorScheme.primary,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -544,22 +482,14 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                 Icon(
                                   Icons.calendar_today,
                                   size: 9.sp,
-                                  color:
-                                      isDark
-                                          ? Colors.grey[500]
-                                          : Colors.grey[500],
+                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                                 ),
                                 SizedBox(width: 3.w),
                                 Text(
-                                  DateFormat(
-                                    'yyyy-MM-dd',
-                                  ).format(lastEntry.date),
+                                  DateFormat('yyyy-MM-dd').format(lastEntry.date),
                                   style: TextStyle(
                                     fontSize: 9.sp,
-                                    color:
-                                        isDark
-                                            ? Colors.grey[500]
-                                            : Colors.grey[500],
+                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -588,13 +518,13 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                             child: Container(
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                color: Colors.red.withValues(alpha: 0.1),
+                                color: colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: Icon(
                                 Icons.delete_outline,
                                 size: 14.sp,
-                                color: Colors.red[500],
+                                color: colorScheme.error,
                               ),
                             ),
                           ),
@@ -620,26 +550,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       colors:
                           isDark
                               ? [
-                                AppColors.darkSurfaceElevatedColor,
-                                AppColors.darkSurfaceElevatedColor.withValues(
+                                colorScheme.surfaceContainerHighest,
+                                colorScheme.surfaceContainerHighest.withValues(
                                   alpha: 0.8,
                                 ),
                               ]
                               : [
-                                AppColors.primaryColor.withValues(alpha: 0.08),
-                                AppColors.primaryColor.withValues(alpha: 0.04),
+                                colorScheme.primary.withValues(alpha: 0.08),
+                                colorScheme.primary.withValues(alpha: 0.04),
                               ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(8.r),
                     border: Border.all(
-                      color:
-                          isDark
-                              ? AppColors.darkOutlineColor.withValues(
-                                alpha: 0.3,
-                              )
-                              : AppColors.primaryColor.withValues(alpha: 0.2),
+                      color: colorScheme.primary.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Row(
@@ -650,8 +575,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withValues(alpha: 0.7),
+                              colorScheme.primary,
+                              colorScheme.primary.withValues(alpha: 0.7),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -659,9 +584,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(2.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: colorScheme.primary.withValues(alpha: 0.3),
                               blurRadius: 2,
                               offset: const Offset(0, 1),
                             ),
@@ -679,10 +602,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
                                 height: 1.2,
-                                color:
-                                    isDark
-                                        ? AppColors.darkPrimaryColor
-                                        : AppColors.primaryColor,
+                                color: colorScheme.primary,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -693,20 +613,14 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                                 Icon(
                                   Icons.calendar_today,
                                   size: 9.sp,
-                                  color:
-                                      isDark
-                                          ? Colors.grey[500]
-                                          : Colors.grey[500],
+                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
                                 ),
                                 SizedBox(width: 3.w),
                                 Text(
                                   DateFormat('yyyy-MM-dd').format(entry.date),
                                   style: TextStyle(
                                     fontSize: 9.sp,
-                                    color:
-                                        isDark
-                                            ? Colors.grey[500]
-                                            : Colors.grey[500],
+                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ],
@@ -735,13 +649,13 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                             child: Container(
                               padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                color: Colors.red.withValues(alpha: 0.1),
+                                color: colorScheme.error.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: Icon(
                                 Icons.delete_outline,
                                 size: 14.sp,
-                                color: Colors.red[500],
+                                color: colorScheme.error,
                               ),
                             ),
                           ),
@@ -760,7 +674,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         : LinearGradient(
                           colors: [
                             Colors.transparent,
-                            AppColors.primaryColor.withValues(alpha: 0.02),
+                            colorScheme.primary.withValues(alpha: 0.02),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -779,39 +693,27 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       decoration: InputDecoration(
                         hintText: 'أدخل بيانات جديدة',
                         hintStyle: TextStyle(
-                          fontSize: 12.sp,
-                          color: isDark ? Colors.grey[500] : Colors.grey[400],
+                        fontSize: 12.sp,
+                        color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                         filled: true,
-                        fillColor:
-                            isDark
-                                ? AppColors.darkSurfaceElevatedColor
-                                : Colors.white,
+                        fillColor: colorScheme.surface,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
+                            color: colorScheme.outline.withValues(alpha: 0.5),
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkOutlineColor
-                                    : Colors.grey[300]!,
+                            color: colorScheme.outline.withValues(alpha: 0.5),
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(
-                            color:
-                                isDark
-                                    ? AppColors.darkPrimaryColor
-                                    : AppColors.primaryColor,
+                            color: colorScheme.primary,
                             width: 2,
                           ),
                         ),
@@ -823,10 +725,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
-                        color:
-                            isDark
-                                ? AppColors.darkPrimaryColor
-                                : Colors.black87,
+                        color: colorScheme.onSurface,
                       ),
                       onSubmitted: (value) {
                         if (value.isNotEmpty) {
@@ -839,10 +738,10 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                   ),
                   SizedBox(width: 8.w),
                   Material(
-                    color: AppColors.primaryColor,
+                    color: colorScheme.primary,
                     borderRadius: BorderRadius.circular(10.r),
                     elevation: 2,
-                    shadowColor: AppColors.primaryColor.withValues(alpha: 0.3),
+                    shadowColor: colorScheme.primary.withValues(alpha: 0.3),
                     child: InkWell(
                       onTap: () {
                         final value = textController.text;
@@ -862,8 +761,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryColor,
-                              AppColors.primaryColor.withValues(alpha: 0.8),
+                              colorScheme.primary,
+                              colorScheme.primary.withValues(alpha: 0.8),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -871,9 +770,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                           borderRadius: BorderRadius.circular(10.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryColor.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: colorScheme.primary.withValues(alpha: 0.3),
                               blurRadius: 6,
                               offset: const Offset(0, 3),
                             ),
@@ -881,7 +778,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
                         ),
                         child: Icon(
                           Icons.add_rounded,
-                          color: Colors.white,
+                          color: colorScheme.onPrimary,
                           size: 22.sp,
                         ),
                       ),
@@ -897,23 +794,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
   }
 
   void _showDeleteCustomDataConfirmDialog(int index, String label) {
-    final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           AppStrings.confirmDelete,
-          style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
-          ),
+          style: TextStyle(color: colorScheme.primary),
         ),
         content: Text(
           'هل تريد حذف "$label"؟',
-          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.black87),
+          style: TextStyle(color: colorScheme.onSurface),
         ),
         actions: [
           TextButton(
@@ -921,7 +816,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -931,8 +826,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               customDataCtrl.removeCustomDataItem(index);
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withValues(alpha: 0.1),
+              foregroundColor: colorScheme.error,
+              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),
@@ -950,23 +845,21 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
     String entryText,
     String itemLabel,
   ) {
-    final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.r),
         ),
         title: Text(
           AppStrings.confirmDelete,
-          style: TextStyle(
-            color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
-          ),
+          style: TextStyle(color: colorScheme.primary),
         ),
         content: Text(
           'هل تريد حذف "$entryText" من "$itemLabel"؟',
-          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.black87),
+          style: TextStyle(color: colorScheme.onSurface),
         ),
         actions: [
           TextButton(
@@ -974,7 +867,7 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
             child: Text(
               AppStrings.cancel,
               style: TextStyle(
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -984,8 +877,8 @@ class _CycleDataScreenState extends State<CycleDataScreen> {
               customDataCtrl.removeEntry(itemIndex, entryIndex);
             },
             style: TextButton.styleFrom(
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.red.withValues(alpha: 0.1),
+              foregroundColor: colorScheme.error,
+              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
               ),

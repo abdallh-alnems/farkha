@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constant/routes/route.dart';
-import '../../../../core/constant/theme/colors.dart';
 import '../../../../data/data_source/static/disease/disease_data.dart';
 import '../../../../data/model/disease_model/disease_model.dart';
 
@@ -12,12 +11,9 @@ class DiseaseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor =
-        isDark ? AppColors.darkSurfaceElevatedColor : AppColors.primaryColor;
-    final textColor = isDark
-        ? AppColors.darkPrimaryColor
-        : Colors.white;
+    final colorScheme = Theme.of(context).colorScheme;
+    final cardColor = colorScheme.primary;
+    final textColor = colorScheme.onPrimary;
 
     return Column(
       children: [
@@ -61,9 +57,8 @@ class DiseaseCard extends StatelessWidget {
     required Color textColor,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark
-        ? AppColors.darkPrimaryColor.withValues(alpha: 0.4)
-        : AppColors.primaryColor.withValues(alpha: 0.3);
+    final colorScheme = Theme.of(context).colorScheme;
+    final borderColor = colorScheme.primary.withValues(alpha: 0.3);
 
     return Card(
       elevation: isDark ? 0 : 2,

@@ -13,7 +13,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import '../../logic/controller/remote_config_controller.dart';
 import '../../view/widget/ad/interstitial.dart';
 import '../constant/firebase_options.dart';
-import 'analytics_service.dart';
 import 'dark_light_service.dart';
 import 'deep_link_service.dart';
 import 'notification_service.dart';
@@ -59,9 +58,6 @@ class MyServices extends GetxService {
 
     // Initialize notification service
     await Get.putAsync(() => NotificationService().init());
-    // Initialize analytics service
-    await Get.putAsync(() => AnalyticsService().init());
-
     // Initialize deep link service
     await Get.putAsync(() => DeepLinkService().init());
 

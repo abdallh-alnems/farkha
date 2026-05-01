@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/cycle_controller.dart';
-import '../../../core/constant/theme/colors.dart';
 
 class InvitationCard extends StatelessWidget {
   const InvitationCard({super.key});
@@ -42,10 +41,6 @@ class InvitationCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// Single invite card
-// ─────────────────────────────────────────────────────────────
-
 class _InviteSingleCard extends StatelessWidget {
   final String cycleName;
   final String ownerName;
@@ -85,7 +80,7 @@ class _InviteSingleCard extends StatelessWidget {
           color: isDark ? const Color(0xFFCE93D8) : const Color(0xFF7B1FA2),
           bg: isDark ? const Color(0xFF2A0040) : const Color(0xFFF3E5F5),
         );
-      default: // member
+      default:
         return _RoleMeta(
           label: 'عضو',
           icon: Icons.person_rounded,
@@ -98,30 +93,24 @@ class _InviteSingleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     final meta = _roleMeta(role, isDark);
 
-    final cardBg =
-        isDark ? AppColors.darkSurfaceColor : Colors.white;
-    final borderColor =
-        isDark ? AppColors.darkOutlineColor : AppColors.lightOutlineColor;
-    final titleColor =
-        isDark ? Colors.white : const Color(0xFF1A2D42);
+    final cardBg = colorScheme.surface;
+    final borderColor = colorScheme.outline;
+    final titleColor = colorScheme.onSurface;
     final subtitleColor =
-        isDark ? Colors.grey.shade400 : Colors.grey.shade500;
+        colorScheme.onSurface.withValues(alpha: 0.5);
     final dividerColor =
-        isDark ? AppColors.darkOutlineColor : Colors.grey.shade100;
-    final iconBg = isDark
-        ? AppColors.darkPrimaryColor.withValues(alpha: 0.12)
-        : AppColors.primaryColor.withValues(alpha: 0.08);
-    final iconColor =
-        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
-    final rejectBg =
-        isDark ? AppColors.darkSurfaceElevatedColor : Colors.grey.shade100;
+        colorScheme.outline.withValues(alpha: 0.2);
+    final iconBg =
+        colorScheme.primary.withValues(alpha: 0.1);
+    final iconColor = colorScheme.primary;
+    final rejectBg = colorScheme.surfaceContainerHighest;
     final rejectColor =
-        isDark ? Colors.grey.shade300 : Colors.grey.shade600;
-    final acceptBg =
-        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
-    final acceptFg = isDark ? AppColors.darkBackGroundColor : Colors.white;
+        colorScheme.onSurface.withValues(alpha: 0.6);
+    final acceptBg = colorScheme.primary;
+    final acceptFg = colorScheme.onPrimary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -131,9 +120,7 @@ class _InviteSingleCard extends StatelessWidget {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.25)
-                : AppColors.primaryColor.withValues(alpha: 0.06),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -142,12 +129,10 @@ class _InviteSingleCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Header ─────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
             child: Row(
               children: [
-                // أيقونة الدورة
                 Container(
                   width: 38,
                   height: 38,
@@ -162,7 +147,6 @@ class _InviteSingleCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // اسم الدورة + المدعو
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +176,6 @@ class _InviteSingleCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // شارة الصلاحية
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -221,16 +204,13 @@ class _InviteSingleCard extends StatelessWidget {
             ),
           ),
 
-          // ── Divider ────────────────────────────────────────
           Divider(height: 1, thickness: 1, color: dividerColor),
 
-          // ── Actions ────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 7, 12, 7),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // رفض
                 _ActionButton(
                   label: 'رفض',
                   icon: Icons.close_rounded,
@@ -248,7 +228,6 @@ class _InviteSingleCard extends StatelessWidget {
                   },
                 ),
                 const SizedBox(width: 8),
-                // قبول
                 _ActionButton(
                   label: 'قبول',
                   icon: Icons.check_rounded,
@@ -273,10 +252,6 @@ class _InviteSingleCard extends StatelessWidget {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────
-// Action button
-// ─────────────────────────────────────────────────────────────
 
 class _ActionButton extends StatelessWidget {
   final String label;
@@ -324,10 +299,6 @@ class _ActionButton extends StatelessWidget {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────
-// Role metadata
-// ─────────────────────────────────────────────────────────────
 
 class _RoleMeta {
   final String label;

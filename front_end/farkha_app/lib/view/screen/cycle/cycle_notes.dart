@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/strings/app_strings.dart';
-import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_notes_controller.dart';
 import '../../widget/ad/banner.dart';
@@ -25,22 +24,15 @@ class CycleNotesScreen extends StatelessWidget {
 
     final noteCtrl = Get.find<CycleNotesController>();
     final cycleCtrl = Get.find<CycleController>();
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.darkBackGroundColor : AppColors.appBackGroundColor,
       appBar: AppBar(
-        backgroundColor:
-            isDark
-                ? AppColors.darkSurfaceElevatedColor
-                : AppColors.primaryColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+            color: colorScheme.onPrimary,
           ),
           onPressed: () => Get.back<void>(),
         ),
@@ -49,7 +41,7 @@ class CycleNotesScreen extends StatelessWidget {
           return Text(
             'ملاحظات ${cycle['name'] ?? 'الدورة'}',
             style: TextStyle(
-              color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+              color: colorScheme.onPrimary,
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
@@ -61,13 +53,12 @@ class CycleNotesScreen extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.add,
-                color: isDark ? AppColors.darkPrimaryColor : Colors.white,
+                color: colorScheme.onPrimary,
               ),
-              onPressed: () => _showAddNoteDialog(context, noteCtrl, isDark),
+              onPressed: () => _showAddNoteDialog(context, noteCtrl),
             ),
         ],
       ),
-
       body: SafeArea(
         child: Column(
           children: [
@@ -75,12 +66,10 @@ class CycleNotesScreen extends StatelessWidget {
               child: Obx(() {
                 final status = noteCtrl.notesStatus.value;
 
-                // حالة التحميل
                 if (status == StatusRequest.loading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                // حالة الخطأ
                 if (status == StatusRequest.serverFailure ||
                     status == StatusRequest.offlineFailure ||
                     status == StatusRequest.failure) {
@@ -93,7 +82,7 @@ class CycleNotesScreen extends StatelessWidget {
                               ? Icons.wifi_off_rounded
                               : Icons.error_outline_rounded,
                           size: 48.sp,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         SizedBox(height: 12.h),
                         Text(
@@ -102,7 +91,7 @@ class CycleNotesScreen extends StatelessWidget {
                               : 'حدث خطأ في تحميل الملاحظات',
                           style: TextStyle(
                             fontSize: 16.sp,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
                         SizedBox(height: 16.h),
@@ -111,8 +100,8 @@ class CycleNotesScreen extends StatelessWidget {
                           icon: const Icon(Icons.refresh),
                           label: const Text('إعادة المحاولة'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColor,
-                            foregroundColor: Colors.white,
+                            backgroundColor: colorScheme.primary,
+                            foregroundColor: colorScheme.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.r),
                             ),
@@ -129,7 +118,7 @@ class CycleNotesScreen extends StatelessWidget {
                       'لا توجد ملاحظات',
                       style: TextStyle(
                         fontSize: 16.sp,
-                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   );
@@ -149,7 +138,7 @@ class CycleNotesScreen extends StatelessWidget {
                           const AdNativeWidget(),
                           SizedBox(height: 12.h),
                         ],
-                        _buildNoteItem(context, note, noteCtrl, isDark),
+                        _buildNoteItem(context, note, noteCtrl),
                       ],
                     );
                   },
@@ -167,23 +156,24 @@ class CycleNotesScreen extends StatelessWidget {
     BuildContext context,
     NoteItem note,
     CycleNotesController ctrl,
-    bool isDark,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
     final isViewer =
         Get.find<CycleController>().currentCycle['role']?.toString() ==
         'viewer';
     return GestureDetector(
       onTap:
-          isViewer ? null : () => _showEditNoteDialog(context, ctrl, note, isDark),
+          isViewer ? null : () => _showEditNoteDialog(context, ctrl, note),
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -191,7 +181,7 @@ class CycleNotesScreen extends StatelessWidget {
           border: Border.all(
             color:
                 isDark
-                    ? AppColors.darkOutlineColor.withOpacity(0.1)
+                    ? colorScheme.outline.withValues(alpha: 0.1)
                     : Colors.transparent,
           ),
         ),
@@ -205,7 +195,7 @@ class CycleNotesScreen extends StatelessWidget {
                   DateFormat('yyyy-MM-dd | hh:mm a', 'ar').format(note.date),
                   style: TextStyle(
                     fontSize: 12.sp,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                     fontFamily: 'Cairo',
                   ),
                 ),
@@ -213,7 +203,7 @@ class CycleNotesScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(
                       Icons.delete_outline,
-                      color: Colors.red[300],
+                      color: colorScheme.error,
                       size: 20.sp,
                     ),
                     onPressed:
@@ -228,7 +218,7 @@ class CycleNotesScreen extends StatelessWidget {
               note.content,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: isDark ? Colors.white : Colors.black87,
+                color: colorScheme.onSurface,
                 height: 1.5,
               ),
             ),
@@ -242,8 +232,8 @@ class CycleNotesScreen extends StatelessWidget {
     BuildContext context,
     CycleNotesController ctrl,
     NoteItem note,
-    bool isDark,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     final textController = TextEditingController(text: note.content);
 
     Get.dialog<void>(
@@ -251,7 +241,7 @@ class CycleNotesScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         child: Padding(
           padding: EdgeInsets.all(20.w),
           child: Column(
@@ -262,22 +252,21 @@ class CycleNotesScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
+                  color: colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 16.h),
               TextField(
                 controller: textController,
                 maxLines: 5,
-                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   hintText: 'اكتب ملاحظتك هنا...',
                   hintStyle: TextStyle(
-                    color: isDark ? Colors.grey[500] : Colors.grey[400],
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   filled: true,
-                  fillColor:
-                      isDark ? AppColors.darkBackGroundColor : Colors.grey[100],
+                  fillColor: colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
                     borderSide: BorderSide.none,
@@ -291,7 +280,7 @@ class CycleNotesScreen extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () => Get.back<void>(),
-                      style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                      style: TextButton.styleFrom(foregroundColor: colorScheme.onSurface.withValues(alpha: 0.5)),
                       child: const Text(AppStrings.cancel),
                     ),
                   ),
@@ -305,16 +294,16 @@ class CycleNotesScreen extends StatelessWidget {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
+                        backgroundColor: colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
-                      child: const Text(
+                      child: Text(
                         'حفظ',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -332,16 +321,15 @@ class CycleNotesScreen extends StatelessWidget {
   void _showAddNoteDialog(
     BuildContext context,
     CycleNotesController ctrl,
-    bool isDark,
   ) {
-    _showNoteDialog(context, ctrl, isDark);
+    _showNoteDialog(context, ctrl);
   }
 
   void _showNoteDialog(
     BuildContext context,
     CycleNotesController ctrl,
-    bool isDark,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     final textController = TextEditingController();
 
     Get.dialog<void>(
@@ -349,7 +337,7 @@ class CycleNotesScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
-        backgroundColor: isDark ? AppColors.darkSurfaceColor : Colors.white,
+        backgroundColor: colorScheme.surface,
         child: Padding(
           padding: EdgeInsets.all(20.w),
           child: Column(
@@ -360,22 +348,21 @@ class CycleNotesScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black87,
+                  color: colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: 16.h),
               TextField(
                 controller: textController,
                 maxLines: 5,
-                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   hintText: 'اكتب ملاحظتك هنا...',
                   hintStyle: TextStyle(
-                    color: isDark ? Colors.grey[500] : Colors.grey[400],
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                   filled: true,
-                  fillColor:
-                      isDark ? AppColors.darkBackGroundColor : Colors.grey[100],
+                  fillColor: colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
                     borderSide: BorderSide.none,
@@ -389,7 +376,7 @@ class CycleNotesScreen extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () => Get.back<void>(),
-                      style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                      style: TextButton.styleFrom(foregroundColor: colorScheme.onSurface.withValues(alpha: 0.5)),
                       child: const Text(AppStrings.cancel),
                     ),
                   ),
@@ -403,13 +390,13 @@ class CycleNotesScreen extends StatelessWidget {
                             isLoading
                                 ? null
                                 : () {
-                                  if (textController.text.trim().isNotEmpty) {
-                                    ctrl.addNote(textController.text);
-                                    Get.back<void>();
-                                  }
-                                },
+                                    if (textController.text.trim().isNotEmpty) {
+                                      ctrl.addNote(textController.text);
+                                      Get.back<void>();
+                                    }
+                                  },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
+                          backgroundColor: colorScheme.primary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.r),
                           ),
@@ -420,15 +407,15 @@ class CycleNotesScreen extends StatelessWidget {
                                 ? SizedBox(
                                   width: 20.w,
                                   height: 20.w,
-                                  child: const CircularProgressIndicator(
+                                  child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: Colors.white,
+                                    color: colorScheme.onPrimary,
                                   ),
                                 )
-                                : const Text(
+                                : Text(
                                   'حفظ',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: colorScheme.onPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -449,41 +436,35 @@ class CycleNotesScreen extends StatelessWidget {
     CycleNotesController ctrl,
     String id,
   ) {
+    final colorScheme = Theme.of(context).colorScheme;
     Get.dialog<void>(
       AlertDialog(
-        backgroundColor:
-            Theme.of(context).brightness == Brightness.dark
-                ? AppColors.darkSurfaceColor
-                : Colors.white,
+        backgroundColor: colorScheme.surface,
         title: Text(
           AppStrings.confirmDelete,
           style: TextStyle(
-            color:
-                Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
+            color: colorScheme.onSurface,
           ),
         ),
         content: Text(
           'هل أنت متأكد من حذف هذه الملاحظة؟',
           style: TextStyle(
-            color:
-                Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey[300]
-                    : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back<void>(),
-            child: const Text(AppStrings.cancel, style: TextStyle(color: Colors.grey)),
+            style: TextButton.styleFrom(foregroundColor: colorScheme.onSurface.withValues(alpha: 0.5)),
+            child: const Text(AppStrings.cancel),
           ),
           TextButton(
             onPressed: () {
               ctrl.deleteNote(id);
               Get.back<void>();
             },
-            child: const Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
+            style: TextButton.styleFrom(foregroundColor: colorScheme.error),
+            child: const Text(AppStrings.delete),
           ),
         ],
       ),

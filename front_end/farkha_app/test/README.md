@@ -31,7 +31,6 @@ test/
 ├── helpers/          # Fakes, mocks, harness مشتركة
 │   ├── fake_crud.dart
 │   ├── mock_firebase_auth.dart
-│   ├── fake_analytics.dart
 │   ├── fake_login_data.dart
 │   ├── fake_cycle_data.dart
 │   ├── fixtures.dart

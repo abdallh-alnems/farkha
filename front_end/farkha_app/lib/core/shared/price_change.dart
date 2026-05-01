@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../constant/theme/theme.dart';
+
 class PriceChangeWidget extends StatelessWidget {
   final double priceDifference;
 
@@ -10,7 +12,6 @@ class PriceChangeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final absValue = priceDifference.abs();
 
-    // عرض التغيير مع إزالة الأصفار غير الضرورية
     final displayValue =
         absValue % 1 == 0
             ? absValue.toInt().toString()
@@ -28,7 +29,7 @@ class PriceChangeWidget extends StatelessWidget {
   }
 
   Color _getChangeColor(double difference) {
-    if (difference > 0) return Colors.green; // صعود
-    return Colors.red; // نزول
+    if (difference > 0) return AppColors.successColor;
+    return AppColors.errorColor;
   }
 }

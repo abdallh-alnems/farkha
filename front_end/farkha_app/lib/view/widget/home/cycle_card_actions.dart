@@ -30,14 +30,15 @@ class CycleCardPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return PopupMenuButton<String>(
       icon: Container(
         padding: EdgeInsets.all(6.w),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurfaceColor : Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
-            color: isDark ? Colors.white24 : Colors.grey[300]!,
+            color: colorScheme.outline.withValues(alpha: 0.3),
           ),
           boxShadow: [
             BoxShadow(
@@ -85,7 +86,7 @@ class CycleCardPopupMenu extends StatelessWidget {
           'السجل',
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -95,7 +96,7 @@ class CycleCardPopupMenu extends StatelessWidget {
           'تقرير أسبوعي',
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -106,7 +107,7 @@ class CycleCardPopupMenu extends StatelessWidget {
           'بيانات الدورة',
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -116,7 +117,7 @@ class CycleCardPopupMenu extends StatelessWidget {
           'تعديل',
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -126,7 +127,7 @@ class CycleCardPopupMenu extends StatelessWidget {
           'مشاركة',
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -136,7 +137,7 @@ class CycleCardPopupMenu extends StatelessWidget {
           'صلاحيات',
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -201,7 +202,7 @@ class CycleCardPopupMenu extends StatelessWidget {
 Future<String?> showCycleShareDialog(bool isDark) async {
   final bgColor =
       isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor;
-  final textColor = isDark ? Colors.white : Colors.black87;
+  final textColor = Get.theme.colorScheme.onSurface;
   return Get.dialog<String>(
     AlertDialog(
       backgroundColor: bgColor,
@@ -333,6 +334,7 @@ Future<void> handleCycleShare(
 }
 
 void showCycleDataDialog(Map<String, dynamic> cycle, bool isDark) {
+  final colorScheme = Get.theme.colorScheme;
   Get.dialog<void>(
     AlertDialog(
       backgroundColor:
@@ -340,7 +342,7 @@ void showCycleDataDialog(Map<String, dynamic> cycle, bool isDark) {
       title: Text(
         'بيانات الدورة',
         style: TextStyle(
-          color: isDark ? Colors.white : Colors.black87,
+          color: colorScheme.onSurface,
           fontSize: 18.sp,
           fontWeight: FontWeight.w600,
         ),
@@ -349,15 +351,15 @@ void showCycleDataDialog(Map<String, dynamic> cycle, bool isDark) {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDialogRow('الاسم', (cycle['name'] ?? '-').toString(), isDark),
+          _buildDialogRow('الاسم', (cycle['name'] ?? '-').toString(), colorScheme),
           SizedBox(height: 9.h),
-          _buildDialogRow('نوع الدورة', 'تسمين', isDark),
+          _buildDialogRow('نوع الدورة', 'تسمين', colorScheme),
           SizedBox(height: 9.h),
           _buildDialogRow(
             'عدد الفراخ',
             (cycle['chickCount'] ?? cycle['chick_count'] ?? '-')
                 .toString(),
-            isDark,
+            colorScheme,
           ),
           SizedBox(height: 9.h),
           _buildDialogRow(
@@ -367,15 +369,15 @@ void showCycleDataDialog(Map<String, dynamic> cycle, bool isDark) {
                     cycle['space'] != '-'
                 ? '${cycle['space']} م²'
                 : '-',
-            isDark,
+            colorScheme,
           ),
           SizedBox(height: 9.h),
-          _buildDialogRow('نظام التربية', 'ارضي', isDark),
+          _buildDialogRow('نظام التربية', 'ارضي', colorScheme),
           SizedBox(height: 9.h),
           _buildDialogRow(
             'تاريخ البدء',
             (cycle['startDate'] ?? '-').toString(),
-            isDark,
+            colorScheme,
           ),
         ],
       ),
@@ -421,7 +423,7 @@ void showCycleDataDialog(Map<String, dynamic> cycle, bool isDark) {
   );
 }
 
-Widget _buildDialogRow(String label, String value, bool isDark) {
+Widget _buildDialogRow(String label, String value, ColorScheme colorScheme) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -430,7 +432,7 @@ Widget _buildDialogRow(String label, String value, bool isDark) {
         style: TextStyle(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
-          color: isDark ? Colors.white70 : Colors.black54,
+          color: colorScheme.onSurface.withValues(alpha: 0.55),
         ),
       ),
       Expanded(
@@ -438,7 +440,7 @@ Widget _buildDialogRow(String label, String value, bool isDark) {
           value,
           style: TextStyle(
             fontSize: 14.sp,
-            color: isDark ? Colors.white : Colors.black87,
+            color: colorScheme.onSurface,
           ),
         ),
       ),
@@ -461,7 +463,7 @@ Future<void> showDeleteDialog(
         'هل تريد حذف دورة ${cycle['name']}؟',
         textAlign: TextAlign.right,
         style: TextStyle(
-          color: isDark ? Colors.white : Colors.black87,
+          color: colorScheme.onSurface,
           fontSize: 16.sp,
         ),
       ),
@@ -472,7 +474,7 @@ Future<void> showDeleteDialog(
           child: Text(
             'لا',
             style: TextStyle(
-              color: isDark ? Colors.white70 : Colors.black54,
+              color: colorScheme.onSurface.withValues(alpha: 0.55),
               fontSize: 14.sp,
             ),
           ),
@@ -512,7 +514,7 @@ Future<void> showLeaveDialog(
         'هل تريد مغادرة دورة ${cycle['name']}؟',
         textAlign: TextAlign.right,
         style: TextStyle(
-          color: isDark ? Colors.white : Colors.black87,
+          color: colorScheme.onSurface,
           fontSize: 16.sp,
         ),
       ),
@@ -523,7 +525,7 @@ Future<void> showLeaveDialog(
           child: Text(
             'لا',
             style: TextStyle(
-              color: isDark ? Colors.white70 : Colors.black54,
+              color: colorScheme.onSurface.withValues(alpha: 0.55),
               fontSize: 14.sp,
             ),
           ),
