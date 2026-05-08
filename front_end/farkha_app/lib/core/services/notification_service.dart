@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -136,24 +137,32 @@ class NotificationService extends GetxService
       _cycleChannelDescription,
       Importance.high,
     );
+
+    return this;
+  }
+
+  Future<void> configureMessaging() async {
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
     await _configureFirebaseMessaging();
     syncToken();
 
-    // استعادة الاشتراكات في الخلفية لتجنب ANR
     unawaited(Future.microtask(() => restoreSubscriptions()));
-
-    return this;
   }
 
   Future<void> syncToken() async {
     Future<void> sendToServer(String fToken, String dToken) async {
       try {
-        final headers = await getMyHeadersWithAppCheck();
+        final headers = getMyHeaders();
         headers['Content-Type'] = 'application/json';
+        final platform = kIsWeb ? 'web' : (Platform.isAndroid ? 'android' : 'ios');
         await http.post(
           Uri.parse(Api.updateFcmToken),
           headers: headers,
-          body: jsonEncode({'token': fToken, 'fcm_token': dToken}),
+          body: jsonEncode({
+            'token': fToken,
+            'fcm_token': dToken,
+            'platform': platform,
+          }),
         );
       } catch (_) {}
     }
@@ -183,9 +192,9 @@ class NotificationService extends GetxService
       '@mipmap/ic_launcher',
     );
     const darwinSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
     );
     const initSettings = InitializationSettings(
       android: androidSettings,
@@ -244,7 +253,6 @@ class NotificationService extends GetxService
             final cIdInt = cId is int ? cId : int.tryParse(cId?.toString() ?? '');
             return cIdInt == cycleId;
           });
-          // إذا كانت currentCycle هي نفس الدورة المحذوفة، امسحها
           final currentId = ctrl.currentCycle['cycle_id'];
           final currentIdInt = currentId is int ? currentId : int.tryParse(currentId?.toString() ?? '');
           if (currentIdInt == cycleId) {
@@ -252,6 +260,18 @@ class NotificationService extends GetxService
             if (ctrl.cycles.isNotEmpty) {
               ctrl.currentCycle.assignAll(ctrl.cycles.first);
             }
+          }
+        }
+      }
+
+      if (type == 'role_changed') {
+        if (Get.isRegistered<CycleController>()) {
+          final ctrl = Get.find<CycleController>();
+          ctrl.fetchCyclesFromServer();
+          final cycleIdRaw = message.data['cycle_id'];
+          final cycleId = cycleIdRaw != null ? int.tryParse(cycleIdRaw.toString()) : null;
+          if (cycleId != null) {
+            ctrl.fetchCycleDetails(cycleId);
           }
         }
       }
@@ -291,11 +311,25 @@ class NotificationService extends GetxService
   void _handlePayloadNavigation(Map<String, dynamic> data) {
     final type = data['type'];
     if (type == 'cycle_update') {
-      Get.toNamed<void>(AppRoute.cycle);
-    } else if (type == 'darkness_config') {
+      final cycleIdRaw = data['cycle_id'];
+      final cycleId = cycleIdRaw != null
+          ? int.tryParse(cycleIdRaw.toString())
+          : null;
       Get.toNamed<void>(
         AppRoute.cycle,
-        arguments: {'action': 'open_darkness_settings'},
+        arguments: <String, dynamic>{'cycle_id': cycleId},
+      );
+    } else if (type == 'darkness_config') {
+      final cycleIdRaw = data['cycle_id'];
+      final cycleId = cycleIdRaw != null
+          ? int.tryParse(cycleIdRaw.toString())
+          : null;
+      Get.toNamed<void>(
+        AppRoute.cycle,
+        arguments: <String, dynamic>{
+          'action': 'open_darkness_settings',
+          'cycle_id': cycleId,
+        },
       );
     } else if (type == 'cycle_invitation' || type == 'invitation_response') {
       Get.offAllNamed<void>(AppRoute.home);
@@ -303,11 +337,26 @@ class NotificationService extends GetxService
         Get.find<CycleController>().fetchInvitations();
       }
     } else if (type == 'member_removed') {
-      // عند فتح التطبيق من الإشعار: تحديث قائمة الدورات
       if (Get.isRegistered<CycleController>()) {
         Get.find<CycleController>().fetchCyclesFromServer();
       }
       Get.offAllNamed<void>(AppRoute.home);
+    } else if (type == 'role_changed') {
+      if (Get.isRegistered<CycleController>()) {
+        final ctrl = Get.find<CycleController>();
+        ctrl.fetchCyclesFromServer();
+        final cycleIdRaw = data['cycle_id'];
+        final cycleId = cycleIdRaw != null
+            ? int.tryParse(cycleIdRaw.toString())
+            : null;
+        if (cycleId != null) {
+          Get.toNamed<void>(
+            AppRoute.cycle,
+            arguments: <String, dynamic>{'cycle_id': cycleId},
+          );
+          ctrl.fetchCycleDetails(cycleId);
+        }
+      }
     }
   }
 

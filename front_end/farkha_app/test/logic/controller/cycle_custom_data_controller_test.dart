@@ -39,9 +39,9 @@ void main() {
 
     final fakeCycleCtrl = CycleController(
       auth: mockAuth,
-      cycleData: fakeCycleData,
       myServices: mockMyServices,
     );
+    fakeCycleCtrl.cycleData = fakeCycleData;
     fakeCycleCtrl.currentCycle.value = {
       'cycle_id': 1,
       'name': 'دورة اختبارية',

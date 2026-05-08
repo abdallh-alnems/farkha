@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/storage_keys.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../core/functions/tool_page_view.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/test_mode_manager.dart';
@@ -35,8 +37,8 @@ class _FeasibilityStudyState extends State<FeasibilityStudyScreen> {
       if (_scrollController.hasClients && mounted) {
         _scrollController.animateTo(
           0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
         );
       }
     });
@@ -45,31 +47,25 @@ class _FeasibilityStudyState extends State<FeasibilityStudyScreen> {
   @override
   void initState() {
     super.initState();
-    // إظهار الـ tutorial بعد بناء الـ widgets
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showTutorialIfNeeded();
     });
   }
 
   void _showTutorialIfNeeded() {
-    // التحقق من أن المستخدم لم يشاهد الـ tutorial من قبل
     final hasSeenTutorial =
         myServices.getStorage.read<bool>(StorageKeys.feasibilityTutorialSeen) ?? false;
 
-    // إظهار الشرح إذا لم يشاهده من قبل أو إذا كان في وضع الاختبار
     final shouldShowTutorial =
         !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
 
     if (shouldShowTutorial) {
-      // إخفاء الاعلانات فوراً قبل إظهار الشرح
       setState(() {
         _isTutorialActive = true;
       });
 
-      // تأخير قصير للتأكد من إخفاء الاعلانات
       Future.delayed(const Duration(milliseconds: 100), () {
         if (!mounted) return;
-        // إظهار الـ tutorial مع callback عند الانتهاء
         FeasibilityTutorial.showTutorial(
           // ignore: use_build_context_synchronously
           context,
@@ -96,7 +92,6 @@ class _FeasibilityStudyState extends State<FeasibilityStudyScreen> {
     UsageTipsDialog.showDialogIfNotShown(StorageKeys.feasibilityStudyDialog);
   }
 
-  // دالة لإعادة تعيين الـ tutorial للاختبار
   // ignore: unused_element
   static void resetTutorialForTesting() {
     final myServices = Get.find<MyServices>();
@@ -115,10 +110,11 @@ class _FeasibilityStudyState extends State<FeasibilityStudyScreen> {
   @override
   Widget build(BuildContext context) {
     logToolPageViewOnce(widgetType: FeasibilityStudyScreen, toolId: 14);
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        // إلغاء الشرح عند الضغط على زر الرجوع
         if (_isTutorialActive) {
           FeasibilityTutorial.cancelTutorial();
           setState(() {
@@ -127,46 +123,58 @@ class _FeasibilityStudyState extends State<FeasibilityStudyScreen> {
         }
       },
       child: Scaffold(
-        appBar: const CustomAppBar(text: 'دراسة جدوي', favoriteToolName: 'دراسة جدوي'),
-        body: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 21),
+        appBar: const CustomAppBar(text: 'دراسة جدوى', favoriteToolName: 'دراسة جدوى'),
+        body: Container(
+          decoration: isDark
+              ? null
+              : BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      colorScheme.surface,
+                      AppColors.appBackGroundColor,
+                    ],
+                    stops: const [0.0, 0.15],
+                  ),
+                ),
+          child: Column(
+            children: [
+              Expanded(
                 child: SingleChildScrollView(
                   controller: _scrollController,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSpacing.screenH,
+                    vertical: 4.h,
+                  ),
                   child: Form(
                     key: _formKey,
                     autovalidateMode: AutovalidateMode.disabled,
                     child: Column(
                       children: [
-                        // إظهار الإعلان فقط إذا لم يكن الـ tutorial نشط
                         if (!_isTutorialActive) ...[
                           const AdNativeWidget(),
-                          const SizedBox(height: 19),
+                          SizedBox(height: 16.h),
                         ] else
-                          const SizedBox(height: 19),
+                          SizedBox(height: 16.h),
 
-                        // Inputs Section (includes prices and default values)
                         InputsSection(
                           formKey: _formKey,
                           onAfterCalculate: _scrollToTop,
                         ),
 
-                        // Results Section
                         const ResultsSection(),
 
-                        const SizedBox(height: 24),
+                        SizedBox(height: 20.h),
                         const RelatedArticlesSection(relatedArticleIds: [20]),
+                        SizedBox(height: 12.h),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 17),
-          ],
+            ],
+          ),
         ),
         bottomNavigationBar: _isTutorialActive ? null : const AdBannerWidget(),
       ),

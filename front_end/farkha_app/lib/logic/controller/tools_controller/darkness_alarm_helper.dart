@@ -16,6 +16,7 @@ import '../../../core/shared/dialogs/app_alert_dialog.dart';
 import '../../../view/widget/cycle/darkness_settings_sheet.dart';
 import '../../../view/widget/cycle/time_sensitive_hint_sheet.dart';
 import 'darkness_schedule_controller.dart';
+import 'darkness_schedule_utils.dart';
 
 class DarknessAlarmHelper {
   DarknessAlarmHelper(this._controller);
@@ -40,16 +41,19 @@ class DarknessAlarmHelper {
 
     await cancelDarknessNotifications();
 
-    await _scheduleTransitionNotifications();
-    await _schedulePhaseNotifications();
+    final int transitionsScheduled = await _scheduleTransitionNotifications();
+    final int phasesScheduled = await _schedulePhaseNotifications();
 
-    unawaited(TimeSensitiveHintSheet.showIfNeeded());
+    if (transitionsScheduled + phasesScheduled > 0) {
+      unawaited(TimeSensitiveHintSheet.showIfNeeded());
+    }
   }
 
-  Future<void> _schedulePhaseNotifications() async {
+  Future<int> _schedulePhaseNotifications() async {
     final int n = _controller.numberOfPhasesForToday;
-    if (n <= 0) return;
+    if (n <= 0) return 0;
 
+    int scheduled = 0;
     final DateTime now = DateTime.now();
     for (int phase = 1; phase <= n; phase++) {
       final int? hour = _controller.getPhaseReminderHour(phase);
@@ -118,7 +122,9 @@ class DarknessAlarmHelper {
         age: _controller.lastAgeInDays,
         totalDarknessHours: totalDarknessHours,
       );
+      scheduled++;
     }
+    return scheduled;
   }
 
   Future<void> checkForegroundPhaseAlarm() async {
@@ -235,14 +241,14 @@ class DarknessAlarmHelper {
     }
   }
 
-  Future<void> _scheduleTransitionNotifications() async {
+  Future<int> _scheduleTransitionNotifications() async {
     final DarknessScheduleSnapshot? snap = _controller.snapshotRx.value;
-    if (snap == null) return;
+    if (snap == null) return 0;
 
+    int scheduled = 0;
     final int minutesBefore = _controller.alertMinutesBefore.clamp(0, 180);
     final DateTime now = DateTime.now();
-    final List<DateTime> transitions = DarknessScheduleController
-        .transitionTimes(snap.segments);
+    final List<DateTime> transitions = transitionTimes(snap.segments);
 
     for (int i = 0; i < transitions.length; i++) {
       final DateTime at = transitions[i];
@@ -252,7 +258,7 @@ class DarknessAlarmHelper {
               : at;
       if (!scheduledAt.isAfter(now)) continue;
 
-      final bool isDarkStarting = DarknessScheduleController.isDarkAtOrAfter(
+      final bool isDarkStarting = isDarkAtOrAfter(
         at,
         snap.segments,
       );
@@ -267,7 +273,9 @@ class DarknessAlarmHelper {
         title: title,
         body: body,
       );
+      scheduled++;
     }
+    return scheduled;
   }
 
   Future<void> cancelDarknessNotifications() async {

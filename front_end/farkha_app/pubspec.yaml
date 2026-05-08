@@ -32,8 +32,10 @@ dependencies:
   firebase_auth: ^6.1.2
   firebase_crashlytics: ^5.0.5
   firebase_messaging: ^16.0.2
-  firebase_app_check: ^0.4.2
+
   google_sign_in: ^7.2.0
+  sign_in_with_apple: ^8.0.0
+  crypto: ^3.0.6
 
   # Ads
   google_mobile_ads: ^7.0.0
@@ -102,7 +104,6 @@ flutter:
     - assets/icons/tools/
     - assets/lottie/
     - assets/fonts/
-    - assets/sounds/
 
   fonts:
     - family: Cairo

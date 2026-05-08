@@ -27,13 +27,17 @@ mixin CycleNotificationHelpers {
   int get cycleNotificationIdMin;
   int get cycleNotificationIdMax;
 
+  int? _currentCycleId;
+
   // ── Schedule All ──────────────────────────────────────────────────────
 
   /// Schedules daily notifications for the entire cycle.
   Future<void> scheduleCycleNotifications(
     DateTime startDate, [
     String cycleName = '',
+    int? cycleId,
   ]) async {
+    _currentCycleId = cycleId;
     await cancelCycleNotifications();
 
     final maxDays = temperatureList.length;
@@ -121,10 +125,15 @@ mixin CycleNotificationHelpers {
         iOS: darwinDetails,
       );
 
-      final payloadJson = jsonEncode(
-        payloadMap ??
-            {'type': 'cycle_update', 'day': id - cycleNotificationIdMin + 1},
-      );
+      final payload = payloadMap ??
+          <String, dynamic>{
+            'type': 'cycle_update',
+            'day': id - cycleNotificationIdMin + 1,
+          };
+      if (_currentCycleId != null) {
+        payload['cycle_id'] = _currentCycleId;
+      }
+      final payloadJson = jsonEncode(payload);
 
       try {
         await localNotifications.zonedSchedule(

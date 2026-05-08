@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../core/functions/tool_page_view.dart';
 import '../../../core/shared/input_fields/chicken_age_count_input.dart';
 import '../../../logic/controller/tools_controller/broiler_controller.dart';
@@ -23,100 +23,46 @@ class BroilerChickenRequirementsScreen extends StatelessWidget {
             ? Get.find<BroilerController>()
             : Get.put(BroilerController());
 
-    logToolPageViewOnce(widgetType: BroilerChickenRequirementsScreen, toolId: 13);
+    logToolPageViewOnce(
+      widgetType: BroilerChickenRequirementsScreen,
+      toolId: 13,
+    );
 
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Column(
         children: [
-          const CustomAppBar(text: 'متطلبات فراخ التسمين', favoriteToolName: 'متطلبات فراخ التسمين'),
+          const CustomAppBar(
+            text: 'متطلبات فراخ التسمين',
+            favoriteToolName: 'متطلبات فراخ التسمين',
+          ),
           Expanded(
             child: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.screenH,
+                  8.h,
+                  AppSpacing.screenH,
+                  16.h,
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(16.w),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? AppColors.darkSurfaceElevatedColor
-                              : AppColors.lightSurfaceColor,
-                          borderRadius: BorderRadius.circular(14.r),
-                          border: Border.all(
-                            color: isDark
-                                ? AppColors.darkOutlineColor.withValues(
-                                  alpha: 0.5,
-                                )
-                                : AppColors.lightOutlineColor.withValues(
-                                  alpha: 0.3,
-                                ),
-                          ),
-                          boxShadow: isDark
-                              ? null
-                              : [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.05),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                        ),
-                        child: ChickenAgeCountInput(
-                          key: ValueKey(controller.selectedChickenAge.value),
-                          controller: controller.chickensCountController,
-                          selectedAge:
-                              (controller.selectedChickenAge.value as num?)
-                                  ?.toInt(),
-                          onAgeChanged: (newValue) {
-                            controller.selectedChickenAge.value = newValue;
-                          },
-                          countSuffix: 'فرخ',
-                          useInnerForm: false,
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
+                      _buildHeaderCard(context, colorScheme, isDark),
+                      SizedBox(height: 16.h),
+                      _buildInputSection(context, controller, colorScheme, isDark),
+                      SizedBox(height: 14.h),
                       const AdNativeWidget(),
-                      SizedBox(height: 12.h),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() != true) {
-                              return;
-                            }
-                            FocusScope.of(context).unfocus();
-                            controller.onPressed();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 12.h),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: colorScheme.onPrimary,
-                            elevation: isDark ? 0 : 2,
-                          ),
-                          child: Text(
-                            'متطلبات فراخ التسمين',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 14.h),
+                      _buildCalculateButton(context, colorScheme, controller),
+                      SizedBox(height: 20.h),
                       const ItemsBroilerChickenRequirements(),
-                      SizedBox(height: 16.h),
-                      const RelatedArticlesSection(
-                        relatedArticleIds: [15, 11],
-                      ),
+                      SizedBox(height: 20.h),
+                      const RelatedArticlesSection(relatedArticleIds: [15, 11]),
                       SizedBox(height: 8.h),
                     ],
                   ),
@@ -127,6 +73,144 @@ class BroilerChickenRequirementsScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: const AdBannerWidget(),
+    );
+  }
+
+  Widget _buildHeaderCard(
+    BuildContext context,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.1),
+            colorScheme.tertiary.withValues(alpha: isDark ? 0.12 : 0.06),
+          ],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+        ),
+        borderRadius: AppDimens.borderLg,
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.w),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.15),
+              borderRadius: AppDimens.borderMd,
+            ),
+            child: Icon(
+              Icons.calculate_outlined,
+              color: colorScheme.primary,
+              size: 24.sp,
+            ),
+          ),
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'حاسبة المتطلبات',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  'حدد العمر والعدد لمعرفة الاحتياجات',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputSection(
+    BuildContext context,
+    BroilerController controller,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: isDark
+            ? AppColors.darkSurfaceElevatedColor
+            : AppColors.lightSurfaceColor,
+        borderRadius: AppDimens.borderLg,
+        border: Border.all(
+          color: isDark
+              ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
+              : AppColors.lightOutlineColor.withValues(alpha: 0.4),
+        ),
+        boxShadow: isDark
+            ? null
+            : [AppElevation.shadow(opacity: 0.06)],
+      ),
+      child: ChickenAgeCountInput(
+        key: ValueKey(controller.selectedChickenAge.value),
+        controller: controller.chickensCountController,
+        selectedAge:
+            (controller.selectedChickenAge.value as num?)?.toInt(),
+        onAgeChanged: (newValue) {
+          controller.selectedChickenAge.value = newValue;
+        },
+        countSuffix: 'فرخ',
+        useInnerForm: false,
+      ),
+    );
+  }
+
+  Widget _buildCalculateButton(
+    BuildContext context,
+    ColorScheme colorScheme,
+    BroilerController controller,
+  ) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState?.validate() != true) return;
+          FocusScope.of(context).unfocus();
+          controller.onPressed();
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(vertical: 14.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: AppDimens.borderMd,
+          ),
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          elevation: 2,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.analytics_outlined, size: 20.sp),
+            SizedBox(width: 8.w),
+            Text(
+              'احسب المتطلبات',
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

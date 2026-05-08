@@ -37,9 +37,9 @@ void main() {
 
     controller = CycleController(
       auth: mockAuth,
-      cycleData: fakeCycleData,
       myServices: mockMyServices,
     );
+    controller.cycleData = fakeCycleData;
     Get.put<CycleController>(controller);
   });
 
@@ -101,7 +101,7 @@ void main() {
       const CycleHistoryDetailsScreen(),
     );
 
-    expect(find.text('تقرير الدورة التفصيلي'), findsOneWidget);
+    expect(find.text('أداء القطيع والمخرجات'), findsOneWidget);
   });
 
   testWidgets('اتجاه RTL محفوظ', (tester) async {

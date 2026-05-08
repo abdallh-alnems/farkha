@@ -21,21 +21,18 @@ class DiseasesScreen extends StatelessWidget {
         children: [
           const CustomAppBar(text: 'الامراض', favoriteToolName: 'الامراض'),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: AdNativeWidget(),
-                    ),
-                    const QuestionCard(),
-                    const RelatedArticlesSection(relatedArticleIds: [1, 3, 10]),
-                    SizedBox(height: 20.h),
-                    const DiseaseCard(),
-                  ],
-                ),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 8.h),
+                  const AdNativeWidget(),
+                  const QuestionCard(),
+                  const RelatedArticlesSection(relatedArticleIds: [1, 3, 10]),
+                  SizedBox(height: 16.h),
+                  const DiseaseCard(),
+                  SizedBox(height: 24.h),
+                ],
               ),
             ),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/services/open_gmail.dart';
+import '../../../core/services/open_whatsapp.dart';
 
 class DrawerSupportContact extends StatefulWidget {
   final bool isExpanded;
@@ -24,6 +25,11 @@ class _DrawerSupportContactState extends State<DrawerSupportContact> {
   Future<void> _handleEmail() async {
     Navigator.pop(context);
     unawaited(openGmail());
+  }
+
+  Future<void> _handleWhatsApp() async {
+    Navigator.pop(context);
+    unawaited(openWhatsApp());
   }
 
   @override
@@ -50,6 +56,15 @@ class _DrawerSupportContactState extends State<DrawerSupportContact> {
               onTap: _handleEmail,
               title: Text(
                 'البريد الإلكتروني',
+                style: TextStyle(fontSize: 15.sp),
+              ),
+              shape: const Border(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+            ),
+            ListTile(
+              onTap: _handleWhatsApp,
+              title: Text(
+                'واتساب',
                 style: TextStyle(fontSize: 15.sp),
               ),
               shape: const Border(),

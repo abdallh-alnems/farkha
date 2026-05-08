@@ -19,7 +19,7 @@ class ResendOtpData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
       final response = await http.post(

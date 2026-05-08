@@ -49,17 +49,15 @@ void main() {
   testWidgets('عرض عنوان الدخول العربي في light mode', (tester) async {
     await pumpLogin(tester);
 
-    expect(find.text('فرخة'), findsOneWidget);
-    expect(find.text('أهلاً وسهلاً 👋'), findsOneWidget);
-    expect(find.text('سجّل دخولك للبدء'), findsOneWidget);
+    expect(find.text('أهلاً بك'), findsOneWidget);
+    expect(find.text('سجّل دخولك للوصول لجميع أدواتك'), findsOneWidget);
   });
 
   testWidgets('عرض عنوان الدخول العربي في dark mode', (tester) async {
     await pumpLogin(tester, darkMode: true);
 
-    expect(find.text('فرخة'), findsOneWidget);
-    expect(find.text('أهلاً وسهلاً 👋'), findsOneWidget);
-    expect(find.text('سجّل دخولك للبدء'), findsOneWidget);
+    expect(find.text('أهلاً بك'), findsOneWidget);
+    expect(find.text('سجّل دخولك للوصول لجميع أدواتك'), findsOneWidget);
   });
 
   testWidgets('اتجاه RTL محفوظ', (tester) async {

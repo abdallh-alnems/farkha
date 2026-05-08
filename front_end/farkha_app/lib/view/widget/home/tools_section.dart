@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/routes/route.dart';
@@ -23,29 +24,25 @@ class ToolsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final favoriteController = Get.find<FavoriteToolsController>();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Obx(() {
-      // Explicit read so GetX always has a subscription (avoids "improper use" crash)
       final _ = favoriteController.favoriteToolsOrder.length;
-      // دمج جميع الأدوات مع ترتيب المفضلة أولاً
       final allToolsSorted = <ToolEntry>[...allToolsList];
 
       allToolsSorted.sort((a, b) {
         final aIsFavorite = favoriteController.isFavorite(a.text);
         final bIsFavorite = favoriteController.isFavorite(b.text);
 
-        // المفضلة أولاً
         if (aIsFavorite && !bIsFavorite) return -1;
         if (!aIsFavorite && bIsFavorite) return 1;
 
-        // إذا كانتا مفضلتين، ترتيب حسب ترتيب الإضافة
         if (aIsFavorite && bIsFavorite) {
           final aIndex = favoriteController.getFavoriteIndex(a.text);
           final bIndex = favoriteController.getFavoriteIndex(b.text);
           return aIndex.compareTo(bIndex);
         }
 
-        // الباقي يبقى بترتيبه الأصلي
         return 0;
       });
 
@@ -54,61 +51,81 @@ class ToolsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 11),
+            padding: EdgeInsets.symmetric(horizontal: 17.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'ادوات مساعدة',
-                  key: toolsTitleKey,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      width: 4.w,
+                      height: 18.h,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(2.r),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'ادوات مساعدة',
+                      key: toolsTitleKey,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
                 ),
                 GestureDetector(
                   onTap: () => Get.toNamed<void>(AppRoute.allTools),
-                  child: Row(
+                  child: Container(
                     key: viewAllKey,
-                    children: const [
-                      Text(
-                        'عرض الكل',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.blue,
+                    padding: EdgeInsetsDirectional.fromSTEB(10.w, 5.h, 10.w, 5.h),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'عرض الكل',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.primary,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 4),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 12,
-                        color: Colors.blue,
-                      ),
-                    ],
+                        SizedBox(width: 3.w),
+                        Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 10.sp,
+                          color: colorScheme.primary,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 10.h),
           SingleChildScrollView(
             key: toolsScrollViewKey,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
+            padding: EdgeInsetsDirectional.only(start: 12.w),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children:
-                  allToolsSorted.map((entry) {
-                    return ToolsCard(
-                      onTap: () => Get.toNamed<void>(entry.route),
-                      image: entry.image,
-                      text: entry.text,
-                      showFavorite: true,
-                    );
-                  }).toList(),
+              children: allToolsSorted.map((entry) {
+                return ToolsCard(
+                  onTap: () => Get.toNamed<void>(entry.route),
+                  image: entry.image,
+                  text: entry.text,
+                  showFavorite: true,
+                );
+              }).toList(),
             ),
           ),
         ],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../core/constant/strings/app_strings.dart';
 import '../../../../data/data_source/static/vaccination_data.dart';
 import '../../../../data/model/cycle/medication_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
+import 'medication/medication_dialogs.dart';
+import 'medication/medication_history.dart';
 
 class MedicationCard extends StatefulWidget {
   const MedicationCard({super.key});
@@ -43,12 +43,23 @@ class _MedicationCardState extends State<MedicationCard> {
     final entries = cycleCtrl.getMedicationEntries();
     final allVaccinationNames =
         VaccinationData.vaccinationSchedule.map((v) => v.vaccineName).toSet();
-
     for (var entry in entries) {
       if (allVaccinationNames.contains(entry.text)) {
         _addedVaccinations.add(entry.text);
       }
     }
+  }
+
+  void _handleDeleteEntry(MedicationEntry entry) {
+    showDeleteMedicationDialog(context, entry, () {
+      final allVaccinationNames = VaccinationData.vaccinationSchedule
+          .map((v) => v.vaccineName)
+          .toSet();
+      if (allVaccinationNames.contains(entry.text)) {
+        _addedVaccinations.remove(entry.text);
+      }
+      cycleCtrl.removeMedicationEntry(entry.id);
+    });
   }
 
   @override
@@ -210,256 +221,21 @@ class _MedicationCardState extends State<MedicationCard> {
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 12.w),
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isDark
-                          ? [
-                              colorScheme.surfaceContainerHighest,
-                              colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.8),
-                            ]
-                          : [
-                              colorScheme.primary
-                                  .withValues(alpha: 0.08),
-                              colorScheme.primary
-                                  .withValues(alpha: 0.04),
-                            ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: isDark
-                          ? colorScheme.outline
-                              .withValues(alpha: 0.3)
-                          : colorScheme.primary
-                              .withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 2.5.w,
-                        height: 32.h,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primary,
-                              colorScheme.primary
-                                  .withValues(alpha: 0.7),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(2.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colorScheme.primary
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 2,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              lastEntry.text,
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2,
-                                color: colorScheme.primary,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today,
-                                  size: 9.sp,
-                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                ),
-                                SizedBox(width: 3.w),
-                                Text(
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(lastEntry.date),
-                                  style: TextStyle(
-                                    fontSize: 9.sp,
-                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (!_isViewer)
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              _showDeleteConfirmDialog(lastEntry);
-                            },
-                            borderRadius: BorderRadius.circular(6.r),
-                            child: Container(
-                              padding: EdgeInsets.all(6.w),
-                              decoration: BoxDecoration(
-                                color:
-                                    colorScheme.error.withValues(alpha: 0.1),
-                                borderRadius:
-                                    BorderRadius.circular(6.r),
-                              ),
-                              child: Icon(
-                                Icons.delete_outline,
-                                size: 14.sp,
-                                color: colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                  child: MedicationEntryItem(
+                    entry: lastEntry,
+                    isDark: isDark,
+                    showDelete: !_isViewer,
+                    onDelete: () => _handleDeleteEntry(lastEntry),
                   ),
                 ),
               ),
-            if (_isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map((entryMap) {
-                final index = entryMap.key;
-                final entry = entryMap.value;
-                return Container(
-                  margin: EdgeInsets.only(
-                    bottom: 4.h,
-                    left: 12.w,
-                    right: 12.w,
-                    top: index == 0 ? 12.h : 0,
-                  ),
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isDark
-                          ? [
-                              colorScheme.surfaceContainerHighest,
-                              colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.8),
-                            ]
-                          : [
-                              colorScheme.primary
-                                  .withValues(alpha: 0.08),
-                              colorScheme.primary
-                                  .withValues(alpha: 0.04),
-                            ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: isDark
-                          ? colorScheme.outline
-                              .withValues(alpha: 0.3)
-                          : colorScheme.primary
-                              .withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 2.5.w,
-                        height: 32.h,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primary,
-                              colorScheme.primary
-                                  .withValues(alpha: 0.7),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(2.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colorScheme.primary
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 2,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.text,
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2,
-                                color: colorScheme.primary,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today,
-                                  size: 9.sp,
-                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                ),
-                                SizedBox(width: 3.w),
-                                Text(
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(entry.date),
-                                  style: TextStyle(
-                                    fontSize: 9.sp,
-                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (!_isViewer)
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              _showDeleteConfirmDialog(entry);
-                            },
-                            borderRadius: BorderRadius.circular(6.r),
-                            child: Container(
-                              padding: EdgeInsets.all(6.w),
-                              decoration: BoxDecoration(
-                                color:
-                                    colorScheme.error.withValues(alpha: 0.1),
-                                borderRadius:
-                                    BorderRadius.circular(6.r),
-                              ),
-                              child: Icon(
-                                Icons.delete_outline,
-                                size: 14.sp,
-                                color: colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              }),
-            ],
+            if (_isHistoryExpanded.value && entries.isNotEmpty)
+              MedicationHistoryList(
+                sortedEntries: sortedEntries,
+                isDark: isDark,
+                isViewer: _isViewer,
+                onDeleteEntry: _handleDeleteEntry,
+              ),
             if (!_isViewer)
               Container(
                 padding:
@@ -468,11 +244,7 @@ class _MedicationCardState extends State<MedicationCard> {
                   gradient: isDark
                       ? null
                       : LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            colorScheme.primary
-                                .withValues(alpha: 0.02),
-                          ],
+                          colors: [Colors.transparent, colorScheme.primary.withValues(alpha: 0.02)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -563,11 +335,8 @@ class _MedicationCardState extends State<MedicationCard> {
                               child: TextField(
                                 controller: _controller,
                                 decoration: InputDecoration(
-                                  hintText: 'أدخل اسم التحصين',
-                                  hintStyle: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                  ),
+                          hintText: 'أدخل اسم التحصين',
+                          hintStyle: TextStyle(fontSize: 12.sp, color: colorScheme.onSurface.withValues(alpha: 0.5)),
                                   filled: true,
                                   fillColor: colorScheme.surface,
                                   border: OutlineInputBorder(
@@ -673,60 +442,5 @@ class _MedicationCardState extends State<MedicationCard> {
     if (value.isEmpty) return;
     await cycleCtrl.addMedicationEntry(value);
     _controller.clear();
-  }
-
-  void _showDeleteConfirmDialog(MedicationEntry entry) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    Get.dialog<void>(
-      AlertDialog(
-        backgroundColor: colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        title: Text(
-          AppStrings.confirmDelete,
-          style: TextStyle(
-            color: colorScheme.primary,
-          ),
-        ),
-        content: Text(
-          'هل تريد حذف ${entry.text} من قسم التحصينات؟',
-          style: TextStyle(color: colorScheme.onSurface),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back<void>(),
-            child: Text(
-              AppStrings.cancel,
-              style: TextStyle(
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              final allVaccinationNames = VaccinationData.vaccinationSchedule
-                  .map((v) => v.vaccineName)
-                  .toSet();
-              if (allVaccinationNames.contains(entry.text)) {
-                _addedVaccinations.remove(entry.text);
-              }
-
-              Get.back<void>();
-              cycleCtrl.removeMedicationEntry(entry.id);
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: colorScheme.error,
-              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            child: const Text(AppStrings.delete),
-          ),
-        ],
-      ),
-    );
   }
 }

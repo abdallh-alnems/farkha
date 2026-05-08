@@ -59,6 +59,7 @@ import '../../../view/screen/tools/weather_screen.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
 import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
+import '../../package/upgrade.dart';
 
 import 'route.dart';
 
@@ -66,7 +67,7 @@ List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
   GetPage(
     name: '/',
-    page: () => const HomeScreen(),
+    page: () => const UpdateGate(child: HomeScreen()),
     middlewares: [OnboardingMiddleWare()],
     binding: HomeBindings(),
   ),
@@ -215,7 +216,7 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(
     name: AppRoute.totalFeedConsumption,
-    page: () => const TotalFeedConsumption(),
+    page: () =>  TotalFeedConsumption(),
   ),
 
   GetPage(name: AppRoute.fcr, page: () => FeedConversionRatio()),

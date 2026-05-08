@@ -6,8 +6,8 @@
 
 require_once __DIR__ . '/../../core/connect.php';
 require_once __DIR__ . '/../../core/firebase_verifier.php';
-include __DIR__ . '/../../core/queries/queries.php';
-require_once __DIR__ . '/../../core/fcm_sender.php';
+require_once __DIR__ . '/../../core/queries/queries.php';
+require_once __DIR__ . '/../../core/notifications/user_notifier.php';
 
 // 🔒 حماية الـ API endpoint
 checkAuthenticate();
@@ -77,13 +77,13 @@ try {
     $ownerRow = $stmtOwner->fetch();
     
     // إحضار اسم الدورة
-    $stmtCycle = $con->prepare("SELECT name FROM cycles WHERE id = ?");
+    $stmtCycle = $con->prepare("SELECT name FROM cycles WHERE id = ? AND deleted_at IS NULL");
     $stmtCycle->execute([$cycle_id]);
     $cycleRow = $stmtCycle->fetch();
     $cycleName = $cycleRow ? $cycleRow['name'] : 'الدورة';
 
     if ($ownerRow) {
-        $stmtMe = $con->prepare("SELECT name FROM users WHERE id = ?");
+        $stmtMe = $con->prepare("SELECT name FROM users WHERE id = ? AND deleted_at IS NULL");
         $stmtMe->execute([$userId]);
         $meRow = $stmtMe->fetch();
         $myName = $meRow && !empty($meRow['name']) ? $meRow['name'] : 'أحد الأعضاء';

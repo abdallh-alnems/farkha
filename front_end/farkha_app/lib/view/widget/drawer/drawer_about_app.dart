@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' as java;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -70,11 +71,13 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
 
   Future<void> _handleShareApp() async {
     Navigator.pop(context);
+    final String storeLink = defaultTargetPlatform == TargetPlatform.iOS
+        ? 'https://apps.apple.com/app/idYOUR_APPLE_ID'
+        : 'https://play.google.com/store/apps/details?id=ni.nims.frkha';
     unawaited(
       SharePlus.instance.share(
         ShareParams(
-          text:
-              'حمل تطبيق فرخة \n https://play.google.com/store/apps/details?id=ni.nims.frkha',
+          text: 'حمل تطبيق فرخة \n $storeLink',
         ),
       ),
     );
@@ -87,17 +90,6 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
   }
 
   Future<void> _handleThemeToggle() async {
-    // #region agent log
-    try {
-      final logFile = java.File(
-        '/Users/nims/StudioProjects/farkha/front_end/farkha_app/.cursor/debug.log',
-      );
-      logFile.writeAsStringSync(
-        '{"timestamp":${DateTime.now().millisecondsSinceEpoch},"message":"Toggling theme"}\n',
-        mode: java.FileMode.append,
-      );
-    } catch (_) {}
-    // #endregion
     final themeService = Get.find<DarkLightService>();
     themeService.toggleTheme();
   }

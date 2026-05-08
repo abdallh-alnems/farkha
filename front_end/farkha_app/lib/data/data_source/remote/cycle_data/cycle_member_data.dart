@@ -18,7 +18,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.addMember),
         headers: myHeaders,
@@ -53,7 +53,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.leaveCycle),
         headers: myHeaders,
@@ -82,7 +82,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.createInvitation),
         headers: myHeaders,
@@ -112,7 +112,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.joinByCode),
         headers: myHeaders,
@@ -142,7 +142,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.searchUsers),
         headers: myHeaders,
@@ -165,7 +165,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.getInvitations),
         headers: myHeaders,
@@ -190,7 +190,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.respondToInvitation),
         headers: myHeaders,
@@ -219,7 +219,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.removeMember),
         headers: myHeaders,
@@ -254,7 +254,7 @@ class CycleMemberData {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) return const Left(StatusRequest.offlineFailure);
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
       final response = await http.post(
         Uri.parse(Api.updateMemberRole),
         headers: myHeaders,

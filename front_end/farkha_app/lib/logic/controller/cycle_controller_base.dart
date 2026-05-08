@@ -11,6 +11,7 @@ import '../../data/model/cycle/weight_entry.dart';
 import '../../data/model/cycle/medication_entry.dart';
 import '../../data/model/cycle/feed_consumption_entry.dart';
 import '../../data/model/cycle/mortality_entry.dart';
+import 'cycle_data_entry_helpers.dart' show parseWeightEntries, parseMedicationEntries, parseFeedConsumptionEntries, parseMortalityEntries;
 
 abstract class CycleControllerBase extends GetxController {
   late CycleData cycleData;
@@ -44,6 +45,7 @@ abstract class CycleControllerBase extends GetxController {
 
   Future<void> fetchCycleDetails(int cycleId, {bool silent = false});
   Future<void> fetchCyclesFromServer();
+  void checkAndAutoEndCycles();
 
   Map<String, dynamic> convertCycleDetailsFromApi(
     Map<String, dynamic> cycleData, {
@@ -199,6 +201,30 @@ abstract class CycleControllerBase extends GetxController {
       'is_owner': (cycleData['role'] ?? 'owner') == 'owner',
     };
   }
+
+  void deleteCycleRelatedData(String cycleName) {
+    try {
+      final expensesKey = '${StorageKeys.expensesPrefix}$cycleName';
+      if (myServices.getStorage.hasData(expensesKey)) {
+        myServices.getStorage.remove(expensesKey);
+      }
+
+      final customDataKey = '${StorageKeys.customDataPrefix}$cycleName';
+      if (myServices.getStorage.hasData(customDataKey)) {
+        myServices.getStorage.remove(customDataKey);
+      }
+
+      final notesKey = '${StorageKeys.notesPrefix}$cycleName';
+      if (myServices.getStorage.hasData(notesKey)) {
+        myServices.getStorage.remove(notesKey);
+      }
+    } catch (_) {}
+  }
+
+  List<WeightEntry> getAverageWeightEntries() => parseWeightEntries(currentCycle);
+  List<FeedConsumptionEntry> getFeedConsumptionEntries() => parseFeedConsumptionEntries(currentCycle);
+  List<MedicationEntry> getMedicationEntries() => parseMedicationEntries(currentCycle);
+  List<MortalityEntry> getMortalityEntries() => parseMortalityEntries(currentCycle);
 
   String parseDateToString(String dateStr) {
     if (dateStr.isEmpty) return '';

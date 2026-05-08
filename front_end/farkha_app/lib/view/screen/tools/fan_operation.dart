@@ -3,17 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../core/functions/number_format.dart';
+import '../../../core/functions/tool_helpers.dart';
 import '../../../core/functions/tool_page_view.dart';
 import '../../../core/shared/input_fields/input_field.dart';
 import '../../../core/shared/input_fields/two_input_fields.dart';
+import '../../../core/shared/tools/tool_result_card.dart';
 import '../../../logic/controller/tools_controller/fan_operation_controller.dart';
-import '../../widget/ad/banner.dart';
-import '../../widget/ad/native.dart';
-import '../../widget/appbar/custom_appbar.dart';
 import '../../widget/tools/related_articles_section.dart';
-import '../../widget/tools/tools_button.dart';
+import '../../widget/tools/tool_page_scaffold.dart';
 
 class FanOperationScreen extends StatefulWidget {
   const FanOperationScreen({super.key});
@@ -38,306 +37,233 @@ class _FanOperationScreenState extends State<FanOperationScreen> {
   @override
   Widget build(BuildContext context) {
     logToolPageViewOnce(widgetType: FanOperationScreen, toolId: 9);
+    final resultColor = getToolResultColor(context);
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final btnColor =
-        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
-
-    return Scaffold(
-      appBar: const CustomAppBar(text: 'تشغيل الشفاطات', favoriteToolName: 'تشغيل الشفاطات'),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
-              child: Form(
-                key: _formKey,
-                autovalidateMode: AutovalidateMode.disabled,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Ad widget
-                    const AdNativeWidget(),
-                    SizedBox(height: 21.h),
-                    TwoInputFields(
-                      firstLabel: 'عدد الطيور',
-                      secondLabel: 'متوسط الوزن',
-                      secondSuffix: 'كجم',
-                      onFirstChanged: controller.updateNumberOfBirds,
-                      onSecondChanged: controller.updateAverageWeight,
-                    ),
-                    SizedBox(height: 11.h),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: InputField(
-                            label: 'سعة المروحة',
-                            suffixText: 'م³/س',
-                            onChanged: controller.updateFanCapacityPerHour,
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              InputField(
-                                label: 'درجة الحرارة',
-                                onChanged: controller.updateTemperature,
-                                controller: temperatureController,
-                                suffixText: _isLoadingTemperature ? null : '°C',
-                                suffixIcon:
-                                    _isLoadingTemperature
-                                        ? Padding(
-                                          padding: const EdgeInsets.only(left: 6),
-                                          child: SizedBox(
-                                            width: 13,
-                                            height: 13,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 1.5,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                    btnColor,
-                                                  ),
-                                            ),
-                                          ),
-                                        )
-                                        : null,
-                                suffixIconConstraints:
-                                    _isLoadingTemperature
-                                        ? const BoxConstraints.tightFor(
-                                          width: 20,
-                                          height: 20,
-                                        )
-                                        : null,
-                              ),
-                              SizedBox(height: 7.h),
-                              FilledButton.icon(
-                                onPressed:
-                                    _isLoadingTemperature
-                                        ? null
-                                        : () async {
-                                          setState(() {
-                                            _isLoadingTemperature = true;
-                                          });
-
-                                          try {
-                                            final locationStatus =
-                                                await Permission
-                                                    .location
-                                                    .status;
-
-                                            if (!locationStatus.isGranted) {
-                                              if (!mounted) return;
-                                              setState(() {
-                                                _isLoadingTemperature = false;
-                                              });
-                                              return;
-                                            }
-
-                                            await controller.getWeatherData();
-                                            await Future<void>.delayed(
-                                              const Duration(milliseconds: 500),
-                                            );
-
-                                            if (!mounted) return;
-
-                                            setState(() {
-                                              _isLoadingTemperature = false;
-                                            });
-
-                                            final hasData =
-                                                controller.hasWeatherData;
-                                            final temp =
-                                                controller.currentTemperature;
-
-                                            if (hasData && temp > 0) {
-                                              final temperatureValue =
-                                                  temp.round().toString();
-                                              setState(() {
-                                                temperatureController.text =
-                                                    temperatureValue;
-                                              });
-                                              controller.updateTemperature(
-                                                temperatureValue,
-                                              );
-                                            }
-                                          } catch (_) {
-                                            if (!mounted) return;
-                                            setState(() {
-                                              _isLoadingTemperature = false;
-                                            });
-                                          }
-                                        },
-                                icon: Icon(Icons.thermostat, size: 13.sp),
-                                label: Text(
-                                  'الحصول على درجة الحرارة',
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: btnColor
-                                      .withValues(alpha: isDark ? 0.2 : 0.12),
-                                  foregroundColor: btnColor,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 10.h,
-                                    horizontal: 8.w,
-                                  ),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(9.r),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 23.h),
-
-                    // Calculate button
-                    ToolsButton(
-                      text: 'حساب تشغيل الشفاطات',
-                      onPressed: () {
-                        // التحقق من صحة النموذج قبل الحساب
-                        if (_formKey.currentState?.validate() ?? false) {
-                          if (controller.temperature.value > 0) {
-                            controller.calculateFanOperation();
-                            setState(() {
-                              showResult = true;
-                            });
-                          }
-                        }
-                      },
-                    ),
-                    SizedBox(height: 21.h),
-
-                    // Results section
-                    if (showResult) _buildResultsSection(),
-
-                    const SizedBox(height: 24),
-                    const RelatedArticlesSection(relatedArticleIds: [5, 6]),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 15.h),
-        ],
-      ),
-      bottomNavigationBar: const AdBannerWidget(),
-    );
-  }
-
-  Widget _buildResultsSection() {
-    return Obx(
-      () => Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
+    return ToolPageScaffold(
+      title: 'تشغيل الشفاطات',
+      inputChild: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.disabled,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'نتائج الحساب',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue.shade800,
-              ),
-              textAlign: TextAlign.center,
+            TwoInputFields(
+              firstLabel: 'عدد الطيور',
+              secondLabel: 'متوسط الوزن',
+              secondHint: 'وزن الفرخ الواحد',
+              secondSuffix: 'كجم',
+              onFirstChanged: controller.updateNumberOfBirds,
+              onSecondChanged: controller.updateAverageWeight,
             ),
-            SizedBox(height: 16.h),
-
-            _buildResultRow(
-              'كمية الهواء لكل كجم',
-              '${_formatNumber(controller.airFlowPerKg.value)} م³/ساعة',
-            ),
-            _buildResultRow(
-              'كمية الهواء المطلوبة',
-              '${_formatNumber(controller.requiredAirFlowPerHour.value)} م³/ساعة',
-            ),
-            _buildResultRow(
-              'قدرة الشفاط في الدقيقة',
-              '${_formatNumber(controller.fanCapacityPerMinute.value)} م³/دقيقة',
-            ),
-
-            SizedBox(height: 16.h),
-
-            Container(
-              padding: EdgeInsets.all(12.w),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue.shade300),
-              ),
-              child: Column(
-                children: [
-                  Row(
+            SizedBox(height: 11.h),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: InputField(
+                    label: 'سعة المروحة',
+                    suffixText: 'م³/س',
+                    onChanged: controller.updateFanCapacityPerHour,
+                  ),
+                ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Icon(Icons.schedule, color: Colors.blue, size: 20.sp),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Text(
-                          'حالة التشغيل',
+                      InputField(
+                        label: 'درجة الحرارة',
+                        onChanged: controller.updateTemperature,
+                        controller: temperatureController,
+                        suffixText: _isLoadingTemperature ? null : '°C',
+                        suffixIcon: _isLoadingTemperature
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 6),
+                                child: SizedBox(
+                                  width: 13,
+                                  height: 13,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      resultColor,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : null,
+                        suffixIconConstraints: _isLoadingTemperature
+                            ? const BoxConstraints.tightFor(
+                                width: 20,
+                                height: 20,
+                              )
+                            : null,
+                      ),
+                      SizedBox(height: 7.h),
+                      FilledButton.icon(
+                        onPressed: _isLoadingTemperature
+                            ? null
+                            : () => _fetchWeather(resultColor),
+                        icon: Icon(Icons.thermostat, size: 13.sp),
+                        label: Text(
+                          'الحصول على درجة الحرارة',
                           style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade800,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: resultColor.withValues(
+                            alpha:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? 0.2
+                                    : 0.12,
+                          ),
+                          foregroundColor: resultColor,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 10.h,
+                            horizontal: 8.w,
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: AppDimens.borderSm,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    controller.operationStatus.value,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Colors.blue.shade700,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
       ),
+      buttonText: 'حساب تشغيل الشفاطات',
+      onButtonPressed: () {
+        if (_formKey.currentState?.validate() ?? false) {
+          if (controller.temperature.value > 0) {
+            controller.calculateFanOperation();
+            setState(() => showResult = true);
+          }
+        }
+      },
+      footerSections: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          switchInCurve: Curves.easeOutQuart,
+          child: showResult
+              ? _FanResults(
+                  controller: controller,
+                  resultColor: resultColor,
+                )
+              : const SizedBox.shrink(),
+        ),
+        SizedBox(height: 24.h),
+        const RelatedArticlesSection(relatedArticleIds: [5, 6]),
+      ],
     );
   }
 
-  Widget _buildResultRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Future<void> _fetchWeather(Color resultColor) async {
+    setState(() => _isLoadingTemperature = true);
+    try {
+      final locationStatus = await Permission.location.status;
+      if (!locationStatus.isGranted) {
+        if (!mounted) return;
+        setState(() => _isLoadingTemperature = false);
+        return;
+      }
+
+      await controller.getWeatherData();
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
+      setState(() => _isLoadingTemperature = false);
+
+      final hasData = controller.hasWeatherData;
+      final temp = controller.currentTemperature;
+      if (hasData && temp > 0) {
+        final temperatureValue = temp.round().toString();
+        setState(() => temperatureController.text = temperatureValue);
+        controller.updateTemperature(temperatureValue);
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isLoadingTemperature = false);
+    }
+  }
+}
+
+class _FanResults extends StatelessWidget {
+  final FanOperationController controller;
+  final Color resultColor;
+
+  const _FanResults({
+    required this.controller,
+    required this.resultColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Obx(() {
+      return Column(
+        key: const ValueKey('fan_results'),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue.shade700,
+          Container(
+            padding: EdgeInsets.all(18.w),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  resultColor.withValues(alpha: isDark ? 0.22 : 0.1),
+                  resultColor.withValues(alpha: isDark ? 0.12 : 0.05),
+                ],
+              ),
+              borderRadius: AppDimens.borderLg,
+              border: Border.all(
+                color: resultColor.withValues(alpha: 0.45),
+                width: 1.2,
+              ),
+            ),
+            child: Column(
+              children: [
+                Icon(Icons.air, size: 32.sp, color: resultColor),
+                SizedBox(height: 10.h),
+                Text(
+                  controller.operationStatus.value,
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w800,
+                    color: resultColor,
+                    height: 1.3,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
+          SizedBox(height: 12.h),
+          ToolResultCard(
+            title: 'كمية الهواء لكل كجم',
+            value:
+                '${formatDecimal(controller.airFlowPerKg.value)} م³/ساعة',
+            resultColor: resultColor,
+          ),
+          ToolResultCard(
+            title: 'كمية الهواء المطلوبة',
+            value:
+                '${formatDecimal(controller.requiredAirFlowPerHour.value, decimals: 0)} م³/ساعة',
+            resultColor: resultColor,
+          ),
+          ToolResultCard(
+            title: 'قدرة الشفاط في الدقيقة',
+            value:
+                '${formatDecimal(controller.fanCapacityPerMinute.value, decimals: 0)} م³/دقيقة',
+            resultColor: resultColor,
+          ),
         ],
-      ),
-    );
-  }
-
-  String _formatNumber(double value) {
-    return formatDecimal(value, decimals: 0);
+      );
+    });
   }
 }

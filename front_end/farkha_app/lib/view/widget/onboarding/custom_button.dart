@@ -1,41 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart' show AppElevation;
 import '../../../data/data_source/static/onboarding_static.dart';
 import '../../../logic/controller/onboarding_controller.dart';
 
 class CustomButtonOnBoarding extends GetView<OnBoardingControllerImp> {
   const CustomButtonOnBoarding({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<OnBoardingControllerImp>(
-      builder: (controller) {
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final buttonColor =
+        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+
+    return Obx(() {
+      final isLast =
+          controller.currentPage.value == onBoardingList.length - 1;
+
+      return Padding(
+        padding: EdgeInsets.fromLTRB(32.w, 0, 32.w, 28.h),
+        child: SizedBox(
           width: double.infinity,
+          height: 56.h,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryColor,
+              backgroundColor: buttonColor,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              elevation: AppElevation.sm,
+              shadowColor: buttonColor.withValues(alpha: 0.25),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(28.r),
               ),
-              elevation: 2,
             ),
-            onPressed: () {
-              controller.next();
-            },
+            onPressed: controller.next,
             child: Text(
-              controller.currentPage.value != onBoardingList.length - 1
-                  ? 'متابعة'
-                  : 'بدء',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              isLast ? 'بدء' : 'متابعة',
+              style: TextStyle(
+                fontSize: 17.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }

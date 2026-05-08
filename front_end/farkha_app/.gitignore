@@ -51,3 +51,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android signing credentials
+**/key.properties
+
+# APNs / Apple secrets — NEVER commit
+*.p8
+AuthKey_*.p8
+*.p12
+*.mobileprovision
+*.cer

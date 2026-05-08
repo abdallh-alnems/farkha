@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,29 @@ class LoginController extends GetxController {
   late final GoogleSignIn _googleSignIn;
 
   final isLoading = false.obs;
+  final isGoogleLoading = false.obs;
+  final isAppleLoading = false.obs;
   final isLoggedIn = false.obs;
   bool _isInitialized = false;
+
+  bool get isAppleSignInAvailable => Platform.isIOS || Platform.isMacOS;
+
+  String? _extractNameFromEmail(String? email) {
+    if (email == null || email.isEmpty || !email.contains('@')) return null;
+    if (email.contains('@privaterelay.appleid.com')) return null;
+    final localPart = email.split('@').first;
+    if (localPart.isEmpty) return null;
+    final cleaned = localPart
+        .replaceAll(RegExp(r'[._\-+]+'), ' ')
+        .replaceAll(RegExp(r'\d+'), '')
+        .trim();
+    if (cleaned.isEmpty) return null;
+    return cleaned
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty)
+        .map((w) => w[0].toUpperCase() + w.substring(1).toLowerCase())
+        .join(' ');
+  }
 
   @override
   void onInit() {
@@ -136,6 +158,7 @@ class LoginController extends GetxController {
 
   Future<void> onGoogleSignIn() async {
     try {
+      isGoogleLoading.value = true;
       isLoading.value = true;
       await _initializeGoogleSignIn();
 
@@ -156,6 +179,7 @@ class LoginController extends GetxController {
       );
 
       if (userCredential.user == null) {
+        isGoogleLoading.value = false;
         isLoading.value = false;
         _showSnackbar('فشل تسجيل الدخول', isError: true);
         return;
@@ -163,12 +187,14 @@ class LoginController extends GetxController {
 
       final String? firebaseToken = await userCredential.user!.getIdToken();
       if (firebaseToken == null) {
+        isGoogleLoading.value = false;
         isLoading.value = false;
         _showSnackbar('فشل الحصول على رمز الدخول', isError: true);
         return;
       }
 
       final bool success = await _sendTokenToBackend(firebaseToken);
+      isGoogleLoading.value = false;
       isLoading.value = false;
 
       if (success) {
@@ -177,34 +203,136 @@ class LoginController extends GetxController {
           NotificationService.instance.syncToken();
         }
 
-        // جلب الدورات من API في الخلفية بدون انتظار
         if (Get.isRegistered<CycleController>()) {
           final cycleController = Get.find<CycleController>();
-          // تشغيل في الخلفية بدون await
-          unawaited(
-            cycleController.fetchCyclesFromServer().catchError((Object error) {
-              debugPrint('Error fetching cycles in background: $error');
-            }),
-          );
+          try {
+            await cycleController.fetchCyclesFromServer();
+          } catch (e) {
+            debugPrint('Error fetching cycles after login: $e');
+          }
         }
 
-        // انتظار وقت قصير لعرض الرسالة قبل إغلاق الصفحة
-        await Future<void>.delayed(const Duration(milliseconds: 1500));
+        await Future<void>.delayed(const Duration(milliseconds: 500));
         Get.back<void>();
       } else {
         _showSnackbar('فشل الاتصال بالخادم', isError: true);
       }
     } on GoogleSignInException catch (e) {
+      isGoogleLoading.value = false;
       isLoading.value = false;
       if (e.code == GoogleSignInExceptionCode.canceled) {
         return;
       }
       _showSnackbar(_getGoogleErrorMessage(e.code), isError: true);
     } on FirebaseAuthException catch (e) {
+      isGoogleLoading.value = false;
       isLoading.value = false;
       _showSnackbar(_getFirebaseErrorMessage(e.code), isError: true);
     } catch (e) {
+      isGoogleLoading.value = false;
       isLoading.value = false;
+      _showSnackbar('حدث خطأ أثناء تسجيل الدخول', isError: true);
+    }
+  }
+
+  Future<void> onAppleSignIn() async {
+    if (!isAppleSignInAvailable) {
+      _showSnackbar('تسجيل الدخول بـ Apple متاح فقط على iOS', isError: true);
+      return;
+    }
+
+    try {
+      isAppleLoading.value = true;
+      isLoading.value = true;
+
+      final appleProvider = AppleAuthProvider()
+        ..addScope('email')
+        ..addScope('name');
+
+      UserCredential userCredential;
+      try {
+        userCredential = await _auth.signInWithProvider(appleProvider);
+      } on FirebaseAuthException catch (e) {
+        debugPrint('Apple FirebaseAuth error: code=${e.code}, message=${e.message}, plugin=${e.plugin}');
+        debugPrint('Apple FirebaseAuth details: ${e.toString()}');
+        rethrow;
+      }
+
+      if (userCredential.user == null) {
+        isAppleLoading.value = false;
+        isLoading.value = false;
+        _showSnackbar('فشل تسجيل الدخول', isError: true);
+        return;
+      }
+
+      final user = userCredential.user!;
+      if (user.displayName == null || user.displayName!.isEmpty) {
+        String? extractedName;
+        final profile = userCredential.additionalUserInfo?.profile;
+        if (profile != null) {
+          final nameField = profile['name'];
+          if (nameField is String && nameField.isNotEmpty) {
+            extractedName = nameField;
+          } else if (nameField is Map) {
+            final first = nameField['firstName'] as String?;
+            final last = nameField['lastName'] as String?;
+            extractedName = [first, last]
+                .where((s) => s != null && s.isNotEmpty)
+                .join(' ');
+          }
+        }
+        if (extractedName == null || extractedName.isEmpty) {
+          extractedName = _extractNameFromEmail(user.email);
+        }
+        if (extractedName != null && extractedName.isNotEmpty) {
+          await user.updateDisplayName(extractedName);
+          await user.reload();
+        }
+      }
+
+      final String? firebaseToken = await _auth.currentUser?.getIdToken(true);
+      if (firebaseToken == null) {
+        isAppleLoading.value = false;
+        isLoading.value = false;
+        _showSnackbar('فشل الحصول على رمز الدخول', isError: true);
+        return;
+      }
+
+      final bool success = await _sendTokenToBackend(firebaseToken);
+      isAppleLoading.value = false;
+      isLoading.value = false;
+
+      if (success) {
+        _showSnackbar('تم تسجيل الدخول بنجاح');
+        if (Get.isRegistered<NotificationService>()) {
+          NotificationService.instance.syncToken();
+        }
+
+        if (Get.isRegistered<CycleController>()) {
+          final cycleController = Get.find<CycleController>();
+          try {
+            await cycleController.fetchCyclesFromServer();
+          } catch (e) {
+            debugPrint('Error fetching cycles after login: $e');
+          }
+        }
+
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+        Get.back<void>();
+      } else {
+        _showSnackbar('فشل الاتصال بالخادم', isError: true);
+      }
+    } on FirebaseAuthException catch (e) {
+      isAppleLoading.value = false;
+      isLoading.value = false;
+      if (e.code == 'canceled' || e.code == 'web-context-canceled') {
+        return;
+      }
+      _showSnackbar(_getFirebaseErrorMessage(e.code), isError: true);
+    } catch (e) {
+      isAppleLoading.value = false;
+      isLoading.value = false;
+      debugPrint('Apple Sign In error: $e');
       _showSnackbar('حدث خطأ أثناء تسجيل الدخول', isError: true);
     }
   }
@@ -213,13 +341,19 @@ class LoginController extends GetxController {
     try {
       final response = await _loginData.login(token);
 
-      return response.fold((_) => false, (Map<String, dynamic> result) {
-        final data = result;
+      return response.fold((failure) {
+        debugPrint('LoginController: backend returned failure: $failure');
+        return false;
+      }, (Map<String, dynamic> result) {
+        debugPrint('LoginController: backend response=$result');
         final isSuccess =
-            data['success'] == true || data['status'] == 'success';
+            result['success'] == true || result['status'] == 'success';
 
-        if (isSuccess && data['user'] != null) {
-          final userData = data['user'] as Map<String, dynamic>;
+        final userData = result['user'] as Map<String, dynamic>? ??
+            (result['data'] as Map<String, dynamic>?)?['user']
+                as Map<String, dynamic>?;
+
+        if (isSuccess && userData != null) {
           final myServices = Get.find<MyServices>();
           myServices.getStorage.write(StorageKeys.userName, userData['name']);
           if (userData['phone'] != null) {
@@ -229,13 +363,16 @@ class LoginController extends GetxController {
             );
           }
           myServices.getStorage.write(StorageKeys.isLoggedIn, true);
-          isLoggedIn.value = true; // تحديث observable
+          myServices.getStorage.write(StorageKeys.hasEverLoggedIn, true);
+          isLoggedIn.value = true;
           return true;
         }
 
+        debugPrint('LoginController: success=$isSuccess, userData=$userData');
         return false;
       });
     } catch (e) {
+      debugPrint('LoginController: _sendTokenToBackend exception=$e');
       return false;
     }
   }
@@ -338,4 +475,5 @@ class LoginController extends GetxController {
         return 'حدث خطأ غير متوقع';
     }
   }
+
 }

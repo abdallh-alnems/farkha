@@ -1,52 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../../core/constant/storage_keys.dart';
 import '../../../data/data_source/static/chicken_data.dart';
 import 'darkness_alarm_helper.dart';
+import 'darkness_schedule_models.dart';
+import 'darkness_schedule_utils.dart';
 
-class DarknessScheduleSegment {
-  const DarknessScheduleSegment({
-    required this.start,
-    required this.end,
-    required this.isDark,
-  });
-
-  final DateTime start;
-  final DateTime end;
-  final bool isDark;
-}
-
-class DarknessScheduleSnapshot {
-  const DarknessScheduleSnapshot({
-    required this.totalDarknessHours,
-    required this.dayStart,
-    required this.dayEnd,
-    required this.segments,
-    required this.isDarkNow,
-    required this.remainingInCurrentSegment,
-    required this.nextSegmentStart,
-    required this.nextIsDark,
-  });
-
-  final int totalDarknessHours;
-  final DateTime dayStart;
-  final DateTime dayEnd;
-  final List<DarknessScheduleSegment> segments;
-
-  final bool isDarkNow;
-  final Duration remainingInCurrentSegment;
-  final DateTime? nextSegmentStart;
-  final bool? nextIsDark;
-}
+export 'darkness_schedule_models.dart';
 
 class DarknessScheduleController extends GetxController {
-  static const int _maxDarknessBlockMinutes = 120;
-  static const int _scheduleDayMinutes = 24 * 60;
-
   static int phaseReminderId(int phaseIndex1Based) =>
       DarknessAlarmHelper.phaseReminderId(phaseIndex1Based);
 
@@ -164,7 +129,7 @@ class DarknessScheduleController extends GetxController {
     _lastStartDateRaw = startDateRaw;
     _lastAgeInDays = ageInDays;
 
-    final int effectiveAge = _effectiveAgeForNow(
+    final int effectiveAge = effectiveAgeForNow(
       startDateRaw: startDateRaw,
       ageInDays: ageInDays,
       dayStartHour: dayStartHour,
@@ -185,6 +150,7 @@ class DarknessScheduleController extends GetxController {
     unawaited(_alarmHelper.rescheduleAllNotifications());
   }
 
+  @override
   void refresh() {
     _refresh();
   }
@@ -226,12 +192,12 @@ class DarknessScheduleController extends GetxController {
     final double periodHours =
         totalHours <= 0
             ? 2.0
-            : (totalHours / _numberOfPhases(totalHours))
+            : (totalHours / numberOfPhases(totalHours))
                 .clamp(0.5, 2.0)
                 .toDouble();
     final int periodMinutes = (periodHours * 60).round().clamp(
       1,
-      _maxDarknessBlockMinutes,
+      kMaxDarknessBlockMinutes,
     );
     final DateTime endTime = DateTime.now().add(
       Duration(minutes: periodMinutes),
@@ -293,29 +259,29 @@ class DarknessScheduleController extends GetxController {
       return;
     }
 
-    final int effectiveAge = _effectiveAgeForNow(
+    final int effectiveAge = effectiveAgeForNow(
       startDateRaw: startDateRaw,
       ageInDays: ageInDays,
       dayStartHour: dayStartHour,
     );
 
     final int totalDarknessHours = darknessLevels[effectiveAge - 1];
-    final DateTime farmDayStart = _farmDayStart(
+    final DateTime farmDayStartCalc = farmDayStart(
       start: start,
       ageInDays: effectiveAge,
       dayStartHour: dayStartHour,
     );
-    final DateTime farmDayEnd = farmDayStart.add(const Duration(hours: 24));
+    final DateTime farmDayEnd = farmDayStartCalc.add(const Duration(hours: 24));
 
     final List<DarknessScheduleSegment> segments = buildDailySchedule(
-      dayStart: farmDayStart,
+      dayStart: farmDayStartCalc,
       totalDarknessHours: totalDarknessHours,
     );
 
     snapshotRx.value = computeSnapshotNow(
       now: DateTime.now(),
       totalDarknessHours: totalDarknessHours,
-      dayStart: farmDayStart,
+      dayStart: farmDayStartCalc,
       dayEnd: farmDayEnd,
       segments: segments,
     );
@@ -323,7 +289,7 @@ class DarknessScheduleController extends GetxController {
 
   int get numberOfPhasesForToday {
     final int h = darknessHoursForDayRx.value;
-    return _numberOfPhases(h);
+    return numberOfPhases(h);
   }
 
   DateTime? get nextAlarmTime {
@@ -337,17 +303,9 @@ class DarknessScheduleController extends GetxController {
   double get periodLengthHoursForDisplay {
     final int h = darknessHoursForDayRx.value;
     if (h <= 0) return 0;
-    final int n = _numberOfPhases(h);
+    final int n = numberOfPhases(h);
     if (n <= 0) return 0;
     return (h / n).clamp(0.5, 2.0).toDouble();
-  }
-
-  static int _numberOfPhases(int totalDarknessHours) {
-    final int h = totalDarknessHours.clamp(0, 24);
-    if (h <= 0) return 0;
-    if (h <= 2) return h;
-    final int minutes = h * 60;
-    return (minutes / _maxDarknessBlockMinutes).ceil();
   }
 
   int? getPhaseReminderHour(int phase1Based) {
@@ -466,7 +424,7 @@ class DarknessScheduleController extends GetxController {
     final DateTime? start = DateTime.tryParse(raw);
     if (start == null) return null;
 
-    final int effectiveAge = _effectiveAgeForNow(
+    final int effectiveAge = effectiveAgeForNow(
       startDateRaw: raw,
       ageInDays: age,
       dayStartHour: dayStartHour,
@@ -492,232 +450,6 @@ class DarknessScheduleController extends GetxController {
     final String key = _cycleDayKeyForToday();
     if (key.isEmpty) return;
     _storage.write('$StorageKeys.darknessPhasesDonePrefix$key', phasesCompletedToday.value);
-  }
-
-  static int _effectiveAgeForNow({
-    required String startDateRaw,
-    required int ageInDays,
-    required int dayStartHour,
-  }) {
-    final DateTime? start = DateTime.tryParse(startDateRaw);
-    if (start == null) return ageInDays;
-
-    final DateTime farmDayStart = _farmDayStart(
-      start: start,
-      ageInDays: ageInDays,
-      dayStartHour: dayStartHour,
-    );
-
-    if (DateTime.now().isBefore(farmDayStart)) {
-      return (ageInDays - 1).clamp(1, darknessLevels.length);
-    }
-    return ageInDays.clamp(1, darknessLevels.length);
-  }
-
-  static DateTime _farmDayStart({
-    required DateTime start,
-    required int ageInDays,
-    required int dayStartHour,
-  }) {
-    final DateTime dayDate = start.add(Duration(days: ageInDays - 1));
-    return DateTime(dayDate.year, dayDate.month, dayDate.day, dayStartHour);
-  }
-
-  static List<DarknessScheduleSegment> buildDailySchedule({
-    required DateTime dayStart,
-    required int totalDarknessHours,
-  }) {
-    final int clampedDarkHours = totalDarknessHours.clamp(0, 24);
-    final int darknessMinutes = clampedDarkHours * 60;
-    final int lightMinutes = _scheduleDayMinutes - darknessMinutes;
-
-    if (darknessMinutes <= 0) {
-      return <DarknessScheduleSegment>[
-        DarknessScheduleSegment(
-          start: dayStart,
-          end: dayStart.add(const Duration(minutes: _scheduleDayMinutes)),
-          isDark: false,
-        ),
-      ];
-    }
-
-    final List<int> darkBlocks = _splitIntoMaxMinutes(
-      totalMinutes: darknessMinutes,
-      maxBlockMinutes: _maxDarknessBlockMinutes,
-    );
-
-    final int gapCount = darkBlocks.length + 1;
-    final List<int> lightGaps = _distributeMinutesEvenly(
-      totalMinutes: lightMinutes,
-      parts: gapCount,
-    );
-
-    final List<DarknessScheduleSegment> out = <DarknessScheduleSegment>[];
-    DateTime cursor = dayStart;
-
-    for (int i = 0; i < gapCount; i++) {
-      final int gapMinutes = lightGaps[i];
-      if (gapMinutes > 0) {
-        final DateTime end = cursor.add(Duration(minutes: gapMinutes));
-        out.add(
-          DarknessScheduleSegment(start: cursor, end: end, isDark: false),
-        );
-        cursor = end;
-      }
-
-      if (i < darkBlocks.length) {
-        final int darkMinutes = darkBlocks[i];
-        if (darkMinutes > 0) {
-          final DateTime end = cursor.add(Duration(minutes: darkMinutes));
-          out.add(
-            DarknessScheduleSegment(start: cursor, end: end, isDark: true),
-          );
-          cursor = end;
-        }
-      }
-    }
-
-    final DateTime expectedEnd = dayStart.add(
-      const Duration(minutes: _scheduleDayMinutes),
-    );
-    if (cursor.isBefore(expectedEnd)) {
-      out.add(
-        DarknessScheduleSegment(start: cursor, end: expectedEnd, isDark: false),
-      );
-    }
-
-    return out;
-  }
-
-  static DarknessScheduleSnapshot computeSnapshotNow({
-    required DateTime now,
-    required int totalDarknessHours,
-    required DateTime dayStart,
-    required DateTime dayEnd,
-    required List<DarknessScheduleSegment> segments,
-  }) {
-    DarknessScheduleSegment? current;
-    for (final DarknessScheduleSegment s in segments) {
-      final bool inRange =
-          (now.isAtSameMomentAs(s.start) || now.isAfter(s.start)) &&
-          now.isBefore(s.end);
-      if (inRange) {
-        current = s;
-        break;
-      }
-    }
-
-    final DarknessScheduleSegment currentSafe =
-        current ??
-        (segments.isNotEmpty
-            ? segments.first
-            : DarknessScheduleSegment(
-              start: dayStart,
-              end: dayEnd,
-              isDark: false,
-            ));
-
-    final Duration remaining =
-        currentSafe.end.isAfter(now)
-            ? currentSafe.end.difference(now)
-            : Duration.zero;
-
-    DarknessScheduleSegment? next;
-    for (final DarknessScheduleSegment s in segments) {
-      if (s.start.isAfter(now) &&
-          (next == null || s.start.isBefore(next.start))) {
-        next = s;
-      }
-    }
-
-    return DarknessScheduleSnapshot(
-      totalDarknessHours: totalDarknessHours,
-      dayStart: dayStart,
-      dayEnd: dayEnd,
-      segments: segments,
-      isDarkNow: currentSafe.isDark,
-      remainingInCurrentSegment: remaining,
-      nextSegmentStart: next?.start,
-      nextIsDark: next?.isDark,
-    );
-  }
-
-  static List<int> _splitIntoMaxMinutes({
-    required int totalMinutes,
-    required int maxBlockMinutes,
-  }) {
-    if (totalMinutes <= 0) return <int>[];
-    final int maxMin = maxBlockMinutes <= 0 ? totalMinutes : maxBlockMinutes;
-
-    int remaining = totalMinutes;
-    final List<int> blocks = <int>[];
-    while (remaining > 0) {
-      final int block = remaining > maxMin ? maxMin : remaining;
-      blocks.add(block);
-      remaining -= block;
-    }
-    return blocks;
-  }
-
-  static List<int> _distributeMinutesEvenly({
-    required int totalMinutes,
-    required int parts,
-  }) {
-    if (parts <= 0) return <int>[];
-    if (totalMinutes <= 0) return List<int>.filled(parts, 0);
-
-    final int base = totalMinutes ~/ parts;
-    final int remainder = totalMinutes % parts;
-    return List<int>.generate(parts, (int i) => base + (i < remainder ? 1 : 0));
-  }
-
-  static List<DateTime> transitionTimes(
-    List<DarknessScheduleSegment> segments,
-  ) {
-    if (segments.length < 2) return <DateTime>[];
-    final List<DateTime> out = <DateTime>[];
-    for (int i = 1; i < segments.length; i++) {
-      final DarknessScheduleSegment prev = segments[i - 1];
-      final DarknessScheduleSegment cur = segments[i];
-      if (prev.isDark != cur.isDark) {
-        out.add(cur.start);
-      }
-    }
-    return out;
-  }
-
-  static bool isDarkAtOrAfter(
-    DateTime at,
-    List<DarknessScheduleSegment> segments,
-  ) {
-    final DarknessScheduleSegment? match = segments
-        .where(
-          (DarknessScheduleSegment s) =>
-              (at.isAtSameMomentAs(s.start) || at.isAfter(s.start)) &&
-              at.isBefore(s.end),
-        )
-        .fold<DarknessScheduleSegment?>(
-          null,
-          (DarknessScheduleSegment? acc, DarknessScheduleSegment s) => acc ?? s,
-        );
-    if (match != null) return match.isDark;
-
-    final DarknessScheduleSegment? next = segments
-        .where((DarknessScheduleSegment s) => s.start.isAfter(at))
-        .fold<DarknessScheduleSegment?>(null, (
-          DarknessScheduleSegment? acc,
-          DarknessScheduleSegment s,
-        ) {
-          if (acc == null) return s;
-          return s.start.isBefore(acc.start) ? s : acc;
-        });
-    return next?.isDark ?? false;
-  }
-
-  static Duration? durationUntil(DateTime? target) {
-    if (target == null) return null;
-    final Duration d = target.difference(DateTime.now());
-    return d.isNegative ? null : d;
   }
 
   Future<bool> requirePermissions() => _alarmHelper.requirePermissions();

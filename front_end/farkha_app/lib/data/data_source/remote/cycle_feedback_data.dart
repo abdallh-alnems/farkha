@@ -9,14 +9,18 @@ class CycleFeedbackData {
   CycleFeedbackData(this.crud);
 
   Future<Either<StatusRequest, Map<String, dynamic>>> submit({
+    required String token,
     required int rating,
+    int? cycleId,
     String? issue,
     String? suggestion,
     String? appVersion,
     String? platform,
   }) async {
     return await crud.postData(Api.submitCycleFeedback, {
+      'token': token,
       'rating': '$rating',
+      if (cycleId != null) 'cycle_id': '$cycleId',
       if (issue != null) 'issue': issue,
       if (suggestion != null) 'suggestion': suggestion,
       if (appVersion != null) 'app_version': appVersion,

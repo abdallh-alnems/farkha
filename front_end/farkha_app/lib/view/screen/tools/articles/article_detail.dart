@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:markdown/markdown.dart' as md;
 
 import '../../../../core/class/handling_data.dart';
+import '../../../../core/constant/theme/theme.dart';
 import '../../../../logic/controller/tools_controller/articles_controller/article_detail_controller.dart';
 import '../../../widget/ad/banner.dart';
 import '../../../widget/ad/native.dart';
@@ -31,15 +32,21 @@ class ArticleDetail extends StatelessWidget {
           return HandlingDataView(
             statusRequest: controller.statusRequest,
             widget: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 13,vertical: 9),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.screenH,
+                vertical: 8.h,
+              ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const AdNativeWidget(),
+                  SizedBox(height: 12.h),
                   _buildCustomMarkdown(
                     (controller.articleData['content'] ?? '').toString(),
                     context,
                   ),
                   ...controller.getTableWidgets(articleId, context),
+                  SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),
@@ -53,37 +60,70 @@ class ArticleDetail extends StatelessWidget {
   Widget _buildCustomMarkdown(String content, BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return MarkdownBody(
       data: content,
       selectable: true,
       styleSheet: MarkdownStyleSheet(
         p: TextStyle(
-          fontSize: 15.sp,
-          height: 1.7,
-          color: colorScheme.onSurface,
+          fontSize: 14.sp,
+          height: 1.85,
+          color: colorScheme.onSurface.withValues(alpha: 0.88),
           fontFamily: 'Cairo',
         ),
-        h1Padding: const EdgeInsets.only(top: 13),
-        h2Padding: const EdgeInsets.only(top: 11),
-        h3Padding: const EdgeInsets.only(top: 7),
+        h1Padding: EdgeInsets.only(top: 20.h, bottom: 8.h),
+        h2Padding: EdgeInsets.only(top: 16.h, bottom: 6.h),
+        h3Padding: EdgeInsets.only(top: 12.h, bottom: 4.h),
         h1: TextStyle(
-          fontSize: 17.sp,
-          fontWeight: FontWeight.bold,
+          fontSize: 20.sp,
+          fontWeight: FontWeight.w800,
           color: colorScheme.onSurface,
           fontFamily: 'Cairo',
+          height: 1.4,
         ),
         h2: TextStyle(
-          fontSize: 15.sp,
+          fontSize: 17.sp,
           fontWeight: FontWeight.w700,
           color: colorScheme.onSurface,
           fontFamily: 'Cairo',
+          height: 1.4,
         ),
         h3: TextStyle(
-          fontSize: 11.sp,
-          fontWeight: FontWeight.bold,
-          color: isDark ? Colors.red[300] : Colors.red,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w700,
+          color: isDark ? AppColors.accentLight : AppColors.accentColor,
           fontFamily: 'Cairo',
+          height: 1.4,
+        ),
+        listBullet: TextStyle(
+          color: AppColors.primaryColor,
+          fontSize: 14.sp,
+        ),
+        listIndent: 20.w,
+        em: TextStyle(
+          fontStyle: FontStyle.italic,
+          color: colorScheme.onSurface.withValues(alpha: 0.7),
+        ),
+        strong: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: colorScheme.onSurface,
+        ),
+        blockquote: TextStyle(
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
+          fontSize: 13.sp,
+          height: 1.7,
+        ),
+        blockquoteDecoration: BoxDecoration(
+          color: AppColors.primaryColor.withValues(alpha: isDark ? 0.1 : 0.06),
+          borderRadius: AppDimens.borderSm,
+        ),
+        blockquotePadding: EdgeInsets.all(12.w),
+        horizontalRuleDecoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: colorScheme.outline.withValues(alpha: 0.2),
+            ),
+          ),
         ),
       ),
       builders: {

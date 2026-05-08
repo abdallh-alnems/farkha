@@ -1,37 +1,50 @@
 <?php
-/**
- * Update User FCM Token
- */
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-checkAuthenticate();
-requirePostMethod();
+Auth::requirePost();
+Auth::checkAppCheck();
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = Validator::getJsonBody();
 $token = $input['token'] ?? null;
-$fcm_token = $input['fcm_token'] ?? null;
+$fcmToken = $input['fcm_token'] ?? null;
+$platform = $input['platform'] ?? 'android';
+$deviceId = $input['device_id'] ?? null;
 
-if (!$token || !$fcm_token) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'Missing token or fcm_token']);
-    exit;
-}
+$firebaseToken = Auth::verifyFirebaseToken($token);
+$uid = $firebaseToken->claims()->get('sub');
+
+Validator::required($fcmToken, 'FCM Token');
+
+$platform = Validator::enum($platform, ['android', 'ios'], 'platform');
 
 try {
-    $verifiedToken = verifyToken($token);
-    $firebase_uid = $verifiedToken->claims()->get('sub');
+    $user = UserModel::findByFirebaseUid($uid);
+    if (!$user) {
+        Response::fail('User not found', 404);
+    }
 
-    $stmt = $con->prepare("UPDATE users SET fcm_token = ? WHERE firebase_uid = ?");
-    $stmt->execute([$fcm_token, $firebase_uid]);
+    $userId = (int) $user['id'];
 
-    echo json_encode(['status' => 'success', 'message' => 'FCM Token updated successfully']);
-} catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
-    http_response_code(401);
-    echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
-} catch (Exception $e) {
-    error_log('FCM token update error: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
+    Database::execute(
+        "INSERT INTO user_devices (user_id, fcm_token, platform, device_id)
+         VALUES (:uid, :token, :platform, :device_id)
+         ON DUPLICATE KEY UPDATE user_id = :uid2, platform = :platform2, device_id = :device_id2, last_active = NOW()",
+        [
+            ':uid' => $userId,
+            ':token' => $fcmToken,
+            ':platform' => $platform,
+            ':device_id' => $deviceId,
+            ':uid2' => $userId,
+            ':platform2' => $platform,
+            ':device_id2' => $deviceId,
+        ]
+    );
+
+    UserModel::updateFcmToken($uid, $fcmToken);
+
+    Response::success(['message' => 'FCM token updated']);
+} catch (PDOException $e) {
+    error_log('update_fcm error: ' . $e->getMessage());
+    Response::error('Database error', 500);
 }

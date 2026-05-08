@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../core/constant/strings/app_strings.dart';
 import '../../../../data/model/cycle/feed_consumption_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
+import 'feed/feed_consumption_dialogs.dart';
+import 'feed/feed_consumption_history.dart';
 
 class FeedConsumptionCard extends StatefulWidget {
   const FeedConsumptionCard({super.key});
@@ -22,13 +22,6 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
   bool get _isViewer =>
       cycleCtrl.currentCycle['role']?.toString() == 'viewer';
 
-  String _formatWeight(double weight) {
-    if (weight == weight.roundToDouble()) {
-      return weight.round().toString();
-    }
-    return weight.toStringAsFixed(2).replaceAll(RegExp(r'\.?0+$'), '');
-  }
-
   @override
   void initState() {
     super.initState();
@@ -40,6 +33,14 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handleDeleteEntry(FeedConsumptionEntry entry) {
+    showDeleteFeedDialog(
+      context,
+      formatFeedWeight(entry.amount),
+      () => cycleCtrl.removeFeedConsumptionEntry(entry.id),
+    );
   }
 
   @override
@@ -171,7 +172,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                                             BorderRadius.circular(5.r),
                                       ),
                                       child: Text(
-                                        'المجموع: ${_formatWeight(total)} كيلو',
+                                        'المجموع: ${formatFeedWeight(total)} كيلو',
                                         style: TextStyle(
                                           fontSize: 11.sp,
                                           fontWeight: FontWeight.w600,
@@ -247,290 +248,21 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                 padding: EdgeInsets.only(top: 12.h),
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 12.w),
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isDark
-                          ? [
-                              colorScheme.surfaceContainerHighest,
-                              colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.8),
-                            ]
-                          : [
-                              colorScheme.primary
-                                  .withValues(alpha: 0.08),
-                              colorScheme.primary
-                                  .withValues(alpha: 0.04),
-                            ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: isDark
-                          ? colorScheme.outline.withValues(alpha: 0.3)
-                          : colorScheme.primary
-                              .withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 2.5.w,
-                        height: 32.h,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primary,
-                              colorScheme.primary
-                                  .withValues(alpha: 0.7),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(2.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colorScheme.primary
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 2,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  _formatWeight(lastEntry.amount),
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1,
-                                    color: colorScheme.primary,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 1.5.h,
-                                    right: 3.w,
-                                  ),
-                                  child: Text(
-                                    'كيلو',
-                                    style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: colorScheme.onSurface.withValues(alpha: 0.6),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today,
-                                  size: 9.sp,
-                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                ),
-                                SizedBox(width: 3.w),
-                                Text(
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(lastEntry.date),
-                                  style: TextStyle(
-                                    fontSize: 9.sp,
-                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (!_isViewer)
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              _showDeleteConfirmDialog(lastEntry);
-                            },
-                            borderRadius: BorderRadius.circular(6.r),
-                            child: Container(
-                              padding: EdgeInsets.all(6.w),
-                              decoration: BoxDecoration(
-                                color:
-                                    colorScheme.error.withValues(alpha: 0.1),
-                                borderRadius:
-                                    BorderRadius.circular(6.r),
-                              ),
-                              child: Icon(
-                                Icons.delete_outline,
-                                size: 14.sp,
-                                color: colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                  child: FeedEntryItem(
+                    entry: lastEntry,
+                    isDark: isDark,
+                    showDelete: !_isViewer,
+                    onDelete: () => _handleDeleteEntry(lastEntry),
                   ),
                 ),
               ),
-            if (_isHistoryExpanded.value && entries.isNotEmpty) ...[
-              ...sortedEntries.asMap().entries.map(
-                  (MapEntry<int, FeedConsumptionEntry> entryMap) {
-                final index = entryMap.key;
-                final entry = entryMap.value;
-                return Container(
-                  margin: EdgeInsets.only(
-                    bottom: 4.h,
-                    left: 12.w,
-                    right: 12.w,
-                    top: index == 0 ? 12.h : 0,
-                  ),
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isDark
-                          ? [
-                              colorScheme.surfaceContainerHighest,
-                              colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.8),
-                            ]
-                          : [
-                              colorScheme.primary
-                                  .withValues(alpha: 0.08),
-                              colorScheme.primary
-                                  .withValues(alpha: 0.04),
-                            ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: isDark
-                          ? colorScheme.outline.withValues(alpha: 0.3)
-                          : colorScheme.primary
-                              .withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 2.5.w,
-                        height: 32.h,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primary,
-                              colorScheme.primary
-                                  .withValues(alpha: 0.7),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(2.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: colorScheme.primary
-                                  .withValues(alpha: 0.3),
-                              blurRadius: 2,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  _formatWeight(entry.amount),
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1,
-                                    color: colorScheme.primary,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 1.5.h,
-                                    right: 3.w,
-                                  ),
-                                  child: Text(
-                                    'كيلو',
-                                    style: TextStyle(
-                                      fontSize: 11.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: colorScheme.onSurface.withValues(alpha: 0.6),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.calendar_today,
-                                  size: 9.sp,
-                                  color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                ),
-                                SizedBox(width: 3.w),
-                                Text(
-                                  DateFormat('yyyy-MM-dd')
-                                      .format(entry.date),
-                                  style: TextStyle(
-                                    fontSize: 9.sp,
-                                    color: colorScheme.onSurface.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (!_isViewer)
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              _showDeleteConfirmDialog(entry);
-                            },
-                            borderRadius: BorderRadius.circular(6.r),
-                            child: Container(
-                              padding: EdgeInsets.all(6.w),
-                              decoration: BoxDecoration(
-                                color:
-                                    colorScheme.error.withValues(alpha: 0.1),
-                                borderRadius:
-                                    BorderRadius.circular(6.r),
-                              ),
-                              child: Icon(
-                                Icons.delete_outline,
-                                size: 14.sp,
-                                color: colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              }),
-            ],
+            if (_isHistoryExpanded.value && entries.isNotEmpty)
+              FeedHistoryList(
+                sortedEntries: sortedEntries,
+                isDark: isDark,
+                isViewer: _isViewer,
+                onDeleteEntry: _handleDeleteEntry,
+              ),
             if (!_isViewer)
               Container(
                 padding:
@@ -671,53 +403,5 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
     if (amount <= 0) return;
     await cycleCtrl.addFeedConsumptionEntry(amount);
     _controller.clear();
-  }
-
-  void _showDeleteConfirmDialog(FeedConsumptionEntry entry) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    Get.dialog<void>(
-      AlertDialog(
-        backgroundColor: colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        title: Text(
-          AppStrings.confirmDelete,
-          style: TextStyle(
-            color: colorScheme.primary,
-          ),
-        ),
-        content: Text(
-          'هل تريد حذف ${_formatWeight(entry.amount)} كيلو من قسم استهلاك العلف؟',
-          style: TextStyle(color: colorScheme.onSurface),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back<void>(),
-            child: Text(
-              AppStrings.cancel,
-              style: TextStyle(
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back<void>();
-              cycleCtrl.removeFeedConsumptionEntry(entry.id);
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: colorScheme.error,
-              backgroundColor: colorScheme.error.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            child: const Text(AppStrings.delete),
-          ),
-        ],
-      ),
-    );
   }
 }

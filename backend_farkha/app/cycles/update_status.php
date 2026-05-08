@@ -1,139 +1,43 @@
 <?php
-/**
- * Update Cycle Status API
- * تحديث حالة الدورة (active/finished)
- */
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
-include __DIR__ . '/../../core/queries/queries.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-// 🔒 حماية الـ API endpoint
-checkAuthenticate();
-requirePostMethod();
+Auth::checkAppCheck();
+Auth::requirePost();
 
-// قراءة البيانات المرسلة
-$input = json_decode(file_get_contents('php://input'), true);
-$token = $input['token'] ?? null;
+$auth = Auth::authenticateUser(db());
+$userId = $auth['user_id'];
+$input = $auth['input'];
+
 $cycleId = $input['cycle_id'] ?? null;
 $status = $input['status'] ?? null;
 $endDate = $input['end_date'] ?? null;
 
-// التحقق من وجود Token
-if (!$token) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'Token is required'
-    ]);
-    exit;
-}
+Validator::required($cycleId, 'cycle_id');
+$cycleId = (int) Validator::numeric($cycleId, 'cycle_id', 1);
 
-// التحقق من وجود cycle_id
-if (!$cycleId || !is_numeric($cycleId)) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'cycle_id is required and must be a number'
-    ]);
-    exit;
-}
+Validator::required($status, 'status');
+$status = Validator::enum($status, ['active', 'finished'], 'status');
 
-// التحقق من وجود status
-if (!$status || !in_array($status, ['active', 'finished'])) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'status is required and must be "active" or "finished"'
-    ]);
-    exit;
+$con = db();
+
+$access = CycleModel::checkReadAccess($cycleId, $userId);
+if (!$access) {
+    Response::forbidden('Access denied to this cycle');
+}
+if ($access['role'] !== 'owner') {
+    Response::forbidden('Only the cycle owner can update the cycle status');
 }
 
 try {
-    // 🔐 التحقق من Firebase Token والحصول على user_id
-    $userId = getUserIdFromToken($token, $con);
-    
-    if (!$userId) {
-        http_response_code(401);
-        echo json_encode([
-            'status' => 'fail',
-            'message' => 'Invalid token or user not found'
-        ]);
-        exit;
-    }
+    CycleModel::updateStatus($con, $cycleId, $status, $endDate);
 
-    // التحقق من صلاحيات المستخدم - يجب أن يكون owner
-    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
-    $stmt->execute([
-        ':cycle_id' => (int)$cycleId,
-        ':user_id' => $userId
-    ]);
-    $access = $stmt->fetch();
-
-    if (!$access) {
-        http_response_code(403);
-        echo json_encode([
-            'status' => 'fail',
-            'message' => 'Access denied to this cycle'
-        ]);
-        exit;
-    }
-
-    // التحقق من أن المستخدم هو owner فقط
-    if ($access['role'] !== 'owner') {
-        http_response_code(403);
-        echo json_encode([
-            'status' => 'fail',
-            'message' => 'Only the cycle owner can update the cycle status'
-        ]);
-        exit;
-    }
-
-    // تحديث حالة الدورة
-    $stmt = $con->prepare(Queries::updateCycleStatusQuery());
-    $stmt->execute([
-        ':cycle_id' => (int)$cycleId,
-        ':status' => $status,
-        ':end_date' => $endDate
-    ]);
-
-    if ($stmt->rowCount() === 0) {
-        http_response_code(404);
-        echo json_encode([
-            'status' => 'fail',
-            'message' => 'Cycle not found'
-        ]);
-        exit;
-    }
-
-    // ✅ إرسال الرد
-    echo json_encode([
-        'status' => 'success',
-        'data' => [
-            'cycle_id' => (int)$cycleId,
-            'new_status' => $status,
-            'message' => 'Cycle status updated successfully'
-        ]
-    ]);
-
-} catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
-    http_response_code(401);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'Invalid or expired token'
+    Response::success([
+        'cycle_id' => $cycleId,
+        'new_status' => $status,
+        'message' => 'Cycle status updated successfully',
     ]);
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'Database error'
-    ]);
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'Server error'
-    ]);
+    error_log("update_status error: " . $e->getMessage());
+    Response::fail('Database error', 500);
 }
-?>
-

@@ -20,7 +20,7 @@ class CycleNoteData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {'token': token, 'cycle_id': cycleId, 'content': content};
 
@@ -52,7 +52,7 @@ class CycleNoteData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {'token': token, 'cycle_id': cycleId};
 
@@ -85,7 +85,7 @@ class CycleNoteData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {'token': token, 'cycle_id': cycleId, 'note_id': noteId};
 
@@ -119,7 +119,7 @@ class CycleNoteData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {
         'token': token,

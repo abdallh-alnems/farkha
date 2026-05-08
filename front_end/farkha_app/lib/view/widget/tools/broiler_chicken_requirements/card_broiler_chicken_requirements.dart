@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/constant/theme/theme.dart';
 
 class CardBroilerChickenRequirements extends StatelessWidget {
   final String title;
   final String value;
   final String? subtitle;
   final IconData icon;
-  final List<Color> gradientColors;
 
   const CardBroilerChickenRequirements({
     super.key,
@@ -15,115 +15,68 @@ class CardBroilerChickenRequirements extends StatelessWidget {
     required this.value,
     required this.icon,
     this.subtitle,
-    this.gradientColors = const [],
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final List<Color> colors =
-        gradientColors.isNotEmpty
-            ? gradientColors
-            : [
-              AppColors.primaryColor.withValues(alpha: 0.8),
-              AppColors.primaryColor.withValues(alpha: 0.5),
-            ];
-    final bool useGradient = gradientColors.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
-        gradient:
-            useGradient
-                ? LinearGradient(
-                  colors: colors,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-                : null,
-        color: useGradient 
-            ? null 
-            : (isDark ? AppColors.darkSurfaceElevatedColor : AppColors.lightSurfaceColor),
-        borderRadius: BorderRadius.circular(18),
+        color: isDark
+            ? AppColors.darkSurfaceElevatedColor
+            : AppColors.lightSurfaceColor,
+        borderRadius: AppDimens.borderLg,
         border: Border.all(
-          color:
-              (useGradient
-                  ? colors.last.withValues(alpha: 0.25)
-                  : (isDark 
-                      ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                      : AppColors.primaryColor.withValues(alpha: 0.12))),
-          width: 1.5,
+          color: isDark
+              ? AppColors.darkOutlineColor.withValues(alpha: 0.4)
+              : colorScheme.primary.withValues(alpha: 0.1),
         ),
-        boxShadow: useGradient || isDark ? [
-          BoxShadow(
-            color:
-                (useGradient
-                    ? colors.last.withValues(alpha: 0.2)
-                    : Colors.transparent),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ] : [
-          BoxShadow(
-            color: AppColors.primaryColor.withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: isDark
+            ? null
+            : [AppElevation.shadow(opacity: 0.06)],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 16.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _IconBadge(icon: icon, useGradient: useGradient),
-          const SizedBox(height: 12),
+          _buildIconBadge(context, colorScheme),
+          SizedBox(height: 12.h),
           Text(
             title,
-            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color:
-                  useGradient
-                      ? Colors.white.withValues(alpha: 0.95)
-                      : colorScheme.onSurface,
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.1,
-              fontSize: 13,
             ),
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 6.h),
           Text(
             value,
-            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: useGradient ? Colors.white : colorScheme.onSurface,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
-              fontSize: 16,
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.w700,
+              height: 1.3,
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color:
-                    (useGradient
-                        ? Colors.white.withValues(alpha: 0.18)
-                        : colorScheme.primary.withValues(alpha: 0.1)),
-                borderRadius: BorderRadius.circular(8),
+                color: colorScheme.primary.withValues(alpha: 0.07),
+                borderRadius: AppDimens.borderSm,
               ),
               child: Text(
                 subtitle!,
-                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color:
-                      useGradient
-                          ? Colors.white.withValues(alpha: 0.9)
-                          : colorScheme.onSurface.withValues(alpha: 0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   fontWeight: FontWeight.w500,
-                  fontSize: 11,
+                  height: 1.4,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -134,36 +87,18 @@ class CardBroilerChickenRequirements extends StatelessWidget {
       ),
     );
   }
-}
 
-class _IconBadge extends StatelessWidget {
-  const _IconBadge({required this.icon, required this.useGradient});
-  final IconData icon;
-  final bool useGradient;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+  Widget _buildIconBadge(BuildContext context, ColorScheme colorScheme) {
     return Container(
+      padding: EdgeInsets.all(8.w),
       decoration: BoxDecoration(
-        color:
-            useGradient
-                ? Colors.white.withValues(alpha: 0.22)
-                : colorScheme.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color:
-              useGradient
-                  ? Colors.white.withValues(alpha: 0.28)
-                  : colorScheme.primary.withValues(alpha: 0.18),
-          width: 1.5,
-        ),
+        color: colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: AppDimens.borderSm,
       ),
-      padding: const EdgeInsets.all(10),
       child: Icon(
         icon,
-        color: useGradient ? Colors.white : colorScheme.primary,
-        size: 20,
+        color: colorScheme.primary,
+        size: 18.sp,
       ),
     );
   }

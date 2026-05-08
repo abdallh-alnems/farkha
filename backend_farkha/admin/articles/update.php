@@ -1,80 +1,33 @@
 <?php
-require_once __DIR__ . '/../../core/connect.php';
-include "../../core/queries/queries.php";
 
-class UpdateArticleAPI extends BaseAPI {
-    private $cache;
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-    protected function checkAuthentication() {
-        checkAppCheckRequired();
-    }
+class UpdateArticleApi extends BaseApi {
+    protected bool $requireAuth = true;
+    protected bool $requirePost = true;
 
     public function __construct() {
         parent::__construct();
-        $this->cache = CacheManager::getInstance();
-        $this->handleRequest();
-    }
-    
-    private function handleRequest() {
-        $this->handleApiRequest(function() {
-            if (!$this->validateHttpMethod()) return;
-            
-            $articleId = $this->getId();
-            $title = $this->getTitle();
-            $content = $this->getContent();
-            
-            if (!$this->validateRequiredNumeric($articleId, 'article ID')) return;
-            if (!$this->validateRequiredField($title, 'Article title')) return;
-            if (!$this->validateRequiredField($content, 'Article content')) return;
-            if (!$this->validateTitleLength($title)) return;
-            
-            $this->updateArticleWithValidation($articleId, $title, $content);
-        });
-    }
-    
-    private function updateArticleWithValidation($articleId, $title, $content) {
-        try {
-            $query = Queries::updateArticleWithValidationQuery();
-            $params = [
-                'id' => (int)$articleId,
-                'title' => $title,
-                'content' => $content,
-                'id2' => (int)$articleId
-            ];
-            
-            $result = $this->db->execute($query, $params);
-            
-            if ($result === 0) {
-                $this->handleNotFound('Article');
-                return;
+        Auth::requireAppCheck();
+        $this->handleRequest(function () {
+            $id = $this->requireNumeric('id', 1);
+            $title = $this->getField('title');
+            $content = $this->getField('content');
+
+            Validator::required($title, 'Title');
+            Validator::required($content, 'Content');
+            Validator::maxLength($title, 255, 'Title');
+
+            $result = ArticleModel::update((int) $id, $title, $content);
+            if ($result > 0) {
+                Cache::getInstance()->delete('article_' . (int) $id);
+                Cache::getInstance()->delete('articles_list');
+                $this->success(null);
+            } else {
+                $this->error('Article not found', 404);
             }
-            
-            $this->invalidateArticleCache($articleId);
-            $this->invalidateArticlesListCache();
-            $this->sendSuccess(null);
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
-    
-    private function invalidateArticleCache($articleId) {
-        try {
-            $cacheKey = "article_detail_{$articleId}";
-            $this->cache->delete($cacheKey);
-        } catch (Exception $e) {
-        }
-    }
-    
-    private function invalidateArticlesListCache() {
-        try {
-            $this->cache->delete("articles_list");
-        } catch (Exception $e) {
-        }
+        }, 'update_article');
     }
 }
 
-try {
-    new UpdateArticleAPI();
-} catch (Exception $e) {
-    handleApiError($e, ['context' => 'update_article_api']);
-}
+new UpdateArticleApi();

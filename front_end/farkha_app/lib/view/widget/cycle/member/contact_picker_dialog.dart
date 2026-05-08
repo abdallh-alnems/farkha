@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/strings/app_strings.dart';
-import '../../../../core/constant/theme/colors.dart';
 
 class ContactPickerDialog extends StatefulWidget {
   final bool isDark;

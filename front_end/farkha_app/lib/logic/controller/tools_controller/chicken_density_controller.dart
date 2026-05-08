@@ -14,6 +14,14 @@ class ChickenDensityController extends GetxController {
   final RxString totalGroundAreaResult = ''.obs;
   final RxString batteryCageAreaResult = ''.obs;
 
+  static const List<String> weekLabels = [
+    'الاسبوع الاول',
+    'الاسبوع الثاني',
+    'الاسبوع الثالث',
+    'الاسبوع الرابع',
+    'الاسبوع الخامس',
+  ];
+
   void calculateAreas() {
     if (chickenCountTextController.text.isEmpty ||
         int.tryParse(chickenCountTextController.text) == null) {

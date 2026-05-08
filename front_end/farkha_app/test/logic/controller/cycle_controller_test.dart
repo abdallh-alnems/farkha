@@ -40,7 +40,8 @@ void main() {
 
   group('CycleController DI', () {
     test('يقبل cycleData مخصّص', () {
-      final ctrl = CycleController(cycleData: fakeCycleData);
+      final ctrl = CycleController();
+      ctrl.cycleData = fakeCycleData;
       expect(ctrl, isNotNull);
     });
 
@@ -61,21 +62,22 @@ void main() {
   });
 
   group('CycleController state', () {
-    test('cycles تبدأ كقائمة فارغة', () {
+    CycleController _makeCtrl() {
       final ctrl = CycleController(
         auth: mockAuth,
-        cycleData: fakeCycleData,
         myServices: mockMyServices,
       );
+      ctrl.cycleData = fakeCycleData;
+      return ctrl;
+    }
+
+    test('cycles تبدأ كقائمة فارغة', () {
+      final ctrl = _makeCtrl();
       expect(ctrl.cycles, isEmpty);
     });
 
     test('currentCycle تبدأ كخريطة فارغة', () {
-      final ctrl = CycleController(
-        auth: mockAuth,
-        cycleData: fakeCycleData,
-        myServices: mockMyServices,
-      );
+      final ctrl = _makeCtrl();
       expect(ctrl.currentCycle, isEmpty);
     });
   });
@@ -86,9 +88,9 @@ void main() {
 
       final ctrl = CycleController(
         auth: mockAuth,
-        cycleData: fakeCycleData,
         myServices: mockMyServices,
       );
+      ctrl.cycleData = fakeCycleData;
       Get.put<CycleController>(ctrl);
 
       await ctrl.fetchCyclesFromServer().catchError((_) {});
@@ -101,9 +103,9 @@ void main() {
 
       final ctrl = CycleController(
         auth: mockAuth,
-        cycleData: fakeCycleData,
         myServices: mockMyServices,
       );
+      ctrl.cycleData = fakeCycleData;
       Get.put<CycleController>(ctrl);
 
       await ctrl.fetchCyclesFromServer().catchError((_) {});

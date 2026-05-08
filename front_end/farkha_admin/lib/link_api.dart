@@ -4,24 +4,26 @@ import 'dart:convert';
 class ApiLinks {
   static String linkServerName = dotenv.get("API_HOST");
 
-  static String addPrices = '$linkServerName/admin/create/add_prices.php';
-  static String updatePrices = '$linkServerName/admin/update/update_prices.php';
-  static String deletePrices = '$linkServerName/admin/delete/delete_prices.php';
+  // Prices
+  static String addPrices = '$linkServerName/admin/prices/add.php';
+  static String updatePrices = '$linkServerName/admin/prices/update.php';
+  static String deletePrices = '$linkServerName/admin/prices/delete.php';
+  static String getLastPrices = '$linkServerName/admin/prices/today.php';
 
-  static String mainTypes = '$linkServerName/app/read/main_types.php';
-  static String getLastPrices = '$linkServerName/admin/read/today_prices.php';
-  static String toolsAnalytics =
-      '$linkServerName/analytics/tools_analytics.php';
-  static String articleDetail =
-      '$linkServerName/app/read/articles/article_detail.php';
-  static String articlesList =
-      '$linkServerName/app/read/articles/articles_list.php';
-  static String updateArticles =
-      '$linkServerName/admin/update/update_articles.php';
-  static String addArticles = '$linkServerName/admin/create/add_articles.php';
+  // Articles
+  static String addArticles = '$linkServerName/admin/articles/add.php';
+  static String updateArticles = '$linkServerName/admin/articles/update.php';
 
+  // Read endpoints (shared with app)
+  static String mainTypes = '$linkServerName/app/prices/main_types.php';
+  static String articleDetail = '$linkServerName/app/articles/detail.php';
+  static String articlesList = '$linkServerName/app/articles/list.php';
+
+  // Analytics
+  static String toolsAnalytics = '$linkServerName/analytics/tools_analytics.php';
+
+  // Cache
   static String deleteCash = '$linkServerName/cache_system/clear_cache.php';
-  static String suggestions = '$linkServerName/admin/read/list_suggestions.php';
 }
 
 Map<String, String> getMyHeaders() {

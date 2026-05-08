@@ -1,129 +1,63 @@
 <?php
-/**
- * Update Member Role API
- * تغيير دور عضو في الدورة (يسمح فقط لصاحب الدورة)
- */
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
-include __DIR__ . '/../../core/queries/queries.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-checkAuthenticate();
+Auth::checkAppCheck();
 
-$input = json_decode(file_get_contents('php://input'), true);
-$token = $input['token'] ?? null;
+$auth = Auth::authenticateUser(db());
+$userId = $auth['user_id'];
+$input = $auth['input'];
+
 $cycleId = $input['cycle_id'] ?? null;
 $targetUserId = $input['target_user_id'] ?? null;
 $newRole = $input['new_role'] ?? null;
 
-if (!$token) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'Token is required']);
-    exit;
-}
+Validator::required($cycleId, 'cycle_id');
+Validator::required($targetUserId, 'target_user_id');
+Validator::required($newRole, 'new_role');
 
-if (!$cycleId || !is_numeric($cycleId) || !$targetUserId || !is_numeric($targetUserId)) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'cycle_id and target_user_id are required']);
-    exit;
-}
+$cycleId = (int) Validator::numeric($cycleId, 'cycle_id', 1);
+$targetUserId = (int) Validator::numeric($targetUserId, 'target_user_id', 1);
+$newRole = Validator::enum($newRole, ['admin', 'viewer', 'member'], 'new_role');
 
-$allowedRoles = ['admin', 'viewer', 'member'];
-if (!$newRole || !in_array($newRole, $allowedRoles)) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'new_role must be admin or viewer']);
-    exit;
-}
+$con = db();
 
 try {
-    // 🔐 التحقق من الهوية
-    $userId = getUserIdFromToken($token, $con);
-
-    if (!$userId) {
-        http_response_code(401);
-        echo json_encode(['status' => 'fail', 'message' => 'Invalid token or user not found']);
-        exit;
-    }
-
-    // 🛡️ التحقق من أن القائم بالعملية هو الـ Owner
-    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
-    $stmt->execute([
-        ':cycle_id' => (int)$cycleId,
-        ':user_id' => $userId
-    ]);
-    $requesterAccess = $stmt->fetch();
-
+    $requesterAccess = CycleModel::checkReadAccess($cycleId, $userId);
     if (!$requesterAccess || $requesterAccess['role'] !== 'owner') {
-        http_response_code(403);
-        echo json_encode(['status' => 'fail', 'message' => 'عذراً، صاحب الدورة فقط هو من يمكنه تغيير صلاحيات الأعضاء.']);
-        exit;
+        Response::forbidden('عذراً، صاحب الدورة فقط هو من يمكنه تغيير صلاحيات الأعضاء.');
     }
 
-    // 🚫 منع تغيير دور الـ Owner
-    if ((int)$targetUserId === (int)$userId) {
-        http_response_code(400);
-        echo json_encode(['status' => 'fail', 'message' => 'لا يمكنك تغيير دورك الخاص.']);
-        exit;
+    if ($targetUserId === $userId) {
+        Response::fail('لا يمكنك تغيير دورك الخاص.', 400);
     }
 
-    // ✏️ تحديث الدور
-    $stmt = $con->prepare(
-        "UPDATE cycle_users SET role = :new_role WHERE cycle_id = :cycle_id AND user_id = :target_user_id AND role != 'owner'"
-    );
-    $stmt->execute([
-        ':new_role'       => $newRole,
-        ':cycle_id'       => (int)$cycleId,
-        ':target_user_id' => (int)$targetUserId,
-    ]);
+    $stmt = $con->prepare("UPDATE cycle_users SET role = :new_role WHERE cycle_id = :cycle_id AND user_id = :target_user_id AND role != 'owner'");
+    $stmt->execute([':new_role' => $newRole, ':cycle_id' => $cycleId, ':target_user_id' => $targetUserId]);
 
-    $rowsAffected = $stmt->rowCount();
-
-    if ($rowsAffected === 0) {
-        http_response_code(404);
-        echo json_encode(['status' => 'fail', 'message' => 'العضو غير موجود في هذه الدورة أو لا يمكن تغيير دوره.']);
-        exit;
+    if ($stmt->rowCount() === 0) {
+        Response::notFound('العضو غير موجود في هذه الدورة أو لا يمكن تغيير دوره.');
     }
 
-    // جلب اسم الدورة واسم صاحبها لإرسال الإشعار
-    $stmtCycle = $con->prepare("SELECT name FROM cycles WHERE id = ?");
-    $stmtCycle->execute([(int)$cycleId]);
-    $cycleRow = $stmtCycle->fetch(PDO::FETCH_ASSOC);
+    $cycleRow = Database::fetchOne("SELECT name FROM cycles WHERE id = ? AND deleted_at IS NULL", [$cycleId]);
     $cycleName = $cycleRow['name'] ?? 'الدورة';
 
-    $stmtOwner = $con->prepare("SELECT name FROM users WHERE id = ?");
-    $stmtOwner->execute([$userId]);
-    $ownerRow = $stmtOwner->fetch(PDO::FETCH_ASSOC);
+    $ownerRow = UserModel::findById($userId);
     $ownerName = $ownerRow['name'] ?? 'صاحب الدورة';
 
     $roleLabel = $newRole === 'admin' ? 'مشرف' : 'متابع';
 
-    // 🔔 إرسال إشعار FCM للعضو المُغيَّر دوره
-    require_once __DIR__ . '/../../core/fcm_sender.php';
-    sendFCMToUser(
-        $con,
-        (int)$targetUserId,
-        'تنبيه',
-        "تم تغيير دورك في دورة $cycleName إلى \"$roleLabel\" بواسطة $ownerName",
-        [
-            'type'     => 'role_changed',
-            'cycle_id' => (string)$cycleId,
-            'new_role' => $newRole,
-        ]
-    );
-
-    echo json_encode([
-        'status'  => 'success',
-        'message' => 'تم تغيير صلاحية العضو بنجاح',
+    NotificationService::sendToUser($con, $targetUserId, 'تنبيه', "تم تغيير دورك في دورة $cycleName إلى \"$roleLabel\" بواسطة $ownerName", [
+        'type' => 'role_changed',
+        'cycle_id' => (string) $cycleId,
         'new_role' => $newRole,
     ]);
 
-} catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
-    http_response_code(401);
-    echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
+    Response::success([
+        'message' => 'تم تغيير صلاحية العضو بنجاح',
+        'new_role' => $newRole,
+    ]);
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => 'Database error']);
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
+    error_log("update_member_role error: " . $e->getMessage());
+    Response::fail('Database error', 500);
 }

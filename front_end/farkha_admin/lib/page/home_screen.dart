@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'prices/prices_screen.dart';
 import 'analytics_screen.dart';
 import 'articles/articles_list.dart';
-import 'suggestions_screen.dart';
 import '../link_api.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -72,15 +71,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               child: const Text("احصائيات الادوات"),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SuggestionsScreen(),
-                ),
-              ),
-              child: const Text("الاقتراحات"),
             ),
           ],
         ),

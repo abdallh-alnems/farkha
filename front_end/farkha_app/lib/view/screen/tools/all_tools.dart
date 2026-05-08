@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../core/constant/tools_list.dart';
 import '../../../logic/controller/tools_controller/favorite_tools_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
+import '../../widget/tools/tool_card.dart';
 
 class AllTools extends StatefulWidget {
   const AllTools({super.key});
@@ -20,6 +22,20 @@ class _AllToolsState extends State<AllTools> {
   final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
   String _searchQuery = '';
+  bool _showScrollToTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final show = _scrollController.offset > 300;
+    if (show != _showScrollToTop) {
+      setState(() => _showScrollToTop = show);
+    }
+  }
 
   @override
   void dispose() {
@@ -33,55 +49,54 @@ class _AllToolsState extends State<AllTools> {
       _scrollController.animateTo(
         0,
         duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
+        curve: Curves.easeOutQuart,
       );
     }
   }
 
   String _normalizeText(String text) {
-    return text
+    var normalized = text
         .replaceAll('أ', 'ا')
         .replaceAll('إ', 'ا')
         .replaceAll('آ', 'ا')
-        .replaceAll('ة', 'ه');
+        .replaceAll('ة', 'ه')
+        .trim();
+    if (normalized.startsWith('ال')) {
+      normalized = normalized.substring(2);
+    }
+    return normalized;
   }
 
   @override
   Widget build(BuildContext context) {
     final favoriteController = Get.find<FavoriteToolsController>();
-    final iconColor = Theme.of(context).colorScheme.onSurface;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final bool isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title:
-            _isSearching
-                ? TextField(
-                  controller: _searchController,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    hintText: 'ابحث عن أداة...',
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(
-                      color: iconColor.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  style: TextStyle(color: iconColor, fontSize: 16),
-                  onChanged: (query) {
-                    setState(() {
-                      _searchQuery = query.trim();
-                    });
-                  },
-                )
-                : Text('الادوات', style: TextStyle(color: iconColor)),
+        title: _isSearching
+            ? _buildSearchField(colorScheme)
+            : Text(
+                'الادوات',
+                style: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        iconTheme: IconThemeData(color: iconColor, size: 26),
+        iconTheme: IconThemeData(color: colorScheme.onSurface, size: 24.sp),
         actions: [
           IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search),
-            iconSize: 26,
-            color: iconColor,
+            icon: Icon(
+              _isSearching ? Icons.close_rounded : Icons.search_rounded,
+            ),
+            iconSize: 24.sp,
+            color: colorScheme.onSurface,
             onPressed: () {
               setState(() {
                 if (_isSearching) {
@@ -97,184 +112,235 @@ class _AllToolsState extends State<AllTools> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              const AdNativeWidget(),
-              const SizedBox(height: 19),
-
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
+        child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverToBoxAdapter(child: SizedBox(height: 8.h)),
+              const SliverToBoxAdapter(child: AdNativeWidget()),
+              SliverToBoxAdapter(child: SizedBox(height: 20.h)),
               Obx(() {
-                // دمج جميع الأدوات
                 final allTools = [...toolsBeforeAd, ...toolsAfterAd];
 
-                // فلترة الأدوات بناءً على البحث
-                final filteredTools =
-                    _searchQuery.isEmpty
-                        ? allTools
-                        : allTools.where((tool) {
-                          final normalizedToolText = _normalizeText(tool.text);
-                          final normalizedSearchQuery = _normalizeText(
-                            _searchQuery,
-                          );
-                          return normalizedToolText.contains(
-                            normalizedSearchQuery,
-                          );
-                        }).toList();
+                final filteredTools = _searchQuery.isEmpty
+                    ? allTools
+                    : allTools.where((tool) {
+                        final normalizedToolText =
+                            _normalizeText(tool.text);
+                        final normalizedSearchQuery =
+                            _normalizeText(_searchQuery);
+                        final searchWords = normalizedSearchQuery
+                            .split(' ')
+                            .where((w) => w.isNotEmpty);
+                        return searchWords.every(
+                            (word) => normalizedToolText.contains(word));
+                      }).toList();
 
-                // ترتيب الأدوات: المفضلة أولاً حسب ترتيب الإضافة
                 filteredTools.sort((a, b) {
-                  final aIsFavorite = favoriteController.isFavorite(a.text);
-                  final bIsFavorite = favoriteController.isFavorite(b.text);
+                  final aIsFavorite =
+                      favoriteController.isFavorite(a.text);
+                  final bIsFavorite =
+                      favoriteController.isFavorite(b.text);
 
-                  // إذا كانت إحداهما مفضلة والأخرى لا
                   if (aIsFavorite && !bIsFavorite) return -1;
                   if (!aIsFavorite && bIsFavorite) return 1;
 
-                  // إذا كانتا مفضلتين، ترتيب حسب ترتيب الإضافة
                   if (aIsFavorite && bIsFavorite) {
-                    final aIndex = favoriteController.getFavoriteIndex(a.text);
-                    final bIndex = favoriteController.getFavoriteIndex(b.text);
+                    final aIndex =
+                        favoriteController.getFavoriteIndex(a.text);
+                    final bIndex =
+                        favoriteController.getFavoriteIndex(b.text);
                     return aIndex.compareTo(bIndex);
                   }
 
-                  // إذا لم تكونا مفضلتين، الحفاظ على الترتيب الأصلي
                   return 0;
                 });
 
-                // عرض رسالة في حال عدم وجود نتائج
                 if (filteredTools.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        'لا توجد أدوات تطابق البحث',
-                        style: TextStyle(fontSize: 16, color: iconColor.withValues(alpha: 0.6)),
-                      ),
-                    ),
+                  return SliverToBoxAdapter(
+                    child: _buildEmptyState(colorScheme),
                   );
                 }
 
-                return GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 19,
-                    childAspectRatio: 1.33,
-                  ),
-                  itemCount: filteredTools.length,
-                  itemBuilder: (context, index) {
-                    final item = filteredTools[index];
-                    return _buildToolCard(context, item);
-                  },
+                final favorites = filteredTools
+                    .where((t) => favoriteController.isFavorite(t.text))
+                    .toList();
+                final others = filteredTools
+                    .where((t) => !favoriteController.isFavorite(t.text))
+                    .toList();
+
+                return SliverMainAxisGroup(
+                  slivers: [
+                    if (favorites.isNotEmpty) ...[
+                      _buildSectionHeader(
+                        'المفضلة',
+                        Icons.star_rounded,
+                        AppColors.secondaryColor,
+                        colorScheme,
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: 12.h),
+                      ),
+                      _buildToolsGrid(favorites, isDark, colorScheme),
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: 24.h),
+                      ),
+                    ],
+                    if (others.isNotEmpty) ...[
+                      _buildSectionHeader(
+                        'جميع الادوات',
+                        Icons.grid_view_rounded,
+                        colorScheme.primary,
+                        colorScheme,
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: 12.h),
+                      ),
+                      _buildToolsGrid(others, isDark, colorScheme),
+                    ],
+                  ],
                 );
               }),
+              SliverToBoxAdapter(child: SizedBox(height: 80.h)),
             ],
           ),
-        ),
-      ),
+       ),
+      floatingActionButton: _showScrollToTop
+          ? FloatingActionButton.small(
+              onPressed: _scrollToTop,
+              elevation: AppElevation.sm,
+              backgroundColor: colorScheme.surface,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppDimens.radiusMd),
+                side: BorderSide(
+                  color: colorScheme.outline.withValues(alpha: 0.4),
+                ),
+              ),
+              child: Icon(
+                Icons.arrow_upward_rounded,
+                color: colorScheme.primary,
+                size: 20.sp,
+              ),
+            )
+          : null,
       bottomNavigationBar: const AdBannerWidget(),
     );
   }
 
-  Widget _buildToolCard(BuildContext context, ToolsItem item) {
-    final favoriteController = Get.find<FavoriteToolsController>();
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final bool isDark = theme.brightness == Brightness.dark;
-    final Color cardColor = colorScheme.surface;
-    final Color borderColor = (isDark
-            ? AppColors.darkOutlineColor
-            : AppColors.lightOutlineColor)
-        .withValues(alpha: isDark ? 0.5 : 0.6);
-    final Color textColor = colorScheme.onSurface;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: borderColor, width: isDark ? 1 : 1.5),
-        boxShadow:
-            isDark
-                ? null
-                : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+  Widget _buildSearchField(ColorScheme colorScheme) {
+    return TextField(
+      controller: _searchController,
+      autofocus: true,
+      decoration: InputDecoration(
+        hintText: 'ابحث عن أداة...',
+        border: InputBorder.none,
+        hintStyle: TextStyle(
+          color: colorScheme.onSurface.withValues(alpha: 0.4),
+          fontSize: 15.sp,
+        ),
       ),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: InkWell(
-              onTap: item.onTap,
-              borderRadius: BorderRadius.circular(13),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (item.image != null)
-                    SvgPicture.asset(item.image!, width: 47, height: 47)
-                  else if (item.isTextIcon == true)
-                    Text(
-                      item.text,
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  const SizedBox(height: 19),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      item.text,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: textColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
+      style: TextStyle(
+        color: colorScheme.onSurface,
+        fontSize: 15.sp,
+      ),
+      onChanged: (query) {
+        setState(() {
+          _searchQuery = query.trim();
+        });
+      },
+    );
+  }
+
+  Widget _buildSectionHeader(
+    String title,
+    IconData icon,
+    Color accentColor,
+    ColorScheme colorScheme,
+  ) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: 4.h),
+        child: Row(
+          children: [
+            Container(
+              width: 3.5.w,
+              height: 18.h,
+              decoration: BoxDecoration(
+                color: accentColor,
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-          ),
-          Positioned(
-            top: 4,
-            right: 4,
-            child: Obx(() {
-              final isFavorite = favoriteController.isFavorite(item.text);
-              return InkWell(
-                onTap: () {
-                  final wasNotFavorite = !isFavorite;
-                  favoriteController.toggleFavorite(item.text);
+            SizedBox(width: 8.w),
+            Icon(icon, size: 18.sp, color: accentColor),
+            SizedBox(width: 6.w),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+                height: 1.3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-                  // إذا تم إضافة الأداة للمفضلة، التمرير للأعلى
-                  if (wasNotFavorite) {
-                    Future.delayed(const Duration(milliseconds: 100), () {
-                      _scrollToTop();
-                    });
-                  }
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Icon(
-                    isFavorite ? Icons.star : Icons.star_border,
-                    color: isFavorite ? Colors.amber : colorScheme.onSurface.withValues(alpha: 0.4),
-                    size: 22,
-                  ),
-                ),
-              );
-            }),
-          ),
-        ],
+  Widget _buildEmptyState(ColorScheme colorScheme) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 60.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.search_off_rounded,
+              size: 48.sp,
+              color: colorScheme.onSurface.withValues(alpha: 0.2),
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'لا توجد أدوات تطابق البحث',
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurface.withValues(alpha: 0.45),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildToolsGrid(
+    List<ToolsItem> tools,
+    bool isDark,
+    ColorScheme colorScheme,
+  ) {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 2.w),
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12.w,
+          mainAxisSpacing: 12.h,
+          childAspectRatio: 1.25,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            final item = tools[index];
+            return ToolCard(
+              item: item,
+              isDark: isDark,
+              colorScheme: colorScheme,
+              onFavoriteAdded: _scrollToTop,
+            );
+          },
+          childCount: tools.length,
+        ),
       ),
     );
   }
@@ -304,18 +370,4 @@ class _AllToolsState extends State<AllTools> {
       .toList();
 }
 
-class ToolsItem {
-  final String text;
-  final String? image;
-  final bool? isTextIcon;
-  final VoidCallback onTap;
-  final List<int>? relatedArticleIds;
 
-  const ToolsItem({
-    required this.text,
-    this.image,
-    this.isTextIcon,
-    required this.onTap,
-    this.relatedArticleIds,
-  });
-}

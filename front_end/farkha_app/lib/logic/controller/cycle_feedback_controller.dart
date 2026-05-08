@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/class/status_request.dart';
+import '../../../core/services/test_mode_manager.dart';
 import '../../../data/data_source/remote/cycle_feedback_data.dart';
 import '../../view/widget/cycle_feedback/cycle_feedback_dialog.dart';
 
@@ -33,6 +35,11 @@ class CycleFeedbackController extends GetxController {
 
   String? _appVersion;
   final String _platform = kIsWeb ? 'web' : (Platform.isAndroid ? 'android' : 'ios');
+  int? _currentCycleId;
+
+  void setCurrentCycleId(int? cycleId) {
+    _currentCycleId = cycleId;
+  }
 
   @override
   void onInit() {
@@ -80,6 +87,8 @@ class CycleFeedbackController extends GetxController {
   }
 
   bool _shouldShow() {
+    if (TestModeManager.shouldAlwaysShowCycleFeedback) return true;
+
     final opens = _box.read<int>(StorageKeys.cycleFbOpensSinceLast) ?? 0;
     if (opens < _requiredOpens) return false;
 
@@ -115,11 +124,22 @@ class CycleFeedbackController extends GetxController {
     update();
 
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      final token = await user?.getIdToken();
+      if (token == null || token.isEmpty) {
+        statusRequest = StatusRequest.failure;
+        validationError = 'يجب تسجيل الدخول لإرسال التقييم';
+        update();
+        return;
+      }
+
       final issue = issueController.text.trim();
       final suggestion = suggestionController.text.trim();
 
       final result = await cycleFeedbackData.submit(
+        token: token,
         rating: rating,
+        cycleId: _currentCycleId,
         issue: issue.isEmpty ? null : issue,
         suggestion: suggestion.isEmpty ? null : suggestion,
         appVersion: _appVersion,

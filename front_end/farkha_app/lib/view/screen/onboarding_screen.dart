@@ -3,12 +3,19 @@ import 'package:get/get.dart';
 
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/storage_keys.dart';
+import '../../core/constant/theme/colors.dart';
 import '../../core/services/initialization.dart';
 import '../../logic/controller/onboarding_controller.dart';
 import '../widget/onboarding/custom_button.dart';
 import '../widget/onboarding/custom_slider.dart';
 import '../widget/onboarding/dot_controller.dart';
 import '../widget/onboarding/skip_button.dart';
+
+const _pageAccents = [
+  AppColors.accentColor,
+  AppColors.secondaryColor,
+  AppColors.primaryColor,
+];
 
 class OnBoarding extends StatefulWidget {
   const OnBoarding({super.key});
@@ -40,14 +47,35 @@ class _OnBoardingState extends State<OnBoarding> {
   @override
   Widget build(BuildContext context) {
     Get.put(OnBoardingControllerImp());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GetBuilder<OnBoardingControllerImp>(
-      builder:
-          (_) => Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            body: const SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-                child: Column(
+      builder: (controller) {
+        final page = controller.currentPage.value.clamp(0, _pageAccents.length - 1);
+        final accent = _pageAccents[page];
+
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeOutCubic,
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: const Alignment(0, -0.4),
+                      radius: 1.1,
+                      colors: [
+                        accent.withValues(alpha: isDark ? 0.06 : 0.05),
+                        accent.withValues(alpha: 0),
+                      ],
+                    ),
+                  ),
+                ),
+                const Column(
                   children: [
                     SkipButton(),
                     Expanded(child: CustomSliderOnBoarding()),
@@ -55,9 +83,11 @@ class _OnBoardingState extends State<OnBoarding> {
                     CustomButtonOnBoarding(),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
+        );
+      },
     );
   }
 }

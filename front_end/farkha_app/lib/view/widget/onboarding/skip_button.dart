@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/strings/app_strings.dart';
@@ -10,27 +11,36 @@ class SkipButton extends GetView<OnBoardingControllerImp> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 11),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Obx(
-          () =>
-              controller.currentPage.value != onBoardingList.length - 1
-                  ? GestureDetector(
-                    onTap: () {
-                      controller.skip();
-                    },
-                    child: Text(
-                      AppStrings.skip,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  )
-                  : const SizedBox.shrink(),
+    return SizedBox(
+      height: 52.h,
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(start: 24.w, end: 24.w),
+        child: Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: Obx(() {
+            if (controller.currentPage.value ==
+                onBoardingList.length - 1) {
+              return const SizedBox.shrink();
+            }
+            return GestureDetector(
+              onTap: controller.skip,
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+                child: Text(
+                  AppStrings.skip,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.45),
+                  ),
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );

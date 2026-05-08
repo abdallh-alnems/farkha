@@ -25,7 +25,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {
         'token': token,
@@ -66,6 +66,7 @@ class CycleData {
     required int cycleId,
     required String label,
     required String value,
+    String? metricType,
   }) async {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
@@ -73,14 +74,18 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
-      final body = {
+      final body = <String, dynamic>{
         'token': token,
         'cycle_id': cycleId,
         'label': label,
         'value': value,
       };
+
+      if (metricType != null) {
+        body['metric_type'] = metricType;
+      }
 
       final response = await http.post(
         Uri.parse(Api.addData),
@@ -112,7 +117,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {
         'token': token,
@@ -154,7 +159,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = <String, dynamic>{
         'token': token,
@@ -187,6 +192,59 @@ class CycleData {
     }
   }
 
+  Future<Either<StatusRequest, Map<String, dynamic>>> updateCycle({
+    required String token,
+    required int cycleId,
+    required String name,
+    required int chickCount,
+    required double space,
+    String? breed,
+    String? systemType,
+    required String startDateRaw,
+  }) async {
+    final bool isConnected = await InternetChecker.checkConnection();
+    if (!isConnected) {
+      return const Left(StatusRequest.offlineFailure);
+    }
+
+    try {
+      final Map<String, String> myHeaders = getMyHeaders();
+
+      final body = <String, dynamic>{
+        'token': token,
+        'cycle_id': cycleId,
+        'name': name,
+        'chick_count': chickCount,
+        'space': space,
+        'start_date_raw': startDateRaw,
+      };
+
+      if (breed != null && breed.isNotEmpty) {
+        body['breed'] = breed;
+      }
+
+      if (systemType != null && systemType.isNotEmpty) {
+        body['system_type'] = systemType;
+      }
+
+      final response = await http.post(
+        Uri.parse(Api.updateCycle),
+        headers: myHeaders,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> responseBody =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        return Right(responseBody);
+      } else {
+        return const Left(StatusRequest.serverFailure);
+      }
+    } catch (e) {
+      return const Left(StatusRequest.serverFailure);
+    }
+  }
+
   Future<Either<StatusRequest, Map<String, dynamic>>> deleteCycle({
     required String token,
     required int cycleId,
@@ -197,7 +255,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {'token': token, 'cycle_id': cycleId};
 
@@ -236,7 +294,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {'token': token};
 
@@ -272,7 +330,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = <String, dynamic>{
         'token': token,
@@ -318,7 +376,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {'token': token, 'cycle_id': cycleId};
 
@@ -354,7 +412,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {
         'token': token,
@@ -398,7 +456,7 @@ class CycleData {
     }
 
     try {
-      final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+      final Map<String, String> myHeaders = getMyHeaders();
 
       final body = {
         'token': token,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constant/theme/colors.dart';
@@ -11,36 +12,33 @@ class CustomDotControllerOnBoarding extends GetView<OnBoardingControllerImp> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final dotColor =
+    final activeColor =
         isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
 
-    return GetBuilder<OnBoardingControllerImp>(
-      builder: (controller) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 25),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ...List.generate(
-                onBoardingList.length,
-                (index) => AnimatedContainer(
-                  margin: const EdgeInsets.only(right: 7),
-                  duration: const Duration(milliseconds: 500),
-                  width: controller.currentPage.value == index ? 23 : 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                    color:
-                        controller.currentPage.value == index
-                            ? dotColor
-                            : dotColor.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
+    return Obx(() {
+      final current = controller.currentPage.value;
+      return Padding(
+        padding: EdgeInsets.only(bottom: 20.h),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            onBoardingList.length,
+            (index) => AnimatedContainer(
+              margin: EdgeInsets.symmetric(horizontal: 3.w),
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
+              width: current == index ? 32.w : 8.w,
+              height: 8.h,
+              decoration: BoxDecoration(
+                color: current == index
+                    ? activeColor
+                    : activeColor.withValues(alpha: 0.25),
+                borderRadius: BorderRadius.circular(4.r),
               ),
-            ],
+            ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }

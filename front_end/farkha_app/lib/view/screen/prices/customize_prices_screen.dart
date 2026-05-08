@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/handling_data.dart';
 import '../../../core/constant/storage_keys.dart';
-import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/test_mode_manager.dart';
 import '../../../logic/controller/price_controller/prices_card/customize_prices_controller.dart';
@@ -28,38 +28,30 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
   @override
   void initState() {
     super.initState();
-    // تسجيل الـ controller إذا لم يكن مسجلاً
     if (!Get.isRegistered<CustomizePricesController>()) {
       Get.put(CustomizePricesController());
     }
     controller = Get.find<CustomizePricesController>();
 
-    // إظهار الـ tutorial بعد بناء الـ widgets
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showTutorialIfNeeded();
     });
   }
 
   void _showTutorialIfNeeded() {
-    // التحقق من أن المستخدم لم يشاهد الـ tutorial من قبل
     final hasSeenTutorial =
         myServices.getStorage.read<bool>(StorageKeys.customizePricesTutorialSeen) ??
         false;
-
-    // إظهار الشرح إذا لم يشاهده من قبل أو إذا كان في وضع الاختبار
     final shouldShowTutorial =
         !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
 
     if (shouldShowTutorial) {
-      // إخفاء الاعلانات فوراً قبل إظهار الشرح
       setState(() {
         _isTutorialActive = true;
       });
 
-      // تأخير قصير للتأكد من تحميل البيانات
       Future.delayed(const Duration(milliseconds: 1000), () {
         if (mounted) {
-          // إظهار الـ tutorial مع callback عند الانتهاء
           CustomizePricesTutorial.showTutorial(
             context,
             onTutorialComplete: () {
@@ -77,7 +69,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
 
   @override
   void dispose() {
-    // إلغاء الشرح إذا كان يعمل عند الخروج من الصفحة
     if (_isTutorialActive) {
       CustomizePricesTutorial.cancelTutorial();
     }
@@ -88,7 +79,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        // إلغاء الشرح عند الضغط على زر الرجوع
         if (_isTutorialActive) {
           CustomizePricesTutorial.cancelTutorial();
           setState(() {
@@ -103,23 +93,22 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
             statusRequest: controller.statusRequest.value,
             widget: CustomScrollView(
               slivers: [
-                // Native Ad at the top (scrollable) - إخفاء أثناء الـ tutorial
                 if (!_isTutorialActive)
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 21.r,
-                        vertical: 10.h,
+                        horizontal: AppSpacing.screenH,
+                        vertical: AppSpacing.sm,
                       ),
                       child: const AdNativeWidget(),
                     ),
                   ),
-
-                // Content Section
                 SliverPadding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 21.r,
-                    vertical: 19.r,
+                    horizontal: AppSpacing.screenH,
+                  ).copyWith(
+                    top: AppSpacing.sm,
+                    bottom: AppSpacing.xxl,
                   ),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
@@ -144,267 +133,240 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
     String category,
     List<Map<String, dynamic>> types,
   ) {
-    const Color categoryColor = AppColors.primaryColor;
-
-    return Column(
-      children: [
-        // Category Title
-        Padding(
-          padding: EdgeInsets.only(right: 5.r, bottom: 10.h, top: 6.h),
-          child: Row(
-            children: [
-              Container(
-                width: 6.w,
-                height: 20.h,
-                decoration: BoxDecoration(
-                  color: categoryColor,
-                  borderRadius: BorderRadius.circular(3.r),
-                ),
-              ),
-              SizedBox(width: 11.w),
-
-              Text(
-                category,
-                style: TextStyle(
-                  fontSize: 19.sp,
-                  fontWeight: FontWeight.w800,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // Types Grid
-        Obx(
-          () => GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 11.w,
-              mainAxisSpacing: 11.h,
-              childAspectRatio: 3.3,
-            ),
-            itemCount: controller.categorizedTypes[category]?.length ?? 0,
-            itemBuilder: (context, index) {
-              final currentTypes = controller.categorizedTypes[category] ?? [];
-              final item = currentTypes[index];
-              return _buildTypeCard(item, categoryColor);
-            },
-          ),
-        ),
-        SizedBox(height: 9.h),
-      ],
-    );
-  }
-
-  Widget _buildTypeCard(Map<String, dynamic> item, Color categoryColor) {
-    // التحقق من أن اللحم الأبيض (ID: 1) محدد ولا يمكن إلغاء تحديده
-    final bool isLocked = item['id'] == 1 && item['isSelected'] == true;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final bool isDark = theme.brightness == Brightness.dark;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeInOut,
-      padding: EdgeInsets.symmetric(horizontal: 13.r, vertical: 8.r),
-      decoration: BoxDecoration(
-        color:
-            isDark
-                ? AppColors.darkSurfaceElevatedColor
-                : AppColors.lightSurfaceColor,
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color:
-              isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.5)
-                  : Colors.grey.withValues(alpha: 0.3),
-          width: 1.5,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Type Name (right side)
-          Expanded(
-            child: GestureDetector(
-              onTap:
-                  isLocked
-                      ? null
-                      : () {
-                        if (item['isSelected'] == true &&
-                            item['isNotificationEnabled'] == true) {
-                          controller.toggleItemSelection(item);
-                          controller.toggleNotification(item);
-                        } else {
-                          if (item['isSelected'] != true) {
-                            controller.toggleItemSelection(item);
-                          }
-                          if (item['isNotificationEnabled'] != true) {
-                            controller.toggleNotification(item);
-                          }
-                        }
-                      },
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: 1, maxWidth: 150.w),
-                  child: Text(
-                    (item['name'] ?? '').toString(),
-                    key:
-                        item['id'] == 2
-                            ? CustomizePricesTutorial.typeNameKey
-                            : null,
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight:
-                          isLocked
-                              ? FontWeight.w700
-                              : ((item['isSelected'] as bool?) ?? false)
-                              ? FontWeight.w700
-                              : FontWeight.w600,
-                      color:
-                          isLocked
-                              ? colorScheme.onSurface.withValues(alpha: 0.8)
-                              : colorScheme.onSurface,
-                      letterSpacing: 0.2,
-                    ),
-                    maxLines: 1,
-                  ),
-                ),
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              start: 2.w,
+              bottom: AppSpacing.sm,
+              top: AppSpacing.xs,
+            ),
+            child: Text(
+              category,
+              style: TextStyle(
+                fontSize: 17.sp,
+                fontWeight: FontWeight.w800,
+                color: colorScheme.onSurface,
+                letterSpacing: 0.3,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-
-          SizedBox(width: 8.w),
-
-          // Notification Bell Icon
-          GestureDetector(
-            onTap: isLocked ? null : () => controller.toggleNotification(item),
-            child: AnimatedContainer(
-              key:
-                  item['id'] == 2
-                      ? CustomizePricesTutorial.notificationIconKey
-                      : null,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              padding: EdgeInsets.all(4.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
-                    ((item['isNotificationEnabled'] as bool?) ?? false)
-                        ? (isDark
-                            ? Colors.white.withValues(alpha: 0.15)
-                            : AppColors.primaryColor.withValues(alpha: 0.1))
-                        : Colors.transparent,
+          Obx(
+            () => GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.w,
+                mainAxisSpacing: 10.w,
+                childAspectRatio: 2.5,
               ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(
-                    ((item['isNotificationEnabled'] as bool?) ?? false)
-                        ? Icons.notifications_active
-                        : Icons.notifications_off_outlined,
-                    size: 20.sp,
-                    color:
-                        isLocked
-                            ? (isDark
-                                ? Colors.white
-                                : AppColors.primaryColor.withValues(alpha: 0.7))
-                            : ((item['isNotificationEnabled'] as bool?) ?? false)
-                            ? Colors.amber
-                            : (isDark
-                                ? Colors.white.withValues(alpha: 0.5)
-                                : Colors.grey),
-                  ),
-                  if (isLocked)
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.all(1.r),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.lock,
-                          size: 8.sp,
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-
-          SizedBox(width: 8.w),
-
-          // Selection Indicator (left side)
-          GestureDetector(
-            onTap: isLocked ? null : () => controller.toggleItemSelection(item),
-            child: AnimatedContainer(
-              key:
-                  item['id'] == 2
-                      ? CustomizePricesTutorial.selectionIndicatorKey
-                      : null,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              width: 19.w,
-              height: 19.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color:
-                    isLocked
-                        ? (isDark
-                            ? Colors.white
-                            : AppColors.primaryColor.withValues(alpha: 0.7))
-                        : ((item['isSelected'] as bool?) ?? false)
-                        ? (isDark ? Colors.white : AppColors.primaryColor)
-                        : Colors.transparent,
-                border: Border.all(
-                  color:
-                      isLocked
-                          ? (isDark
-                              ? Colors.white
-                              : AppColors.primaryColor.withValues(alpha: 0.7))
-                          : ((item['isSelected'] as bool?) ?? false)
-                          ? (isDark ? Colors.white : AppColors.primaryColor)
-                          : (isDark
-                              ? Colors.white.withValues(alpha: 0.6)
-                              : colorScheme.onSurface),
-                  width: ((item['isSelected'] as bool?) ?? false) ? 0 : 2,
-                ),
-              ),
-              child:
-                  isLocked
-                      ? Icon(
-                        Icons.lock,
-                        size: 12.sp,
-                        color:
-                            isDark
-                                ? AppColors.darkBackGroundColor
-                                : Colors.white,
-                        weight: 900,
-                      )
-                      : ((item['isSelected'] as bool?) ?? false)
-                      ? Icon(
-                        Icons.check,
-                        size: 14.sp,
-                        color:
-                            isDark
-                                ? AppColors.darkBackGroundColor
-                                : Colors.white,
-                        weight: 900,
-                      )
-                      : null,
+              itemCount: controller.categorizedTypes[category]?.length ?? 0,
+              itemBuilder: (context, index) {
+                final currentTypes =
+                    controller.categorizedTypes[category] ?? [];
+                final item = currentTypes[index];
+                return _buildTypeCard(item);
+              },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTypeCard(Map<String, dynamic> item) {
+    final bool isSelected = (item['isSelected'] as bool?) ?? false;
+    final bool isNotificationOn =
+        (item['isNotificationEnabled'] as bool?) ?? false;
+    final bool isLocked = item['id'] == 1 && item['isSelected'] == true;
+    final colorScheme = Theme.of(context).colorScheme;
+    final bool effectivelySelected = isSelected || isLocked;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutQuart,
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: effectivelySelected
+            ? colorScheme.primary.withValues(alpha: 0.06)
+            : colorScheme.surface,
+        borderRadius: AppDimens.borderMd,
+        border: Border.all(
+          color: effectivelySelected
+              ? colorScheme.primary.withValues(alpha: 0.2)
+              : colorScheme.outlineVariant,
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: isLocked
+                  ? null
+                  : () {
+                      if (item['isSelected'] == true &&
+                          item['isNotificationEnabled'] == true) {
+                        controller.toggleItemSelection(item);
+                        controller.toggleNotification(item);
+                      } else {
+                        if (item['isSelected'] != true) {
+                          controller.toggleItemSelection(item);
+                        }
+                        if (item['isNotificationEnabled'] != true) {
+                          controller.toggleNotification(item);
+                        }
+                      }
+                    },
+              child: Text(
+                (item['name'] ?? '').toString(),
+                key:
+                    item['id'] == 2
+                        ? CustomizePricesTutorial.typeNameKey
+                        : null,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight:
+                      effectivelySelected ? FontWeight.w700 : FontWeight.w500,
+                  color: effectivelySelected
+                      ? colorScheme.onSurface
+                      : colorScheme.onSurface.withValues(alpha: 0.55),
+                  letterSpacing: 0.2,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+
+          SizedBox(width: 6.w),
+
+          _NotificationToggle(
+            isActive: isNotificationOn,
+            isLocked: isLocked,
+            item: item,
+            onTap: isLocked ? null : () => controller.toggleNotification(item),
+            tutorialKey:
+                item['id'] == 2
+                    ? CustomizePricesTutorial.notificationIconKey
+                    : null,
+          ),
+
+          SizedBox(width: 4.w),
+
+          _SelectionToggle(
+            isSelected: isSelected,
+            isLocked: isLocked,
+            onTap: isLocked ? null : () => controller.toggleItemSelection(item),
+            tutorialKey:
+                item['id'] == 2
+                    ? CustomizePricesTutorial.selectionIndicatorKey
+                    : null,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NotificationToggle extends StatelessWidget {
+  final bool isActive;
+  final bool isLocked;
+  final Map<String, dynamic> item;
+  final VoidCallback? onTap;
+  final Key? tutorialKey;
+
+  const _NotificationToggle({
+    required this.isActive,
+    required this.isLocked,
+    required this.item,
+    this.onTap,
+    this.tutorialKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        key: tutorialKey,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutQuart,
+        padding: EdgeInsets.all(5.r),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive
+              ? AppColors.secondaryColor.withValues(alpha: 0.12)
+              : Colors.transparent,
+        ),
+        child: Icon(
+          isActive
+              ? Icons.notifications_active_rounded
+              : Icons.notifications_off_outlined,
+          size: 17.sp,
+          color: isLocked
+              ? colorScheme.primary.withValues(alpha: 0.6)
+              : isActive
+                  ? AppColors.secondaryColor
+                  : colorScheme.onSurface.withValues(alpha: 0.3),
+        ),
+      ),
+    );
+  }
+}
+
+class _SelectionToggle extends StatelessWidget {
+  final bool isSelected;
+  final bool isLocked;
+  final VoidCallback? onTap;
+  final Key? tutorialKey;
+
+  const _SelectionToggle({
+    required this.isSelected,
+    required this.isLocked,
+    this.onTap,
+    this.tutorialKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bool filled = isSelected || isLocked;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        key: tutorialKey,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutQuart,
+        width: 22.w,
+        height: 22.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: filled ? colorScheme.primary : Colors.transparent,
+          border: Border.all(
+            color: filled
+                ? colorScheme.primary
+                : colorScheme.outline,
+            width: filled ? 0 : 1.5,
+          ),
+        ),
+        child: filled
+            ? Icon(
+                isLocked ? Icons.lock : Icons.check,
+                size: isLocked ? 10.sp : 14.sp,
+                color: colorScheme.onPrimary,
+              )
+            : null,
       ),
     );
   }

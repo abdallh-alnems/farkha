@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/constant/routes/route.dart';
 import '../../../../core/constant/theme/colors.dart';
 import '../../../../logic/controller/cycle_controller.dart';
+import 'history_cycle_details.dart';
 
 class HistoryCycleItem extends StatelessWidget {
   const HistoryCycleItem({
@@ -83,22 +84,23 @@ class HistoryCycleItem extends StatelessWidget {
             children: [
               _buildHeader(name, breed, systemType, colorScheme),
               _buildDates(startDate, endDate, cycleAge, colorScheme),
-              _buildMetrics(
-                chickCount,
-                liveCount.toString(),
-                mortality,
-                mortalityRate,
-                costPerBird,
-                fcr,
-                averageWeight,
-                colorScheme,
+              CycleItemMetrics(
+                chickCount: chickCount,
+                liveCount: liveCount.toString(),
+                mortality: mortality,
+                mortalityRate: mortalityRate,
+                costPerBird: costPerBird,
+                fcr: fcr,
+                averageWeight: averageWeight,
+                colorScheme: colorScheme,
               ),
-              _buildFooter(
-                totalFeed,
-                totalExpenses,
-                totalSales,
-                netProfit,
-                colorScheme,
+              CycleItemFooter(
+                totalFeed: totalFeed,
+                totalExpenses: totalExpenses,
+                totalSales: totalSales,
+                netProfit: netProfit,
+                isDark: isDark,
+                colorScheme: colorScheme,
               ),
             ],
           ),
@@ -284,317 +286,6 @@ class HistoryCycleItem extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMetrics(
-    String chickCount,
-    String liveCountStr,
-    String mortality,
-    String mortalityRate,
-    String costPerBird,
-    String fcr,
-    double averageWeight,
-    ColorScheme colorScheme,
-  ) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
-      child: Column(
-        children: [
-          _buildChickCountCard(
-            initialCount: chickCount,
-            liveCount: liveCountStr,
-            colorScheme: colorScheme,
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            children: [
-              Expanded(
-                child: _buildPremiumMetricBox(
-                  label: 'النافق',
-                  value: '$mortality ($mortalityRate%)',
-                  accentColor: const Color(0xFFF43F5E),
-                  colorScheme: colorScheme,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: _buildPremiumMetricBox(
-                  label: 'تكلفة الفرخ',
-                  value: costPerBird,
-                  accentColor: const Color(0xFFF59E0B),
-                  colorScheme: colorScheme,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            children: [
-              Expanded(
-                child: _buildPremiumMetricBox(
-                  label: 'معامل التحويل',
-                  value: fcr,
-                  accentColor: const Color(0xFF6366F1),
-                  colorScheme: colorScheme,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: _buildPremiumMetricBox(
-                  label: 'متوسط الوزن',
-                  value: '${averageWeight.toStringAsFixed(1)} كجم',
-                  accentColor: const Color(0xFF9333EA),
-                  colorScheme: colorScheme,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(
-    double totalFeed,
-    double totalExpenses,
-    double totalSales,
-    double netProfit,
-    ColorScheme colorScheme,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? Colors.black12 : const Color(0xFFF8FAFC),
-        border: Border(
-          top: BorderSide(
-            color: colorScheme.outline.withValues(alpha: 0.3),
-          ),
-        ),
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            _buildFooterStat(
-              label: 'العلف',
-              value: totalFeed.toStringAsFixed(0),
-              unit: 'كجم',
-              colorScheme: colorScheme,
-            ),
-            _buildFooterDivider(colorScheme),
-            _buildFooterStat(
-              label: 'المصروفات',
-              value: totalExpenses.toStringAsFixed(0),
-              unit: 'ج',
-              colorScheme: colorScheme,
-            ),
-            _buildFooterDivider(colorScheme),
-            _buildFooterStat(
-              label: 'المبيعات',
-              value: totalSales.toStringAsFixed(0),
-              unit: 'ج',
-              colorScheme: colorScheme,
-            ),
-            _buildFooterDivider(colorScheme),
-            _buildFooterStat(
-              label: 'الصافي',
-              value: netProfit.toStringAsFixed(0),
-              unit: 'ج',
-              valueColor:
-                  netProfit >= 0
-                      ? const Color(0xFF10B981)
-                      : const Color(0xFFF43F5E),
-              colorScheme: colorScheme,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooterStat({
-    required String label,
-    required String value,
-    required String unit,
-    Color? valueColor,
-    required ColorScheme colorScheme,
-  }) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10.sp,
-                color: colorScheme.onSurface.withValues(alpha: 0.5),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: valueColor ?? colorScheme.onSurface,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                SizedBox(width: 2.w),
-                Text(
-                  unit,
-                  style: TextStyle(
-                    fontSize: 9.sp,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooterDivider(ColorScheme colorScheme) {
-    return Container(
-      width: 1,
-      height: 30.h,
-      color: colorScheme.outline.withValues(alpha: 0.3),
-    );
-  }
-
-  Widget _buildChickCountCard({
-    required String initialCount,
-    required String liveCount,
-    required ColorScheme colorScheme,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.03),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                Text(
-                  initialCount,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w800,
-                    color: colorScheme.onSurface,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'العدد الأولي',
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 1,
-            height: 40.h,
-            color: colorScheme.outline.withValues(alpha: 0.5),
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                Text(
-                  liveCount,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF10B981),
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'المتبقي',
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPremiumMetricBox({
-    required String label,
-    required String value,
-    required Color accentColor,
-    required ColorScheme colorScheme,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.03),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w800,
-              color: colorScheme.onSurface,
-              letterSpacing: -0.5,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-          SizedBox(height: 4.h),
-          Row(
-            children: [
-              Container(
-                width: 3.w,
-                height: 12.h,
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(2.r),
-                ),
-              ),
-              SizedBox(width: 6.w),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-            ],
           ),
         ],
       ),

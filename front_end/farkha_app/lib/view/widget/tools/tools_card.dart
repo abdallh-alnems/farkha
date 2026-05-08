@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../logic/controller/tools_controller/favorite_tools_controller.dart';
 
 class ToolsCard extends StatelessWidget {
@@ -20,50 +20,37 @@ class ToolsCard extends StatelessWidget {
     this.showFavorite = false,
   });
 
-  Widget _buildImage(String imagePath) {
-    if (imagePath.toLowerCase().endsWith('.svg')) {
-      return SvgPicture.asset(
-        imagePath,
-        width: 28.w,
-        height: 28.h,
-      );
-    } else {
-      return Image.asset(imagePath, scale: 3.5);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final favoriteController = Get.find<FavoriteToolsController>();
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final bool isDark = theme.brightness == Brightness.dark;
-    final Color cardColor =
-        isDark
-            ? AppColors.darkSurfaceElevatedColor
-            : AppColors.lightSurfaceColor;
+
+    final Color cardColor = isDark
+        ? AppColors.darkSurfaceElevatedColor
+        : AppColors.lightSurfaceColor;
     final Color borderColor = (isDark
             ? AppColors.darkOutlineColor
             : AppColors.lightOutlineColor)
-        .withValues(alpha: isDark ? 0.5 : 0.3);
-    final Color textColor = colorScheme.onSurface;
-    final Color accentColor = colorScheme.primary;
+        .withValues(alpha: isDark ? 0.4 : 0.25);
+    final Color iconBgColor = colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.1);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Container(
-        width: 75.w,
-        height: 68.h,
+        width: 82.w,
+        height: 85.h,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10).r,
+          borderRadius: BorderRadius.circular(AppDimens.radiusMd),
           color: cardColor,
           border: Border.all(color: borderColor, width: 0.8),
           boxShadow: [
             if (!isDark)
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withValues(alpha: 0.04),
                 spreadRadius: 0.5,
-                blurRadius: 4,
+                blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
           ],
@@ -73,110 +60,99 @@ class ToolsCard extends StatelessWidget {
             Positioned.fill(
               child: InkWell(
                 onTap: onTap,
-                borderRadius: BorderRadius.circular(10).r,
-                child:
-              image != null
-                  ? Column(
+                borderRadius: BorderRadius.circular(AppDimens.radiusMd),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 5.h),
-                      _buildImage(image!),
-                      SizedBox(height: 3.h),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 3.w),
+                      if (image != null)
+                        Container(
+                          width: 36.w,
+                          height: 36.h,
+                          decoration: BoxDecoration(
+                            color: iconBgColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: _buildImage(image!),
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 36.w,
+                          height: 36.h,
+                          decoration: BoxDecoration(
+                            color: iconBgColor,
+                            shape: BoxShape.circle,
+                          ),
                           child: Center(
                             child: Text(
                               text,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 9.sp,
-                                fontWeight: FontWeight.w500,
-                                color: textColor.withValues(alpha: 0.8),
-                                height: 1.2,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16.sp,
+                                color: colorScheme.primary,
+                                height: 1,
                               ),
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 5.h),
-                    ],
-                  )
-                  : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 10.h),
-                      // Stylish text in place of image
+                      SizedBox(height: 6.h),
                       Text(
                         text,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.sp,
-                          color: accentColor,
-                          height: 1.1,
-                          shadows: [
-                            Shadow(
-                              color: accentColor.withValues(alpha: 0.2),
-                              offset: const Offset(0, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w500,
+                          color: colorScheme.onSurface.withValues(alpha: 0.75),
+                          height: 1.25,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 3.h),
-                      // Normal text below
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 3.w),
-                          child: Center(
-                            child: Text(
-                              text,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 11.sp,
-                                fontWeight: FontWeight.w500,
-                                color: textColor.withValues(alpha: 0.8),
-                                height: 1.2,
-                              ),
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 5.h),
                     ],
                   ),
+                ),
               ),
             ),
             if (showFavorite)
               Positioned(
                 top: 2,
                 right: 2,
-                child: Obx(
-                  () {
-                    final isFavorite = favoriteController.isFavorite(text);
-                    return InkWell(
-                      onTap: () => favoriteController.toggleFavorite(text),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.all(2),
-                        child: Icon(
-                          isFavorite ? Icons.star : Icons.star_border,
-                          color: isFavorite ? Colors.amber : Colors.grey,
-                          size: 14,
-                        ),
+                child: Obx(() {
+                  final isFavorite = favoriteController.isFavorite(text);
+                  return InkWell(
+                    onTap: () => favoriteController.toggleFavorite(text),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: EdgeInsets.all(3.r),
+                      child: Icon(
+                        isFavorite ? Icons.star : Icons.star_border,
+                        color: isFavorite ? AppColors.secondaryColor : colorScheme.onSurface.withValues(alpha: 0.3),
+                        size: 14,
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }),
               ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildImage(String imagePath) {
+    if (imagePath.toLowerCase().endsWith('.svg')) {
+      return SvgPicture.asset(
+        imagePath,
+        width: 20.w,
+        height: 20.h,
+      );
+    } else {
+      return Image.asset(imagePath, scale: 4);
+    }
   }
 }

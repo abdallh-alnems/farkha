@@ -39,9 +39,9 @@ void main() {
 
     controller = CycleController(
       auth: mockAuth,
-      cycleData: fakeCycleData,
       myServices: mockMyServices,
     );
+    controller.cycleData = fakeCycleData;
     Get.put<CycleController>(controller);
     Get.put<MyServices>(mockMyServices);
   });

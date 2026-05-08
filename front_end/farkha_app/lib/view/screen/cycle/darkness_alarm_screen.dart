@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../../core/constant/storage_keys.dart';
-import '../../../core/constant/theme/colors.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../logic/controller/tools_controller/darkness_schedule_controller.dart';
+import '../../widget/cycle/darkness_alarm_list.dart';
 
-/// Full-screen alarm page for darkness phase reminders.
 class DarknessAlarmScreen extends StatefulWidget {
   const DarknessAlarmScreen({
     super.key,
@@ -65,21 +65,39 @@ class DarknessAlarmScreen extends StatefulWidget {
 }
 
 class _DarknessAlarmScreenState extends State<DarknessAlarmScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final FlutterRingtonePlayer _ringtonePlayer = FlutterRingtonePlayer();
   late AnimationController _pulseController;
+  late AnimationController _ringController;
   late Animation<double> _pulseAnimation;
+  late Animation<double> _ringScaleAnimation;
+
+  static const _bgDark = Color(0xFF1C1916);
+  static const _bgDeep = Color(0xFF15120F);
+  static const _surfaceWarm = Color(0xFF2A2520);
+  static const _textPrimary = Color(0xFFF0EAE0);
+  static const _textSecondary = Color(0xFFB8AE9E);
+  static const _textMuted = Color(0xFF7A7268);
 
   @override
   void initState() {
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
-    _pulseAnimation = Tween<double>(begin: 0.9, end: 1.1).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOutCubic),
     );
+
+    _ringController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    )..repeat();
+    _ringScaleAnimation = Tween<double>(begin: 1.0, end: 1.6).animate(
+      CurvedAnimation(parent: _ringController, curve: Curves.easeOutQuart),
+    );
+
     _startAlarmSound();
   }
 
@@ -93,6 +111,7 @@ class _DarknessAlarmScreenState extends State<DarknessAlarmScreen>
   @override
   void dispose() {
     _pulseController.dispose();
+    _ringController.dispose();
     _ringtonePlayer.stop();
     super.dispose();
   }
@@ -117,169 +136,77 @@ class _DarknessAlarmScreenState extends State<DarknessAlarmScreen>
     _ringtonePlayer.stop();
     GetStorage().remove(StorageKeys.pendingDarknessAlarm);
     if (widget.fromBackground) {
-      // Alarm brought the app from background → minimize
       final ctrl =
           Get.isRegistered<DarknessScheduleController>()
               ? Get.find<DarknessScheduleController>()
               : Get.put(DarknessScheduleController());
       ctrl.minimizeApp();
     } else {
-      // App was already open → just close alarm page
       Get.back<void>();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary =
-        isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
     final isFinish = widget.title?.contains('انتهى') ?? false;
-
-    // Gradient colors
-    final gradientStart =
-        isDark ? const Color(0xFF1A1A2E) : const Color(0xFF0D1B2A);
-    final gradientEnd =
-        isDark ? const Color(0xFF16213E) : const Color(0xFF1B2838);
+    final accentColor =
+        isFinish ? AppColors.successColor : AppColors.accentColor;
 
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: _bgDark,
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [gradientStart, gradientEnd],
+              colors: [_bgDark, _bgDeep],
+              stops: [0.0, 0.6],
             ),
           ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.screenH,
+                vertical: AppSpacing.sm,
+              ),
               child: Column(
                 children: [
-                  // ── Top bar ──
-                  if (widget.cycleName != null || widget.age != null)
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 8.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (widget.cycleName != null) ...[
-                            Icon(
-                              Icons.egg_outlined,
-                              size: 16.sp,
-                              color: Colors.white54,
-                            ),
-                            SizedBox(width: 6.w),
-                            Text(
-                              widget.cycleName!,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                          if (widget.cycleName != null && widget.age != null)
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.w),
-                              child: Container(
-                                width: 4.w,
-                                height: 4.w,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white30,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                          if (widget.age != null)
-                            Text(
-                              'اليوم ${widget.age}',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-
-                  // ── Scrollable content ──
+                  _buildTopBar(accentColor),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 24.h),
-
-                          // ── Pulsing alarm icon ──
-                          ScaleTransition(
-                            scale: _pulseAnimation,
-                            child: Container(
-                              padding: EdgeInsets.all(28.w),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: RadialGradient(
-                                  colors: [
-                                    primary.withValues(alpha: 0.3),
-                                    primary.withValues(alpha: 0.05),
-                                  ],
-                                ),
-                              ),
-                              child: Icon(
-                                isFinish
-                                    ? Icons.check_circle_outline
-                                    : Icons.alarm_rounded,
-                                size: 72.sp,
-                                color: Colors.white,
-                              ),
-                            ),
+                          SizedBox(height: 40.h),
+                          _buildAlarmIcon(isFinish, accentColor),
+                          SizedBox(height: 32.h),
+                          _buildTitle(isFinish),
+                          SizedBox(height: 10.h),
+                          _buildSubtitle(),
+                          SizedBox(height: 32.h),
+                          DarknessAlarmInfoPanel(
+                            startTime: widget.startTime,
+                            endTime: widget.endTime,
+                            duration: widget.duration,
+                            phase: widget.phase,
+                            totalPhases: widget.totalPhases,
+                            accentColor: accentColor,
                           ),
-
-                          SizedBox(height: 24.h),
-
-                          // ── Title ──
-                          Text(
-                            widget.title ?? 'حان وقت مرحلة الإظلام',
-                            style: TextStyle(
-                              fontSize: 26.sp,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              letterSpacing: -0.5,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          SizedBox(height: 8.h),
-
-                          Text(
-                            widget.body ?? 'ابدأ مرحلة الإظلام',
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.white60,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          SizedBox(height: 24.h),
-
-                          // ── Info cards ──
-                          _buildInfoCards(primary),
-
                           SizedBox(height: 24.h),
                         ],
                       ),
                     ),
                   ),
-
-                  // ── Action buttons ──
-                  _buildActionButtons(primary, isFinish),
-
-                  SizedBox(height: 16.h),
+                  DarknessAlarmActions(
+                    accentColor: accentColor,
+                    isFinish: isFinish,
+                    onStart: _onStartDarkness,
+                    onLater: _onLater,
+                  ),
+                  SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),
@@ -289,224 +216,147 @@ class _DarknessAlarmScreenState extends State<DarknessAlarmScreen>
     );
   }
 
-  Widget _buildInfoCards(Color primary) {
-    final bool hasTimeInfo = widget.startTime != null;
-    final bool hasPhaseInfo =
-        widget.phase != null && widget.totalPhases != null;
-    final bool hasDuration = widget.duration != null;
-    final bool hasTotalHours = widget.totalDarknessHours != null;
-
-    if (!hasTimeInfo && !hasPhaseInfo && !hasDuration && !hasTotalHours) {
+  Widget _buildTopBar(Color accentColor) {
+    if (widget.cycleName == null && widget.age == null) {
       return const SizedBox.shrink();
     }
-
     return Container(
-      padding: EdgeInsets.all(20.w),
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+        color: _surfaceWarm.withValues(alpha: 0.6),
+        borderRadius: AppDimens.borderMd,
       ),
-      child: Column(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Time row (from → to)
-          if (hasTimeInfo) ...[
-            Row(
-              children: [
-                _infoIcon(Icons.schedule_rounded, primary),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'وقت الإظلام',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.white54,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Text(
-                          widget.endTime != null
-                              ? '${widget.startTime}  →  ${widget.endTime}'
-                              : widget.startTime!,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+          if (widget.cycleName != null) ...[
+            Icon(
+              Icons.egg_outlined,
+              size: 15.sp,
+              color: accentColor.withValues(alpha: 0.8),
+            ),
+            SizedBox(width: 6.w),
+            Text(
+              widget.cycleName!,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: _textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
-
-          // Duration
-          if (hasDuration) ...[
-            if (hasTimeInfo) _divider(),
-            Row(
-              children: [
-                _infoIcon(Icons.timelapse_rounded, primary),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'مدة هذه المرحلة',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.white54,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        widget.duration!,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+          if (widget.cycleName != null && widget.age != null)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
+              child: Text(
+                '·',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: _textMuted,
+                  fontWeight: FontWeight.w700,
                 ),
-              ],
+              ),
             ),
-          ],
-
-          // Phase progress
-          if (hasPhaseInfo) ...[
-            if (hasTimeInfo || hasDuration) _divider(),
-            Row(
-              children: [
-                _infoIcon(Icons.layers_rounded, primary),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'تقدم المراحل',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.white54,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        'المرحلة ${widget.phase} من ${widget.totalPhases}',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Mini progress dots
-                Row(
-                  children: List.generate(
-                    widget.totalPhases!,
-                    (i) => Container(
-                      margin: EdgeInsets.only(right: 4.w),
-                      width: 10.w,
-                      height: 10.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                            i < widget.phase!
-                                ? primary
-                                : Colors.white.withValues(alpha: 0.15),
-                        border:
-                            i + 1 == widget.phase
-                                ? Border.all(color: primary, width: 2)
-                                : null,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          if (widget.age != null)
+            Text(
+              'اليوم ${widget.age}',
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: _textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ],
         ],
       ),
     );
   }
 
-  Widget _infoIcon(IconData icon, Color primary) {
-    return Container(
-      padding: EdgeInsets.all(8.w),
-      decoration: BoxDecoration(
-        color: primary.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(10.r),
+  Widget _buildAlarmIcon(bool isFinish, Color accentColor) {
+    return ScaleTransition(
+      scale: _pulseAnimation,
+      child: SizedBox(
+        width: 140.w,
+        height: 140.w,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            AnimatedBuilder(
+              animation: _ringController,
+              builder: (context, child) {
+                final progress = _ringController.value;
+                final opacity = (1.0 - progress).clamp(0.0, 0.4);
+                return Container(
+                  width: 140.w * _ringScaleAnimation.value,
+                  height: 140.w * _ringScaleAnimation.value,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: accentColor.withValues(alpha: opacity),
+                      width: 2,
+                    ),
+                  ),
+                );
+              },
+            ),
+            Container(
+              width: 110.w,
+              height: 110.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    accentColor.withValues(alpha: 0.25),
+                    accentColor.withValues(alpha: 0.05),
+                  ],
+                  stops: const [0.4, 1.0],
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                isFinish
+                    ? Icons.check_circle_outline_rounded
+                    : Icons.dark_mode_rounded,
+                size: 56.sp,
+                color: accentColor.withValues(alpha: 0.9),
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Icon(icon, size: 20.sp, color: primary),
     );
   }
 
-  Widget _divider() {
+  Widget _buildTitle(bool isFinish) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: Divider(height: 1, color: Colors.white.withValues(alpha: 0.1)),
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      child: Text(
+        widget.title ?? 'حان وقت مرحلة الإظلام',
+        style: TextStyle(
+          fontSize: 28.sp,
+          fontWeight: FontWeight.w800,
+          color: _textPrimary,
+          height: 1.3,
+          letterSpacing: -0.3,
+        ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 
-  Widget _buildActionButtons(Color primary, bool isFinish) {
-    return Column(
-      children: [
-        // Primary action
-        SizedBox(
-          width: double.infinity,
-          height: 56.h,
-          child: FilledButton.icon(
-            onPressed: _onStartDarkness,
-            icon: Icon(
-              isFinish ? Icons.check_circle_outline : Icons.dark_mode_rounded,
-              size: 22.sp,
-            ),
-            label: Text(
-              isFinish ? 'حسناً' : 'ابدء الإظلام',
-              style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w700),
-            ),
-            style: FilledButton.styleFrom(
-              backgroundColor: primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-            ),
-          ),
+  Widget _buildSubtitle() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Text(
+        widget.body ?? 'ابدأ مرحلة الإظلام',
+        style: TextStyle(
+          fontSize: 15.sp,
+          color: _textSecondary,
+          height: 1.5,
         ),
-
-        SizedBox(height: 12.h),
-
-        // Secondary action
-        SizedBox(
-          width: double.infinity,
-          height: 48.h,
-          child: TextButton(
-            onPressed: _onLater,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white60,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-            ),
-            child: Text(
-              'لاحقاً',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ],
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

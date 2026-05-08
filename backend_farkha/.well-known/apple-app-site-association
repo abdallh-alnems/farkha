@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "PN886D65DG.ni.nims.frkha",
+        "paths": ["/backend_farkha/join/*"]
+      }
+    ]
+  }
+}

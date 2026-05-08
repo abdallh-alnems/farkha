@@ -1,106 +1,48 @@
 <?php
-/**
- * Remove Member API
- * حذف عضو من الدورة (يسمح فقط لصاحب الدورة)
- */
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
-include __DIR__ . '/../../core/queries/queries.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-checkAuthenticate();
+Auth::checkAppCheck();
 
-$input = json_decode(file_get_contents('php://input'), true);
-$token = $input['token'] ?? null;
+$auth = Auth::authenticateUser(db());
+$userId = $auth['user_id'];
+$input = $auth['input'];
+
 $cycleId = $input['cycle_id'] ?? null;
 $targetUserId = $input['target_user_id'] ?? null;
 
-if (!$token) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'Token is required']);
-    exit;
-}
+Validator::required($cycleId, 'cycle_id');
+Validator::required($targetUserId, 'target_user_id');
+$cycleId = (int) Validator::numeric($cycleId, 'cycle_id', 1);
+$targetUserId = (int) Validator::numeric($targetUserId, 'target_user_id', 1);
 
-if (!$cycleId || !is_numeric($cycleId) || !$targetUserId || !is_numeric($targetUserId)) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'cycle_id and target_user_id are required']);
-    exit;
-}
+$con = db();
 
 try {
-    // 🔐 التحقق من الهوية
-    $userId = getUserIdFromToken($token, $con);
-    
-    if (!$userId) {
-        http_response_code(401);
-        echo json_encode(['status' => 'fail', 'message' => 'Invalid token or user not found']);
-        exit;
-    }
-
-    // 🛡️ التحقق من أن القائم بالعملية هو الـ Owner
-    $stmt = $con->prepare(Queries::checkUserReadAccessQuery());
-    $stmt->execute([
-        ':cycle_id' => (int)$cycleId,
-        ':user_id' => $userId
-    ]);
-    $requesterAccess = $stmt->fetch();
-
+    $requesterAccess = CycleModel::checkReadAccess($cycleId, $userId);
     if (!$requesterAccess || $requesterAccess['role'] !== 'owner') {
-        http_response_code(403);
-        echo json_encode(['status' => 'fail', 'message' => 'عذراً، صاحب الدورة فقط هو من يمكنه حذف الأعضاء.']);
-        exit;
+        Response::forbidden('عذراً، صاحب الدورة فقط هو من يمكنه حذف الأعضاء.');
     }
 
-    // 🚫 منع حذف الـ Owner نفسة من هنا (يجب استخدام حذف الدورة بالكامل)
-    if ((int)$targetUserId === (int)$userId) {
-        http_response_code(400);
-        echo json_encode(['status' => 'fail', 'message' => 'لا يمكنك حذف نفسك. إذا كنت تريد مغادرة الدورة، يجب حذفها بالكامل لأنك المالك.']);
-        exit;
+    if ($targetUserId === $userId) {
+        Response::fail('لا يمكنك حذف نفسك. إذا كنت تريد مغادرة الدورة، يجب حذفها بالكامل لأنك المالك.', 400);
     }
 
-    // جلب اسم الدورة واسم من قام بالإزالة
-    $stmtCycle = $con->prepare("SELECT name FROM cycles WHERE id = ?");
-    $stmtCycle->execute([(int)$cycleId]);
-    $cycleRow = $stmtCycle->fetch(PDO::FETCH_ASSOC);
+    $cycleRow = Database::fetchOne("SELECT name FROM cycles WHERE id = ? AND deleted_at IS NULL", [$cycleId]);
     $cycleName = $cycleRow['name'] ?? 'الدورة';
 
-    $stmtOwner = $con->prepare("SELECT name FROM users WHERE id = ?");
-    $stmtOwner->execute([$userId]);
-    $ownerRow = $stmtOwner->fetch(PDO::FETCH_ASSOC);
+    $ownerRow = UserModel::findById($userId);
     $ownerName = $ownerRow['name'] ?? 'صاحب الدورة';
 
-    // 🗑️ تنفيذ الحذف
-    $stmt = $con->prepare(Queries::leaveCycleQuery());
-    $stmt->execute([
-        ':cycle_id' => (int)$cycleId,
-        ':user_id' => (int)$targetUserId
+    CycleModel::leave($con, $cycleId, $targetUserId);
+
+    NotificationService::sendToUser($con, $targetUserId, 'تنبيه', "تم ازالتك من دورة $cycleName بواسطة $ownerName", [
+        'type' => 'member_removed',
+        'cycle_id' => (string) $cycleId,
     ]);
 
-    // 🔔 إرسال إشعار FCM للعضو المحذوف
-    require_once __DIR__ . '/../../core/fcm_sender.php';
-    sendFCMToUser(
-        $con,
-        (int)$targetUserId,
-        'تنبيه',
-        "تم ازالتك من دورة $cycleName بواسطة $ownerName",
-        [
-            'type'     => 'member_removed',
-            'cycle_id' => (string)$cycleId,
-        ]
-    );
-
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'تم حذف العضو من الدورة بنجاح'
-    ]);
-
-} catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
-    http_response_code(401);
-    echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
+    Response::success(['message' => 'تم حذف العضو من الدورة بنجاح']);
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => 'Database error']);
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
+    error_log("remove_member error: " . $e->getMessage());
+    Response::fail('Database error', 500);
 }

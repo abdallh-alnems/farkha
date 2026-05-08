@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/constant/theme/theme.dart';
 import '../../../logic/controller/price_controller/prices_by_type_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
@@ -16,31 +16,36 @@ class PricesByType extends StatelessWidget {
   Widget build(BuildContext context) {
     final String mainId = Get.arguments['main_id'].toString();
     final String mainName = Get.arguments['main_name'].toString();
-
-    // Check if this is a feed prices request (ID 6 or 7)
     final bool isFeedPrices = mainId == '6' || mainId == '7';
 
     final PricesByTypeController controller = Get.put(PricesByTypeController());
     controller.getDataPricesByType(mainId);
+
     return Scaffold(
       appBar: CustomAppBar(text: 'اسعار $mainName'),
       body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical: 9,
-                        ).r,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.screenH,
+                      vertical: AppSpacing.sm,
+                    ),
                     child: const AdNativeWidget(),
                   ),
-                  isFeedPrices
-                      ? const TableFeedPrices()
-                      : const TablePricesByType(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.screenH,
+                    ),
+                    child: isFeedPrices
+                        ? const TableFeedPrices()
+                        : const TablePricesByType(),
+                  ),
+                  SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),

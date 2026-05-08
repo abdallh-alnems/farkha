@@ -1,92 +1,53 @@
 <?php
-/**
- * الانضمام إلى دورة بكود الدعوة
- * Join Cycle by Invitation Code
- */
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
-require_once __DIR__ . '/../../core/queries/cycle_queries.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-checkAuthenticate();
+Auth::checkAppCheck();
 
-$input = json_decode(file_get_contents('php://input'), true);
-$token = $input['token'] ?? null;
+$auth = Auth::authenticateUser(db());
+$userId = $auth['user_id'];
+$input = $auth['input'];
+
 $code = $input['code'] ?? null;
+Validator::required($code, 'code');
 
-if (!$token || !$code) {
-    http_response_code(400);
-    echo json_encode(['status' => 'fail', 'message' => 'Missing required fields']);
-    exit;
-}
+$con = db();
 
 try {
-    $verifiedToken = verifyToken($token);
-    $uid = $verifiedToken->claims()->get('sub');
-
-    // 1. الحصول على معرف المستخدم
-    $stmt = $con->prepare("SELECT id FROM users WHERE firebase_uid = ?");
-    $stmt->execute([$uid]);
-    $user = $stmt->fetch();
-
-    if (!$user) {
-        throw new Exception("User not found");
-    }
-
-    // 2. البحث عن الكود
-    $stmt = $con->prepare(
-        "SELECT * FROM cycle_invitations WHERE code = ? LIMIT 1"
-    );
-    $stmt->execute([$code]);
-    $invitation = $stmt->fetch();
-
+    $invitation = Database::fetchOne("SELECT * FROM cycle_invitations WHERE code = :code LIMIT 1", [':code' => $code]);
     if (!$invitation) {
-        http_response_code(404);
-        echo json_encode(['status' => 'fail', 'message' => 'كود الدعوة غير صالح']);
-        exit;
+        Response::fail('كود الدعوة غير صالح', 404);
     }
 
-    // 3. التحقق من الصلاحية
+    if ($invitation['status'] !== 'active') {
+        Response::fail('كود الدعوة غير صالح أو تم استخدامه بالفعل', 410);
+    }
+
     if ($invitation['expires_at'] && strtotime($invitation['expires_at']) < time()) {
-        http_response_code(410);
-        echo json_encode(['status' => 'fail', 'message' => 'كود الدعوة منتهي الصلاحية']);
-        exit;
+        $con->prepare("UPDATE cycle_invitations SET status = 'expired' WHERE id = :id")->execute([':id' => $invitation['id']]);
+        Response::fail('كود الدعوة منتهي الصلاحية', 410);
     }
 
-    // 4. التحقق من أن المستخدم ليس عضواً بالفعل
-    $stmt = $con->prepare("SELECT id FROM cycle_users WHERE cycle_id = ? AND user_id = ?");
-    $stmt->execute([$invitation['cycle_id'], $user['id']]);
-    if ($stmt->fetch()) {
-        http_response_code(409);
-        echo json_encode(['status' => 'fail', 'message' => 'أنت عضو بالفعل في هذه الدورة']);
-        exit;
+    $existing = Database::fetchOne(
+        "SELECT id FROM cycle_users WHERE cycle_id = :cid AND user_id = :uid",
+        [':cid' => $invitation['cycle_id'], ':uid' => $userId]
+    );
+    if ($existing) {
+        Response::fail('أنت عضو بالفعل في هذه الدورة', 409);
     }
 
-    // 5. إضافة المستخدم كعضو
-    $stmt = $con->prepare(CycleQueries::insertCycleUser());
-    $stmt->execute([
-        'user_id' => $user['id'],
-        'cycle_id' => $invitation['cycle_id'],
-        'role' => 'member',
-        'status' => 'accepted'
-    ]);
+    CycleModel::addMember($con, (int) $invitation['cycle_id'], $userId, 'member', 'accepted');
 
-    // 6. جلب اسم الدورة للعرض
-    $stmt = $con->prepare("SELECT name FROM cycles WHERE id = ?");
-    $stmt->execute([$invitation['cycle_id']]);
-    $cycle = $stmt->fetch();
+    $con->prepare("UPDATE cycle_invitations SET status = 'used', used_by_user_id = :uid, used_at = NOW() WHERE id = :id")
+        ->execute([':uid' => $userId, ':id' => $invitation['id']]);
 
-    echo json_encode([
-        'status' => 'success',
+    $cycle = Database::fetchOne("SELECT name FROM cycles WHERE id = ? AND deleted_at IS NULL", [$invitation['cycle_id']]);
+
+    Response::success([
         'message' => 'تم الانضمام للدورة بنجاح',
-        'cycle_name' => $cycle['name'] ?? ''
+        'cycle_name' => $cycle['name'] ?? '',
     ]);
-
-} catch (\Kreait\Firebase\Exception\Auth\FailedToVerifyToken $e) {
-    http_response_code(401);
-    echo json_encode(['status' => 'fail', 'message' => 'Invalid or expired token']);
-} catch (Exception $e) {
-    error_log('join_by_code error: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['status' => 'fail', 'message' => 'Server error']);
+} catch (PDOException $e) {
+    error_log("join_by_code error: " . $e->getMessage());
+    Response::fail('Database error', 500);
 }

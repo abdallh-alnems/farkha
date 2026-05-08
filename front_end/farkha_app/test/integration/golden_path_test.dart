@@ -76,9 +76,8 @@ void main() {
       Get.put<CycleController>(
         CycleController(
           auth: mockAuth,
-          cycleData: fakeCycleData,
           myServices: mockMyServices,
-        ),
+        )..cycleData = fakeCycleData,
       );
 
       expect(Get.find<LoginController>(), isNotNull);
@@ -100,9 +99,8 @@ void main() {
       Get.put<CycleController>(
         CycleController(
           auth: mockAuth,
-          cycleData: fakeCycleData,
           myServices: mockMyServices,
-        ),
+        )..cycleData = fakeCycleData,
       );
 
       final cycleCtrl = Get.find<CycleController>();

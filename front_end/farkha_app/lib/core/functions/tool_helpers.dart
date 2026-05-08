@@ -35,3 +35,8 @@ String getQualityLabel(int quality) {
 double safeDivide(double numerator, double denominator, {double multiplier = 1.0}) {
   return denominator > 0 ? (numerator / denominator) * multiplier : 0.0;
 }
+
+Color getToolResultColor(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor;
+}

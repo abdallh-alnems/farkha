@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
-import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/constant/theme/theme.dart';
 import '../../../../core/functions/handling_data_controller.dart';
 import '../../../../data/data_source/remote/tools/articles_data.dart';
 import '../../../../data/data_source/static/chicken_data.dart';
@@ -29,56 +29,87 @@ class ArticleDetailController extends GetxController {
     update();
   }
 
-  // دالة لإنشاء صفوف الجدول
   List<TableRow> getRows(
     List<int> consumptions,
     BuildContext context,
-    String text,
+    String headerLeft,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final List<TableRow> rows = [];
 
     rows.add(
       TableRow(
+        decoration: BoxDecoration(
+          color: AppColors.primaryColor.withValues(alpha: isDark ? 0.2 : 0.1),
+        ),
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 7).r,
+            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
             child: Text(
-              text,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: colorScheme.onSurface,
+              headerLeft,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primaryColor,
+                fontFamily: 'Cairo',
               ),
               textAlign: TextAlign.center,
             ),
           ),
-          Text(
-            'العمر باليوم',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(color: colorScheme.onSurface),
-            textAlign: TextAlign.center,
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+            child: Text(
+              'العمر باليوم',
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: AppColors.primaryColor,
+                fontFamily: 'Cairo',
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),
     );
 
     for (int i = 0; i < consumptions.length; i++) {
+      final isEven = i.isEven;
       rows.add(
         TableRow(
+          decoration: BoxDecoration(
+            color: isEven
+                ? colorScheme.surface
+                : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+          ),
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7).r,
+              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
               child: Text(
                 '${consumptions[i]}',
-                style: TextStyle(fontSize: 19.sp, color: colorScheme.onSurface),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface,
+                  fontFamily: 'Cairo',
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
-            Text(
-              '${i + 1}',
-              style: TextStyle(fontSize: 19.sp, color: colorScheme.onSurface),
-              textAlign: TextAlign.center,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+              child: Text(
+                '${i + 1}',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface.withValues(alpha: 0.65),
+                  fontFamily: 'Cairo',
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
@@ -87,169 +118,49 @@ class ArticleDetailController extends GetxController {
     return rows;
   }
 
-  // دالة لإرجاع الجداول حسب نوع المقال
   List<Widget> getTableWidgets(String articleId, BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final List<Widget> widgets = [];
 
-    // جدول درجات الحرارة (id = 14)
-    if (int.tryParse(articleId) == 14) {
-      widgets.add(
-        Column(
-          children: [
-            const SizedBox(height: 7),
-            Container(
-              decoration: BoxDecoration(
-                color:
-                    isDark
-                        ? AppColors.darkSurfaceElevatedColor
-                        : AppColors.lightSurfaceColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: 0.3),
-                ),
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  border: TableBorder(
-                    horizontalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                    verticalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  children: getRows(
-                    temperatureList,
-                    context,
-                    'درجة الحرارة المئوية',
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    final tableConfigs = <int, (List<int>, String)>{
+      14: (temperatureList, 'درجة الحرارة المئوية'),
+      13: (weightsList, 'الوزن بالجرام'),
+      9: (darknessLevels, 'الإظلام بالساعة'),
+      12: (feedConsumptions, 'الاستهلاك بالجرام'),
+    };
 
-    // جدول الأوزان (id = 13)
-    if (int.tryParse(articleId) == 13) {
+    final id = int.tryParse(articleId);
+    if (id != null && tableConfigs.containsKey(id)) {
+      final (data, header) = tableConfigs[id]!;
       widgets.add(
-        Column(
-          children: [
-            const SizedBox(height: 7),
-            Container(
-              decoration: BoxDecoration(
-                color:
-                    isDark
-                        ? AppColors.darkSurfaceElevatedColor
-                        : AppColors.lightSurfaceColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: 0.3),
-                ),
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  border: TableBorder(
-                    horizontalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                    verticalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  children: getRows(weightsList, context, 'الوزن بالجرام'),
-                ),
+        Padding(
+          padding: EdgeInsets.only(top: 12.h),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.darkSurfaceElevatedColor
+                  : AppColors.lightSurfaceColor,
+              borderRadius: AppDimens.borderMd,
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.2),
               ),
             ),
-          ],
-        ),
-      );
-    }
-
-    // جدول الإضاءة (id = 9)
-    if (int.tryParse(articleId) == 9) {
-      widgets.add(
-        Column(
-          children: [
-            const SizedBox(height: 7),
-            Container(
-              decoration: BoxDecoration(
-                color:
-                    isDark
-                        ? AppColors.darkSurfaceElevatedColor
-                        : AppColors.lightSurfaceColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: 0.3),
+            clipBehavior: Clip.antiAlias,
+            child: Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: TableBorder(
+                horizontalInside: BorderSide(
+                  color: colorScheme.outline.withValues(alpha: 0.12),
+                ),
+                verticalInside: BorderSide(
+                  color: colorScheme.outline.withValues(alpha: 0.12),
                 ),
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  border: TableBorder(
-                    horizontalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                    verticalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  children: getRows(darknessLevels, context, 'الإظلام بالساعة'),
-                ),
-              ),
+              children: getRows(data, context, header),
             ),
-          ],
-        ),
-      );
-    }
-
-    // جدول استهلاك العلف (id = 12)
-    if (int.tryParse(articleId) == 12) {
-      widgets.add(
-        Column(
-          children: [
-            const SizedBox(height: 7),
-            Container(
-              decoration: BoxDecoration(
-                color:
-                    isDark
-                        ? AppColors.darkSurfaceElevatedColor
-                        : AppColors.lightSurfaceColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: 0.3),
-                ),
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Table(
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  border: TableBorder(
-                    horizontalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                    verticalInside: BorderSide(
-                      color: colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  children: getRows(
-                    feedConsumptions,
-                    context,
-                    'الاستهلاك بالجرام',
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       );
     }

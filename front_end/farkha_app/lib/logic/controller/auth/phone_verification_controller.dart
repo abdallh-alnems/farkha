@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
@@ -15,6 +13,7 @@ import '../../../data/data_source/remote/auth_data/send_otp_data.dart';
 import '../../../data/data_source/remote/auth_data/update_phone_data.dart';
 import '../../../data/data_source/remote/auth_data/verify_otp_data.dart';
 import '../../../data/model/phone_verification_model.dart';
+import 'phone_verification_helpers.dart';
 
 class PhoneVerificationController extends GetxController {
   final SendOtpData _sendOtpData;
@@ -36,7 +35,8 @@ class PhoneVerificationController extends GetxController {
         _statusData = statusData ?? PhoneVerificationStatusData();
 
   final status = StatusRequest.none.obs;
-  final Rx<PhoneVerificationSession?> session = Rx<PhoneVerificationSession?>(null);
+  final Rx<PhoneVerificationSession?> session =
+      Rx<PhoneVerificationSession?>(null);
   final resendCountdown = 0.obs;
   final lockoutRemainingSeconds = 0.obs;
   final isResendEnabled = false.obs;
@@ -59,68 +59,36 @@ class PhoneVerificationController extends GetxController {
     super.onClose();
   }
 
-  String _formatCooldownMessage(int remaining) {
-    final mins = remaining ~/ 60;
-    return mins > 0
-        ? 'انتظر $mins دقيقة قبل إعادة الإرسال'
-        : 'انتظر $remaining ثانية قبل إعادة الإرسال';
-  }
-
-  void _saveCooldownToStorage(int retryAfterSeconds, String phone) {
-    try {
-      final until = DateTime.now().millisecondsSinceEpoch + retryAfterSeconds * 1000;
-      final box = Get.find<MyServices>().getStorage;
-      box.write(StorageKeys.phoneCooldownUntilMs, until);
-      box.write(StorageKeys.phoneCooldownPhone, phone);
-    } catch (_) {}
-  }
-
-  void _clearCooldownStorage() {
-    try {
-      final box = Get.find<MyServices>().getStorage;
-      box.remove(StorageKeys.phoneCooldownUntilMs);
-      box.remove(StorageKeys.phoneCooldownPhone);
-    } catch (_) {}
-  }
-
   void _startPendingCooldownTicker(int seconds) {
     _pendingCooldownTimer?.cancel();
     pendingCooldownSeconds.value = seconds;
-    pendingCooldownMessage.value = _formatCooldownMessage(seconds);
+    pendingCooldownMessage.value = formatCooldownMessage(seconds);
 
-    _pendingCooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (pendingCooldownSeconds.value <= 1) {
-        timer.cancel();
+    _pendingCooldownTimer = createCountdownTimer(
+      startSeconds: seconds,
+      onTick: (r) {
+        pendingCooldownSeconds.value = r;
+        pendingCooldownMessage.value = formatCooldownMessage(r);
+      },
+      onComplete: () {
         pendingCooldownSeconds.value = 0;
         pendingCooldownMessage.value = '';
-        _clearCooldownStorage();
-      } else {
-        pendingCooldownSeconds.value--;
-        pendingCooldownMessage.value = _formatCooldownMessage(pendingCooldownSeconds.value);
-      }
-    });
+        clearCooldownStorage();
+      },
+    );
   }
 
   void loadCachedCooldown() {
-    try {
-      final box = Get.find<MyServices>().getStorage;
-      final until = box.read<int>(StorageKeys.phoneCooldownUntilMs);
-      final phone = box.read<String>(StorageKeys.phoneCooldownPhone) ?? '';
-      if (until == null) return;
-      final remaining = ((until - DateTime.now().millisecondsSinceEpoch) / 1000).floor();
-      if (remaining > 0) {
-        pendingCooldownPhone.value = phone;
-        _startPendingCooldownTicker(remaining);
-      } else {
-        _clearCooldownStorage();
-      }
-    } catch (_) {}
+    final cached = loadCachedCooldownData();
+    if (cached == null) return;
+    pendingCooldownPhone.value = cached.phone;
+    _startPendingCooldownTicker(cached.remaining);
   }
 
   Future<void> checkPendingCooldown() async {
     loadCachedCooldown();
 
-    final token = await _getFirebaseToken();
+    final token = await getFirebaseToken();
     if (token == null) return;
 
     final response = await _statusData.fetchStatus(token: token);
@@ -136,7 +104,7 @@ class PhoneVerificationController extends GetxController {
           final phone = data['phone'] as String? ?? '';
           pendingCooldownPhone.value = phone;
           if (retry > 0) {
-            _saveCooldownToStorage(retry, phone);
+            saveCooldownToStorage(retry, phone);
             _startPendingCooldownTicker(retry);
           }
         } else {
@@ -144,39 +112,10 @@ class PhoneVerificationController extends GetxController {
           pendingCooldownSeconds.value = 0;
           pendingCooldownMessage.value = '';
           pendingCooldownPhone.value = '';
-          _clearCooldownStorage();
+          clearCooldownStorage();
         }
       },
     );
-  }
-
-  String normalizePhone(String raw) {
-    final arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    final englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    var cleaned = raw;
-    for (var i = 0; i < arabicDigits.length; i++) {
-      cleaned = cleaned.replaceAll(arabicDigits[i], englishDigits[i]);
-    }
-    cleaned = cleaned.replaceAll(RegExp(r'[^0-9]'), '');
-
-    if (cleaned.startsWith('201') && cleaned.length == 12) {
-      return '+$cleaned';
-    }
-    if (cleaned.startsWith('01') && cleaned.length == 11) {
-      return '+2$cleaned';
-    }
-    return '+20$cleaned';
-  }
-
-  bool isValidEgyptPhone(String phone) {
-    final normalized = normalizePhone(phone);
-    return RegExp(r'^\+201[0-9]{9}$').hasMatch(normalized);
-  }
-
-  Future<String?> _getFirebaseToken() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return null;
-    return user.getIdToken();
   }
 
   void _startResendCountdown(int seconds) {
@@ -184,15 +123,14 @@ class PhoneVerificationController extends GetxController {
     resendCountdown.value = seconds;
     isResendEnabled.value = false;
 
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (resendCountdown.value <= 1) {
-        timer.cancel();
+    _countdownTimer = createCountdownTimer(
+      startSeconds: seconds,
+      onTick: (r) => resendCountdown.value = r,
+      onComplete: () {
         isResendEnabled.value = true;
         resendCountdown.value = 0;
-      } else {
-        resendCountdown.value--;
-      }
-    });
+      },
+    );
   }
 
   void startResendCountdown(int seconds) => _startResendCountdown(seconds);
@@ -201,14 +139,11 @@ class PhoneVerificationController extends GetxController {
     _lockoutTimer?.cancel();
     lockoutRemainingSeconds.value = seconds;
 
-    _lockoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (lockoutRemainingSeconds.value <= 1) {
-        timer.cancel();
-        lockoutRemainingSeconds.value = 0;
-      } else {
-        lockoutRemainingSeconds.value--;
-      }
-    });
+    _lockoutTimer = createCountdownTimer(
+      startSeconds: seconds,
+      onTick: (r) => lockoutRemainingSeconds.value = r,
+      onComplete: () => lockoutRemainingSeconds.value = 0,
+    );
   }
 
   Future<void> sendOtp(String phone) async {
@@ -220,7 +155,7 @@ class PhoneVerificationController extends GetxController {
       return;
     }
 
-    final token = await _getFirebaseToken();
+    final token = await getFirebaseToken();
     if (token == null) {
       errorMessage.value = 'يجب تسجيل الدخول أولاً';
       status.value = StatusRequest.none;
@@ -230,16 +165,14 @@ class PhoneVerificationController extends GetxController {
     status.value = StatusRequest.loading;
     errorMessage.value = '';
 
-    final response = await _sendOtpData.sendOtp(token: token, phone: normalized);
+    final response =
+        await _sendOtpData.sendOtp(token: token, phone: normalized);
 
     response.fold(
       (failure) {
-        status.value = failure;
-        if (failure == StatusRequest.offlineFailure) {
-          errorMessage.value = PhoneVerificationStrings.errorOffline;
-        } else {
-          errorMessage.value = PhoneVerificationStrings.errorServer;
-        }
+        final f = handleApiFailure(failure);
+        status.value = f.status;
+        errorMessage.value = f.message;
       },
       (Map<String, dynamic> result) {
         if (result['status'] == 'success' || result['success'] == true) {
@@ -253,7 +186,8 @@ class PhoneVerificationController extends GetxController {
 
             final resendAllowedAt = session.value?.resendAllowedAt;
             if (resendAllowedAt != null) {
-              final diff = resendAllowedAt.difference(DateTime.now()).inSeconds;
+              final diff =
+                  resendAllowedAt.difference(DateTime.now()).inSeconds;
               if (diff > 0) {
                 _startResendCountdown(diff);
               } else {
@@ -264,44 +198,19 @@ class PhoneVerificationController extends GetxController {
             _pendingCooldownTimer?.cancel();
             pendingCooldownSeconds.value = 0;
             pendingCooldownMessage.value = '';
-            _clearCooldownStorage();
+            clearCooldownStorage();
 
             status.value = StatusRequest.success;
             Get.toNamed<void>(AppRoute.enterOtp);
           }
         } else {
-          final error = result['error'] as Map<String, dynamic>?;
-          final code = error?['code'] as String? ?? result['code'] as String? ?? '';
-          switch (code) {
-            case 'invalid_phone_format':
-            case 'unsupported_country':
-              status.value = StatusRequest.none;
-              errorMessage.value = PhoneVerificationStrings.errorInvalidPhone;
-              break;
-            case 'phone_already_linked':
-              status.value = StatusRequest.none;
-              errorMessage.value = PhoneVerificationStrings.errorPhoneAlreadyLinked;
-              break;
-            case 'resend_cooldown':
-              status.value = StatusRequest.none;
-              errorMessage.value = '';
-              final retry = (error?['retry_after_seconds'] as num?)?.toInt() ?? 0;
-              if (retry > 0) {
-                _saveCooldownToStorage(retry, phoneNumber.value);
-                _startPendingCooldownTicker(retry);
-              }
-              break;
-            case 'resend_limit_exceeded':
-              status.value = StatusRequest.none;
-              errorMessage.value = PhoneVerificationStrings.errorResendLimit;
-              break;
-            case 'whatsapp_send_failed':
-              status.value = StatusRequest.failure;
-              errorMessage.value = PhoneVerificationStrings.errorWhatsappFailed;
-              break;
-            default:
-              status.value = StatusRequest.failure;
-              errorMessage.value = error?['message'] as String? ?? PhoneVerificationStrings.errorServer;
+          final err = parseSendOtpError(result);
+          status.value = err.status;
+          errorMessage.value = err.message;
+          final retry = err.cooldownRetrySeconds;
+          if (retry != null && retry > 0) {
+            saveCooldownToStorage(retry, phoneNumber.value);
+            _startPendingCooldownTicker(retry);
           }
         }
       },
@@ -317,7 +226,7 @@ class PhoneVerificationController extends GetxController {
 
     if (code.length != 6) return;
 
-    final token = await _getFirebaseToken();
+    final token = await getFirebaseToken();
     if (token == null) {
       errorMessage.value = 'يجب تسجيل الدخول أولاً';
       status.value = StatusRequest.failure;
@@ -335,12 +244,9 @@ class PhoneVerificationController extends GetxController {
 
     response.fold(
       (failure) {
-        status.value = failure;
-        if (failure == StatusRequest.offlineFailure) {
-          errorMessage.value = PhoneVerificationStrings.errorOffline;
-        } else {
-          errorMessage.value = PhoneVerificationStrings.errorServer;
-        }
+        final f = handleApiFailure(failure);
+        status.value = f.status;
+        errorMessage.value = f.message;
       },
       (Map<String, dynamic> result) {
         if (result['status'] == 'success' || result['success'] == true) {
@@ -356,31 +262,15 @@ class PhoneVerificationController extends GetxController {
             }
           }
         } else {
-          final error = result['error'] as Map<String, dynamic>?;
-          final code = error?['code'] as String? ?? result['code'] as String? ?? '';
-          switch (code) {
-            case 'wrong_otp':
-              status.value = StatusRequest.failure;
-              final remaining = error?['attempts_remaining'] as int? ?? 0;
-              errorMessage.value =
-                  '${PhoneVerificationStrings.errorWrongOtp}. ${PhoneVerificationStrings.attemptsRemaining}: $remaining';
-              if (session.value != null) {
-                session.value = session.value!.copyWith(attemptsRemaining: remaining);
-              }
-              break;
-            case 'session_locked':
-              status.value = StatusRequest.failure;
-              errorMessage.value = PhoneVerificationStrings.errorSessionLocked;
-              final retryAfter = error?['retry_after_seconds'] as int? ?? 900;
-              _startLockoutCountdown(retryAfter);
-              break;
-            case 'session_expired':
-              status.value = StatusRequest.failure;
-              errorMessage.value = PhoneVerificationStrings.errorSessionExpired;
-              break;
-            default:
-              status.value = StatusRequest.failure;
-              errorMessage.value = error?['message'] as String? ?? PhoneVerificationStrings.errorServer;
+          final err = parseVerifyOtpError(result);
+          status.value = err.status;
+          errorMessage.value = err.message;
+          if (err.attemptsRemaining != null && session.value != null) {
+            session.value = session.value!
+                .copyWith(attemptsRemaining: err.attemptsRemaining!);
+          }
+          if (err.lockoutSeconds != null) {
+            _startLockoutCountdown(err.lockoutSeconds!);
           }
         }
       },
@@ -388,7 +278,7 @@ class PhoneVerificationController extends GetxController {
   }
 
   Future<void> _updatePhoneWithVerifiedToken() async {
-    final token = await _getFirebaseToken();
+    final token = await getFirebaseToken();
     if (token == null) {
       errorMessage.value = 'يجب تسجيل الدخول أولاً';
       status.value = StatusRequest.failure;
@@ -402,12 +292,9 @@ class PhoneVerificationController extends GetxController {
 
     response.fold(
       (failure) {
-        status.value = failure;
-        if (failure == StatusRequest.offlineFailure) {
-          errorMessage.value = PhoneVerificationStrings.errorOffline;
-        } else {
-          errorMessage.value = PhoneVerificationStrings.errorServer;
-        }
+        final f = handleApiFailure(failure);
+        status.value = f.status;
+        errorMessage.value = f.message;
       },
       (Map<String, dynamic> result) {
         if (result['status'] == 'success' || result['success'] == true) {
@@ -418,35 +305,19 @@ class PhoneVerificationController extends GetxController {
           myServices.getStorage.write(StorageKeys.userPhone, phone);
           myServices.getStorage.write(StorageKeys.phoneVerified, true);
 
-          status.value = StatusRequest.success;
-          Get.until((route) => route.settings.name == AppRoute.home || route.isFirst);
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final ctx = Get.context;
-            if (ctx == null) return;
-            final messenger = ScaffoldMessenger.maybeOf(ctx);
-            messenger?.showSnackBar(
-              SnackBar(
-                content: const Text(
-                  'تم توثيق رقم الهاتف بنجاح',
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                ),
-                backgroundColor: Colors.green,
-                behavior: SnackBarBehavior.floating,
-                margin: const EdgeInsets.all(16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                duration: const Duration(seconds: 3),
-              ),
-            );
-          });
+          Get.until(
+              (route) => route.settings.name == AppRoute.home || route.isFirst);
+          status.value = StatusRequest.none;
+          showVerificationSuccessSnackbar();
         } else {
           final error = result['error'] as Map<String, dynamic>?;
           final code = error?['code'] as String? ?? '';
           if (code == 'phone_already_linked') {
-            errorMessage.value = PhoneVerificationStrings.errorPhoneAlreadyLinked;
+            errorMessage.value =
+                PhoneVerificationStrings.errorPhoneAlreadyLinked;
           } else {
-            errorMessage.value = error?['message'] as String? ?? PhoneVerificationStrings.errorServer;
+            errorMessage.value = error?['message'] as String? ??
+                PhoneVerificationStrings.errorServer;
           }
           status.value = StatusRequest.failure;
         }
@@ -457,7 +328,7 @@ class PhoneVerificationController extends GetxController {
   Future<void> resendOtp() async {
     if (session.value == null || !isResendEnabled.value) return;
 
-    final token = await _getFirebaseToken();
+    final token = await getFirebaseToken();
     if (token == null) {
       errorMessage.value = 'يجب تسجيل الدخول أولاً';
       status.value = StatusRequest.failure;
@@ -474,19 +345,18 @@ class PhoneVerificationController extends GetxController {
 
     response.fold(
       (failure) {
-        status.value = failure;
-        if (failure == StatusRequest.offlineFailure) {
-          errorMessage.value = PhoneVerificationStrings.errorOffline;
-        } else {
-          errorMessage.value = PhoneVerificationStrings.errorServer;
-        }
+        final f = handleApiFailure(failure);
+        status.value = f.status;
+        errorMessage.value = f.message;
       },
       (Map<String, dynamic> result) {
         if (result['status'] == 'success' || result['success'] == true) {
           final data = result['data'] as Map<String, dynamic>?;
           if (data != null && session.value != null) {
-            final expiresAt = DateTime.tryParse(data['expires_at'] as String? ?? '');
-            final resendAllowedAt = DateTime.tryParse(data['resend_allowed_at'] as String? ?? '');
+            final expiresAt =
+                DateTime.tryParse(data['expires_at'] as String? ?? '');
+            final resendAllowedAt =
+                DateTime.tryParse(data['resend_allowed_at'] as String? ?? '');
             session.value = session.value!.copyWith(
               expiresAt: expiresAt ?? session.value!.expiresAt,
               resendAllowedAt: resendAllowedAt,
@@ -494,7 +364,8 @@ class PhoneVerificationController extends GetxController {
           }
           final resendAllowedAt = session.value?.resendAllowedAt;
           if (resendAllowedAt != null) {
-            final diff = resendAllowedAt.difference(DateTime.now()).inSeconds;
+            final diff =
+                resendAllowedAt.difference(DateTime.now()).inSeconds;
             _startResendCountdown(diff > 0 ? diff : 30);
           }
           status.value = StatusRequest.success;
@@ -506,23 +377,11 @@ class PhoneVerificationController extends GetxController {
             errorMessage.value = PhoneVerificationStrings.errorResendLimit;
             isResendEnabled.value = false;
           } else {
-            errorMessage.value = error?['message'] as String? ?? PhoneVerificationStrings.errorServer;
+            errorMessage.value = error?['message'] as String? ??
+                PhoneVerificationStrings.errorServer;
           }
         }
       },
-    );
-  }
-
-  void _showSnackbar(String message) {
-    Get.snackbar(
-      '',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green.withValues(alpha: 0.9),
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(16),
-      borderRadius: 12,
-      duration: const Duration(seconds: 3),
     );
   }
 }

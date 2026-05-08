@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constant/routes/route.dart';
-import '../../../../core/constant/theme/colors.dart';
 import '../../../../core/constant/theme/images.dart';
 
 class PriceHeader extends StatelessWidget {
@@ -15,48 +14,80 @@ class PriceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final onSurface = colorScheme.onSurface;
-    final List<Widget> baseChildren = [
-      GestureDetector(
-        onTap: () => Get.toNamed<void>(AppRoute.mainTypes),
-        child: Container(
-          key: allPricesButtonKey,
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+
+    return Row(
+      children: [
+        Container(
+          width: 4.w,
+          height: 18.h,
           decoration: BoxDecoration(
-            color: AppColors.primaryColor,
-            borderRadius: BorderRadius.circular(6),
+            color: colorScheme.primary,
+            borderRadius: BorderRadius.circular(2.r),
           ),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
           child: Text(
-            'جميع الأسعار',
-            style: TextStyle(color: Colors.white, fontSize: 13.sp),
+            'أسعار البورصة',
+            style: TextStyle(
+              color: onSurface,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+            ),
           ),
         ),
-      ),
-
-      Expanded(
-        child: Text(
-          'أسعار البورصة',
-          style: TextStyle(
-            color: onSurface,
-            fontSize: 19.sp,
-            fontWeight: FontWeight.w900,
+        GestureDetector(
+          onTap: () => Get.toNamed<void>(AppRoute.customizePrices),
+          child: Container(
+            padding: EdgeInsets.all(6.r),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+            ),
+            child: SvgPicture.asset(
+              AppImages.settingCardPrices,
+              key: settingsIconKey,
+              width: 16,
+              height: 16,
+              colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+            ),
           ),
-          textAlign: TextAlign.center,
         ),
-      ),
-      GestureDetector(
-        onTap: () => Get.toNamed<void>(AppRoute.customizePrices),
-        child: SvgPicture.asset(
-          AppImages.settingCardPrices,
-          key: settingsIconKey,
-          width: 23,
-          height: 23,
+        SizedBox(width: 6.w),
+        GestureDetector(
+          onTap: () => Get.toNamed<void>(AppRoute.mainTypes),
+          child: Container(
+            key: allPricesButtonKey,
+            padding: EdgeInsetsDirectional.fromSTEB(10.w, 5.h, 10.w, 5.h),
+            decoration: BoxDecoration(
+              color: colorScheme.primary,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'جميع الأسعار',
+                  style: TextStyle(
+                    color: colorScheme.onPrimary,
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: 3.w),
+                Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 9.sp,
+                  color: colorScheme.onPrimary,
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
-    ];
-
-    return Row(children: baseChildren);
+      ],
+    );
   }
 }

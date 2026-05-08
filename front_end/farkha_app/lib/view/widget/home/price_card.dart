@@ -51,22 +51,22 @@ class _PriceCardState extends State<PriceCard> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 17),
+      padding: EdgeInsets.symmetric(horizontal: 17.w),
       child: SizedBox(
         width: double.infinity,
         child: GetBuilder<PricesCardController>(
-          builder:
-              (controller) => Column(
-                key: widget.priceCardKey,
-                children: [
-                  PriceHeader(
-                    allPricesButtonKey: widget.allPricesButtonKey,
-                    settingsIconKey: widget.settingsIconKey,
-                  ),
-                  SizedBox(height: 9.h),
-                  PriceContent(controller: controller),
-                ],
+          builder: (controller) => Column(
+            key: widget.priceCardKey,
+            children: [
+              PriceHeader(
+                allPricesButtonKey: widget.allPricesButtonKey,
+                settingsIconKey: widget.settingsIconKey,
               ),
+              SizedBox(height: 10.h),
+              PriceContent(controller: controller),
+              SizedBox(height: 4.h),
+            ],
+          ),
         ),
       ),
     );

@@ -1,43 +1,33 @@
 <?php
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
-include __DIR__ . '/../../core/queries/queries.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-checkAuthenticate();
+Auth::checkAppCheck();
+Auth::requirePost();
 
-$input = $_POST;
-if (empty($input)) {
-    $raw = file_get_contents('php://input');
-    $input = json_decode($raw, true);
-    if (!is_array($input)) {
-        parse_str($raw, $input);
-    }
-}
-
+$input = Validator::getJsonBody();
 $token = $input['token'] ?? null;
-$deviceId = $input['device_id'] ?? null;
 
-$userId = null;
-if ($token) {
-    try {
-        $userId = getUserIdFromToken($token, $con);
-    } catch (Exception $e) {
-        $userId = null;
-    }
+if (!$token) {
+    Response::fail('Firebase token is required', 401);
 }
+
+$verifiedToken = Auth::verifyFirebaseToken($token);
+$uid = $verifiedToken->claims()->get('sub');
+
+$user = UserModel::findByFirebaseUid($uid);
+if (!$user) {
+    Response::fail('User not found', 404);
+}
+
+$userId = (int) $user['id'];
 
 $rating = $input['rating'] ?? null;
 if ($rating !== null && is_string($rating)) {
     $rating = (int) $rating;
 }
 if ($rating !== null && (!is_int($rating) || $rating < 1 || $rating > 5)) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'rating must be between 1 and 5'
-    ]);
-    exit;
+    Response::fail('rating must be between 1 and 5', 400);
 }
 
 $issue = $input['issue'] ?? null;
@@ -48,47 +38,25 @@ $platform = $input['platform'] ?? null;
 $issueValue = (is_string($issue) && trim($issue) !== '') ? trim($issue) : null;
 $suggestionValue = (is_string($suggestion) && trim($suggestion) !== '') ? trim($suggestion) : null;
 
+if ($issueValue !== null) {
+    $issueValue = Validator::maxLength($issueValue, 500, 'issue');
+}
+if ($suggestionValue !== null) {
+    $suggestionValue = Validator::maxLength($suggestionValue, 500, 'suggestion');
+}
+
 if ($rating === null && $issueValue === null && $suggestionValue === null) {
-    http_response_code(400);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'At least one of rating, issue, or suggestion is required'
-    ]);
-    exit;
+    Response::fail('At least one of rating, issue, or suggestion is required', 400);
 }
 
 try {
-    $stmt = $con->prepare(Queries::insertAppReviewQuery());
-    $stmt->execute([
-        ':rating' => $rating,
-        ':issue' => $issueValue,
-        ':suggestion' => $suggestionValue,
-        ':app_version' => $appVersion,
-        ':platform' => $platform,
+    $reviewId = ReviewModel::insert($userId, null, $rating, $issueValue, $suggestionValue, $appVersion, $platform);
+
+    Response::success([
+        'review_id' => $reviewId,
+        'message' => 'App review saved successfully',
     ]);
-
-    $reviewId = (int)$con->lastInsertId();
-
-    echo json_encode([
-        'status' => 'success',
-        'data' => [
-            'review_id' => $reviewId,
-            'message' => 'App review saved successfully'
-        ]
-    ]);
-
 } catch (PDOException $e) {
-    error_log('upsert_review error: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'Database error'
-    ]);
-} catch (Exception $e) {
-    error_log('upsert_review error: ' . $e->getMessage());
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'fail',
-        'message' => 'Server error'
-    ]);
+    error_log("upsert_review error: " . $e->getMessage());
+    Response::fail('Database error', 500);
 }

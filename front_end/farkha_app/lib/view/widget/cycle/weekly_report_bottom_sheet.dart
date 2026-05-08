@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart' hide TextDirection;
-import 'dart:ui' show TextDirection;
 
 import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
+import 'weekly_report_sections.dart';
 
 class WeeklyReportBottomSheet extends StatefulWidget {
   final Map<String, dynamic> cycle;
@@ -158,7 +157,7 @@ class _WeeklyReportBottomSheetState extends State<WeeklyReportBottomSheet> {
               _ensureDataLoaded();
             },
             icon: Icon(Icons.refresh, size: 18.sp),
-            label: Text('إعادة المحاولة'),
+            label: const Text('إعادة المحاولة'),
           ),
         ],
       ),
@@ -167,247 +166,43 @@ class _WeeklyReportBottomSheetState extends State<WeeklyReportBottomSheet> {
 
   Widget _buildReportContent(bool isDark) {
     final data = _aggregateWeeklyData();
+    final cycleName = widget.cycle['name']?.toString() ?? 'دورة';
 
     return ListView(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       children: [
-        _buildHeader(data, isDark),
+        WeeklyReportHeader(cycleName: cycleName, isDark: isDark),
         SizedBox(height: 16.h),
         if (data.daysWithData == 0)
-          _buildEmptyState(isDark)
+          WeeklyReportEmptyState(isDark: isDark)
         else ...[
-          _buildSectionTitle('القطيع', isDark),
-          _buildKpiRow([
-            _KpiItem('النفوق', '${data.mortality} طائر', Icons.warning_amber_rounded, data.mortality > 0 ? Colors.orange : null),
-            _KpiItem('م. الوزن', _fmtWeight(data.avgWeight), Icons.monitor_weight_outlined),
-            _KpiItem('أيام مسجلة', '${data.daysWithData}/7', Icons.edit_calendar_outlined),
-          ], isDark),
+          WeeklyReportSectionTitle(title: 'القطيع', isDark: isDark),
+          WeeklyReportKpiRow(items: [
+            KpiItem('النفوق', '${data.mortality} طائر', Icons.warning_amber_rounded, data.mortality > 0 ? Colors.orange : null),
+            KpiItem('م. الوزن', _fmtWeight(data.avgWeight), Icons.monitor_weight_outlined),
+            KpiItem('أيام مسجلة', '${data.daysWithData}/7', Icons.edit_calendar_outlined),
+          ], isDark: isDark),
           SizedBox(height: 14.h),
-          _buildSectionTitle('التغذية', isDark),
-          _buildKpiRow([
-            _KpiItem('العلف', '${data.totalFeed.toStringAsFixed(1)} كجم', Icons.grain),
+          WeeklyReportSectionTitle(title: 'التغذية', isDark: isDark),
+          WeeklyReportKpiRow(items: [
+            KpiItem('العلف', '${data.totalFeed.toStringAsFixed(1)} كجم', Icons.grain),
             if (data.totalWater > 0)
-              _KpiItem('المياه', '${data.totalWater.toStringAsFixed(1)} لتر', Icons.water_drop_outlined),
+              KpiItem('المياه', '${data.totalWater.toStringAsFixed(1)} لتر', Icons.water_drop_outlined),
             if (data.fcr > 0)
-              _KpiItem('FCR', data.fcr.toStringAsFixed(2), Icons.restaurant),
-          ], isDark),
+              KpiItem('FCR', data.fcr.toStringAsFixed(2), Icons.restaurant),
+          ], isDark: isDark),
           SizedBox(height: 14.h),
-          _buildSectionTitle('المالية', isDark),
-          _buildFinancialCard(data, isDark),
+          WeeklyReportSectionTitle(title: 'المالية', isDark: isDark),
+          WeeklyReportFinancialCard(data: data, isDark: isDark),
           SizedBox(height: 14.h),
           if (data.medications.isNotEmpty) ...[
-            _buildSectionTitle('الأدوية والتطعيمات', isDark),
-            _buildMedicationsList(data, isDark),
+            WeeklyReportSectionTitle(title: 'الأدوية والتطعيمات', isDark: isDark),
+            WeeklyReportMedicationsList(data: data, isDark: isDark),
             SizedBox(height: 14.h),
           ],
         ],
         SizedBox(height: 24.h),
       ],
-    );
-  }
-
-  Widget _buildHeader(_WeeklyData data, bool isDark) {
-    final cycleName = widget.cycle['name']?.toString() ?? 'دورة';
-    final now = DateTime.now();
-    final weekStart = now.subtract(const Duration(days: 6));
-    final dateFormat = DateFormat('d/M', 'ar');
-
-    return Container(
-      padding: EdgeInsets.all(14.w),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDark
-              ? [AppColors.darkSurfaceElevatedColor, AppColors.darkBackGroundColor]
-              : [AppColors.primaryColor, AppColors.primaryColor.withValues(alpha: 0.85)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'تقرير أسبوعي',
-                style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(width: 8.w),
-              Icon(Icons.calendar_month_outlined, color: Colors.white, size: 22.sp),
-            ],
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            cycleName,
-            style: TextStyle(color: Colors.white70, fontSize: 13.sp),
-          ),
-          SizedBox(height: 8.h),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: Text(
-              '${dateFormat.format(weekStart)} — ${dateFormat.format(now)}',
-              style: TextStyle(color: Colors.white, fontSize: 11.sp),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState(bool isDark) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 40.h),
-      child: Column(
-        children: [
-          Icon(Icons.event_busy_outlined, size: 48.sp, color: Colors.grey[isDark ? 600 : 400]),
-          SizedBox(height: 12.h),
-          Text(
-            'لا توجد بيانات مسجلة هذا الأسبوع',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.right,
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            'ابدأ بتسجيل البيانات اليومية لتظهر هنا',
-            style: TextStyle(fontSize: 12.sp, color: isDark ? Colors.grey[500] : Colors.grey[500]),
-            textAlign: TextAlign.right,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, bool isDark) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(
-        children: [
-          Expanded(child: Container(height: 1, color: isDark ? AppColors.darkOutlineColor : Colors.grey[300])),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-                color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor,
-              ),
-            ),
-          ),
-          Expanded(child: Container(height: 1, color: isDark ? AppColors.darkOutlineColor : Colors.grey[300])),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildKpiRow(List<_KpiItem> items, bool isDark) {
-    return Row(
-      children: items.map((item) {
-        final accentColor = item.accentColor ?? (isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor);
-        return Expanded(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 3.w),
-            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 6.w),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurfaceColor : Colors.white,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: isDark ? AppColors.darkOutlineColor : Colors.grey[200]!),
-            ),
-            child: Column(
-              children: [
-                Icon(item.icon, size: 18.sp, color: accentColor),
-                SizedBox(height: 4.h),
-                Text(
-                  item.label,
-                  style: TextStyle(fontSize: 9.5.sp, color: isDark ? Colors.grey[400] : Colors.grey[600], fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 3.h),
-                FittedBox(
-                  child: Text(
-                    item.value,
-                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildFinancialCard(_WeeklyData data, bool isDark) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceColor : Colors.white,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: isDark ? AppColors.darkOutlineColor : Colors.grey[200]!),
-      ),
-      child: Column(
-        children: [
-          _finRow('المصروفات', '${data.totalExpenses.toStringAsFixed(0)} ج', isDark),
-          if (data.totalSales > 0) _finRow('المبيعات', '${data.totalSales.toStringAsFixed(0)} ج', isDark),
-          if (data.totalSales > 0) ...[
-            Divider(color: isDark ? AppColors.darkOutlineColor : Colors.grey[300], height: 16.h),
-            _finRow(
-              'الصافي',
-              '${data.netProfit >= 0 ? '+' : ''}${data.netProfit.toStringAsFixed(0)} ج',
-              isDark,
-              valueColor: data.netProfit >= 0 ? Colors.green : Colors.red,
-              bold: true,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _finRow(String label, String value, bool isDark, {Color? valueColor, bool bold = false}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(fontSize: 13.sp, color: isDark ? Colors.grey[400] : Colors.grey[600])),
-          Text(value, style: TextStyle(fontSize: 13.sp, fontWeight: bold ? FontWeight.bold : FontWeight.w600, color: valueColor ?? (isDark ? Colors.white : Colors.black87))),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMedicationsList(_WeeklyData data, bool isDark) {
-    return Container(
-      padding: EdgeInsets.all(10.w),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceColor : Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: isDark ? AppColors.darkOutlineColor : Colors.grey[200]!),
-      ),
-      child: Column(
-        children: data.medications.map((med) => Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.h),
-          child: Row(
-            children: [
-              Icon(Icons.vaccines_outlined, size: 16.sp, color: isDark ? AppColors.darkPrimaryColor : AppColors.primaryColor),
-              SizedBox(width: 8.w),
-              Expanded(child: Text(med, style: TextStyle(fontSize: 12.sp, color: isDark ? Colors.white : Colors.black87))),
-            ],
-          ),
-        )).toList(),
-      ),
     );
   }
 
@@ -417,7 +212,7 @@ class _WeeklyReportBottomSheetState extends State<WeeklyReportBottomSheet> {
     return '${kg.toStringAsFixed(2)} كجم';
   }
 
-  _WeeklyData _aggregateWeeklyData() {
+  WeeklyData _aggregateWeeklyData() {
     final now = DateTime.now();
     final weekStart = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 6));
 
@@ -543,7 +338,7 @@ class _WeeklyReportBottomSheetState extends State<WeeklyReportBottomSheet> {
       fcr = totalFeed / (liveCount * avgWeight);
     }
 
-    return _WeeklyData(
+    return WeeklyData(
       mortality: totalMortality,
       avgWeight: avgWeight,
       totalFeed: totalFeed,
@@ -577,38 +372,4 @@ class _WeeklyReportBottomSheetState extends State<WeeklyReportBottomSheet> {
     }
     return null;
   }
-}
-
-class _WeeklyData {
-  final int mortality;
-  final double avgWeight;
-  final double totalFeed;
-  final double totalWater;
-  final double fcr;
-  final double totalExpenses;
-  final double totalSales;
-  final double netProfit;
-  final List<String> medications;
-  final int daysWithData;
-
-  _WeeklyData({
-    required this.mortality,
-    required this.avgWeight,
-    required this.totalFeed,
-    required this.totalWater,
-    required this.fcr,
-    required this.totalExpenses,
-    required this.totalSales,
-    required this.netProfit,
-    required this.medications,
-    required this.daysWithData,
-  });
-}
-
-class _KpiItem {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color? accentColor;
-  _KpiItem(this.label, this.value, this.icon, [this.accentColor]);
 }

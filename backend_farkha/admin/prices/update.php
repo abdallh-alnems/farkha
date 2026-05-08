@@ -1,78 +1,34 @@
 <?php
-require_once __DIR__ . '/../../core/connect.php';
-include "../../core/queries/queries.php";
 
-class UpdatePriceAPI extends BaseAPI {
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-    protected function checkAuthentication() {
-        checkAppCheckRequired();
-    }
-    
+class UpdatePricesApi extends BaseApi {
+    protected bool $requireAuth = true;
+    protected bool $requirePost = true;
+
     public function __construct() {
         parent::__construct();
-        $this->handleRequest();
-    }
-    
-    private function handleRequest() {
-        $this->handleApiRequest(function() {
-            if (!$this->validateHttpMethod()) return;
-            
-            $type = $this->getType();
-            $higher = $this->getHigher();
-            $lower = $this->getLower();
-            
-            if (!$this->validateRequiredNumeric($type, 'type')) return;
-            if (!$this->validateRequiredNumeric($higher, 'higher price')) return;
-            if (!$this->validateLowerPrice($lower)) return;
-            
-            if (!$this->typeExists($type)) {
-                $this->handleNotFound('Type');
-                return;
+        Auth::requireAppCheck();
+        $this->handleRequest(function () {
+            $type = $this->requireNumeric('type', 1);
+            $higher = $this->requireNumeric('higher', 0);
+            $lower = $this->getField('lower');
+            $lowerValue = !empty($lower) ? Validator::numeric($lower, 'lower price', 0) : null;
+
+            $exists = Database::fetchOne("SELECT id FROM types WHERE id = :id LIMIT 1", [':id' => (int) $type]);
+            if (!$exists) {
+                $this->error('Type not found', 404);
             }
-            
-            $this->updatePrice($higher, $lower, $type);
-        });
-    }
-    
-    private function typeExists($type) {
-        try {
-            $query = "SELECT id FROM types WHERE id = :type LIMIT 1";
-            $params = ['type' => (int)$type];
-            $result = $this->db->fetchOne($query, $params);
-            return $result !== false;
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
-    
-    private function updatePrice($higher, $lower, $type) {
-        try {
-            $query = Queries::updatePriceQuery();
-            $lowerValue = !empty($lower) ? $lower : null;
-            
-            $params = [
-                'higher' => (float)$higher,
-                'lower' => $lowerValue,
-                'type' => (int)$type,
-                'type2' => (int)$type
-            ];
-            
-            $result = $this->db->execute($query, $params);
-            
-            if ($result === 0) {
-                $this->handleNotFound('Price record');
-                return;
+
+            $result = PriceModel::updateLatest((int) $type, $higher, $lowerValue);
+            if ($result > 0) {
+                Cache::getInstance()->clear();
+                $this->success(null);
+            } else {
+                $this->error('No price found to update', 404);
             }
-            
-            $this->sendSuccess(null);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        }, 'update_price');
     }
 }
 
-try {
-    new UpdatePriceAPI();
-} catch (Exception $e) {
-    handleApiError($e, ['context' => 'update_price_api']);
-}
+new UpdatePricesApi();

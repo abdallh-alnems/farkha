@@ -4,10 +4,9 @@ import 'package:get/get.dart';
 
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/routes/route.dart';
-import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/constant/theme/theme.dart';
 import '../../../../core/shared/price_change.dart';
 import '../../../../logic/controller/price_controller/prices_by_type_controller.dart';
-import 'table_header_cell.dart';
 
 class TableFeedPrices extends StatelessWidget {
   const TableFeedPrices({super.key});
@@ -19,111 +18,152 @@ class TableFeedPrices extends StatelessWidget {
         return HandlingDataView(
           statusRequest: controller.statusRequest,
           widget: Column(
-            children: [_buildHeader(), _buildTableBody(controller)],
+            children: [
+              _buildHeader(context),
+              SizedBox(height: AppSpacing.sm),
+              ...controller.items.map((price) => _buildPriceCard(context, price)),
+            ],
           ),
         );
       },
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      height: 33.h,
-      color: AppColors.primaryColor,
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          TableHeaderCell(text: 'النوع', flex: 2),
-          TableHeaderCell(text: 'السعر'),
-          TableHeaderCell(text: 'التغير'),
-        ],
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: colorScheme.primary,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDimens.radiusMd)),
       ),
-    );
-  }
-
-  Widget _buildTableBody(PricesByTypeController controller) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 7).r,
-      child: Column(
+      child: Row(
         children: [
-          Table(
-            border: const TableBorder(
-              horizontalInside: BorderSide(color: AppColors.primaryColor),
+          Expanded(
+            flex: 2,
+            child: Text(
+              'النوع',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: colorScheme.onPrimary,
+                fontWeight: FontWeight.w700,
+                fontSize: 13.sp,
+              ),
             ),
-            columnWidths: const {
-              0: FlexColumnWidth(2),
-              1: FlexColumnWidth(),
-              2: FlexColumnWidth(),
-            },
-            children:
-                controller.items
-                    .map((price) => _buildTableRow(price))
-                    .toList(),
           ),
-          const Divider(color: AppColors.primaryColor, thickness: 1),
+          Expanded(
+            child: Text(
+              'السعر',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: colorScheme.onPrimary,
+                fontWeight: FontWeight.w700,
+                fontSize: 13.sp,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              'التغير',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: colorScheme.onPrimary,
+                fontWeight: FontWeight.w700,
+                fontSize: 13.sp,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  TableRow _buildTableRow(Map<String, dynamic> price) {
+  Widget _buildPriceCard(BuildContext context, Map<String, dynamic> price) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+
     final int typeId = (price['type_id'] as num?)?.toInt() ?? 0;
     final num lastPrice = (price['today_higher_price'] as num?) ?? 0;
     final num yesterdayPrice = (price['yesterday_higher_price'] as num?) ?? 0;
     final String typeName = (price['type_name'] ?? '').toString();
     final double priceDifference = (lastPrice - yesterdayPrice).toDouble();
+    final bool hasChange = priceDifference.abs() > 0;
+    final bool isUp = priceDifference > 0;
 
     final VoidCallback? onTap =
         typeId > 0
             ? () {
                 Get.toNamed<void>(
                   AppRoute.priceHistory,
-                  arguments: {
-                    'type_id': typeId,
-                    'type_name': typeName,
-                  },
+                  arguments: {'type_id': typeId, 'type_name': typeName},
                 );
               }
             : null;
 
-    return TableRow(
-      children: [
-        _buildTableCell(
-          child: GestureDetector(
-            onTap: onTap,
-            behavior: HitTestBehavior.opaque,
-            child: Center(child: Text(typeName)),
-          ),
-        ),
-        _buildTableCell(
-          child: GestureDetector(
-            onTap: onTap,
-            behavior: HitTestBehavior.opaque,
-            child: Text(
-              lastPrice.toString(),
-              textAlign: TextAlign.center,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 6.h),
+      child: Material(
+        color: colorScheme.surface,
+        borderRadius: AppDimens.borderSm,
+        elevation: AppElevation.none,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppDimens.borderSm,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
+            decoration: BoxDecoration(
+              borderRadius: AppDimens.borderSm,
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.4),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 6.w,
+                        height: 28.h,
+                        decoration: BoxDecoration(
+                          color: hasChange
+                              ? (isUp ? AppColors.successColor : AppColors.errorColor)
+                              : colorScheme.outlineVariant,
+                          borderRadius: BorderRadius.circular(3.r),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          typeName,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    lastPrice.toString(),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: PriceChangeWidget(priceDifference: priceDifference),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        _buildTableCell(
-          child: GestureDetector(
-            onTap: onTap,
-            behavior: HitTestBehavior.opaque,
-            child: Center(
-              child: PriceChangeWidget(priceDifference: priceDifference),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTableCell({required Widget child}) {
-    return TableCell(
-      verticalAlignment: TableCellVerticalAlignment.middle,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 11).r,
-        child: child,
       ),
     );
   }

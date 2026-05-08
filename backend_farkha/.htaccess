@@ -94,12 +94,12 @@ RewriteRule ^(.*)$ $1 [R=200,L]
 Options -Indexes
 
 # Error Pages - Custom error handling
-ErrorDocument 400 /core/error.php?code=400
-ErrorDocument 401 /core/error.php?code=401
-ErrorDocument 403 /core/error.php?code=403
-ErrorDocument 404 /core/error.php?code=404
-ErrorDocument 429 /core/error.php?code=429
-ErrorDocument 500 /core/error.php?code=500
+ErrorDocument 400 /public/error.php?code=400
+ErrorDocument 401 /public/error.php?code=401
+ErrorDocument 403 /public/error.php?code=403
+ErrorDocument 404 /public/error.php?code=404
+ErrorDocument 429 /public/error.php?code=429
+ErrorDocument 500 /public/error.php?code=500
 
 # Compression - Improve performance
 <IfModule mod_deflate.c>

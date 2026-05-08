@@ -66,10 +66,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBtHWNP-fmKjEt46NypsMws0SwyMaNjhfo',
-    appId: '1:159521160544:ios:dae94e93884611d221f205',
+    appId: '1:159521160544:ios:f008e65cdf8cb08821f205',
     messagingSenderId: '159521160544',
     projectId: 'farkha-c7248',
     storageBucket: 'farkha-c7248.appspot.com',
-    iosBundleId: 'com.example.farkhaApp',
+    iosBundleId: 'ni.nims.frkha',
   );
 }

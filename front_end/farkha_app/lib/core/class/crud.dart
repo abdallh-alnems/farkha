@@ -8,7 +8,7 @@ import 'status_request.dart';
 
 class Crud {
   Future<Either<StatusRequest, Map<String, dynamic>>> postData(String linkUrl, Map<String, dynamic> data) async {
-    final Map<String, String> myHeaders = await getMyHeadersWithAppCheck();
+    final Map<String, String> myHeaders = getMyHeaders();
 
     final bool isConnected = await InternetChecker.checkConnection();
     if (isConnected) {

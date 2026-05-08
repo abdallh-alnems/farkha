@@ -1,0 +1,13 @@
+# Allow public access to .well-known files (overrides parent .json deny rule)
+Require all granted
+
+# Force correct Content-Type for App/Universal Links files
+<Files "apple-app-site-association">
+    ForceType application/json
+    Header set Content-Type "application/json"
+</Files>
+
+<Files "assetlinks.json">
+    ForceType application/json
+    Header set Content-Type "application/json"
+</Files>

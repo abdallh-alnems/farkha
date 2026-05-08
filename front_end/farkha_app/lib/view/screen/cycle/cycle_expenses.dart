@@ -3,10 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/status_request.dart';
+import '../../../core/constant/theme/colors.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
+import '../../widget/appbar/cycle_sub_screen_appbar.dart';
 import '../../widget/cycle/add_expense_dialog.dart';
 import '../../widget/cycle/expense_card.dart';
 
@@ -17,10 +19,19 @@ class CycleExpensesScreen extends StatefulWidget {
   State<CycleExpensesScreen> createState() => _CycleExpensesScreenState();
 }
 
-class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
+class _CycleExpensesScreenState extends State<CycleExpensesScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _heroController;
+
   @override
   void initState() {
     super.initState();
+    _heroController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    _heroController.forward();
+
     if (!Get.isRegistered<CycleController>()) {
       Get.put(CycleController());
     }
@@ -39,42 +50,21 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
   }
 
   @override
+  void dispose() {
+    _heroController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cycleCtrl = Get.find<CycleController>();
     final cycle = cycleCtrl.currentCycle;
     final isViewer = cycle['role']?.toString() == 'viewer';
     final expensesCtrl = Get.find<CycleExpensesController>();
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: colorScheme.onPrimary,
-          ),
-          onPressed: () => Get.back<void>(),
-        ),
-        title: Text(
-          'مصروفات ${cycle['name'] ?? 'الدورة'}',
-          style: TextStyle(
-            color: colorScheme.onPrimary,
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          if (cycle['role']?.toString() != 'viewer')
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: colorScheme.onPrimary,
-              ),
-              onPressed: () => showAddExpenseDialog(expensesCtrl),
-            ),
-        ],
+      appBar: CycleSubScreenAppBar(
+        titlePrefix: 'مصروفات',
+        onAddPressed: () => showAddExpenseDialog(expensesCtrl),
       ),
       body: Obx(() {
         final isLoading =
@@ -93,8 +83,8 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTotalCard(expensesCtrl),
-                  SizedBox(height: 12.h),
+                  _buildExpenseHero(expensesCtrl),
+                  SizedBox(height: 24.h),
                   _buildExpensesSection(
                     expensesCtrl,
                     isViewer: isViewer,
@@ -109,90 +99,237 @@ class _CycleExpensesScreenState extends State<CycleExpensesScreen> {
     );
   }
 
+  Widget _buildExpenseHero(CycleExpensesController controller) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+
+    return FadeTransition(
+      opacity: CurvedAnimation(
+        parent: _heroController,
+        curve: Curves.easeOutCubic,
+      ),
+      child: Obx(() {
+        final total = controller.totalExpenses.value.round();
+
+        return Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isDark
+                  ? [
+                      AppColors.errorColor.withValues(alpha: 0.12),
+                      AppColors.darkSurfaceElevatedColor,
+                    ]
+                  : [
+                      AppColors.errorColor.withValues(alpha: 0.06),
+                      AppColors.lightSurfaceColor,
+                    ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(
+              color: isDark
+                  ? AppColors.errorColor.withValues(alpha: 0.15)
+                  : AppColors.errorColor.withValues(alpha: 0.1),
+            ),
+            boxShadow: isDark
+                ? []
+                : [
+                    BoxShadow(
+                      color: AppColors.errorColor.withValues(alpha: 0.06),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+          ),
+          child: Padding(
+                padding:
+                    EdgeInsetsDirectional.fromSTEB(20.w, 20.h, 20.w, 18.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10.w),
+                          decoration: BoxDecoration(
+                            color:
+                                AppColors.errorColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Icon(
+                            Icons.account_balance_wallet_outlined,
+                            color: AppColors.errorColor,
+                            size: 22.sp,
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Text(
+                            'إجمالي المصروفات',
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w700,
+                              color: isDark
+                                  ? Colors.grey[300]
+                                  : Colors.grey[800],
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 18.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text(
+                          '$total',
+                          style: TextStyle(
+                            fontSize: 32.sp,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.errorColor,
+                            height: 1,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 4.h),
+                          child: Text(
+                            'جنيه',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  AppColors.errorColor.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+        );
+      }),
+    );
+  }
+
   Widget _buildExpensesSection(
     CycleExpensesController controller, {
     bool isViewer = false,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Obx(() {
-          if (controller.expenses.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.all(40.h),
-                child: Text(
-                  'لا توجد مصروفات',
+
+    return Obx(() {
+      if (controller.expenses.isEmpty) {
+        return _buildEmptyState(colorScheme);
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 14.h),
+            child: Row(
+              children: [
+                Text(
+                  'تفاصيل المصروفات',
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
+                    fontWeight: FontWeight.w800,
+                    color: colorScheme.onSurface,
                   ),
                 ),
-              ),
-            );
-          }
-          return Column(
-            children: [
-              ...controller.expenses.asMap().entries.map((entry) {
-                final index = entry.key;
-                final expense = entry.value;
-                return Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: ExpenseCard(
-                        index: index,
-                        expense: expense,
-                        isViewer: isViewer,
-                      ),
+                SizedBox(width: 8.w),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                  child: Text(
+                    '${controller.expenses.length}',
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.primary,
                     ),
-                    if (index == 0) ...[
-                      SizedBox(height: 12.h),
-                      const AdNativeWidget(),
-                      SizedBox(height: 12.h),
-                    ],
-                  ],
-                );
-              }),
-            ],
-          );
-        }),
-      ],
-    );
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...controller.expenses.asMap().entries.map((entry) {
+            final index = entry.key;
+            final expense = entry.value;
+            return Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: ExpenseCard(
+                    index: index,
+                    expense: expense,
+                    isViewer: isViewer,
+                  ),
+                ),
+                if (index == 0) ...[
+                  SizedBox(height: 4.h),
+                  const AdNativeWidget(),
+                  SizedBox(height: 12.h),
+                ],
+              ],
+            );
+          }),
+        ],
+      );
+    });
   }
 
-  Widget _buildTotalCard(CycleExpensesController controller) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Obx(() {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-        decoration: BoxDecoration(
-          color: colorScheme.primary,
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildEmptyState(ColorScheme colorScheme) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 60.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'إجمالي المصروفات',
-              style: TextStyle(
-                color: colorScheme.onPrimary,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
+            Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.receipt_long_outlined,
+                size: 40.sp,
+                color: colorScheme.primary.withValues(alpha: 0.5),
               ),
             ),
+            SizedBox(height: 16.h),
             Text(
-              '${controller.totalExpenses.value.round()} جنيه',
+              'لا توجد مصروفات',
               style: TextStyle(
-                color: colorScheme.onPrimary,
                 fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              'أضف مصروفات لتتبع نفقات الدورة',
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: colorScheme.onSurface.withValues(alpha: 0.35),
               ),
             ),
           ],
         ),
-      );
-    });
+      ),
+    );
   }
 }

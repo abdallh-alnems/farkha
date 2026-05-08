@@ -4,6 +4,8 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>FirebaseMessagingAutoInitEnabled</key>
+	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -32,11 +34,21 @@
 				<string>farkha</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>ni.nims.frkha</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.159521160544-bcjm5rrjju5n2ie7l32egt152js8ajjm</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<string>ca-app-pub-8595701567488603~3243480822</string>
+	<key>GADDelayAppMeasurementInit</key>
+	<true/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
@@ -68,6 +80,8 @@
 	</dict>
 	<key>NSContactsUsageDescription</key>
 	<string>يحتاج التطبيق لصلاحية الوصول لجهات الاتصال لاختيار رقم هاتف لإضافته كعضو في الدورة</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>يحتاج التطبيق للوصول للشبكة المحلية لتحسين أداء الإعلانات وبعض الميزات</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>نحتاج موقعك لعرض البيانات المرتبطة بمزرعتك (الطقس، الأسعار المحلية)</string>
 	<key>UIApplicationSceneManifest</key>
@@ -93,6 +107,10 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

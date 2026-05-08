@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,8 +69,18 @@ class AppReviewController extends GetxController {
     update();
 
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      final token = await user?.getIdToken();
+      if (token == null || token.isEmpty) {
+        isSubmitting = false;
+        _showSnackbar(AppStrings.error, 'يجب تسجيل الدخول لإرسال التقييم');
+        update();
+        return;
+      }
+
       final Either<StatusRequest, Map<String, dynamic>> result =
           await _appReviewData.submit(
+        token: token,
         rating: rating,
         issue: issueController.text.trim().isEmpty
             ? null

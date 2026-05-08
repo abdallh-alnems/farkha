@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 
 import '../../../../core/class/handling_data.dart';
 import '../../../../core/constant/routes/route.dart';
+import '../../../../core/constant/theme/theme.dart';
 import '../../../../core/functions/tool_page_view.dart';
 import '../../../../logic/controller/tools_controller/articles_controller/articles_list_controller.dart';
 import '../../../widget/ad/banner.dart';
 import '../../../widget/ad/native.dart';
 import '../../../widget/appbar/custom_appbar.dart';
-import 'article_card.dart';
+import '../../../widget/tools/articles/article_card.dart';
 
 class ArticlesList extends StatelessWidget {
   const ArticlesList({super.key});
@@ -30,13 +31,18 @@ class ArticlesList extends StatelessWidget {
               slivers: [
                 const SliverToBoxAdapter(child: AdNativeWidget()),
                 SliverPadding(
-                  padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+                  padding: EdgeInsets.fromLTRB(
+                    AppSpacing.screenH,
+                    8.h,
+                    AppSpacing.screenH,
+                    0,
+                  ),
                   sliver: SliverGrid(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      mainAxisSpacing: 14.h,
+                      mainAxisSpacing: 12.h,
                       crossAxisSpacing: 12.w,
-                      childAspectRatio: 1.8,
+                      childAspectRatio: 1.35,
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
@@ -56,7 +62,7 @@ class ArticlesList extends StatelessWidget {
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 24.h)),
+                SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xl)),
               ],
             ),
           );

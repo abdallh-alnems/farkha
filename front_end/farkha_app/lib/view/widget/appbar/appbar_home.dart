@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constant/theme/images.dart';
 
@@ -10,23 +11,36 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final Color onBackground = theme.colorScheme.onSurface;
+    final colorScheme = theme.colorScheme;
+
     return AppBar(
       leading: drawerKey != null
           ? IconButton(
               key: drawerKey,
-              icon: const Icon(Icons.menu),
+              icon: Container(
+                padding: EdgeInsets.all(4.r),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Icon(Icons.menu, color: colorScheme.primary, size: 20.sp),
+              ),
               onPressed: () => Scaffold.of(context).openDrawer(),
             )
           : null,
       title: Text(
         'فرخة',
-        style: theme.textTheme.headlineLarge?.copyWith(color: onBackground),
+        style: TextStyle(
+          fontSize: 20.sp,
+          fontWeight: FontWeight.w800,
+          color: colorScheme.onSurface,
+        ),
       ),
+      centerTitle: true,
       actions: [
         Padding(
-          padding: const EdgeInsets.all(7),
-          child: Image.asset(AppImages.logo, fit: BoxFit.contain),
+          padding: EdgeInsets.all(7.r),
+          child: Image.asset(AppImages.logo, fit: BoxFit.contain, height: 28.h),
         ),
       ],
     );

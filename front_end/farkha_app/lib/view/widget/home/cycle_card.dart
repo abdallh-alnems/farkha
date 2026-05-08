@@ -5,10 +5,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/storage_keys.dart';
+import '../../../core/constant/theme/theme.dart';
 import '../../../core/services/initialization.dart';
 import '../../../logic/controller/auth/login_controller.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import 'cycle_card_actions.dart';
+import 'cycle_card_info.dart';
 import 'cycle_card_stats.dart';
 
 class CardCycle extends StatefulWidget {
@@ -25,7 +27,7 @@ class _CardCycleState extends State<CardCycle> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(viewportFraction: 0.92);
   }
 
   @override
@@ -46,24 +48,6 @@ class _CardCycleState extends State<CardCycle> {
     return 2;
   }
 
-  Color _getStageColor(int stageIndex, ColorScheme colorScheme) {
-    final isDark = colorScheme.brightness == Brightness.dark;
-    switch (stageIndex) {
-      case 0:
-        return colorScheme.primary;
-      case 1:
-        return colorScheme.primary;
-      case 2:
-        return isDark
-            ? (Colors.orange[300] ?? Colors.orange)
-            : (Colors.orange[600] ?? Colors.orange);
-      default:
-        return isDark
-            ? colorScheme.surface.withValues(alpha: 0.5)
-            : Colors.grey[300]!;
-    }
-  }
-
   double _getCycleTotalExpenses(String cycleName) {
     try {
       final storage = GetStorage();
@@ -81,9 +65,7 @@ class _CardCycleState extends State<CardCycle> {
         }
         return total;
       }
-    } catch (e) {
-      // ignore errors
-    }
+    } catch (_) {}
     return 0.0;
   }
 
@@ -92,14 +74,12 @@ class _CardCycleState extends State<CardCycle> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final cycleCtrl =
-        Get.isRegistered<CycleController>()
-            ? Get.find<CycleController>()
-            : Get.put(CycleController());
-    final loginCtrl =
-        Get.isRegistered<LoginController>()
-            ? Get.find<LoginController>()
-            : Get.put(LoginController(), permanent: true);
+    final cycleCtrl = Get.isRegistered<CycleController>()
+        ? Get.find<CycleController>()
+        : Get.put(CycleController());
+    final loginCtrl = Get.isRegistered<LoginController>()
+        ? Get.find<LoginController>()
+        : Get.put(LoginController(), permanent: true);
 
     return Obx(() {
       if (Get.isRegistered<MyServices>()) {
@@ -114,148 +94,49 @@ class _CardCycleState extends State<CardCycle> {
       final allCycles = cycleCtrl.cycles;
       final isLoggedIn = loginCtrl.isLoggedIn.value;
 
-      final cycles =
-          allCycles.where((cycle) {
-            final status = cycle['status']?.toString();
-            return status != 'finished';
-          }).toList();
-
-      if (cycles.isNotEmpty && !isLoggedIn) {
-        return Container(
-          width: double.infinity,
-          height: 47.h,
-          margin: const EdgeInsets.all(17),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.r),
-            color: colorScheme.surface,
-            border: Border.all(),
-          ),
-          child: Center(
-            child: GestureDetector(
-              onTap: () {
-                Get.toNamed<void>(AppRoute.login);
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.lock_outline_rounded,
-                    size: 24.sp,
-                    color: colorScheme.primary,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'يجب تسجيل الدخول لمتابعة الدورات',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+      if (!isLoggedIn) {
+        final hasEverLoggedIn =
+            Get.isRegistered<MyServices>()
+                ? Get.find<MyServices>()
+                        .getStorage
+                        .read<bool>(StorageKeys.hasEverLoggedIn) ??
+                    false
+                : false;
+        if (hasEverLoggedIn) {
+          return CycleCardLockedState(colorScheme: colorScheme);
+        }
+        return CycleCardEmptyState(colorScheme: colorScheme);
       }
 
+      final cycles = allCycles.where((cycle) {
+        final status = cycle['status']?.toString();
+        return status != 'finished';
+      }).toList();
+
       if (cycles.isEmpty) {
-        return Container(
-          width: double.infinity,
-          height: 47.h,
-          margin: const EdgeInsets.all(17),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.r),
-            color: colorScheme.surface,
-            border: Border.all(),
-          ),
-          child: Stack(
-            children: [
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed<void>(AppRoute.addCycle);
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.add_circle_outline,
-                        size: 24.sp,
-                        color: colorScheme.primary,
-                      ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'اضف دورة جديدة',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8.r),
-                      bottomRight: Radius.circular(8.r),
-                    ),
-                    border: Border(
-                      right: BorderSide(
-                        color: colorScheme.primary.withValues(alpha: 0.4),
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.history,
-                      color: colorScheme.onPrimary,
-                      size: 20.sp,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    onPressed: () {
-                      Get.toNamed<void>(AppRoute.history);
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+        return CycleCardEmptyState(colorScheme: colorScheme);
       }
 
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 101.h,
+            height: 115.h,
             child: PageView.builder(
               controller: _pageController,
               itemCount: cycles.length,
               onPageChanged: (index) {
-                setState(() {
-                  _currentPage = index;
-                });
+                setState(() => _currentPage = index);
               },
               itemBuilder: (context, index) {
-                final cycle = cycles[index];
-                return _buildCycleCard(context, cycle, index, isDark);
+                return _buildCycleCard(context, cycles[index], index, isDark);
               },
             ),
           ),
           if (cycles.length > 1)
-            Transform.translate(
-              offset: Offset(0, -5.h),
-              child: _buildPageIndicator(cycles.length, isDark),
+            Padding(
+              padding: EdgeInsets.only(top: 8.h),
+              child: _buildPageIndicator(cycles.length, colorScheme),
             ),
           SizedBox(height: 8.h),
         ],
@@ -270,10 +151,9 @@ class _CardCycleState extends State<CardCycle> {
     bool isDark,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
-    final cycleCtrl =
-        Get.isRegistered<CycleController>()
-            ? Get.find<CycleController>()
-            : Get.put(CycleController());
+    final cycleCtrl = Get.isRegistered<CycleController>()
+        ? Get.find<CycleController>()
+        : Get.put(CycleController());
 
     return Obx(() {
       final updatedCycle = cycleCtrl.cycles.firstWhere(
@@ -281,31 +161,28 @@ class _CardCycleState extends State<CardCycle> {
         orElse: () => cycle,
       );
 
-      final startDateRaw =
-          updatedCycle['startDateRaw'] as String? ??
+      final startDateRaw = updatedCycle['startDateRaw'] as String? ??
           updatedCycle['startDate'] as String? ??
           '';
       final ageText = cycleCtrl.ageOf(startDateRaw);
-      final age =
-          ageText.isEmpty || ageText == 'لم تبدأ' ? 'لم تبدأ' : '$ageText يوم';
+      final age = ageText.isEmpty || ageText == 'لم تبدأ' ? 'لم تبدأ' : '$ageText يوم';
 
       final start =
           startDateRaw.isNotEmpty ? DateTime.tryParse(startDateRaw) : null;
-      final isCycleNotStarted = start != null && DateTime.now().isBefore(start);
+      final isCycleNotStarted =
+          start != null && DateTime.now().isBefore(start);
 
-      int ageDays = 0;
-      String currentStage = 'لم تبدأ';
       int stageIndex = -1;
+      String currentStage = 'لم تبدأ';
       if (startDateRaw.isNotEmpty && start != null && !isCycleNotStarted) {
-        ageDays = DateTime.now().difference(start).inDays;
+        final ageDays = DateTime.now().difference(start).inDays;
         stageIndex = _getStageIndex(ageDays);
         currentStage = _getCurrentStage(ageDays);
       }
 
       final mortality =
           int.tryParse(updatedCycle['mortality']?.toString() ?? '0') ?? 0;
-      final chickCount =
-          int.tryParse(
+      final chickCount = int.tryParse(
             updatedCycle['chickCount']?.toString() ??
                 updatedCycle['chick_count']?.toString() ??
                 '0',
@@ -325,119 +202,111 @@ class _CardCycleState extends State<CardCycle> {
       final costPerChick =
           liveChickCount > 0 ? (totalExpenses / liveChickCount) : 0.0;
 
+      final bool isOwner = updatedCycle['is_owner'] == true;
+      final String role = updatedCycle['role']?.toString() ?? 'owner';
+      final bool isAdmin = role == 'admin';
+
       return GestureDetector(
         onTap: () {
           Get.toNamed<void>(AppRoute.cycle, arguments: {'index': index});
         },
         child: Container(
-          width: double.infinity,
-          margin: const EdgeInsets.all(17),
-          padding: const EdgeInsets.symmetric(horizontal: 9),
+          margin: EdgeInsets.symmetric(horizontal: 6.w),
           decoration: BoxDecoration(
             color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(),
+            borderRadius: BorderRadius.circular(AppDimens.radiusLg),
+            border: Border.all(
+              color: colorScheme.outline.withValues(alpha: 0.4),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
-                blurRadius: 4.r,
-                offset: Offset(0, 2.h),
+                color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.04),
+                blurRadius: 8.r,
+                offset: Offset(0, 3.h),
               ),
             ],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (stageIndex >= 0)
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.w,
-                            vertical: 1.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _getStageColor(stageIndex, colorScheme),
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: colorScheme.primary,
-                              width: 1.5,
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(8.w, 8.h, 8.w, 0),
+                child: Row(
+                  children: [
+                    if (stageIndex >= 0)
+                      CycleCardStageBadge(
+                        stage: currentStage,
+                        stageIndex: stageIndex,
+                        colorScheme: colorScheme,
+                      ),
+                    if (stageIndex >= 0) SizedBox(width: 8.w)
+                    else SizedBox(width: 4.w),
+                    Expanded(
+                      child: Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                updatedCycle['name'] as String? ?? 'دورة بدون اسم',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: colorScheme.onSurface,
+                                  height: 1.2,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: colorScheme.primary.withValues(alpha: 0.3),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
+                            if (!isOwner) ...[
+                              SizedBox(width: 6.w),
+                              CycleCardRoleBadge(
+                                isAdmin: isAdmin,
+                                colorScheme: colorScheme,
                               ),
                             ],
-                          ),
-                          child: Text(
-                            currentStage,
-                            style: TextStyle(
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onPrimary,
-                            ),
-                          ),
+                          ],
                         ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        updatedCycle['name'] as String? ?? 'دورة بدون اسم',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                          color: colorScheme.onSurface,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CycleCardPopupMenu(
-                        cycle: updatedCycle,
-                        cycleIndex: index,
-                        isDark: isDark,
-                        ageText: ageText,
-                      ),
-                    ],
-                  ),
-                ],
+                    SizedBox(width: 4.w),
+                    CycleCardPopupMenu(
+                      cycle: updatedCycle,
+                      cycleIndex: index,
+                      isDark: isDark,
+                      ageText: ageText,
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 1.h),
               if (isCycleNotStarted)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2.h),
-                  child: Center(
-                    child: Text(
-                      'ستبدأ الدورة في : ${DateFormat('MM-dd').format(start)} (${DateFormat('EEEE', 'ar').format(start)})',
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.bold,
+                  padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.event_outlined, size: 14.sp, color: colorScheme.primary),
+                      SizedBox(width: 4.w),
+                      Text(
+                        'تبدأ: ${DateFormat('MM-dd').format(start)} (${DateFormat('EEEE', 'ar').format(start)})',
+                        style: TextStyle(
+                          color: colorScheme.primary,
+                          fontSize: 11.5.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    ],
                   ),
                 )
               else
-                CycleCardStatsRow(
-                  age: age,
-                  liveCount: chickCount - mortality,
-                  totalExpenses: totalExpenses,
-                  costPerChick: costPerChick,
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10.w, 4.h, 10.w, 8.h),
+                  child: CycleCardStatsRow(
+                    age: age,
+                    liveCount: chickCount - mortality,
+                    totalExpenses: totalExpenses,
+                    costPerChick: costPerChick,
+                  ),
                 ),
             ],
           ),
@@ -446,24 +315,25 @@ class _CardCycleState extends State<CardCycle> {
     });
   }
 
-  Widget _buildPageIndicator(int itemCount, bool isDark) {
+  Widget _buildPageIndicator(int itemCount, ColorScheme colorScheme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        itemCount,
-        (index) => Container(
-          margin: EdgeInsets.symmetric(horizontal: 3.w),
-          width: _currentPage == index ? 8.w : 6.w,
-          height: 6.h,
+      children: List.generate(itemCount, (index) {
+        final isActive = _currentPage == index;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOutCubic,
+          margin: EdgeInsets.symmetric(horizontal: 2.5.w),
+          width: isActive ? 20.w : 8.w,
+          height: 4.h,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color:
-                _currentPage == index
-                    ? Colors.white
-                    : Colors.white.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(4.r),
+            color: isActive
+                ? colorScheme.primary
+                : colorScheme.outline.withValues(alpha: 0.3),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

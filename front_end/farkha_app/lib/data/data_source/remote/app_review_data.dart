@@ -9,13 +9,14 @@ class AppReviewData {
   AppReviewData(this.crud);
 
   Future<Either<StatusRequest, Map<String, dynamic>>> submit({
+    required String token,
     int rating = 0,
     String? issue,
     String? suggestion,
     String? appVersion,
     String? platform,
   }) async {
-    final data = <String, String>{};
+    final data = <String, String>{'token': token};
     if (rating > 0) data['rating'] = '$rating';
     if (issue != null) data['issue'] = issue;
     if (suggestion != null) data['suggestion'] = suggestion;

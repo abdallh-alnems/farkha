@@ -1,12 +1,13 @@
 import 'package:farkha_app/view/widget/home/cycle_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/storage_keys.dart';
 import '../../core/package/alert_exit_app.dart';
-import '../../core/package/upgrade.dart';
 import '../../core/services/initialization.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/services/permission.dart';
 import '../../core/services/test_mode_manager.dart';
 import '../../logic/controller/review_prompt_controller.dart';
@@ -14,6 +15,7 @@ import '../widget/ad/banner.dart';
 import '../widget/ad/native.dart';
 import '../widget/appbar/appbar_home.dart';
 import '../widget/drawer/drawer.dart';
+
 import '../widget/home/price_card.dart';
 import '../widget/home/tools_section.dart';
 import '../widget/home/invitation_card.dart';
@@ -46,6 +48,12 @@ class _HomeState extends State<HomeScreen> {
         args['fromBackground'] = true;
         await Get.toNamed<void>(AppRoute.darknessAlarm, arguments: args);
         return;
+      }
+      final messagingConfigured =
+          myServices.getStorage.read<bool>(StorageKeys.messagingConfigured) ?? false;
+      if (!messagingConfigured) {
+        await NotificationService.instance.configureMessaging();
+        await myServices.getStorage.write(StorageKeys.messagingConfigured, true);
       }
       final permissionController = Get.find<PermissionController>();
       await permissionController.showPermissionsIntroIfNeeded(context);
@@ -100,33 +108,33 @@ class _HomeState extends State<HomeScreen> {
       drawer: const HomeDrawer(),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const TapToExit(child: Column(children: [Upgrade()])),
+            const TapToExit(child: SizedBox.shrink()),
 
             PriceCard(
               priceCardKey: HomeTutorial.priceCardKey,
               allPricesButtonKey: HomeTutorial.allPricesButtonKey,
               settingsIconKey: HomeTutorial.settingsIconKey,
             ),
-
+            SizedBox(height: 8.h),
             const InvitationCard(),
-
             const CardCycle(),
+            SizedBox(height: 14.h),
             if (!_isTutorialActive) ...[
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 17),
-                child: AdNativeWidget(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 17.w),
+                child: const AdNativeWidget(),
               ),
-              const SizedBox(height: 7),
-            ] else
-              const SizedBox(height: 0),
-
+              SizedBox(height: 7.h),
+            ],
             ToolsSection(
               toolsSectionKey: HomeTutorial.toolsSectionKey,
               toolsTitleKey: HomeTutorial.toolsTitleKey,
               viewAllKey: HomeTutorial.viewAllKey,
               toolsScrollViewKey: HomeTutorial.toolsScrollViewKey,
             ),
+            SizedBox(height: 60.h),
           ],
         ),
       ),

@@ -8,15 +8,14 @@ import '../../core/constant/routes/route.dart';
 import '../../core/constant/strings/app_strings.dart';
 import '../../data/data_source/remote/cycle_data/cycle_member_data.dart';
 import 'cycle_controller_base.dart';
+import 'cycle_member_helpers.dart';
 
 mixin CycleMemberMixin on CycleControllerBase {
   late final CycleMemberData _memberData = CycleMemberData();
 
-  final RxList<Map<String, dynamic>> invitations =
-      <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> invitations = <Map<String, dynamic>>[].obs;
   final Rx<StatusRequest> invitationsStatus = StatusRequest.none.obs;
   final Rx<StatusRequest> invitationResponseStatus = StatusRequest.none.obs;
-
   final Rx<StatusRequest> cycleLeaveStatus = StatusRequest.none.obs;
 
   Future<Map<String, dynamic>?> addMember({
@@ -25,10 +24,8 @@ mixin CycleMemberMixin on CycleControllerBase {
     String role = 'member',
   }) async {
     try {
-      final user = auth.currentUser;
-      if (user == null) return null;
-      final token = await user.getIdToken();
-      if (token == null || token.isEmpty) return null;
+      final token = await requireAuthToken(auth);
+      if (token == null) return null;
 
       final response = await _memberData.addMember(
         token: token,
@@ -38,12 +35,8 @@ mixin CycleMemberMixin on CycleControllerBase {
       );
 
       return response.fold(
-        (failure) {
-          return {'status': 'fail', 'message': 'فشل الاتصال بالسيرفر'};
-        },
-        (result) {
-          return result;
-        },
+        (failure) => {'status': 'fail', 'message': 'فشل الاتصال بالسيرفر'},
+        (result) => result,
       );
     } catch (e) {
       return {'status': 'fail', 'message': 'حدث خطأ: $e'};
@@ -55,11 +48,7 @@ mixin CycleMemberMixin on CycleControllerBase {
     int? cycleId,
     String role = 'member',
   }) async {
-    final effectiveCycleId =
-        cycleId ??
-        (currentCycle['cycle_id'] is int
-            ? currentCycle['cycle_id'] as int
-            : int.tryParse(currentCycle['cycle_id']?.toString() ?? ''));
+    final effectiveCycleId = cycleId ?? resolveCycleId(currentCycle);
 
     if (effectiveCycleId == null) {
       return {'status': 'fail', 'message': 'لا توجد دورة محددة'};
@@ -70,10 +59,8 @@ mixin CycleMemberMixin on CycleControllerBase {
       phone: phone,
       role: role,
     );
-    if (result != null) {
-      if (result['status'] == 'success') {
-        await fetchCycleDetails(effectiveCycleId);
-      }
+    if (result?['status'] == 'success') {
+      await fetchCycleDetails(effectiveCycleId);
     }
     return result;
   }
@@ -83,30 +70,19 @@ mixin CycleMemberMixin on CycleControllerBase {
       final cycleId = currentCycle['cycle_id'];
       if (cycleId == null) return;
       final cycleIdInt =
-          cycleId is int ? cycleId : int.tryParse(cycleId.toString());
-      if (cycleIdInt == null) return;
+          cycleId is int ? cycleId : int.tryParse(cycleId.toString());if (cycleIdInt == null) return;
 
       cycleLeaveStatus.value = StatusRequest.loading;
-      final user = auth.currentUser;
-      if (user == null) {
-        cycleLeaveStatus.value = StatusRequest.failure;
-        return;
-      }
-      final token = await user.getIdToken();
-      if (token == null || token.isEmpty) {
+      final token = await requireAuthToken(auth);
+      if (token == null) {
         cycleLeaveStatus.value = StatusRequest.failure;
         return;
       }
 
-      final response = await _memberData.leaveCycle(
-        token: token,
-        cycleId: cycleIdInt,
-      );
+      final response = await _memberData.leaveCycle(token: token, cycleId: cycleIdInt);
 
       response.fold(
-        (l) {
-          cycleLeaveStatus.value = l;
-        },
+        (l) => cycleLeaveStatus.value = l,
         (r) {
           if (r['status'] == 'success') {
             cycleLeaveStatus.value = StatusRequest.success;
@@ -114,11 +90,8 @@ mixin CycleMemberMixin on CycleControllerBase {
             fetchCyclesFromServer();
             Get.offAllNamed<void>(AppRoute.home);
             Future.delayed(const Duration(milliseconds: 800), () {
-              Get.snackbar(
-                'نجاح',
-                'تمت مغادرة الدورة بنجاح',
-                snackPosition: SnackPosition.BOTTOM,
-              );
+              Get.snackbar('نجاح', 'تمت مغادرة الدورة بنجاح',
+                  snackPosition: SnackPosition.BOTTOM);
             });
           } else {
             cycleLeaveStatus.value = StatusRequest.failure;
@@ -131,10 +104,7 @@ mixin CycleMemberMixin on CycleControllerBase {
   }
 
   Future<void> removeMember(int targetUserId) async {
-    final int? cycleId =
-        currentCycle['cycle_id'] is int
-            ? currentCycle['cycle_id'] as int
-            : int.tryParse(currentCycle['cycle_id']?.toString() ?? '');
+    final cycleId = resolveCycleId(currentCycle);
     if (cycleId == null) return;
 
     unawaited(
@@ -147,18 +117,14 @@ mixin CycleMemberMixin on CycleControllerBase {
         buttonColor: Colors.red,
         onConfirm: () async {
           Get.back<void>();
-          final user = auth.currentUser;
-          if (user == null) return;
-          final token = await user.getIdToken();
+          final token = await requireAuthToken(auth);
           if (token == null) return;
 
           cycleLeaveStatus.value = StatusRequest.loading;
           update();
 
           final response = await _memberData.removeMember(
-            token: token,
-            cycleId: cycleId,
-            targetUserId: targetUserId,
+            token: token, cycleId: cycleId, targetUserId: targetUserId,
           );
 
           response.fold(
@@ -169,38 +135,12 @@ mixin CycleMemberMixin on CycleControllerBase {
             },
             (result) {
               if (result['status'] == 'success') {
-                bool matchMember(dynamic m) {
-                  final rawId = (m as Map)['id'] ?? m['user_id'];
-                  final memberId =
-                      rawId is int
-                          ? rawId
-                          : int.tryParse(rawId?.toString() ?? '');
-                  return memberId == targetUserId;
-                }
-
-                final List<dynamic> currentMembers = List<dynamic>.from(
-                  currentCycle['members'] as List? ?? [],
+                removeMemberFromLocalState(
+                  currentCycle: currentCycle,
+                  cycles: cycles,
+                  targetUserId: targetUserId,
+                  cycleId: cycleId,
                 );
-                currentMembers.removeWhere(matchMember);
-                currentCycle['members'] = currentMembers;
-                currentCycle.refresh();
-
-                final cycleIdx = cycles.indexWhere((c) {
-                  final cId = c['cycle_id'];
-                  final cIdInt =
-                      cId is int ? cId : int.tryParse(cId?.toString() ?? '');
-                  return cIdInt == cycleId;
-                });
-                if (cycleIdx != -1) {
-                  final cycleMap = Map<String, dynamic>.from(cycles[cycleIdx]);
-                  final cycleMembers = List<dynamic>.from(
-                    cycleMap['members'] as List? ?? [],
-                  );
-                  cycleMembers.removeWhere(matchMember);
-                  cycleMap['members'] = cycleMembers;
-                  cycles[cycleIdx] = cycleMap;
-                }
-
                 Get.snackbar('نجاح', 'تم حذف العضو بنجاح');
               } else {
                 Get.snackbar(
@@ -218,18 +158,13 @@ mixin CycleMemberMixin on CycleControllerBase {
   }
 
   Future<Map<String, dynamic>> removeMemberDirect(int targetUserId) async {
-    final int? cycleId =
-        currentCycle['cycle_id'] is int
-            ? currentCycle['cycle_id'] as int
-            : int.tryParse(currentCycle['cycle_id']?.toString() ?? '');
+    final cycleId = resolveCycleId(currentCycle);
     if (cycleId == null) {
       return {'status': 'fail', 'message': 'تعذر تحديد الدورة'};
     }
 
-    final user = auth.currentUser;
-    if (user == null) return {'status': 'fail', 'message': 'غير مسجل'};
-    final token = await user.getIdToken();
-    if (token == null) return {'status': 'fail', 'message': 'فشل التوثق'};
+    final token = await requireAuthToken(auth);
+    if (token == null) return {'status': 'fail', 'message': 'غير مسجل'};
 
     cycleLeaveStatus.value = StatusRequest.loading;
     update();
@@ -248,36 +183,12 @@ mixin CycleMemberMixin on CycleControllerBase {
       },
       (result) {
         if (result['status'] == 'success') {
-          bool matchMember(dynamic m) {
-            final rawId = (m as Map)['id'] ?? m['user_id'];
-            final memberId =
-                rawId is int ? rawId : int.tryParse(rawId?.toString() ?? '');
-            return memberId == targetUserId;
-          }
-
-          final currentMembers = List<dynamic>.from(
-            currentCycle['members'] as List? ?? [],
+          removeMemberFromLocalState(
+            currentCycle: currentCycle,
+            cycles: cycles,
+            targetUserId: targetUserId,
+            cycleId: cycleId,
           );
-          currentMembers.removeWhere(matchMember);
-          currentCycle['members'] = currentMembers;
-          currentCycle.refresh();
-
-          final cycleIdx = cycles.indexWhere((c) {
-            final cId = c['cycle_id'];
-            final cIdInt =
-                cId is int ? cId : int.tryParse(cId?.toString() ?? '');
-            return cIdInt == cycleId;
-          });
-          if (cycleIdx != -1) {
-            final cycleMap = Map<String, dynamic>.from(cycles[cycleIdx]);
-            final cycleMembers = List<dynamic>.from(
-              cycleMap['members'] as List? ?? [],
-            );
-            cycleMembers.removeWhere(matchMember);
-            cycleMap['members'] = cycleMembers;
-            cycles[cycleIdx] = cycleMap;
-          }
-
           cycleLeaveStatus.value = StatusRequest.none;
           update();
           return {'status': 'success', 'message': 'تم حذف العضو بنجاح'};
@@ -295,10 +206,8 @@ mixin CycleMemberMixin on CycleControllerBase {
 
   Future<Map<String, dynamic>?> createInvitation(int cycleId) async {
     try {
-      final user = auth.currentUser;
-      if (user == null) return null;
-      final token = await user.getIdToken();
-      if (token == null || token.isEmpty) return null;
+      final token = await requireAuthToken(auth);
+      if (token == null) return null;
 
       final response = await _memberData.createInvitation(
         token: token,
@@ -306,12 +215,8 @@ mixin CycleMemberMixin on CycleControllerBase {
       );
 
       return response.fold(
-        (failure) {
-          return {'status': 'fail', 'message': 'فشل إنشاء رابط الدعوة'};
-        },
-        (result) {
-          return result;
-        },
+        (failure) => {'status': 'fail', 'message': 'فشل إنشاء رابط الدعوة'},
+        (result) => result,
       );
     } catch (e) {
       return {'status': 'fail', 'message': 'حدث خطأ: $e'};
@@ -320,20 +225,16 @@ mixin CycleMemberMixin on CycleControllerBase {
 
   Future<void> joinByCode(String code) async {
     try {
-      final user = auth.currentUser;
-      if (user == null) {
+      final token = await requireAuthToken(auth);
+      if (token == null) {
         Get.snackbar(AppStrings.error, 'يجب تسجيل الدخول أولاً');
         return;
       }
-      final token = await user.getIdToken();
-      if (token == null || token.isEmpty) return;
 
       final response = await _memberData.joinByCode(token: token, code: code);
 
       response.fold(
-        (failure) {
-          Get.snackbar(AppStrings.error, 'فشل الاتصال بالسيرفر');
-        },
+        (failure) => Get.snackbar(AppStrings.error, 'فشل الاتصال بالسيرفر'),
         (result) {
           if (result['status'] == 'success') {
             Get.snackbar(
@@ -355,11 +256,8 @@ mixin CycleMemberMixin on CycleControllerBase {
   Future<List<Map<String, dynamic>>?> searchUsers(String searchTerm) async {
     try {
       if (searchTerm.length < 2) return [];
-
-      final user = auth.currentUser;
-      if (user == null) return null;
-      final token = await user.getIdToken();
-      if (token == null || token.isEmpty) return null;
+      final token = await requireAuthToken(auth);
+      if (token == null) return null;
 
       final response = await _memberData.searchUsers(
         token: token,
@@ -382,18 +280,14 @@ mixin CycleMemberMixin on CycleControllerBase {
     required int targetUserId,
     required String newRole,
   }) async {
-    final int? cycleId =
-        currentCycle['cycle_id'] is int
-            ? currentCycle['cycle_id'] as int
-            : int.tryParse(currentCycle['cycle_id']?.toString() ?? '');
-    if (cycleId == null)
+    final cycleId = resolveCycleId(currentCycle);
+    if (cycleId == null) {
       return {'status': 'fail', 'message': 'لا توجد دورة محددة'};
+    }
 
     try {
-      final user = auth.currentUser;
-      if (user == null) return null;
-      final token = await user.getIdToken();
-      if (token == null || token.isEmpty) return null;
+      final token = await requireAuthToken(auth);
+      if (token == null) return null;
 
       final response = await _memberData.updateMemberRole(
         token: token,
@@ -406,46 +300,13 @@ mixin CycleMemberMixin on CycleControllerBase {
         (failure) => {'status': 'fail', 'message': 'فشل الاتصال بالسيرفر'},
         (result) {
           if (result['status'] == 'success') {
-            void updateInList(List<dynamic> membersList) {
-              for (int i = 0; i < membersList.length; i++) {
-                final m = membersList[i] as Map;
-                final rawId = m['id'] ?? m['user_id'];
-                final memberId =
-                    rawId is int
-                        ? rawId
-                        : int.tryParse(rawId?.toString() ?? '');
-                if (memberId == targetUserId) {
-                  membersList[i] = {
-                    ...Map<String, dynamic>.from(m),
-                    'role': newRole,
-                  };
-                  break;
-                }
-              }
-            }
-
-            final currentMembers = List<dynamic>.from(
-              currentCycle['members'] as List? ?? [],
+            updateMemberRoleInLocalState(
+              currentCycle: currentCycle,
+              cycles: cycles,
+              targetUserId: targetUserId,
+              newRole: newRole,
+              cycleId: cycleId,
             );
-            updateInList(currentMembers);
-            currentCycle['members'] = currentMembers;
-            currentCycle.refresh();
-
-            final cycleIdx = cycles.indexWhere((c) {
-              final cId = c['cycle_id'];
-              final cIdInt =
-                  cId is int ? cId : int.tryParse(cId?.toString() ?? '');
-              return cIdInt == cycleId;
-            });
-            if (cycleIdx != -1) {
-              final cycleMap = Map<String, dynamic>.from(cycles[cycleIdx]);
-              final cycleMembers = List<dynamic>.from(
-                cycleMap['members'] as List? ?? [],
-              );
-              updateInList(cycleMembers);
-              cycleMap['members'] = cycleMembers;
-              cycles[cycleIdx] = cycleMap;
-            }
           }
           return result;
         },
@@ -456,8 +317,8 @@ mixin CycleMemberMixin on CycleControllerBase {
   }
 
   Future<void> fetchInvitations() async {
-    final user = auth.currentUser;
-    if (user == null) {
+    final token = await requireAuthToken(auth);
+    if (token == null) {
       invitations.clear();
       return;
     }
@@ -465,18 +326,10 @@ mixin CycleMemberMixin on CycleControllerBase {
     invitationsStatus.value = StatusRequest.loading;
 
     try {
-      final token = await user.getIdToken();
-      if (token == null) {
-        invitationsStatus.value = StatusRequest.failure;
-        return;
-      }
-
       final response = await _memberData.getInvitations(token: token);
 
       response.fold(
-        (failure) {
-          invitationsStatus.value = failure;
-        },
+        (failure) => invitationsStatus.value = failure,
         (result) {
           if (result['status'] == 'success') {
             final List<dynamic> data = result['data'] as List<dynamic>? ?? [];
@@ -498,18 +351,12 @@ mixin CycleMemberMixin on CycleControllerBase {
     int cycleId,
     String action,
   ) async {
-    final user = auth.currentUser;
-    if (user == null) return null;
+    final token = await requireAuthToken(auth);
+    if (token == null) return null;
 
     invitationResponseStatus.value = StatusRequest.loading;
 
     try {
-      final token = await user.getIdToken();
-      if (token == null) {
-        invitationResponseStatus.value = StatusRequest.failure;
-        return {'status': 'fail', 'message': 'فشل المصادقة'};
-      }
-
       final response = await _memberData.respondToInvitation(
         token: token,
         cycleId: cycleId,

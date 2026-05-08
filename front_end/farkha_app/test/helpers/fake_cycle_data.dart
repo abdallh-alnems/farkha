@@ -30,6 +30,7 @@ class FakeCycleData implements CycleData {
     required int cycleId,
     required String label,
     required String value,
+    String? metricType,
   }) async => _get('addCycleData');
 
   @override
@@ -50,6 +51,18 @@ class FakeCycleData implements CycleData {
     required double totalPrice,
     String? saleDate,
   }) async => _get('addCycleSale');
+
+  @override
+  Future<Either<StatusRequest, Map<String, dynamic>>> updateCycle({
+    required String token,
+    required int cycleId,
+    required String name,
+    required int chickCount,
+    required double space,
+    String? breed,
+    String? systemType,
+    required String startDateRaw,
+  }) async => _get('updateCycle');
 
   @override
   Future<Either<StatusRequest, Map<String, dynamic>>> deleteCycle({

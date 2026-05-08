@@ -1,6 +1,20 @@
-.VSCodeCounter
-.idea
-*.sql
+# IDE & OS
+.VSCodeCounter/
+.idea/
+.vscode/
+.DS_Store
+
+# Backend secrets & runtime
+*env.php
+*firebase_credentials.json
+*login_errors.log
+backend_farkha/vendor/
+backend_farkha/cache_system/cache_storage/*.cache
+
+# Temp / scratch PHP
 test_*.php
 describe_*.php
 alter_*.php
+
+# Misc
+tmp/

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 
+import '../services/test_mode_manager.dart';
+
 class RateMyAppController extends GetxController {
   final RateMyApp rateMyApp = RateMyApp(
     minDays: 3,
@@ -20,14 +22,18 @@ class RateMyAppController extends GetxController {
 
   void _showRateDialog() {
     rateMyApp.init().then((_) {
-      if (rateMyApp.shouldOpenDialog) {
+      if (rateMyApp.shouldOpenDialog ||
+          TestModeManager.shouldAlwaysShowStoreRatePrompt) {
         // التأكد من وجود context و navigation stack قبل فتح dialog
         final context = Get.context;
         if (context != null) {
           // استخدام addPostFrameCallback للتأكد من أن navigation stack جاهز
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final currentContext = Get.context;
-            if (currentContext != null && Navigator.canPop(currentContext)) {
+            final navReady = currentContext != null &&
+                (Navigator.canPop(currentContext) ||
+                    TestModeManager.shouldAlwaysShowStoreRatePrompt);
+            if (navReady) {
               rateMyApp.showRateDialog(
                 currentContext,
                 title: 'قيمنا',

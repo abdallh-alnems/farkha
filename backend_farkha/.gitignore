@@ -1,3 +1,31 @@
-*env.php
-*firebase_credentials.json
-*login_errors.log
+# ============================================
+# Farkha Backend - .gitignore
+# ============================================
+
+# Secrets & runtime (CRITICAL - never commit)
+config/env.php
+core/env.php
+core/firebase_credentials.json
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Composer
+vendor/
+
+# Cache runtime files
+cache_system/cache_storage/*.cache
+
+# Temp / scratch PHP
+test_*.php
+describe_*.php
+alter_*.php
+

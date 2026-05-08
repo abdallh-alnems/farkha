@@ -7,12 +7,13 @@ class TotalRevenueController extends GetxController {
   RxDouble pricePerKg = 0.0.obs;
   RxDouble totalRevenue = 0.0.obs;
 
+  double get totalWeight => birdsCount.value * averageWeight.value;
+
   void calculateTotalRevenue() {
     if (birdsCount.value > 0 &&
         averageWeight.value > 0 &&
         pricePerKg.value > 0) {
-      totalRevenue.value =
-          birdsCount.value * averageWeight.value * pricePerKg.value;
+      totalRevenue.value = totalWeight * pricePerKg.value;
     } else {
       totalRevenue.value = 0.0;
     }

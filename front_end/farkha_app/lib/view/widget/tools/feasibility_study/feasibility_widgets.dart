@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/constant/theme/theme.dart';
 
 class FeasibilityWidgets {
   static void _showHelpPopup(
@@ -12,8 +12,7 @@ class FeasibilityWidgets {
     final renderBox = anchorContext.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
-    final isDark = Theme.of(anchorContext).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : Colors.grey[800]!;
+    final colorScheme = Theme.of(anchorContext).colorScheme;
     final position = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
     final screenSize = MediaQuery.sizeOf(anchorContext);
@@ -25,9 +24,9 @@ class FeasibilityWidgets {
     showMenu<void>(
       context: anchorContext,
       position: rect,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-      color: isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
-      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: AppDimens.borderLg),
+      color: colorScheme.surface,
+      elevation: AppElevation.lg,
       items: [
         PopupMenuItem<void>(
           enabled: false,
@@ -42,8 +41,8 @@ class FeasibilityWidgets {
                   title,
                   style: TextStyle(
                     fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: textColor,
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 SizedBox(height: 10.h),
@@ -51,8 +50,8 @@ class FeasibilityWidgets {
                   helpText,
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: textColor.withValues(alpha: 0.9),
-                    height: 1.5,
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
+                    height: 1.6,
                   ),
                 ),
               ],
@@ -75,98 +74,67 @@ class FeasibilityWidgets {
 
     return Container(
       decoration: BoxDecoration(
-        color:
-            isDark
-                ? AppColors.darkSurfaceElevatedColor
-                : AppColors.lightSurfaceColor,
-        borderRadius: BorderRadius.circular(16),
-        border:
-            isDark
-                ? Border.all(
-                  color: AppColors.darkOutlineColor.withValues(alpha: 0.5),
-                )
-                : null,
-        boxShadow:
-            isDark
-                ? null
-                : [
-                  BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    spreadRadius: 1,
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+        color: isDark ? AppColors.darkSurfaceElevatedColor : colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppDimens.radiusLg),
+        border: Border.all(
+          color: isDark
+              ? AppColors.darkOutlineColor.withValues(alpha: 0.4)
+              : AppColors.lightOutlineColor.withValues(alpha: 0.6),
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                AppElevation.shadow(
+                  opacity: 0.06,
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section Header
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 11),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  color.withValues(alpha: isDark ? 0.2 : 0.15),
-                  color.withValues(alpha: isDark ? 0.1 : 0.05),
-                ],
-              ),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+          Padding(
+            padding: EdgeInsetsDirectional.only(
+              start: 16.w,
+              end: 16.w,
+              top: 14.h,
+              bottom: 6.h,
             ),
             child: Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(10.w),
+                  padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [color, color.withValues(alpha: 0.8)],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow:
-                        isDark
-                            ? null
-                            : [
-                              BoxShadow(
-                                color: color.withValues(alpha: 0.3),
-                                spreadRadius: 1,
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                    color: color.withValues(alpha: isDark ? 0.2 : 0.12),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Icon(icon, color: Colors.white, size: 17),
+                  child: Icon(icon, color: color, size: 18.sp),
                 ),
-                const SizedBox(width: 15),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 19.sp,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? colorScheme.onSurface : color,
-                    shadows:
-                        isDark
-                            ? null
-                            : [
-                              Shadow(
-                                color: color.withValues(alpha: 0.2),
-                                offset: const Offset(0, 1),
-                                blurRadius: 2,
-                              ),
-                            ],
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
+                      height: 1.3,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          // Section Content
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: isDark
+                ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
+                : AppColors.lightOutlineColor.withValues(alpha: 0.4),
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 9),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
             child: Column(children: children),
           ),
         ],
@@ -190,18 +158,13 @@ class FeasibilityWidgets {
         valueColor ?? (isDark ? colorScheme.primary : color);
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 7),
-      padding: const EdgeInsets.all(15),
+      margin: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 13.h),
       decoration: BoxDecoration(
-        color:
-            isDark ? AppColors.darkSurfaceColor : color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color:
-              isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.3)
-                  : color.withValues(alpha: 0.2),
-        ),
+        color: isDark
+            ? AppColors.darkSurfaceColor
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(AppDimens.radiusMd),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -213,47 +176,48 @@ class FeasibilityWidgets {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Icon(
+                    icon,
+                    size: 16.sp,
+                    color: resolvedValueColor.withValues(alpha: 0.7),
+                  ),
+                  SizedBox(width: 8.w),
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 15.sp,
-                      color:
-                          isDark
-                              ? colorScheme.onSurface.withValues(alpha: 0.7)
-                              : Colors.grey[600],
+                      fontSize: 13.sp,
+                      color: colorScheme.onSurface.withValues(alpha: 0.65),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   if (helpText != null) ...[
                     SizedBox(width: 4.w),
                     Builder(
-                      builder:
-                          (iconContext) => GestureDetector(
-                            onTap:
-                                () => _showHelpPopup(
-                                  iconContext,
-                                  title,
-                                  helpText,
-                                ),
-                            child: Icon(
-                              Icons.help_outline,
-                              size: 18.sp,
-                              color: (isDark
-                                      ? Colors.white70
-                                      : Colors.grey.shade500)
-                                  .withValues(alpha: 0.8),
-                            ),
-                          ),
+                      builder: (iconContext) => GestureDetector(
+                        onTap: () => _showHelpPopup(
+                          iconContext,
+                          title,
+                          helpText,
+                        ),
+                        child: Icon(
+                          Icons.help_outline_rounded,
+                          size: 16.sp,
+                          color: colorScheme.onSurface.withValues(alpha: 0.35),
+                        ),
+                      ),
                     ),
                   ],
                 ],
               ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: resolvedValueColor,
+              Flexible(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: resolvedValueColor,
+                  ),
+                  textAlign: TextAlign.end,
                 ),
               ),
             ],
@@ -263,8 +227,8 @@ class FeasibilityWidgets {
             Text(
               subtitle,
               style: TextStyle(
-                fontSize: 12.sp,
-                color: resolvedValueColor.withValues(alpha: 0.9),
+                fontSize: 11.sp,
+                color: resolvedValueColor.withValues(alpha: 0.85),
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.end,
@@ -289,43 +253,21 @@ class FeasibilityWidgets {
     final feedPct = (feedCost / totalCost * 100).round();
     final overheadPct = (overheadCost / totalCost * 100).round();
 
+    final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    const chickenColor = Color(0xFF42A5F5);
-    const feedColor = Color(0xFF66BB6A);
-    const overheadColor = Color(0xFFFFB74D);
+
+    const chickenColor = AppColors.accentColor;
+    const feedColor = AppColors.primaryColor;
+    const overheadColor = AppColors.secondaryColor;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 7),
-      padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors:
-              isDark
-                  ? [
-                    AppColors.darkSurfaceColor,
-                    AppColors.darkSurfaceColor.withValues(alpha: 0.95),
-                  ]
-                  : [Colors.white, Colors.grey.shade50],
-        ),
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(
-          color:
-              isDark
-                  ? AppColors.darkOutlineColor.withValues(alpha: 0.25)
-                  : Colors.grey.shade200,
-        ),
-        boxShadow:
-            isDark
-                ? null
-                : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+        color: isDark
+            ? AppColors.darkSurfaceColor
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(AppDimens.radiusMd),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,68 +276,66 @@ class FeasibilityWidgets {
             children: [
               Icon(
                 Icons.pie_chart_outline_rounded,
-                size: 18.sp,
-                color: isDark ? Colors.white70 : Colors.grey[600],
+                size: 16.sp,
+                color: colorScheme.primary,
               ),
               SizedBox(width: 8.w),
               Text(
                 'توزيع التكاليف',
                 style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : Colors.grey[800],
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               if (helpText != null) ...[
                 SizedBox(width: 6.w),
                 Builder(
-                  builder:
-                      (iconContext) => GestureDetector(
-                        onTap:
-                            () => _showHelpPopup(
-                              iconContext,
-                              'توزيع التكاليف',
-                              helpText,
-                            ),
-                        child: Icon(
-                          Icons.help_outline,
-                          size: 18.sp,
-                          color: (isDark
-                                  ? Colors.white70
-                                  : Colors.grey.shade500)
-                              .withValues(alpha: 0.8),
-                        ),
-                      ),
+                  builder: (iconContext) => GestureDetector(
+                    onTap: () => _showHelpPopup(
+                      iconContext,
+                      'توزيع التكاليف',
+                      helpText,
+                    ),
+                    child: Icon(
+                      Icons.help_outline_rounded,
+                      size: 16.sp,
+                      color: colorScheme.onSurface.withValues(alpha: 0.35),
+                    ),
+                  ),
                 ),
               ],
             ],
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 12.h),
           ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
-            child: Row(
-              children: [
-                if (chickenPct > 0)
-                  Expanded(
-                    flex: chickenPct,
-                    child: Container(height: 24.h, color: chickenColor),
-                  ),
-                if (feedPct > 0)
-                  Expanded(
-                    flex: feedPct,
-                    child: Container(height: 24.h, color: feedColor),
-                  ),
-                if (overheadPct > 0)
-                  Expanded(
-                    flex: overheadPct,
-                    child: Container(height: 24.h, color: overheadColor),
-                  ),
-              ],
+            borderRadius: BorderRadius.circular(6.r),
+            child: SizedBox(
+              height: 20.h,
+              child: Row(
+                children: [
+                  if (chickenPct > 0)
+                    Expanded(
+                      flex: chickenPct,
+                      child: Container(color: chickenColor),
+                    ),
+                  if (feedPct > 0)
+                    Expanded(
+                      flex: feedPct,
+                      child: Container(color: feedColor),
+                    ),
+                  if (overheadPct > 0)
+                    Expanded(
+                      flex: overheadPct,
+                      child: Container(color: overheadColor),
+                    ),
+                ],
+              ),
             ),
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 12.h),
           Wrap(
-            spacing: 16.w,
+            spacing: 12.w,
             runSpacing: 8.h,
             children: [
               _buildLegendChip(
@@ -428,11 +368,10 @@ class FeasibilityWidgets {
     bool isDark,
   ) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: isDark ? 0.25 : 0.15),
+        color: color.withValues(alpha: isDark ? 0.2 : 0.1),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: color.withValues(alpha: isDark ? 0.5 : 0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -446,9 +385,9 @@ class FeasibilityWidgets {
           Text(
             '$label $percent%',
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white : Colors.grey[800],
+              color: color,
             ),
           ),
         ],

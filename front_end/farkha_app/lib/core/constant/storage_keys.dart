@@ -3,6 +3,7 @@ class StorageKeys {
 
   // ── Auth ──
   static const String isLoggedIn = 'is_logged_in';
+  static const String hasEverLoggedIn = 'has_ever_logged_in';
   static const String userName = 'user_name';
   static const String userPhone = 'user_phone';
   static const String phoneVerified = 'phone_verified';
@@ -28,6 +29,7 @@ class StorageKeys {
   // ── Notifications ──
   static const String notificationsEnabled = 'notifications_enabled';
   static const String pendingDarknessAlarm = 'pending_darkness_alarm';
+  static const String messagingConfigured = 'messaging_configured';
 
   // ── Darkness Schedule ──
   static const String darknessDayStartHour = 'darkness_day_start_hour';

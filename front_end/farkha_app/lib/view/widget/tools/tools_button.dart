@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constant/theme/theme.dart';
 import '../ad/interstitial.dart';
 
 class ToolsButton extends StatelessWidget {
@@ -12,6 +13,7 @@ class ToolsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SizedBox(
       width: double.infinity,
@@ -21,17 +23,25 @@ class ToolsButton extends StatelessWidget {
           InterstitialAdService.instance.show(onComplete: onPressed);
         },
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 14.h),
+          padding: EdgeInsets.symmetric(vertical: 15.h),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
+            borderRadius: BorderRadius.circular(AppDimens.radiusMd),
           ),
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          elevation: 2,
+          elevation: isDark ? 0 : AppElevation.sm,
+          shadowColor: colorScheme.primary.withValues(alpha: 0.3),
         ),
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.calculate_outlined, size: 20.sp),
+            SizedBox(width: 8.w),
+            Text(
+              text,
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+            ),
+          ],
         ),
       ),
     );

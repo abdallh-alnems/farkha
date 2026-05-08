@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/constant/theme/theme.dart';
 import '../../../../core/functions/number_format.dart';
 import '../../../../logic/controller/tools_controller/broiler_controller.dart';
 import 'card_broiler_chicken_requirements.dart';
@@ -14,97 +15,82 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
   Widget build(BuildContext context) {
     return Obx(() {
       if (!controller.showData.value) {
-        return _buildEmptyState();
+        return _buildEmptyState(context);
       }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const DetailsBroiler(),
-          const SizedBox(height: 15),
-          _buildSectionTitle(icon: Icons.heat_pump, title: 'المناخ'),
-          const SizedBox(height: 13),
-          _buildClimateGrid(),
-          const SizedBox(height: 21),
-          _buildSectionTitle(icon: Icons.checklist, title: 'متطلبات القطيع'),
-          const SizedBox(height: 13),
-          _buildRequirementsGrid(),
+          SizedBox(height: 20.h),
+          _buildSectionHeader(
+            context: context,
+            icon: Icons.thermostat_outlined,
+            title: 'المناخ',
+            subtitle: 'درجة الحرارة والرطوبة المناسبة',
+          ),
+          SizedBox(height: 12.h),
+          _buildClimateGrid(context),
+          SizedBox(height: 24.h),
+          _buildSectionHeader(
+            context: context,
+            icon: Icons.checklist_rtl_outlined,
+            title: 'متطلبات القطيع',
+            subtitle: 'المساحة والإضاءة والوزن والعلف',
+          ),
+          SizedBox(height: 12.h),
+          _buildRequirementsGrid(context),
         ],
       );
     });
   }
 
-  Widget _buildEmptyState() {
-    final colorScheme = Theme.of(Get.context!).colorScheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 61),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: colorScheme.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.info_outline,
-                size: 48,
-                color: colorScheme.primary.withValues(alpha: 0.7),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'ادخل العدد والعمر',
-              style: Get.textTheme.titleLarge?.copyWith(
-                color: colorScheme.onSurface.withValues(alpha: 0.7),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'لحساب متطلبات فراخ التسمين',
-              style: Get.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface.withValues(alpha: 0.5),
-              ),
-            ),
-          ],
+  Widget _buildEmptyState(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 24.w),
+      decoration: BoxDecoration(
+        color: isDark
+            ? AppColors.darkSurfaceElevatedColor.withValues(alpha: 0.5)
+            : colorScheme.surface,
+        borderRadius: AppDimens.borderXl,
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.2),
+
         ),
       ),
-    );
-  }
-
-  Widget _buildSectionTitle({required IconData icon, required String title}) {
-    final colorScheme = Theme.of(Get.context!).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  colorScheme.primary.withValues(alpha: 0.15),
-                  colorScheme.primary.withValues(alpha: 0.08),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: colorScheme.primary.withValues(alpha: 0.2),
-              ),
+              color: colorScheme.primary.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
             ),
-            padding: const EdgeInsets.all(10),
-            child: Icon(icon, color: colorScheme.primary, size: 22),
+            child: Icon(
+              Icons.pets_outlined,
+              size: 40.sp,
+              color: colorScheme.primary.withValues(alpha: 0.5),
+            ),
           ),
-          const SizedBox(width: 14),
+          SizedBox(height: 20.h),
           Text(
-            title,
-            style: Get.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
+            'أدخل العمر والعدد',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.8),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            'لحساب متطلبات فراخ التسمين من حرارة ورطوبة ومساحة وعلف',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
+              height: 1.6,
             ),
           ),
         ],
@@ -112,28 +98,82 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
     );
   }
 
-  Widget _buildClimateGrid() {
-    final Widget temperatureTile = _ColoredInfoTile(
-      title: 'درجة الحرارة المطلوبة',
-      value: '°${controller.ageTemperature}',
-      trailing: Obx(() => _ChipInfo(
+  Widget _buildSectionHeader({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 2.w),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.1),
+              borderRadius: AppDimens.borderSm,
+            ),
+            child: Icon(icon, color: colorScheme.primary, size: 20.sp),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildClimateGrid(BuildContext context) {
+    final Widget temperatureTile = _ClimateTile(
+      title: 'درجة الحرارة',
+      requiredValue: '°${controller.ageTemperature}',
+      requiredLabel: 'المطلوبة',
+      icon: Icons.device_thermostat,
+      weatherWidget: Obx(() => _WeatherStatus(
+            hasData: controller.weatherController.hasWeatherData,
+            label: 'الخارج',
+            value: controller.weatherController.temperatureText,
             icon: Icons.device_thermostat,
-            label: controller.weatherController.temperatureText,
           )),
-      gradient: const [
+      gradientColors: const [
         AppColors.sunsetGradientStart,
         AppColors.sunsetGradientEnd,
       ],
     );
 
-    final Widget humidityTile = _ColoredInfoTile(
-      title: 'نسبة الرطوبة المطلوبة',
-      value: controller.ageHumidityRange,
-      trailing: Obx(() => _ChipInfo(
+    final Widget humidityTile = _ClimateTile(
+      title: 'نسبة الرطوبة',
+      requiredValue: controller.ageHumidityRange,
+      requiredLabel: 'المطلوبة',
+      icon: Icons.water_drop_outlined,
+      weatherWidget: Obx(() => _WeatherStatus(
+            hasData: controller.weatherController.hasWeatherData,
+            label: 'الخارج',
+            value: controller.weatherController.humidityText,
             icon: Icons.water_drop,
-            label: controller.weatherController.humidityText,
           )),
-      gradient: const [
+      gradientColors: const [
         AppColors.oceanGradientStart,
         AppColors.oceanGradientEnd,
       ],
@@ -142,66 +182,67 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
     return Row(
       children: [
         Expanded(child: temperatureTile),
-        const SizedBox(width: 15),
+        SizedBox(width: 12.w),
         Expanded(child: humidityTile),
       ],
     );
   }
 
-  Widget _buildRequirementsGrid() {
+  Widget _buildRequirementsGrid(BuildContext context) {
     final List<_RequirementData> items = [
       _RequirementData(
         title: 'المساحة المطلوبة',
-        primary: '${formatDecimal(controller.requiredArea.value, decimals: 0)} م²',
-        secondary: 'إجمالي : ${formatDecimal(controller.collegeArea, decimals: 0)} م²',
-        icon: Icons.crop_square,
+        primary:
+            '${formatDecimal(controller.requiredArea.value, decimals: 0)} م²',
+        secondary:
+            'إجمالي: ${formatDecimal(controller.collegeArea, decimals: 0)} م²',
+        icon: Icons.crop_square_outlined,
       ),
       _RequirementData(
         title: 'الإضاءة',
-        primary: 'اظلام : ${controller.ageDarkness} ساعة',
-        secondary: 'إضاءة : ${24 - controller.ageDarkness} ساعة',
-        icon: Icons.light_mode,
+        primary: 'اظلام: ${controller.ageDarkness} ساعة',
+        secondary: 'إضاءة: ${24 - controller.ageDarkness} ساعة',
+        icon: Icons.light_mode_outlined,
       ),
       _RequirementData(
         title: 'متوسط الوزن',
         primary: '${controller.ageWeight} جم',
         secondary:
             controller.selectedChickenAge.value == null
-                ? 'حدد العمر لعرض تفاصيل الوزن'
+                ? 'حدد العمر لعرض التفاصيل'
                 : 'لعمر يوم ${controller.selectedChickenAge.value}',
-        icon: Icons.monitor_weight,
+        icon: Icons.monitor_weight_outlined,
       ),
       _RequirementData(
         title: 'استهلاك العلف',
-        primary: 'يومي : ${_formatFeed(controller.dailyFeedConsumption)}',
-        secondary: 'كلي : ${_formatTotalFeed(controller.totalFeedConsumption)}',
-        icon: Icons.grain,
+        primary: 'يومي: ${_formatFeed(controller.dailyFeedConsumption)}',
+        secondary:
+            'كلي: ${_formatTotalFeed(controller.totalFeedConsumption)}',
+        icon: Icons.grain_outlined,
       ),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        const double spacing = 16;
-        final double itemWidth =
-            (constraints.maxWidth - spacing) / 2; // دائماً 2 كارت في كل صف
+        const double spacing = 12;
+        final double itemWidth = (constraints.maxWidth - spacing) / 2;
 
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
-          children:
-              items
-                  .map(
-                    (data) => SizedBox(
-                      width: itemWidth,
-                      child: CardBroilerChickenRequirements(
-                        title: data.title,
-                        value: data.primary,
-                        subtitle: data.secondary,
-                        icon: data.icon,
-                      ),
-                    ),
-                  )
-                  .toList(),
+          children: items
+              .map(
+                (data) => SizedBox(
+                  width: itemWidth,
+                  child: CardBroilerChickenRequirements(
+                    title: data.title,
+                    value: data.primary,
+                    subtitle: data.secondary,
+                    icon: data.icon,
+                  ),
+                ),
+              )
+              .toList(),
         );
       },
     );
@@ -226,97 +267,150 @@ class ItemsBroilerChickenRequirements extends GetView<BroilerController> {
   }
 }
 
-class _ColoredInfoTile extends StatelessWidget {
-  const _ColoredInfoTile({
+class _ClimateTile extends StatelessWidget {
+  const _ClimateTile({
     required this.title,
-    required this.value,
-    required this.trailing,
-    required this.gradient,
+    required this.requiredValue,
+    required this.requiredLabel,
+    required this.icon,
+    required this.weatherWidget,
+    required this.gradientColors,
   });
 
   final String title;
-  final String value;
-  final Widget trailing;
-  final List<Color> gradient;
+  final String requiredValue;
+  final String requiredLabel;
+  final IconData icon;
+  final Widget weatherWidget;
+  final List<Color> gradientColors;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: gradient,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          colors: gradientColors,
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppDimens.borderLg,
         boxShadow: [
           BoxShadow(
-            color: gradient.last.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: gradientColors.last.withValues(alpha: 0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.white.withValues(alpha: 0.95),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
-            ),
+          Row(
+            children: [
+              Icon(
+                icon,
+                color: Colors.white.withValues(alpha: 0.9),
+                size: 18.sp,
+              ),
+              SizedBox(width: 6.w),
+              Expanded(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 10.h),
           Text(
-            value,
+            requiredValue,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
-            ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                  fontSize: 24.sp,
+                ),
           ),
-          const SizedBox(height: 16),
-          trailing,
+          SizedBox(height: 2.h),
+          Text(
+            requiredLabel,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.75),
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
+          SizedBox(height: 12.h),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: weatherWidget,
+          ),
         ],
       ),
     );
   }
 }
 
-class _ChipInfo extends StatelessWidget {
-  const _ChipInfo({required this.icon, required this.label});
-  final IconData icon;
+class _WeatherStatus extends StatelessWidget {
+  const _WeatherStatus({
+    required this.hasData,
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  final bool hasData;
   final String label;
+  final String value;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.25),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
-      child: Row(
+    if (!hasData) {
+      return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: Colors.white, size: 18),
-          const SizedBox(width: 0),
-          Flexible(
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
+          Icon(Icons.location_off_outlined, color: Colors.white54, size: 14.sp),
+          SizedBox(width: 4.w),
+          Text(
+            'فعّل الموقع',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.white54,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
         ],
-      ),
+      );
+    }
+
+    return Row(
+      children: [
+        Icon(icon, color: Colors.white70, size: 14.sp),
+        SizedBox(width: 4.w),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.white70,
+                fontWeight: FontWeight.w500,
+              ),
+        ),
+        SizedBox(width: 6.w),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+      ],
     );
   }
 }

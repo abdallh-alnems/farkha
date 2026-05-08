@@ -11,8 +11,8 @@ import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/excel/excel_export_service.dart';
 import '../../../core/services/pdf/pdf_export_service.dart';
 import '../../../logic/controller/cycle_controller.dart';
-import '../cycle/add_member_dialog.dart';
 import '../cycle/weekly_report_bottom_sheet.dart';
+import 'cycle_card_dialogs.dart';
 
 class CycleCardPopupMenu extends StatelessWidget {
   const CycleCardPopupMenu({
@@ -68,90 +68,75 @@ class CycleCardPopupMenu extends StatelessWidget {
   List<PopupMenuEntry<String>> _buildMenuItems(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final bool isViewer = cycle['role'] == 'viewer';
     return [
-      PopupMenuItem<String>(
-        value: 'add_cycle',
-        child: Text(
-          'اضف دورة',
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : AppColors.primaryColor,
-          ),
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'history',
-        child: Text(
-          'السجل',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'weeklyReport',
-        child: Text(
-          'تقرير أسبوعي',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-      const PopupMenuDivider(),
-      PopupMenuItem<String>(
-        value: 'cycleData',
-        child: Text(
-          'بيانات الدورة',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'edit',
-        child: Text(
-          'تعديل',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'share',
-        child: Text(
-          'مشاركة',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'permissions',
-        child: Text(
-          'صلاحيات',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-      PopupMenuItem<String>(
-        value: 'delete',
-        child: Text(
-          cycle['role'] == 'owner' ? AppStrings.delete : 'مغادرة الدورة',
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.error,
-          ),
-        ),
+      _menuHeader('إدارة الدورة'),
+      _menuItem(context, 'add_cycle', Icons.add_circle_outline, 'اضف دورة'),
+      _menuItem(context, 'history', Icons.history_rounded, 'السجل'),
+      const PopupMenuDivider(height: 8),
+      _menuHeader('التقارير'),
+      _menuItem(context, 'weeklyReport', Icons.date_range_rounded, 'تقرير أسبوعي'),
+      _menuItem(context, 'cycleData', Icons.info_outline_rounded, 'بيانات الدورة'),
+      const PopupMenuDivider(height: 8),
+      _menuHeader('إجراءات'),
+      if (!isViewer)
+        _menuItem(context, 'edit', Icons.edit_outlined, 'تعديل'),
+      _menuItem(context, 'share', Icons.share_outlined, 'مشاركة'),
+      if (!isViewer)
+        _menuItem(context, 'permissions', Icons.group_outlined, 'صلاحيات'),
+      _menuItem(
+        context,
+        'delete',
+        cycle['role'] == 'owner'
+            ? Icons.delete_outline_rounded
+            : Icons.exit_to_app_rounded,
+        cycle['role'] == 'owner' ? AppStrings.delete : 'مغادرة الدورة',
+        color: colorScheme.error,
       ),
     ];
+  }
+
+  PopupMenuItem<String> _menuHeader(String title) {
+    return PopupMenuItem<String>(
+      enabled: false,
+      height: 32.h,
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 11.sp,
+          fontWeight: FontWeight.w800,
+          color: AppColors.primaryColor,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
+  PopupMenuItem<String> _menuItem(
+    BuildContext context,
+    String value,
+    IconData icon,
+    String text, {
+    Color? color,
+  }) {
+    return PopupMenuItem(
+      value: value,
+      height: 40.h,
+      child: Row(
+        children: [
+          Icon(icon, size: 18.sp, color: color ?? Theme.of(context).colorScheme.onSurface),
+          SizedBox(width: 10.w),
+          Text(
+            text,
+            style: TextStyle(
+              color: color ?? Theme.of(context).colorScheme.onSurface,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _onMenuSelected(String value) async {
@@ -331,227 +316,4 @@ Future<void> handleCycleShare(
       );
     }
   }
-}
-
-void showCycleDataDialog(Map<String, dynamic> cycle, bool isDark) {
-  final colorScheme = Get.theme.colorScheme;
-  Get.dialog<void>(
-    AlertDialog(
-      backgroundColor:
-          isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
-      title: Text(
-        'بيانات الدورة',
-        style: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDialogRow('الاسم', (cycle['name'] ?? '-').toString(), colorScheme),
-          SizedBox(height: 9.h),
-          _buildDialogRow('نوع الدورة', 'تسمين', colorScheme),
-          SizedBox(height: 9.h),
-          _buildDialogRow(
-            'عدد الفراخ',
-            (cycle['chickCount'] ?? cycle['chick_count'] ?? '-')
-                .toString(),
-            colorScheme,
-          ),
-          SizedBox(height: 9.h),
-          _buildDialogRow(
-            'المساحة',
-            cycle['space'] != null &&
-                    cycle['space'] != '0' &&
-                    cycle['space'] != '-'
-                ? '${cycle['space']} م²'
-                : '-',
-            colorScheme,
-          ),
-          SizedBox(height: 9.h),
-          _buildDialogRow('نظام التربية', 'ارضي', colorScheme),
-          SizedBox(height: 9.h),
-          _buildDialogRow(
-            'تاريخ البدء',
-            (cycle['startDate'] ?? '-').toString(),
-            colorScheme,
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Get.back<void>(),
-          child: Text(
-            'حسناً',
-            style: TextStyle(
-              color: isDark
-                  ? AppColors.darkPrimaryColor
-                  : AppColors.primaryColor,
-              fontSize: 14.sp,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            final cycleCtrl = Get.isRegistered<CycleController>()
-                ? Get.find<CycleController>()
-                : Get.put(CycleController());
-            final idx = cycleCtrl.cycles.indexWhere(
-              (c) => c['name'] == cycle['name'],
-            );
-            if (idx != -1) {
-              cycleCtrl.prepareForEdit(cycle, idx);
-              Get.back<void>();
-              Get.toNamed<void>(AppRoute.addCycle);
-            }
-          },
-          child: Text(
-            'تعديل',
-            style: TextStyle(
-              color: isDark
-                  ? AppColors.darkPrimaryColor
-                  : AppColors.primaryColor,
-              fontSize: 14.sp,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildDialogRow(String label, String value, ColorScheme colorScheme) {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        '$label : ',
-        style: TextStyle(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: colorScheme.onSurface.withValues(alpha: 0.55),
-        ),
-      ),
-      Expanded(
-        child: Text(
-          value,
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Future<void> showDeleteDialog(
-  Map<String, dynamic> cycle,
-  bool isDark,
-) async {
-  final theme = Get.theme;
-  final colorScheme = theme.colorScheme;
-
-  final confirmed = await Get.dialog<bool>(
-    AlertDialog(
-      backgroundColor:
-          isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
-      content: Text(
-        'هل تريد حذف دورة ${cycle['name']}؟',
-        textAlign: TextAlign.right,
-        style: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 16.sp,
-        ),
-      ),
-      actionsAlignment: MainAxisAlignment.end,
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(result: false),
-          child: Text(
-            'لا',
-            style: TextStyle(
-              color: colorScheme.onSurface.withValues(alpha: 0.55),
-              fontSize: 14.sp,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () => Get.back(result: true),
-          child: Text(
-            'نعم',
-            style: TextStyle(color: colorScheme.error, fontSize: 14.sp),
-          ),
-        ),
-      ],
-    ),
-  );
-
-  if (confirmed == true) {
-    final cycleCtrl = Get.isRegistered<CycleController>()
-        ? Get.find<CycleController>()
-        : Get.put(CycleController());
-    cycleCtrl.currentCycle.assignAll(cycle);
-    await cycleCtrl.deleteCurrentCycle();
-  }
-}
-
-Future<void> showLeaveDialog(
-  Map<String, dynamic> cycle,
-  bool isDark,
-) async {
-  final theme = Get.theme;
-  final colorScheme = theme.colorScheme;
-
-  final confirmed = await Get.dialog<bool>(
-    AlertDialog(
-      backgroundColor:
-          isDark ? AppColors.darkSurfaceColor : AppColors.lightSurfaceColor,
-      content: Text(
-        'هل تريد مغادرة دورة ${cycle['name']}؟',
-        textAlign: TextAlign.right,
-        style: TextStyle(
-          color: colorScheme.onSurface,
-          fontSize: 16.sp,
-        ),
-      ),
-      actionsAlignment: MainAxisAlignment.end,
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(result: false),
-          child: Text(
-            'لا',
-            style: TextStyle(
-              color: colorScheme.onSurface.withValues(alpha: 0.55),
-              fontSize: 14.sp,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () => Get.back(result: true),
-          child: Text(
-            'نعم',
-            style: TextStyle(color: colorScheme.error, fontSize: 14.sp),
-          ),
-        ),
-      ],
-    ),
-  );
-
-  if (confirmed == true) {
-    final cycleCtrl = Get.isRegistered<CycleController>()
-        ? Get.find<CycleController>()
-        : Get.put(CycleController());
-    cycleCtrl.currentCycle.assignAll(cycle);
-    await cycleCtrl.leaveCycle();
-  }
-}
-
-void showMemberManagementDialog(int cycleId, bool isDark) {
-  Get.dialog<void>(
-    AddMemberDialog(cycleId: cycleId, isDark: isDark),
-  );
 }

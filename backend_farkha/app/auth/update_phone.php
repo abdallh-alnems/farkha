@@ -1,125 +1,72 @@
 <?php
 
-require_once __DIR__ . '/../../core/connect.php';
-require_once __DIR__ . '/../../core/firebase_verifier.php';
-require_once __DIR__ . '/../../core/queries/queries.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
 
-checkAuthenticate();
-requirePostMethod();
+Auth::requirePost();
+Auth::checkAppCheck();
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = Validator::getJsonBody();
 $token = $input['token'] ?? null;
 $verifiedToken = $input['verified_token'] ?? null;
-$phone = $input['phone'] ?? null;
 
-$firebaseToken = requireValidToken($token);
+$firebaseToken = Auth::verifyFirebaseToken($token);
 $uid = $firebaseToken->claims()->get('sub');
 
 if ($verifiedToken) {
     try {
+        $con = db();
         $con->beginTransaction();
 
-        $stmt = $con->prepare(Queries::findPhoneVerificationByVerifiedToken());
-        $stmt->execute([':verified_token' => $verifiedToken]);
+        $stmt = $con->prepare(
+            "SELECT pv.*, u.firebase_uid FROM phone_verifications pv JOIN users u ON pv.user_id = u.id
+             WHERE pv.verified_token = :token AND pv.verified_token_expires_at > NOW() LIMIT 1"
+        );
+        $stmt->execute([':token' => $verifiedToken]);
         $verification = $stmt->fetch();
 
         if (!$verification) {
             $con->rollBack();
-            http_response_code(404);
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode([
-                'success' => false,
-                'error' => [
-                    'code' => 'verified_session_not_found',
-                    'message' => 'رمز التحقق غير موجود أو منتهي الصلاحية',
-                ],
-            ], JSON_UNESCAPED_UNICODE);
-            exit;
+            Response::errorWithData([
+                'error' => ['code' => 'verified_session_not_found', 'message' => 'رمز التحقق غير موجود أو منتهي الصلاحية'],
+            ], 404);
         }
 
         if ($verification['firebase_uid'] !== $uid) {
             $con->rollBack();
-            http_response_code(403);
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode([
-                'success' => false,
-                'error' => [
-                    'code' => 'verified_token_mismatch',
-                    'message' => 'رمز التحقق لا ينتمي لهذا الحساب',
-                ],
-            ], JSON_UNESCAPED_UNICODE);
-            exit;
+            Response::errorWithData([
+                'error' => ['code' => 'verified_token_mismatch', 'message' => 'رمز التحقق لا ينتمي لهذا الحساب'],
+            ], 403);
+        }
+
+        $user = UserModel::findByFirebaseUid($uid);
+        if (!$user) {
+            $con->rollBack();
+            Response::fail('User not found', 404);
         }
 
         $phoneToSet = $verification['phone'];
 
-        $stmt = $con->prepare(Queries::findUserByFirebaseUidQuery());
-        $stmt->execute([':firebase_uid' => $uid]);
-        $user = $stmt->fetch();
-
-        if (!$user) {
+        $phoneOwner = UserModel::findByPhone($phoneToSet);
+        if ($phoneOwner && (int) $phoneOwner['id'] !== (int) $user['id']) {
             $con->rollBack();
-            ApiResponse::fail('User not found', 404);
+            Response::errorWithData([
+                'error' => ['code' => 'phone_already_linked', 'message' => 'هذا الرقم مستخدم بالفعل'],
+            ], 409);
         }
 
-        $stmt = $con->prepare(Queries::clearPhoneForOtherUsers());
-        $stmt->execute([
-            ':phone' => $phoneToSet,
-            ':user_id' => $user['id'],
-        ]);
+        UserModel::clearPhoneForOtherUsers($phoneToSet, (int) $user['id']);
+        UserModel::updatePhoneVerified((int) $user['id'], $phoneToSet);
 
-        $stmt = $con->prepare(Queries::updatePhoneVerified());
-        $stmt->execute([
-            ':phone' => $phoneToSet,
-            ':user_id' => $user['id'],
-        ]);
-
-        $stmt = $con->prepare(Queries::consumeVerifiedToken());
-        $stmt->execute([':id' => $verification['id']]);
+        $con->prepare("UPDATE phone_verifications SET verified_token = NULL WHERE id = :id")
+            ->execute([':id' => $verification['id']]);
 
         $con->commit();
-
-        ApiResponse::success([
-            'phone' => $phoneToSet,
-            'message' => 'تم توثيق رقم الهاتف بنجاح',
-        ]);
-
+        Response::success(['phone' => $phoneToSet, 'message' => 'تم توثيق رقم الهاتف بنجاح']);
     } catch (PDOException $e) {
-        if ($con->inTransaction()) $con->rollBack();
-        error_log("update_phone DB error: " . $e->getMessage());
-        ApiResponse::fail('Database error', 500);
-    }
-} else if ($phone) {
-    try {
-        $stmt = $con->prepare(Queries::findUserByFirebaseUidQuery());
-        $stmt->execute([':firebase_uid' => $uid]);
-        $user = $stmt->fetch();
-
-        if (!$user) {
-            ApiResponse::fail('User not found', 404);
-        }
-
-        $stmt = $con->prepare(Queries::updateUserPhoneQuery());
-        $stmt->execute([
-            ':phone' => $phone,
-            ':firebase_uid' => $uid,
-        ]);
-
-        ApiResponse::success(['message' => 'Phone number updated successfully']);
-
-    } catch (PDOException $e) {
-        error_log("update_phone DB error: " . $e->getMessage());
-        ApiResponse::fail('Database error', 500);
+        if (isset($con) && $con->inTransaction()) $con->rollBack();
+        error_log('update_phone error: ' . $e->getMessage());
+        Response::error('Database error', 500);
     }
 } else {
-    http_response_code(400);
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode([
-        'success' => false,
-        'error' => [
-            'code' => 'missing_verified_token',
-            'message' => 'رمز التحقق مطلوب',
-        ],
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+    Response::fail('verified_token is required. Phone must be verified via OTP.', 400);
 }

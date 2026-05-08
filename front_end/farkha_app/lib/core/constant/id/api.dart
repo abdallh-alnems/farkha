@@ -1,28 +1,33 @@
 import '../../services/environment_service.dart';
 
 class Api {
-  // ================================= server ==================================
   static final String _serverName = EnvService.linkServerName;
 
-  // ================================ API MAIN =================================
-  static final String _read = '$_serverName/app/read';
-  static final String _cardPrices = '$_read/card_prices';
-  static final String _articles = '$_read/articles';
+  // ============================ paths roots ==============================
+  static final String _prices = '$_serverName/app/prices';
+  static final String _cardPrices = '$_prices/card_prices';
+  static final String _articles = '$_serverName/app/articles';
+  static final String _tools = '$_serverName/app/tools';
   static final String _auth = '$_serverName/app/auth';
   static final String _cycle = '$_serverName/app/cycles';
   static final String _cycleNotes = '$_cycle/notes';
 
   // ================================= prices ==================================
-  static String mainTypes = '$_read/main_types.php';
-  static String pricesByType = '$_read/prices_by_type.php';
-  static String priceHistory = '$_read/price_history.php';
-
-  // ! feasibility study
-  static String feasibilityStudy = '$_read/feasibility_study.php';
+  static String mainTypes = '$_prices/main_types.php';
+  static String pricesByType = '$_prices/by_type.php';
+  static String priceHistory = '$_prices/history.php';
+  static String broilerChicken = '$_prices/broiler_latest.php';
 
   // ! card prices
-  static String pricesCard = '$_cardPrices/card_prices.php';
+  static String pricesCard = '$_cardPrices/cards.php';
   static String types = '$_cardPrices/types.php';
+
+  // ================================== tools ==================================
+  static String feasibilityStudy = '$_tools/feasibility_study.php';
+
+  // ================================ articles =================================
+  static String articleDetail = '$_articles/detail.php';
+  static String articlesList = '$_articles/list.php';
 
   // ============================== app reviews ================================
   static final String _appReviews = '$_serverName/app/app_reviews';
@@ -36,10 +41,6 @@ class Api {
   static final String _analytics = '$_serverName/analytics';
   static String recordToolsUsage = '$_analytics/record_tools_usage.php';
 
-  // ================================ articles =================================
-  static String articleDetail = '$_articles/article_detail.php';
-  static String articlesList = '$_articles/articles_list.php';
-
   // ============================== authentication =============================
   static String login = '$_auth/login.php';
   static String updateName = '$_auth/update_name.php';
@@ -52,7 +53,6 @@ class Api {
   static String phoneVerificationStatus = '$_auth/phone_verification_status.php';
 
   // ================================== cycle ==================================
-  static String broilerChicken = '$_cycle/broiler_chicken.php';
   static String createCycle = '$_cycle/create.php';
   static String deleteCycle = '$_cycle/delete.php';
   static String leaveCycle = '$_cycle/leave_cycle.php';
@@ -61,6 +61,7 @@ class Api {
   static String addSale = '$_cycle/add_sale.php';
   static String getCycles = '$_cycle/get_cycles.php';
   static String getCycleDetails = '$_cycle/get_cycle_details.php';
+  static String updateCycle = '$_cycle/update_cycle.php';
   static String deleteCycleItem = '$_cycle/delete_cycle_item.php';
   static String updateStatus = '$_cycle/update_status.php';
   static String getHistory = '$_cycle/get_history.php';
@@ -70,11 +71,14 @@ class Api {
   static String searchUsers = '$_cycle/search_users.php';
   static String removeMember = '$_cycle/remove_member.php';
   static String updateMemberRole = '$_cycle/update_member_role.php';
+
   // !! notes
   static String addNote = '$_cycleNotes/add_note.php';
   static String getNotes = '$_cycleNotes/get_notes.php';
   static String deleteNote = '$_cycleNotes/delete_note.php';
   static String updateNote = '$_cycleNotes/update_note.php';
+
+  // !! invitations
   static String getInvitations = '$_cycle/get_my_invitations.php';
   static String respondToInvitation = '$_cycle/respond_to_invitation.php';
 }
