@@ -57,6 +57,7 @@ import '../../../view/screen/tools/vaccination_schedule.dart';
 import '../../../view/screen/tools/water_consumption.dart';
 import '../../../view/screen/tools/weather_screen.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
+import '../../../view/widget/ad/interstitial_ad_wrapper.dart';
 import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
 import '../../package/upgrade.dart';
@@ -179,78 +180,78 @@ List<GetPage<dynamic>> pages = [
   // ========================== view follow up tools ===========================
   GetPage(
     name: AppRoute.broilerChickenRequirements,
-    page: () => BroilerChickenRequirementsScreen(),
+    page: () => InterstitialAdWrapper(child: BroilerChickenRequirementsScreen()),
   ),
 
   // ! disease
-  GetPage(name: AppRoute.diseases, page: () => const DiseasesScreen()),
+  GetPage(name: AppRoute.diseases, page: () => const InterstitialAdWrapper(child: DiseasesScreen())),
 
-  GetPage(name: AppRoute.diseaseDetails, page: () => const DiseaseDetails()),
+  GetPage(name: AppRoute.diseaseDetails, page: () => const InterstitialAdWrapper(child: DiseaseDetails())),
 
   // ! diagnosis diseases
-  GetPage(name: AppRoute.questionDisease, page: () => DiagnosisDiseases()),
+  GetPage(name: AppRoute.questionDisease, page: () => InterstitialAdWrapper(child: DiagnosisDiseases())),
 
   // ================================= tools ===================================
 
   // ! articles
-  GetPage(name: AppRoute.articlesList, page: () => const ArticlesList()),
-  GetPage(name: AppRoute.articleDetail, page: () => const ArticleDetail()),
+  GetPage(name: AppRoute.articlesList, page: () => const InterstitialAdWrapper(child: ArticlesList())),
+  GetPage(name: AppRoute.articleDetail, page: () => const InterstitialAdWrapper(child: ArticleDetail())),
 
   // ! feasibility study
   GetPage(
     name: AppRoute.feasibilityStudy,
-    page: () => const FeasibilityStudyScreen(),
+    page: () => const InterstitialAdWrapper(child: FeasibilityStudyScreen()),
   ),
 
-  GetPage(name: AppRoute.chickenDensity, page: () => const ChickenDensity()),
+  GetPage(name: AppRoute.chickenDensity, page: () => const InterstitialAdWrapper(child: ChickenDensity())),
 
   GetPage(
     name: AppRoute.dailyFeedConsumption,
-    page: () => const DailyFeedConsumption(),
+    page: () => const InterstitialAdWrapper(child: DailyFeedConsumption()),
   ),
 
   GetPage(
     name: AppRoute.waterConsumption,
-    page: () => const WaterConsumption(),
+    page: () => const InterstitialAdWrapper(child: WaterConsumption()),
   ),
 
   GetPage(
     name: AppRoute.totalFeedConsumption,
-    page: () =>  TotalFeedConsumption(),
+    page: () => InterstitialAdWrapper(child: TotalFeedConsumption()),
   ),
 
-  GetPage(name: AppRoute.fcr, page: () => FeedConversionRatio()),
-  GetPage(name: AppRoute.adg, page: () => AverageDailyGain()),
-  GetPage(name: AppRoute.roi, page: () => ReturnOnInvestment()),
-  GetPage(name: AppRoute.mortalityRate, page: () => MortalityRateScreen()),
+  GetPage(name: AppRoute.fcr, page: () => InterstitialAdWrapper(child: FeedConversionRatio())),
+  GetPage(name: AppRoute.adg, page: () => InterstitialAdWrapper(child: AverageDailyGain())),
+  GetPage(name: AppRoute.roi, page: () => InterstitialAdWrapper(child: ReturnOnInvestment())),
+  GetPage(name: AppRoute.mortalityRate, page: () => InterstitialAdWrapper(child: MortalityRateScreen())),
   GetPage(
     name: AppRoute.birdProductionCost,
     page: () => BirdProductionCostScreen(),
   ),
   GetPage(
     name: AppRoute.birdNetProfit,
-    page: () => const BirdNetProfitScreen(),
+    page: () => const InterstitialAdWrapper(child: BirdNetProfitScreen()),
   ),
-  GetPage(name: AppRoute.weightByAge, page: () => const WeightByAgeScreen()),
+  GetPage(name: AppRoute.weightByAge, page: () => const InterstitialAdWrapper(child: WeightByAgeScreen())),
   GetPage(
     name: AppRoute.temperatureByAge,
-    page: () => const TemperatureByAgeScreen(),
+    page: () => const InterstitialAdWrapper(child: TemperatureByAgeScreen()),
   ),
   GetPage(
     name: AppRoute.darknessLevels,
-    page: () => const DarknessLevelsScreen(),
+    page: () => const InterstitialAdWrapper(child: DarknessLevelsScreen()),
   ),
-  GetPage(name: AppRoute.totalFarmWeight, page: () => TotalFarmWeightScreen()),
-  GetPage(name: AppRoute.totalRevenue, page: () => TotalRevenueScreen()),
-  GetPage(name: AppRoute.feedCostPerBird, page: () => FeedCostPerBirdScreen()),
-  GetPage(name: AppRoute.feedCostPerKilo, page: () => FeedCostPerKiloScreen()),
+  GetPage(name: AppRoute.totalFarmWeight, page: () => InterstitialAdWrapper(child: TotalFarmWeightScreen())),
+  GetPage(name: AppRoute.totalRevenue, page: () => InterstitialAdWrapper(child: TotalRevenueScreen())),
+  GetPage(name: AppRoute.feedCostPerBird, page: () => InterstitialAdWrapper(child: FeedCostPerBirdScreen())),
+  GetPage(name: AppRoute.feedCostPerKilo, page: () => InterstitialAdWrapper(child: FeedCostPerKiloScreen())),
   GetPage(
     name: AppRoute.vaccinationSchedule,
-    page: () => const VaccinationSchedule(),
+    page: () => const InterstitialAdWrapper(child: VaccinationSchedule()),
   ),
   GetPage(name: AppRoute.allTools, page: () => const AllTools()),
-  GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
-  GetPage(name: AppRoute.weather, page: () => const WeatherScreen()),
+  GetPage(name: AppRoute.fanOperation, page: () => const InterstitialAdWrapper(child: FanOperationScreen())),
+  GetPage(name: AppRoute.weather, page: () => const InterstitialAdWrapper(child: WeatherScreen())),
 
   GetPage(
     name: AppRoute.darknessAlarm,
