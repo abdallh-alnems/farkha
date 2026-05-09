@@ -13,13 +13,7 @@ final class NotificationService {
             $rows = $stmt->fetchAll();
 
             if (empty($rows)) {
-                $stmt2 = $con->prepare("SELECT fcm_token FROM users WHERE id = ?");
-                $stmt2->execute([$userId]);
-                $fallback = $stmt2->fetch();
-                if (!$fallback || empty($fallback['fcm_token'])) {
-                    return false;
-                }
-                $rows = [['fcm_token' => $fallback['fcm_token']]];
+                return false;
             }
 
             $stringData = array_map('strval', $data);

@@ -14,6 +14,7 @@ $type = $input['type'] ?? null;
 $deleteType = $input['delete_type'] ?? null;
 $itemId = $input['item_id'] ?? null;
 $label = $input['label'] ?? null;
+$metricType = $input['metric_type'] ?? null;
 
 Validator::required($cycleId, 'cycle_id');
 $cycleId = (int) Validator::numeric($cycleId, 'cycle_id', 1);
@@ -22,7 +23,7 @@ Validator::required($type, 'type');
 $type = Validator::enum($type, ['data', 'expense', 'sale', 'inventory'], 'type');
 
 Validator::required($deleteType, 'delete_type');
-$deleteType = Validator::enum($deleteType, ['single', 'by_label'], 'delete_type');
+$deleteType = Validator::enum($deleteType, ['single', 'by_label', 'by_metric_type'], 'delete_type');
 
 if ($deleteType === 'single') {
     Validator::required($itemId, 'item_id');
@@ -31,6 +32,10 @@ if ($deleteType === 'single') {
 
 if ($deleteType === 'by_label') {
     Validator::required($label, 'label');
+}
+
+if ($deleteType === 'by_metric_type') {
+    Validator::required($metricType, 'metric_type');
 }
 
 $con = db();
@@ -44,9 +49,12 @@ try {
         if ($deleteType === 'single') {
             $query = "DELETE FROM cycle_data WHERE id = :id AND cycle_id = :cycle_id";
             $params[':id'] = $itemId;
+        } elseif ($deleteType === 'by_metric_type') {
+            $query = "DELETE FROM cycle_data WHERE metric_type = :metric_type AND cycle_id = :cycle_id";
+            $params[':metric_type'] = $metricType;
         } else {
-            $query = "DELETE FROM cycle_data WHERE label = :label AND cycle_id = :cycle_id";
-            $params[':label'] = $label;
+            $query = "DELETE FROM cycle_data WHERE metric_type = :metric_type AND cycle_id = :cycle_id";
+            $params[':metric_type'] = $label;
         }
     } elseif ($type === 'expense') {
         if ($deleteType === 'single') {

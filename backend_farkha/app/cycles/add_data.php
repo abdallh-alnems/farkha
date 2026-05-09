@@ -10,27 +10,28 @@ $userId = $auth['user_id'];
 $input = $auth['input'];
 
 $cycleId = $input['cycle_id'] ?? null;
-$label = $input['label'] ?? null;
-$value = $input['value'] ?? null;
 $metricType = $input['metric_type'] ?? null;
+$numericValue = $input['numeric_value'] ?? null;
+$textValue = $input['text_value'] ?? null;
 
 Validator::required($cycleId, 'cycle_id');
-Validator::required($label, 'label');
-Validator::required($value, 'value');
+Validator::required($metricType, 'metric_type');
 
 $cycleId = (int) Validator::numeric($cycleId, 'cycle_id', 1);
+$metricType = Validator::enum($metricType, ['weight', 'mortality', 'feed', 'vaccination', 'water', 'temperature', 'humidity', 'medicine', 'other'], 'metric_type');
 
-if ($metricType !== null) {
-    $metricType = Validator::enum($metricType, ['weight', 'mortality', 'feed', 'water', 'temperature', 'humidity', 'medicine', 'other'], 'metric_type');
-} else {
-    $metricType = 'other';
+$numericVal = ($numericValue !== null) ? (float) $numericValue : null;
+$textVal = ($textValue !== null) ? (string) $textValue : null;
+
+if ($numericVal === null && $textVal === null) {
+    Response::fail('Either numeric_value or text_value is required', 400);
 }
 
 $con = db();
 CycleModel::requireWriteAccess($con, $cycleId, $userId);
 
 try {
-    CycleModel::insertData($con, $cycleId, $label, $value, $metricType);
+    CycleModel::insertData($con, $cycleId, $metricType, $numericVal, $textVal);
 
     Response::success([
         'data_id' => (int) Database::lastInsertId(),

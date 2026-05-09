@@ -74,6 +74,8 @@ flutter clean && flutter pub get
 - MySQL جدول جديد `cycle_feedbacks` على نفس قاعدة بيانات MAMP · `get_storage` لمفتاحين جديدين (`cycle_review_shown_at`, `cycle_review_submitted`) بجانب `first_launch_at` المشترك · لا Firebase Firestore ولا Realtime DB · **لا Firebase Analytics events** لهذه الميزة (قرار Clarification 2026-04-24) (004-cycle-rating)
 - Dart 3.7.2+ / Flutter SDK (channel stable) · Swift 5.x لـ iOS native · Objective-C bridging موجود (`Runner-Bridging-Header.h`) + GetX 4.7.2 · Firebase (Core/Auth/Analytics/Crashlytics/Messaging/Remote Config/App Check) · `google_sign_in: ^7.2.0` · `firebase_messaging: ^16.0.2` · `flutter_local_notifications: ^19.5.0` · `app_links: ^7.0.0` · `permission_handler: ^12.0.0+1` · `google_mobile_ads: ^7.0.0` (يُعطَّل على iOS) · `flutter_launcher_icons: ^0.14.4` (موجود) — لا حزم Dart جديدة (005-ios-platform-parity)
 - لا تغيير — يبقى PHP REST API + Firebase. التخزين المحلي: `get_storage` كما هو (005-ios-platform-parity)
+- Dart 3.7.2+ / Flutter SDK · PHP 8.x · MySQL 8.0.44 (MAMP) + GetX 4.7.2 · Firebase (Auth/Analytics/Crashlytics/Messaging/Remote Config) · `http` via `core/class/crud.dart` · PDO (PHP backend) (006-database-overhaul)
+- MySQL `farkha` على MAMP (port 8889، user=root، pass=root) · `user_devices` table موجود · `get_storage` للتطبيق (006-database-overhaul)
 
 ## Recent Changes
 - 001-testing-setup: Added test infrastructure — mocktail, test helpers, controller DI refactor, 52 tests

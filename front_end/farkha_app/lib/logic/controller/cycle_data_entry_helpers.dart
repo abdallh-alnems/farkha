@@ -67,9 +67,9 @@ int resolveCycleIdInt(dynamic cycleId) {
 
 Future<void> sendCycleDataToServer(
   CycleControllerBase c, {
-  required String label,
-  required String value,
-  String? metricType,
+  required String metricType,
+  double? numericValue,
+  String? textValue,
 }) async {
   try {
     final cycleId = c.currentCycle['cycle_id'];
@@ -88,9 +88,9 @@ Future<void> sendCycleDataToServer(
     await c.cycleData.addCycleData(
       token: token,
       cycleId: resolveCycleIdInt(cycleId),
-      label: label,
-      value: value,
       metricType: metricType,
+      numericValue: numericValue,
+      textValue: textValue,
     );
   } catch (_) {}
 }

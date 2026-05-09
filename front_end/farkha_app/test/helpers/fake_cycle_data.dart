@@ -28,9 +28,9 @@ class FakeCycleData implements CycleData {
   Future<Either<StatusRequest, Map<String, dynamic>>> addCycleData({
     required String token,
     required int cycleId,
-    required String label,
-    required String value,
-    String? metricType,
+    required String metricType,
+    double? numericValue,
+    String? textValue,
   }) async => _get('addCycleData');
 
   @override
@@ -99,6 +99,7 @@ class FakeCycleData implements CycleData {
     required String deleteType,
     int? itemId,
     String? label,
+    String? metricType,
   }) async => _get('deleteCycleItem');
 
   @override

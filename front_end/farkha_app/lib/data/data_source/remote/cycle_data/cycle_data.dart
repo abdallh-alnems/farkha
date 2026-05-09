@@ -64,9 +64,9 @@ class CycleData {
   Future<Either<StatusRequest, Map<String, dynamic>>> addCycleData({
     required String token,
     required int cycleId,
-    required String label,
-    required String value,
-    String? metricType,
+    required String metricType,
+    double? numericValue,
+    String? textValue,
   }) async {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
@@ -79,12 +79,14 @@ class CycleData {
       final body = <String, dynamic>{
         'token': token,
         'cycle_id': cycleId,
-        'label': label,
-        'value': value,
+        'metric_type': metricType,
       };
 
-      if (metricType != null) {
-        body['metric_type'] = metricType;
+      if (numericValue != null) {
+        body['numeric_value'] = numericValue;
+      }
+      if (textValue != null) {
+        body['text_value'] = textValue;
       }
 
       final response = await http.post(
@@ -405,6 +407,7 @@ class CycleData {
     required String deleteType,
     int? itemId,
     String? label,
+    String? metricType,
   }) async {
     final bool isConnected = await InternetChecker.checkConnection();
     if (!isConnected) {
@@ -423,6 +426,8 @@ class CycleData {
 
       if (deleteType == 'single' && itemId != null) {
         body['item_id'] = itemId;
+      } else if (deleteType == 'by_metric_type' && metricType != null) {
+        body['metric_type'] = metricType;
       } else if (deleteType == 'by_label' && label != null) {
         body['label'] = label;
       }

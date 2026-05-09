@@ -33,7 +33,7 @@ final class CycleModel {
     public static function fetchUserCycles(int $userId): array {
         return Database::fetchAll(
             "SELECT c.id, c.name, c.owner_user_id, c.chick_count, c.system_type, c.start_date_raw, c.end_date_raw, cu.role,
-                COALESCE(CAST((SELECT SUM(CAST(TRIM(cd2.value) AS DECIMAL(10,2))) FROM cycle_data cd2 WHERE cd2.cycle_id = c.id AND cd2.label = 'عدد النافق') AS UNSIGNED), 0) as mortality,
+                COALESCE(CAST((SELECT SUM(cd2.numeric_value) FROM cycle_data cd2 WHERE cd2.cycle_id = c.id AND cd2.metric_type = 'mortality') AS UNSIGNED), 0) as mortality,
                 COALESCE(CAST((SELECT SUM(ce2.value) FROM cycle_expenses ce2 WHERE ce2.cycle_id = c.id) AS UNSIGNED), 0) as total_expenses
             FROM cycles c
             INNER JOIN cycle_users cu ON c.id = cu.cycle_id
@@ -142,24 +142,14 @@ final class CycleModel {
         $stmt->execute([':cid' => $cycleId, ':uid' => $userId]);
     }
 
-    public static function insertData(PDO $con, int $cycleId, string $label, string $value, string $metricType = 'other'): void {
-        $numericValue = null;
-        $textValue = null;
-        if (is_numeric($value)) {
-            $numericValue = (float) $value;
-        } else {
-            $textValue = $value;
-        }
-
+    public static function insertData(PDO $con, int $cycleId, string $metricType, ?float $numericValue, ?string $textValue): void {
         $stmt = $con->prepare(
-            "INSERT INTO cycle_data (cycle_id, metric_type, label, value, numeric_value, text_value)
-             VALUES (:cid, :metric_type, :label, :value, :numeric_value, :text_value)"
+            "INSERT INTO cycle_data (cycle_id, metric_type, numeric_value, text_value)
+             VALUES (:cid, :metric_type, :numeric_value, :text_value)"
         );
         $stmt->execute([
             ':cid' => $cycleId,
             ':metric_type' => $metricType,
-            ':label' => $label,
-            ':value' => $value,
             ':numeric_value' => $numericValue,
             ':text_value' => $textValue,
         ]);
@@ -187,7 +177,7 @@ final class CycleModel {
 
     public static function fetchDataChronological(int $cycleId): array {
         return Database::fetchAll(
-            "SELECT id, cycle_id, label, value, entry_date FROM cycle_data WHERE cycle_id = :cid ORDER BY entry_date ASC",
+            "SELECT id, cycle_id, metric_type, numeric_value, text_value, entry_date FROM cycle_data WHERE cycle_id = :cid ORDER BY entry_date ASC",
             [':cid' => $cycleId]
         );
     }
@@ -288,10 +278,10 @@ final class CycleModel {
 
         $stmt = $con->prepare(
             "SELECT c.id, c.name, c.chick_count, c.space, c.breed, c.system_type, c.start_date_raw, c.end_date_raw, cu.role,
-                COALESCE(CAST((SELECT SUM(CAST(TRIM(cd2.value) AS DECIMAL(10,2))) FROM cycle_data cd2 WHERE cd2.cycle_id = c.id AND cd2.label = 'عدد النافق') AS UNSIGNED), 0) as mortality,
+                COALESCE(CAST((SELECT SUM(cd2.numeric_value) FROM cycle_data cd2 WHERE cd2.cycle_id = c.id AND cd2.metric_type = 'mortality') AS UNSIGNED), 0) as mortality,
                 COALESCE(CAST((SELECT SUM(ce2.value) FROM cycle_expenses ce2 WHERE ce2.cycle_id = c.id) AS UNSIGNED), 0) as total_expenses,
-                COALESCE(CAST((SELECT SUM(CAST(TRIM(cd2.value) AS DECIMAL(10,2))) FROM cycle_data cd2 WHERE cd2.cycle_id = c.id AND cd2.label = 'استهلاك العلف') AS UNSIGNED), 0) as total_feed,
-                COALESCE(CAST((SELECT cd3.value FROM cycle_data cd3 WHERE cd3.cycle_id = c.id AND cd3.label = 'متوسط وزن القطيع' ORDER BY cd3.entry_date DESC LIMIT 1) AS DECIMAL(10,3)), 0) as average_weight,
+                COALESCE(CAST((SELECT SUM(cd2.numeric_value) FROM cycle_data cd2 WHERE cd2.cycle_id = c.id AND cd2.metric_type = 'feed') AS UNSIGNED), 0) as total_feed,
+                COALESCE(CAST((SELECT cd3.numeric_value FROM cycle_data cd3 WHERE cd3.cycle_id = c.id AND cd3.metric_type = 'weight' ORDER BY cd3.entry_date DESC LIMIT 1) AS DECIMAL(10,3)), 0) as average_weight,
                 COALESCE((SELECT SUM(total_price) FROM cycle_sales cs2 WHERE cs2.cycle_id = c.id), 0) as total_sales
             FROM cycles c INNER JOIN cycle_users cu ON c.id = cu.cycle_id
             WHERE {$where} ORDER BY c.end_date_raw DESC, c.id DESC LIMIT :limit OFFSET :offset"
