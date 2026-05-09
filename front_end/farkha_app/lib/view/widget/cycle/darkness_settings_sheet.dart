@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -164,15 +166,15 @@ class _PhaseSection extends StatelessWidget {
                   onTap: () async {
                     final bool granted = await controller.requirePermissions();
                     if (granted && context.mounted) {
-                      _openTimePicker(
+                      unawaited(_openTimePicker(
                         context: context,
                         controller: controller,
                         phase: phase,
-                        hour: hour24 ?? 12, // Default to 12 if unset
+                        hour: hour24 ?? 12,
                         minute: minute ?? 0,
                         primary: primary,
                         isDark: isDark,
-                      );
+                      ));
                     }
                   },
                   child: Container(

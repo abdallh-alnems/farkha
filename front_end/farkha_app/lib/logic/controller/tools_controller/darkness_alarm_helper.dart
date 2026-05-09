@@ -156,7 +156,7 @@ class DarknessAlarmHelper {
           final String key =
               '$StorageKeys.darknessAlarmShownPrefix${todayStr}_$phase';
           if (_storage.read<bool>(key) != true) {
-            _storage.write(key, true);
+            unawaited(_storage.write(key, true));
 
             if (GetPlatform.isAndroid) {
               try {
@@ -204,7 +204,7 @@ class DarknessAlarmHelper {
 
             final int totalDarknessHours = _controller.darknessHoursForDayRx.value;
 
-            Get.toNamed<void>(
+            unawaited(Get.toNamed<void>(
               AppRoute.darknessAlarm,
               arguments: <String, dynamic>{
                 'type': 'darkness_alarm',
@@ -221,7 +221,7 @@ class DarknessAlarmHelper {
                 if (currentAge != null) 'age': currentAge,
                 'totalDarknessHours': totalDarknessHours,
               },
-            );
+            ));
           }
         }
       }
@@ -359,7 +359,7 @@ class DarknessAlarmHelper {
 
     if (Get.isDialogOpen ?? false) return;
 
-    _storage.write(StorageKeys.darknessSuggestionShown, true);
+    unawaited(_storage.write(StorageKeys.darknessSuggestionShown, true));
 
     await Get.dialog<void>(
       AppAlertDialog(
@@ -374,10 +374,10 @@ class DarknessAlarmHelper {
 
           final bool granted = await requirePermissions();
           if (granted) {
-            Get.bottomSheet<void>(
+            unawaited(Get.bottomSheet<void>(
               DarknessSettingsSheet(controller: _controller),
               isScrollControlled: true,
-            );
+            ));
           }
         },
         secondaryActionLabel: 'لاحقاً',

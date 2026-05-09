@@ -129,8 +129,8 @@ class GrowthChart extends StatelessWidget {
                   ),
                 ),
                 titlesData: FlTitlesData(
-                  topTitles: const AxisTitles(sideTitles: SideTitles()),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles()),
+                  topTitles: const AxisTitles(),
+                  rightTitles: const AxisTitles(),
                   bottomTitles: AxisTitles(
                     axisNameWidget: Padding(
                       padding: EdgeInsets.only(top: 4.h),
@@ -178,9 +178,8 @@ class GrowthChart extends StatelessWidget {
                     isCurved: true,
                     curveSmoothness: 0.3,
                     preventCurveOverShooting: true,
-                    color: isDark ? Colors.grey[500] : Colors.grey[400],
-                    barWidth: 2,
-                    dashArray: [6, 4],
+                      color: isDark ? Colors.grey[500] : Colors.grey[400],
+                      dashArray: [6, 4],
                     isStrokeCapRound: true,
                     dotData: const FlDotData(show: false),
                     belowBarData: BarAreaData(show: true, color: (isDark ? Colors.grey[500] : Colors.grey[400])!.withValues(alpha: 0.05)),
@@ -196,8 +195,7 @@ class GrowthChart extends StatelessWidget {
                       isStrokeCapRound: true,
                       isStrokeJoinRound: true,
                       dotData: FlDotData(
-                        show: true,
-                        getDotPainter: (_, __, ___, ____) => FlDotCirclePainter(
+                        getDotPainter: (_, _, _, _) => FlDotCirclePainter(
                           radius: 3.5,
                           color: accentColor,
                           strokeWidth: 1.5,
@@ -216,7 +214,6 @@ class GrowthChart extends StatelessWidget {
                     ),
                 ],
                 lineTouchData: LineTouchData(
-                  handleBuiltInTouches: true,
                   touchTooltipData: LineTouchTooltipData(
                     tooltipRoundedRadius: 8.r,
                     tooltipPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),

@@ -56,6 +56,7 @@ class _HomeState extends State<HomeScreen> {
         await myServices.getStorage.write(StorageKeys.messagingConfigured, true);
       }
       final permissionController = Get.find<PermissionController>();
+      if (!mounted) return;
       await permissionController.showPermissionsIntroIfNeeded(context);
       if (!mounted) return;
       _showTutorialIfNeeded();

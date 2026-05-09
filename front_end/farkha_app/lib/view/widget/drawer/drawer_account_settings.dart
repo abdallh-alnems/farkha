@@ -215,7 +215,7 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
 
   Future<void> _handleEditPhone() async {
     Navigator.pop(context);
-    Get.toNamed<void>(AppRoute.verifyPhoneNumber);
+    unawaited(Get.toNamed<void>(AppRoute.verifyPhoneNumber));
   }
 
   Future<void> _handleSignOut() async {

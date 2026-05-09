@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -230,8 +232,7 @@ class CycleNotesController extends GetxController {
         noteId: noteId,
       );
     } catch (e) {
-      // في حالة الفشل، إعادة تحميل من السيرفر
-      _loadNotes();
+      unawaited(_loadNotes());
     }
   }
 
@@ -284,8 +285,7 @@ class CycleNotesController extends GetxController {
         },
       );
     } catch (e) {
-      // في حالة الفشل، إعادة تحميل من السيرفر
-      _loadNotes();
+      unawaited(_loadNotes());
     }
   }
 

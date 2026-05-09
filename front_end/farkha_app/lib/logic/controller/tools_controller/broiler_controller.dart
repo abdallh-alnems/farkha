@@ -121,7 +121,7 @@ class BroilerController extends GetxController {
         waterConsumptions[age - 1] * chickens!;
     double totalMl = 0.0;
     for (int i = 0; i < age; i++) {
-      totalMl += waterConsumptions[i] * chickens!;
+      totalMl += waterConsumptions[i] * chickens;
     }
     totalWaterConsumption = totalMl / 1000.0;
   }

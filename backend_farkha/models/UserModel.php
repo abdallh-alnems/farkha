@@ -3,14 +3,14 @@
 final class UserModel {
     public static function findByFirebaseUid(string $uid): ?array {
         return Database::fetchOne(
-            "SELECT * FROM users WHERE firebase_uid = :uid AND deleted_at IS NULL LIMIT 1",
+            "SELECT * FROM users WHERE firebase_uid = :uid LIMIT 1",
             [':uid' => $uid]
         );
     }
 
     public static function findById(int $id): ?array {
         return Database::fetchOne(
-            "SELECT * FROM users WHERE id = :id AND deleted_at IS NULL LIMIT 1",
+            "SELECT * FROM users WHERE id = :id LIMIT 1",
             [':id' => $id]
         );
     }
@@ -39,7 +39,7 @@ final class UserModel {
 
     public static function deleteByFirebaseUid(string $uid): void {
         Database::execute(
-            "UPDATE users SET deleted_at = NOW() WHERE firebase_uid = :uid",
+            "DELETE FROM users WHERE firebase_uid = :uid",
             [':uid' => $uid]
         );
     }
@@ -53,14 +53,14 @@ final class UserModel {
 
     public static function searchByPhone(string $searchTerm, string $excludeUid): array {
         return Database::fetchAll(
-            "SELECT id, name, phone FROM users WHERE phone LIKE :search AND firebase_uid != :uid AND deleted_at IS NULL LIMIT 10",
+            "SELECT id, name, phone FROM users WHERE phone LIKE :search AND firebase_uid != :uid LIMIT 10",
             [':search' => $searchTerm, ':uid' => $excludeUid]
         );
     }
 
     public static function findByPhone(string $phone): ?array {
         return Database::fetchOne(
-            "SELECT * FROM users WHERE phone = :phone AND deleted_at IS NULL LIMIT 1",
+            "SELECT * FROM users WHERE phone = :phone LIMIT 1",
             [':phone' => $phone]
         );
     }

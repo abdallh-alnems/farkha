@@ -161,7 +161,7 @@ abstract class CycleControllerBase extends GetxController {
       totalExpenses = processedExpenses.fold<double>(0.0, (sum, expense) => sum + ((expense['value'] as num?)?.toDouble() ?? 0.0));
     }
 
-    double calculatedTotalSales = (double.tryParse(totalSales) ?? 0.0);
+    double calculatedTotalSales = double.tryParse(totalSales) ?? 0.0;
     if (calculatedTotalSales == 0.0 && salesList != null && salesList.isNotEmpty) {
       calculatedTotalSales = salesList.fold<double>(0.0, (sum, sale) => sum + (double.tryParse(sale['total_price']?.toString() ?? '0.0') ?? 0.0));
     }

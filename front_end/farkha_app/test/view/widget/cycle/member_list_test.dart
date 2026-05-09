@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:get/get_instance/src/lifecycle.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../helpers/fake_cycle_data.dart';
@@ -51,10 +50,10 @@ void main() {
   Future<void> pumpMemberList(WidgetTester tester) async {
     await TestHarness.pump(
       tester,
-      SizedBox(
+      const SizedBox(
         width: 390,
         height: 844,
-        child: SingleChildScrollView(child: const MemberListWidget()),
+        child: SingleChildScrollView(child: MemberListWidget()),
       ),
     );
   }

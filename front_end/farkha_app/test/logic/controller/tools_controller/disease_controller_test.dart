@@ -1,5 +1,4 @@
 import 'package:farkha_app/data/model/disease_model/disease_model.dart';
-import 'package:farkha_app/data/model/disease_model/question_disease_model.dart';
 import 'package:farkha_app/logic/controller/tools_controller/disease_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';

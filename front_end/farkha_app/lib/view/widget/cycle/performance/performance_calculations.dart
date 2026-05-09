@@ -78,7 +78,7 @@ double calculateProductionEfficiency(CycleController cycleCtrl, BroilerControlle
     avgWeightPerChicken = averageWeight;
   }
   if (avgWeightPerChicken <= 0) return 0.0;
-  double survivalRate = (chickCount > 0 && aliveChickens > 0) ? (aliveChickens / chickCount) * 100.0 : 0.0;
+  final double survivalRate = (chickCount > 0 && aliveChickens > 0) ? (aliveChickens / chickCount) * 100.0 : 0.0;
   if (survivalRate <= 0) return 0.0;
 
   final denominator = ageDays * fcr;

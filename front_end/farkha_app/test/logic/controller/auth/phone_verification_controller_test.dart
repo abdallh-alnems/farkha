@@ -87,7 +87,7 @@ void main() {
       expect(controller.resendCountdown.value, 2);
       expect(controller.isResendEnabled.value, isFalse);
 
-      await Future.delayed(const Duration(seconds: 3));
+      await Future<void>.delayed(const Duration(seconds: 3));
 
       expect(controller.resendCountdown.value, 0);
       expect(controller.isResendEnabled.value, isTrue);

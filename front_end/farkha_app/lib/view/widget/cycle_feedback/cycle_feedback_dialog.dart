@@ -39,7 +39,7 @@ class CycleFeedbackDialog extends StatelessWidget {
                   GestureDetector(
                     onTap: () => controller.skip(),
                     child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
                       child: Icon(Icons.close, size: 24.sp),
                     ),
                   ),
@@ -49,7 +49,6 @@ class CycleFeedbackDialog extends StatelessWidget {
               StarRatingInput(
                 value: controller.rating,
                 onChanged: (v) => controller.setRating(v),
-                size: 32,
               ),
               SizedBox(height: 8.h),
               RatingDescription(rating: controller.rating),
@@ -112,7 +111,7 @@ class CycleFeedbackDialog extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () => controller.submit(),
-                        child: Text('إعادة المحاولة'),
+                        child: const Text('إعادة المحاولة'),
                       ),
                     ],
                   ),
@@ -122,7 +121,7 @@ class CycleFeedbackDialog extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () => controller.skip(),
-                    child: Text(AppStrings.skip),
+                    child: const Text(AppStrings.skip),
                   ),
                   ElevatedButton(
                     onPressed: controller.statusRequest == StatusRequest.loading
@@ -132,9 +131,9 @@ class CycleFeedbackDialog extends StatelessWidget {
                         ? SizedBox(
                             width: 16.w,
                             height: 16.h,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: const CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Text('إرسال'),
+                        : const Text('إرسال'),
                   ),
                 ],
               ),

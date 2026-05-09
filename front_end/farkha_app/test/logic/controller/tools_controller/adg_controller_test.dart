@@ -30,8 +30,8 @@ void main() {
 
       controller.calculateADG();
 
-      final currentWeightG = 1.8 * 1000;
-      final expected = (currentWeightG - 45) / 35;
+      const currentWeightG = 1.8 * 1000;
+      const expected = (currentWeightG - 45) / 35;
       expect(controller.adg.value, closeTo(expected, 0.01));
     });
 

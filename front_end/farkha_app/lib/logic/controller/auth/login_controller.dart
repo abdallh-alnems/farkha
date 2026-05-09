@@ -200,7 +200,7 @@ class LoginController extends GetxController {
       if (success) {
         _showSnackbar('تم تسجيل الدخول بنجاح');
         if (Get.isRegistered<NotificationService>()) {
-          NotificationService.instance.syncToken();
+          unawaited(NotificationService.instance.syncToken());
         }
 
         if (Get.isRegistered<CycleController>()) {
@@ -305,7 +305,7 @@ class LoginController extends GetxController {
       if (success) {
         _showSnackbar('تم تسجيل الدخول بنجاح');
         if (Get.isRegistered<NotificationService>()) {
-          NotificationService.instance.syncToken();
+          unawaited(NotificationService.instance.syncToken());
         }
 
         if (Get.isRegistered<CycleController>()) {

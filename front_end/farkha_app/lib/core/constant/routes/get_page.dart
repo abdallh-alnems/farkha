@@ -102,7 +102,7 @@ List<GetPage<dynamic>> pages = [
   // ================================ cycle ====================================
   GetPage(
     name: AppRoute.addCycle,
-    page: () => AddCycleScreen(),
+    page: () => const AddCycleScreen(),
     middlewares: [AuthMiddleware()],
   ),
 
@@ -222,7 +222,7 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(name: AppRoute.fcr, page: () => InterstitialAdWrapper(child: FeedConversionRatio())),
   GetPage(name: AppRoute.adg, page: () => InterstitialAdWrapper(child: AverageDailyGain())),
-  GetPage(name: AppRoute.roi, page: () => InterstitialAdWrapper(child: ReturnOnInvestment())),
+  GetPage(name: AppRoute.roi, page: () => const InterstitialAdWrapper(child: ReturnOnInvestment())),
   GetPage(name: AppRoute.mortalityRate, page: () => InterstitialAdWrapper(child: MortalityRateScreen())),
   GetPage(
     name: AppRoute.birdProductionCost,
@@ -241,10 +241,10 @@ List<GetPage<dynamic>> pages = [
     name: AppRoute.darknessLevels,
     page: () => const InterstitialAdWrapper(child: DarknessLevelsScreen()),
   ),
-  GetPage(name: AppRoute.totalFarmWeight, page: () => InterstitialAdWrapper(child: TotalFarmWeightScreen())),
-  GetPage(name: AppRoute.totalRevenue, page: () => InterstitialAdWrapper(child: TotalRevenueScreen())),
-  GetPage(name: AppRoute.feedCostPerBird, page: () => InterstitialAdWrapper(child: FeedCostPerBirdScreen())),
-  GetPage(name: AppRoute.feedCostPerKilo, page: () => InterstitialAdWrapper(child: FeedCostPerKiloScreen())),
+  GetPage(name: AppRoute.totalFarmWeight, page: () => const InterstitialAdWrapper(child: TotalFarmWeightScreen())),
+  GetPage(name: AppRoute.totalRevenue, page: () => const InterstitialAdWrapper(child: TotalRevenueScreen())),
+  GetPage(name: AppRoute.feedCostPerBird, page: () => const InterstitialAdWrapper(child: FeedCostPerBirdScreen())),
+  GetPage(name: AppRoute.feedCostPerKilo, page: () => const InterstitialAdWrapper(child: FeedCostPerKiloScreen())),
   GetPage(
     name: AppRoute.vaccinationSchedule,
     page: () => const InterstitialAdWrapper(child: VaccinationSchedule()),

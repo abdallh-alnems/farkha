@@ -185,7 +185,7 @@ class PermissionController extends GetxController {
       await Get.dialog<void>(
         LocationIntroDialog(
           onEnable: () async {
-            _storage.write(StorageKeys.permissionsIntroLocationShown, true);
+            unawaited(_storage.write(StorageKeys.permissionsIntroLocationShown, true));
             // انتظار نتيجة طلب الإذن من النظام قبل إكمال
             await checkAndRequestLocationPermission();
             locationCompleter.complete();
@@ -207,10 +207,10 @@ class PermissionController extends GetxController {
       await Get.dialog<void>(
         NotificationIntroDialog(
           onEnable: () async {
-            _storage.write(
+            unawaited(_storage.write(
               StorageKeys.permissionsIntroNotificationShown,
               true,
-            );
+            ));
             await checkAndRequestNotificationPermission();
             notificationCompleter.complete();
           },

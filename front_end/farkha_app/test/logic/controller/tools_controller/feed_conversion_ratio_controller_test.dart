@@ -30,8 +30,8 @@ void main() {
 
       controller.calculateFCR();
 
-      final weightGain = 1.8 - 0.045;
-      final expected = 3.6 / weightGain;
+      const weightGain = 1.8 - 0.045;
+      const expected = 3.6 / weightGain;
       expect(controller.fcr.value, closeTo(expected, 0.01));
     });
 

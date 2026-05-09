@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -53,9 +55,9 @@ class MyServices extends GetxService {
 
     // Initialize Google Mobile Ads SDK (Android only — ads disabled on iOS)
     if (defaultTargetPlatform == TargetPlatform.android) {
-      MobileAds.instance.initialize().then((_) {
+      unawaited(MobileAds.instance.initialize().then((_) {
         InterstitialAdService.instance.load();
-      });
+      }));
     }
 
     return this;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,11 +17,9 @@ class TimeSensitiveHintSheet extends StatelessWidget {
     final storage = GetStorage();
     if (storage.read<bool>(StorageKeys.timeSensitiveHintShown) == true) return;
 
-    storage.write(StorageKeys.timeSensitiveHintShown, true);
+    unawaited(storage.write(StorageKeys.timeSensitiveHintShown, true));
     await Get.bottomSheet<void>(
       const TimeSensitiveHintSheet(),
-      isDismissible: true,
-      enableDrag: true,
       backgroundColor: Get.theme.scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

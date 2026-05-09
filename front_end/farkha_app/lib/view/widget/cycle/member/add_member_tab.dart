@@ -248,7 +248,7 @@ class AddMemberTab extends StatelessWidget {
                     ? SizedBox(
                         width: 14.w,
                         height: 14.w,
-                        child: CircularProgressIndicator(
+                        child: const CircularProgressIndicator(
                             strokeWidth: 2,
                             color: AppColors.primaryColor))
                     : Icon(Icons.link_rounded,

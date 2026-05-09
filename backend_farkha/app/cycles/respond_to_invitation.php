@@ -83,7 +83,7 @@ try {
     $cycleName = $cycleRow ? $cycleRow['name'] : 'الدورة';
 
     if ($ownerRow) {
-        $stmtMe = $con->prepare("SELECT name FROM users WHERE id = ? AND deleted_at IS NULL");
+        $stmtMe = $con->prepare("SELECT name FROM users WHERE id = ?");
         $stmtMe->execute([$userId]);
         $meRow = $stmtMe->fetch();
         $myName = $meRow && !empty($meRow['name']) ? $meRow['name'] : 'أحد الأعضاء';

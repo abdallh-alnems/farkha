@@ -7,7 +7,6 @@ import 'package:farkha_app/logic/controller/cycle_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:get/get_instance/src/lifecycle.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/fake_cycle_data.dart';
@@ -52,7 +51,7 @@ void main() {
 
   group('Controller wiring with fakes', () {
     test('LoginController + CycleController مسجّلين مع fakes', () async {
-      fakeCycleData.when('getCycles', Right<StatusRequest, Map<String, dynamic>>({
+      fakeCycleData.when('getCycles', const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'data': {
           'cycles': [
@@ -63,7 +62,7 @@ void main() {
 
       Get.put<MyServices>(mockMyServices);
       final fakeLoginData = FakeLoginDataForIntegration();
-      fakeLoginData.response = Right<StatusRequest, Map<String, dynamic>>({
+      fakeLoginData.response = const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'success': true,
         'token': 'fake-jwt-token',
@@ -86,7 +85,7 @@ void main() {
     });
 
     test('CycleController.fetchCyclesFromServer يملأ cycles من FakeCycleData', () async {
-      fakeCycleData.when('getCycles', Right<StatusRequest, Map<String, dynamic>>({
+      fakeCycleData.when('getCycles', const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'data': {
           'cycles': [
@@ -110,7 +109,7 @@ void main() {
     });
 
     test('FakeCycleData.createCycle يُرجع cycle_id', () async {
-      fakeCycleData.when('createCycle', Right<StatusRequest, Map<String, dynamic>>({
+      fakeCycleData.when('createCycle', const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'data': {'cycle_id': 2},
       }));

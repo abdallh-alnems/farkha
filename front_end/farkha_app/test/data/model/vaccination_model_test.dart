@@ -36,7 +36,6 @@ void main() {
         age: 7,
         vaccineName: 'لقاح B1',
         notes: 'جرعة شرب',
-        isCompleted: false,
       );
 
       final json = model.toJson();

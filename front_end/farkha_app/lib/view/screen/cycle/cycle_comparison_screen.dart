@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -56,7 +58,7 @@ class _CycleComparisonScreenState extends State<CycleComparisonScreen>
     }
     if (mounted) {
       _isLoading.value = false;
-      _fadeController.forward();
+      unawaited(_fadeController.forward());
     }
   }
 

@@ -32,7 +32,7 @@ void main() {
 
     test('isFiltering = true مع فلتر تاريخ', () {
       controller.setFilter(
-        start: DateTime(2026, 1, 1),
+        start: DateTime(2026),
         end: DateTime(2026, 1, 31),
       );
 
@@ -41,7 +41,7 @@ void main() {
 
     test('clearFilter يزيل الفلتر', () {
       controller.setFilter(
-        start: DateTime(2026, 1, 1),
+        start: DateTime(2026),
         end: DateTime(2026, 1, 31),
       );
 
@@ -61,7 +61,7 @@ void main() {
 
     test('isSingleDayFilter = false عند اختلاف التواريخ', () {
       controller.setFilter(
-        start: DateTime(2026, 1, 1),
+        start: DateTime(2026),
         end: DateTime(2026, 1, 31),
       );
 

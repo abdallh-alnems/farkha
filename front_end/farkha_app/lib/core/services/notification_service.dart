@@ -144,7 +144,7 @@ class NotificationService extends GetxService
   Future<void> configureMessaging() async {
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
     await _configureFirebaseMessaging();
-    syncToken();
+    unawaited(syncToken());
 
     unawaited(Future.microtask(() => restoreSubscriptions()));
   }

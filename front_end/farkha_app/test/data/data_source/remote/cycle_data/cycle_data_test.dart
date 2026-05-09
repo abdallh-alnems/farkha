@@ -15,7 +15,7 @@ void main() {
     });
 
     test('يُرجع الاستجابة المُعدّة لـ getCycles', () async {
-      fakeCycleData.when('getCycles', Right<StatusRequest, Map<String, dynamic>>({
+      fakeCycleData.when('getCycles', const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'data': {
           'cycles': [sampleCycleJson],
@@ -28,7 +28,7 @@ void main() {
     });
 
     test('يُرجع الاستجابة المُعدّة لـ createCycle', () async {
-      fakeCycleData.when('createCycle', Right<StatusRequest, Map<String, dynamic>>({
+      fakeCycleData.when('createCycle', const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'data': {'cycle_id': 1},
       }));
@@ -71,7 +71,7 @@ void main() {
     });
 
     test('يُرجع الاستجابة المُعدّة لـ getCycleDetails', () async {
-      fakeCycleData.when('getCycleDetails', Right<StatusRequest, Map<String, dynamic>>({
+      fakeCycleData.when('getCycleDetails', const Right<StatusRequest, Map<String, dynamic>>({
         'status': 'success',
         'data': <String, dynamic>{
           'cycle': sampleCycleJson,

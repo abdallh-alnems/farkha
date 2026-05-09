@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:farkha_app/core/class/status_request.dart';
 import 'package:farkha_app/core/services/initialization.dart';
@@ -29,8 +31,8 @@ void main() {
     mockMyServices = MockMyServices();
 
     final storage = await TestHarness.getStorage();
-    storage.remove('cycles');
-    storage.remove('deleted_cycles');
+    unawaited(storage.remove('cycles'));
+    unawaited(storage.remove('deleted_cycles'));
     when(() => mockMyServices.getStorage).thenReturn(storage);
     when(() => mockAuth.currentUser).thenReturn(mockUser);
     when(() => mockUser.getIdToken()).thenAnswer((_) async => 'fake-token');
@@ -62,7 +64,7 @@ void main() {
   });
 
   group('CycleController state', () {
-    CycleController _makeCtrl() {
+    CycleController makeCtrl() {
       final ctrl = CycleController(
         auth: mockAuth,
         myServices: mockMyServices,
@@ -72,12 +74,12 @@ void main() {
     }
 
     test('cycles تبدأ كقائمة فارغة', () {
-      final ctrl = _makeCtrl();
+      final ctrl = makeCtrl();
       expect(ctrl.cycles, isEmpty);
     });
 
     test('currentCycle تبدأ كخريطة فارغة', () {
-      final ctrl = _makeCtrl();
+      final ctrl = makeCtrl();
       expect(ctrl.currentCycle, isEmpty);
     });
   });

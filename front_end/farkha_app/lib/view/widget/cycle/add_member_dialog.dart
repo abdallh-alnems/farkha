@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -148,7 +150,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
         _phoneController.text = phone;
         if (phone.length == 11) {
-          _searchUser();
+          unawaited(_searchUser());
         }
       }
     } catch (e) {

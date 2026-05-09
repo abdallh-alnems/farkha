@@ -71,13 +71,12 @@ class CycleFeedbackController extends GetxController {
   Future<void> maybeShowDialog() async {
     if (!_shouldShow()) return;
 
-    _box.write(StorageKeys.cycleFbLastShown, DateTime.now().toIso8601String());
-    _box.write(StorageKeys.cycleFbOpensSinceLast, 0);
+    unawaited(_box.write(StorageKeys.cycleFbLastShown, DateTime.now().toIso8601String()));
+    unawaited(_box.write(StorageKeys.cycleFbOpensSinceLast, 0));
 
     try {
       unawaited(Get.dialog<void>(
         const CycleFeedbackDialog(),
-        barrierDismissible: true,
       ));
     } catch (e, stack) {
       try {
@@ -164,7 +163,6 @@ class CycleFeedbackController extends GetxController {
                 snackPosition: SnackPosition.BOTTOM,
                 backgroundColor: AppColors.primaryColor,
                 colorText: Colors.white,
-                duration: const Duration(seconds: 3),
               );
             } catch (_) {}
           }
