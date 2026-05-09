@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../../config/bootstrap.php';
 
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $data = Cache::remember('types_list', function () {
     $rows = Database::fetchAll("SELECT t.id, t.name, t.category_id, m.name as main_name FROM types t INNER JOIN product_categories m ON t.category_id = m.id ORDER BY t.category_id, t.id");

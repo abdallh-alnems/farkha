@@ -77,4 +77,7 @@ class StorageKeys {
   // ── Phone Verification ──
   static const String phoneCooldownUntilMs = 'phone_cooldown_until_ms';
   static const String phoneCooldownPhone = 'phone_cooldown_phone';
+
+  // ── Update ──
+  static const String skippedUpdateVersion = 'skipped_update_version';
 }

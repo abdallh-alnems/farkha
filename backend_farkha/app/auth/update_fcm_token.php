@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../config/bootstrap.php';
 
 Auth::requirePost();
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $input = Validator::getJsonBody();
 $token = $input['token'] ?? null;

@@ -8,7 +8,7 @@ class DeletePricesApi extends BaseApi {
 
     public function __construct() {
         parent::__construct();
-        Auth::requireAppCheck();
+        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $type = $this->requireNumeric('type', 1);
 

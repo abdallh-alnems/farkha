@@ -8,7 +8,7 @@ class AddArticleApi extends BaseApi {
 
     public function __construct() {
         parent::__construct();
-        Auth::requireAppCheck();
+        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $title = $this->getField('title');
             $content = $this->getField('content');

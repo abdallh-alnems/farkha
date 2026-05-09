@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../config/bootstrap.php';
 
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $input = Validator::getJsonBody();
 $toolId = $input['tool_id'] ?? 0;

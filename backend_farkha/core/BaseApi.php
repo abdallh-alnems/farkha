@@ -13,7 +13,7 @@ abstract class BaseApi {
         }
 
         if ($this->requireAuth) {
-            Auth::checkAppCheck();
+            RateLimiter::enforceIpLimit();
         }
 
         RateLimiter::enforceIpLimit();

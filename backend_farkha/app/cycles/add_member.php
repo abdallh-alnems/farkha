@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $auth = Auth::authenticateUser(db());
 $userId = $auth['user_id'];

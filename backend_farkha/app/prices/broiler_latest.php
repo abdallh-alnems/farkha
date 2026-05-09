@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $data = Cache::remember('broiler_latest_price', function () {
     $result = PriceModel::fetchLatestByType(1);

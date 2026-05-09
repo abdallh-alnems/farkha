@@ -54,33 +54,6 @@ final class Auth {
         }
     }
 
-    public static function checkAppCheck(): void {
-        RateLimiter::enforceIpLimit();
-        $appCheckToken = $_SERVER['HTTP_X_FIREBASE_APPCHECK'] ?? null;
-        if ($appCheckToken) {
-            self::verifyAppCheckToken($appCheckToken);
-        }
-    }
-
-    public static function requireAppCheck(): void {
-        RateLimiter::enforceIpLimit();
-        $appCheckToken = $_SERVER['HTTP_X_FIREBASE_APPCHECK'] ?? null;
-        if (!$appCheckToken) {
-            Response::fail('App Check token required', 401);
-        }
-        self::verifyAppCheckToken($appCheckToken);
-    }
-
-    private static function verifyAppCheckToken(string $token): void {
-        try {
-            $appCheck = \Kreait\Firebase\AppCheck::createFromAppComponent(FirebaseInit::getAuth()->getApp());
-            $appCheck->verifyToken($token);
-        } catch (Exception $e) {
-            error_log('App Check verification failed: ' . $e->getMessage());
-            Response::fail('Invalid App Check token', 401);
-        }
-    }
-
     public static function deleteFirebaseUser(string $uid): bool {
         try {
             FirebaseInit::getAuth()->deleteUser($uid);

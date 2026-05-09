@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../config/bootstrap.php';
 
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $period = Validator::getCombinedField('period') ?? '7days';
 $all = Validator::getCombinedField('all');

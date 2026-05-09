@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +12,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import '../../logic/controller/remote_config_controller.dart';
 import '../../view/widget/ad/interstitial.dart';
 import '../constant/firebase_options.dart';
 import 'dark_light_service.dart';
@@ -45,8 +44,9 @@ class MyServices extends GetxService {
 
     await initializeDateFormatting('ar');
 
-    // Initialize Remote Config controller early
-    Get.put(RemoteConfigController(), permanent: true);
+    await FirebaseRemoteConfig.instance.setDefaults(const {
+      'min_required_version': '0.0.0',
+    });
 
     // Initialize notification service
     await Get.putAsync(() => NotificationService().init());

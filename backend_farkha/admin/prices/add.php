@@ -8,7 +8,7 @@ class AddPricesApi extends BaseApi {
 
     public function __construct() {
         parent::__construct();
-        Auth::requireAppCheck();
+        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $higher = $this->requireNumeric('higher', 0);
             $type = $this->requireNumeric('type', 1);

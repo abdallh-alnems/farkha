@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-Auth::checkAppCheck();
+RateLimiter::enforceIpLimit();
 
 $typeId = Validator::getCombinedField('type_id');
 Validator::required($typeId, 'type_id');

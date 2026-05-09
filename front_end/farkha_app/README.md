@@ -65,7 +65,6 @@ Farkha يساعد مربّي الدواجن على متابعة دورات ال�
 | Messaging | `firebase_messaging: ^16.0.2` |
 | Crashlytics | `firebase_crashlytics: ^5.0.5` |
 | Remote Config | `firebase_remote_config: ^6.1.3` |
-| App Check | `firebase_app_check: ^0.4.2` |
 | Notifications | `flutter_local_notifications: ^19.5.0` + `timezone` + `flutter_ringtone_player` |
 | Ads | `google_mobile_ads: ^7.0.0` |
 | UI | `flutter_screenutil` · `flutter_svg` · `lottie` · `font_awesome_flutter` · `fl_chart` · `tutorial_coach_mark` · `pin_code_fields` |

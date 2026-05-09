@@ -7,6 +7,7 @@ import 'core/constant/routes/get_page.dart';
 import 'core/constant/theme/theme.dart';
 import 'core/services/dark_light_service.dart';
 import 'core/services/initialization.dart';
+import 'core/services/update_service.dart';
 import 'logic/bindings/app_binding.dart';
 
 void main() async {
@@ -15,8 +16,40 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget { 
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _recheckUpdate();
+    }
+  }
+
+  Future<void> _recheckUpdate() async {
+    try {
+      if (Get.isRegistered<UpdateService>()) {
+        await Get.find<UpdateService>().check();
+      }
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +74,6 @@ class MyApp extends StatelessWidget {
             theme: AppTheme().lightThemes(),
             darkTheme: AppTheme().darkThemes(),
             themeMode: themeMode,
-            // home: Cycle(),
           );
         });
       },
