@@ -67,25 +67,17 @@ class ToolsCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (image != null)
-                        Container(
+                        SizedBox(
                           width: 36.w,
                           height: 36.h,
-                          decoration: BoxDecoration(
-                            color: iconBgColor,
-                            shape: BoxShape.circle,
-                          ),
                           child: Center(
                             child: _buildImage(image!),
                           ),
                         )
                       else
-                        Container(
+                        SizedBox(
                           width: 36.w,
                           height: 36.h,
-                          decoration: BoxDecoration(
-                            color: iconBgColor,
-                            shape: BoxShape.circle,
-                          ),
                           child: Center(
                             child: Text(
                               text,

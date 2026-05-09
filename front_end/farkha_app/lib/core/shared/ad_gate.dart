@@ -8,7 +8,10 @@ class AdGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform == TargetPlatform.android) return child;
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      return child;
+    }
     return const SizedBox.shrink();
   }
 }

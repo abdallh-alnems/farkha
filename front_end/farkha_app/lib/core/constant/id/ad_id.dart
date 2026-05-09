@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import '../../services/test_mode_manager.dart';
 
 class AdManager {
-  // ============================ private variables ============================
+  // ============================ Android production ============================
 
   static const String _productionBanner =
       'ca-app-pub-8595701567488603/1751748833';
@@ -9,6 +11,15 @@ class AdManager {
       'ca-app-pub-8595701567488603/4494984718';
   static const String _productionInterstitial =
       'ca-app-pub-8595701567488603/5421039211';
+
+  // ============================== iOS production ==============================
+
+  static const String _productionBannerIOS =
+      'ca-app-pub-8595701567488603/5318059838';
+  static const String _productionNativeIOS =
+      'ca-app-pub-8595701567488603/4012717023';
+  static const String _productionInterstitialIOS =
+      'ca-app-pub-8595701567488603/1387003391';
 
   // ================================ Test IDs =================================
 
@@ -19,17 +30,22 @@ class AdManager {
 
   // ================================== banner =================================
 
-  static String get idBanner =>
-      TestModeManager.shouldUseTestAds ? _testBanner : _productionBanner;
+  static String get idBanner {
+    if (TestModeManager.shouldUseTestAds) return _testBanner;
+    return Platform.isIOS ? _productionBannerIOS : _productionBanner;
+  }
 
   // ================================== native =================================
 
-  static String get idNative =>
-      TestModeManager.shouldUseTestAds ? _testNative : _productionNative;
+  static String get idNative {
+    if (TestModeManager.shouldUseTestAds) return _testNative;
+    return Platform.isIOS ? _productionNativeIOS : _productionNative;
+  }
 
   // =============================== interstitial ==============================
 
-  static String get idInterstitial => TestModeManager.shouldUseTestAds
-      ? _testInterstitial
-      : _productionInterstitial;
+  static String get idInterstitial {
+    if (TestModeManager.shouldUseTestAds) return _testInterstitial;
+    return Platform.isIOS ? _productionInterstitialIOS : _productionInterstitial;
+  }
 }

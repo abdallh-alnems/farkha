@@ -33,7 +33,10 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform != TargetPlatform.android) return const SizedBox.shrink();
+    if (defaultTargetPlatform != TargetPlatform.android &&
+        defaultTargetPlatform != TargetPlatform.iOS) {
+      return const SizedBox.shrink();
+    }
     if (!_isAdLoaded || _nativeAd == null) {
       return const SizedBox.shrink();
     }
@@ -49,7 +52,11 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   }
 
   void _loadAd() {
-    if (!mounted || defaultTargetPlatform != TargetPlatform.android) return;
+    if (!mounted) return;
+    if (defaultTargetPlatform != TargetPlatform.android &&
+        defaultTargetPlatform != TargetPlatform.iOS) {
+      return;
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

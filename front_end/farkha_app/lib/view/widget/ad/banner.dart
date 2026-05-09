@@ -38,7 +38,10 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform != TargetPlatform.android) return const SizedBox.shrink();
+    if (defaultTargetPlatform != TargetPlatform.android &&
+        defaultTargetPlatform != TargetPlatform.iOS) {
+      return const SizedBox.shrink();
+    }
     if (!_isAdLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
@@ -51,7 +54,11 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
   }
 
   Future<void> _loadAdaptiveAd() async {
-    if (!mounted || defaultTargetPlatform != TargetPlatform.android) return;
+    if (!mounted) return;
+    if (defaultTargetPlatform != TargetPlatform.android &&
+        defaultTargetPlatform != TargetPlatform.iOS) {
+      return;
+    }
 
     // Get adaptive banner size based on screen width
     final int adWidth = MediaQuery.of(context).size.width.truncate();

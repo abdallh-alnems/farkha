@@ -18,7 +18,10 @@ class InterstitialAdService {
 
   /// تحميل الإعلان مسبقاً (استدعه عند بدء التطبيق أو بعد الإغلاق)
   void load() {
-    if (defaultTargetPlatform != TargetPlatform.android) return;
+    if (defaultTargetPlatform != TargetPlatform.android &&
+        defaultTargetPlatform != TargetPlatform.iOS) {
+      return;
+    }
     InterstitialAd.load(
       adUnitId: AdManager.idInterstitial,
       request: const AdRequest(),
@@ -41,7 +44,8 @@ class InterstitialAdService {
 
   /// اعرض الإعلان إذا كان جاهزاً، ثم نفّذ [onComplete]
   void show({VoidCallback? onComplete}) {
-    if (defaultTargetPlatform != TargetPlatform.android) {
+    if (defaultTargetPlatform != TargetPlatform.android &&
+        defaultTargetPlatform != TargetPlatform.iOS) {
       onComplete?.call();
       return;
     }

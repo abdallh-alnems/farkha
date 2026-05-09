@@ -46,7 +46,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-8595701567488603~3243480822</string>
+	<string>ca-app-pub-8595701567488603~2784001072</string>
 	<key>GADDelayAppMeasurementInit</key>
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>
