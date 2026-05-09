@@ -37,10 +37,10 @@ final class UserModel {
         );
     }
 
-    public static function updateFcmToken(string $firebaseUid, string $token): void {
+    public static function deleteByFirebaseUid(string $uid): void {
         Database::execute(
-            "UPDATE users SET fcm_token = :token WHERE firebase_uid = :uid",
-            [':token' => $token, ':uid' => $firebaseUid]
+            "UPDATE users SET deleted_at = NOW() WHERE firebase_uid = :uid",
+            [':uid' => $uid]
         );
     }
 
@@ -48,13 +48,6 @@ final class UserModel {
         Database::execute(
             "UPDATE users SET phone = NULL WHERE phone = :phone AND id != :id",
             [':phone' => $phone, ':id' => $userId]
-        );
-    }
-
-    public static function deleteByFirebaseUid(string $uid): void {
-        Database::execute(
-            "UPDATE users SET deleted_at = NOW(), fcm_token = NULL WHERE firebase_uid = :uid",
-            [':uid' => $uid]
         );
     }
 

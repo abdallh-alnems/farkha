@@ -347,8 +347,8 @@ class CycleCustomDataController extends GetxController {
         token: token,
         cycleId:
             cycleId is int ? cycleId : int.tryParse(cycleId.toString()) ?? 0,
-        label: label,
-        value: value,
+        metricType: 'other',
+        textValue: '$label: $value',
       );
     } catch (e) {
       // في حالة الفشل، لا نفعل شيئاً - البيانات محفوظة محلياً
@@ -452,6 +452,7 @@ class CycleCustomDataController extends GetxController {
           deleteType: itemId != null ? 'single' : 'by_label',
           itemId: itemId,
           label: label,
+          metricType: 'other',
         );
 
         // بعد نجاح الحذف، إعادة تحميل البيانات من API

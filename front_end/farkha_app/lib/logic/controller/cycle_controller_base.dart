@@ -84,46 +84,39 @@ abstract class CycleControllerBase extends GetxController {
 
     if (cycleDataList != null && cycleDataList.isNotEmpty) {
       for (var item in cycleDataList) {
-        final label = item['label']?.toString() ?? '';
-        final value = item['value']?.toString() ?? '';
+        final metricType = item['metric_type']?.toString() ?? 'other';
+        final numericValue = item['numeric_value'];
+        final textValue = item['text_value']?.toString() ?? '';
         final entryDateStr = item['entry_date']?.toString() ?? '';
-
-        final labelLower = label.toLowerCase().trim();
-        final labelOriginal = label.trim();
-
-        final isMortality = labelLower == 'mortality' || labelLower == 'نافق' || labelLower == 'عدد النافق' || labelOriginal == 'عدد النافق' || (label.contains('نافق') && !label.contains('غير'));
-
-        final isAverageWeight = labelLower == 'average_weight' || labelLower == 'averageweight' || labelOriginal == 'الوزن المتوسط' || labelOriginal == 'متوسط وزن القطيع' || labelLower == 'متوسط وزن القطيع' || labelLower == 'الوزن المتوسط' || labelLower == 'متوسط الوزن' || (label.contains('وزن') && label.contains('متوسط'));
-
-        final isMedication = labelLower == 'medication' || labelOriginal == 'التحصينات' || labelLower == 'التحصينات' || labelLower == 'تحصين' || (label.contains('تحصين') && !label.contains('غير')) || label.contains('دواء');
-
-        final isFeedConsumption = labelLower == 'feed_consumption' || labelLower == 'feedconsumption' || labelOriginal == 'الاستهلاك اليومي' || labelOriginal == 'استهلاك العلف' || labelLower == 'الاستهلاك اليومي' || labelLower == 'استهلاك العلف' || (label.contains('استهلاك') && !label.contains('غير')) || (label.contains('علف') && label.contains('استهلاك'));
-
         final dateFormatted = parseDateToString(entryDateStr);
+        final id = item['id']?.toString() ?? '';
 
-        if (isMortality) {
-          final count = int.tryParse(value) ?? 0;
-          if (count > 0) {
-            mortalityEntries.add({'id': item['id']?.toString() ?? '', 'count': count, 'date': dateFormatted});
-          }
-        } else if (isAverageWeight) {
-          final weight = double.tryParse(value) ?? 0.0;
-          if (weight > 0) {
-            averageWeightEntries.add({'id': item['id']?.toString() ?? '', 'weight': weight, 'date': dateFormatted});
-          }
-        } else if (isMedication) {
-          if (value.isNotEmpty) {
-            medicationEntries.add({'id': item['id']?.toString() ?? '', 'text': value, 'date': dateFormatted});
-          }
-        } else if (isFeedConsumption) {
-          final amount = double.tryParse(value) ?? 0.0;
-          if (amount > 0) {
-            feedConsumptionEntries.add({'id': item['id']?.toString() ?? '', 'amount': amount, 'date': dateFormatted});
-          }
-        } else {
-          if (value.isNotEmpty) {
-            customDataEntries.add({'id': item['id']?.toString() ?? '', 'element_type': 'note', 'label': label, 'value': value, 'date': dateFormatted});
-          }
+        switch (metricType) {
+          case 'mortality':
+            final count = (numericValue is num) ? numericValue.toInt() : (int.tryParse(numericValue?.toString() ?? '0') ?? 0);
+            if (count > 0) {
+              mortalityEntries.add({'id': id, 'count': count, 'date': dateFormatted});
+            }
+          case 'weight':
+            final weight = (numericValue is num) ? numericValue.toDouble() : (double.tryParse(numericValue?.toString() ?? '0') ?? 0.0);
+            if (weight > 0) {
+              averageWeightEntries.add({'id': id, 'weight': weight, 'date': dateFormatted});
+            }
+          case 'vaccination':
+          case 'medicine':
+            if (textValue.isNotEmpty) {
+              medicationEntries.add({'id': id, 'text': textValue, 'date': dateFormatted});
+            }
+          case 'feed':
+            final amount = (numericValue is num) ? numericValue.toDouble() : (double.tryParse(numericValue?.toString() ?? '0') ?? 0.0);
+            if (amount > 0) {
+              feedConsumptionEntries.add({'id': id, 'amount': amount, 'date': dateFormatted});
+            }
+          default:
+            final displayValue = textValue.isNotEmpty ? textValue : (numericValue?.toString() ?? '');
+            if (displayValue.isNotEmpty) {
+              customDataEntries.add({'id': id, 'element_type': 'note', 'label': metricType, 'value': displayValue, 'date': dateFormatted});
+            }
         }
       }
     }

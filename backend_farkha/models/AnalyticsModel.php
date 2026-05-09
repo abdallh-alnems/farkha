@@ -1,13 +1,20 @@
 <?php
 
 final class AnalyticsModel {
-    public static function upsertToolsUsage(int $toolId): void {
+    public static function upsertToolsUsage(int $toolId, ?int $userId = null): void {
         Database::execute(
             "INSERT INTO tools_usage (usage_date, tool_id, usage_count)
              VALUES (CURDATE(), ?, 1)
              ON DUPLICATE KEY UPDATE usage_count = usage_count + 1",
             [$toolId]
         );
+
+        if ($userId !== null) {
+            Database::execute(
+                "INSERT INTO tools_usage_events (user_id, tool_id) VALUES (?, ?)",
+                [$userId, $toolId]
+            );
+        }
     }
 
     public static function fetchUnifiedAnalytics(string $period): array {

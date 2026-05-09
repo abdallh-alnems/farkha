@@ -41,8 +41,6 @@ try {
         ]
     );
 
-    UserModel::updateFcmToken($uid, $fcmToken);
-
     Response::success(['message' => 'FCM token updated']);
 } catch (PDOException $e) {
     error_log('update_fcm error: ' . $e->getMessage());

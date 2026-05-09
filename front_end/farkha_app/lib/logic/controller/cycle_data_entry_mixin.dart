@@ -78,9 +78,8 @@ mixin CycleDataEntryMixin on CycleControllerBase {
 
       await sendCycleDataToServer(
         this,
-        label: 'متوسط وزن القطيع',
-        value: weight.toString(),
         metricType: 'weight',
+        numericValue: weight,
       );
 
       notifyStatusSuccess(cycleDataStatus);
@@ -158,7 +157,7 @@ mixin CycleDataEntryMixin on CycleControllerBase {
 
       await myServices.getStorage.write(StorageKeys.cycles, cycles.toList());
 
-      await sendCycleDataToServer(this, label: 'التحصينات', value: text, metricType: 'medicine');
+      await sendCycleDataToServer(this, metricType: 'vaccination', textValue: text);
 
       notifyStatusSuccess(cycleDataStatus);
     } catch (e) {
@@ -237,9 +236,8 @@ mixin CycleDataEntryMixin on CycleControllerBase {
 
       await sendCycleDataToServer(
         this,
-        label: 'استهلاك العلف',
-        value: amount.toString(),
         metricType: 'feed',
+        numericValue: amount,
       );
 
       await cancelDailyDataNotification(currentCycle);
@@ -329,9 +327,8 @@ mixin CycleDataEntryMixin on CycleControllerBase {
 
       await sendCycleDataToServer(
         this,
-        label: 'عدد النافق',
-        value: count.toString(),
         metricType: 'mortality',
+        numericValue: count.toDouble(),
       );
 
       notifyStatusSuccess(cycleDataStatus);
