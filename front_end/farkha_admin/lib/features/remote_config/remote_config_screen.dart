@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/theme/app_theme.dart';
@@ -45,12 +47,16 @@ class RemoteConfigScreen extends StatelessWidget {
           );
         }
 
+        final maintenanceEnabled = _getParamValue(controller, 'maintenance_enabled') == 'true';
+
         return RefreshIndicator(
           onRefresh: controller.fetchConfig,
           color: AppTheme.primary,
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              _buildMaintenanceCard(context, controller, maintenanceEnabled),
+              const SizedBox(height: 20),
               if (controller.version.isNotEmpty) ...[
                 Card(
                   color: AppTheme.surfaceLight,
@@ -73,12 +79,154 @@ class RemoteConfigScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
               ],
-              ...controller.parameters.map((param) => _buildParamCard(context, controller, param)),
+              ...controller.parameters
+                  .where((p) => ((p['name'] as String?) ?? '') != 'maintenance_enabled')
+                  .map((param) => _buildParamCard(context, controller, param)),
             ],
           ),
         );
       }),
     );
+  }
+
+  String _getParamValue(RemoteConfigController controller, String name) {
+    try {
+      final param = controller.parameters.firstWhere(
+        (p) => (p['name'] as String?) == name,
+      );
+      return param['default_value']?.toString() ?? 'false';
+    } catch (_) {
+      return 'false';
+    }
+  }
+
+  Widget _buildMaintenanceCard(BuildContext context, RemoteConfigController controller, bool isEnabled) {
+    final cardColor = isEnabled
+        ? AppTheme.accent.withValues(alpha: 0.12)
+        : AppTheme.surfaceLight;
+    final borderColor = isEnabled
+        ? AppTheme.accent.withValues(alpha: 0.6)
+        : AppTheme.border;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: isEnabled ? 2 : 1),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isEnabled
+                      ? AppTheme.accent.withValues(alpha: 0.2)
+                      : AppTheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  isEnabled ? Icons.power_settings_new : Icons.check_circle_outline,
+                  color: isEnabled ? AppTheme.accent : AppTheme.success,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEnabled ? 'التطبيق متوقف' : 'التطبيق يعمل',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        fontFamily: 'Cairo',
+                        color: isEnabled ? AppTheme.accent : AppTheme.success,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isEnabled
+                          ? 'تطبيق فرخة متوقف حالياً عن جميع المستخدمين'
+                          : 'جميع المستخدمين يمكنهم استخدام التطبيق',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textSecondary,
+                        fontFamily: 'Cairo',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch.adaptive(
+                value: isEnabled,
+                activeTrackColor: AppTheme.accent,
+                onChanged: (v) => _onMaintenanceToggle(context, controller, v),
+              ),
+            ],
+          ),
+          if (isEnabled) ...[
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.accent.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.info_outline, color: AppTheme.accent, size: 18),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'عند إيقاف التطبيق لن يتمكن أي مستخدم من استخدامه حتى تقوم بإعادة تشغيله',
+                      style: TextStyle(
+                        color: AppTheme.accent,
+                        fontSize: 11,
+                        fontFamily: 'Cairo',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _onMaintenanceToggle(BuildContext context, RemoteConfigController controller, bool value) async {
+    final confirmed = await Get.dialog<bool>(
+      _CountdownConfirmDialog(isEnabling: value),
+      barrierDismissible: false,
+    );
+
+    if (confirmed != true) return;
+
+    Get.dialog(
+      const _LoadingDialog(),
+      barrierDismissible: false,
+    );
+
+    final ok = await controller.updateParameter('maintenance_enabled', value.toString());
+
+    Get.back();
+
+    if (ok) {
+      Get.snackbar(
+        'تم',
+        value ? 'تم إيقاف التطبيق' : 'تم تشغيل التطبيق',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: value ? AppTheme.accent : AppTheme.success,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+    }
   }
 
   Widget _buildParamCard(BuildContext context, RemoteConfigController controller, Map<String, dynamic> param) {
@@ -228,6 +376,119 @@ class RemoteConfigScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _LoadingDialog extends StatelessWidget {
+  const _LoadingDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Card(
+        color: AppTheme.surfaceLight,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: const Padding(
+          padding: EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: AppTheme.primary),
+              SizedBox(height: 16),
+              Text(
+                'جاري التحديث...',
+                style: TextStyle(fontFamily: 'Cairo', fontSize: 15),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CountdownConfirmDialog extends StatefulWidget {
+  final bool isEnabling;
+  const _CountdownConfirmDialog({required this.isEnabling});
+
+  @override
+  State<_CountdownConfirmDialog> createState() => _CountdownConfirmDialogState();
+}
+
+class _CountdownConfirmDialogState extends State<_CountdownConfirmDialog> {
+  int _seconds = 3;
+  Timer? _timer;
+  bool _canConfirm = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.isEnabling) {
+      _canConfirm = true;
+      return;
+    }
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      setState(() {
+        _seconds--;
+        if (_seconds <= 0) {
+          _canConfirm = true;
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppTheme.surfaceLight,
+      title: Row(
+        children: [
+          Icon(
+            widget.isEnabling ? Icons.warning_amber : Icons.check_circle,
+            color: widget.isEnabling ? AppTheme.accent : AppTheme.success,
+            size: 28,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            widget.isEnabling ? 'إيقاف التطبيق؟' : 'تشغيل التطبيق؟',
+            style: const TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+      content: Text(
+        widget.isEnabling
+            ? 'هل أنت متأكد؟ سيتم إيقاف تطبيق فرخة فوراً لجميع المستخدمين.\n\nهذا الإجراء لا يمكن التراجع عنه إلا من هنا.'
+            : 'هل تريد إعادة تشغيل التطبيق؟ سيعمل بشكل طبيعي لجميع المستخدمين.',
+        style: const TextStyle(fontFamily: 'Cairo'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(result: false),
+          child: const Text('إلغاء', style: TextStyle(fontFamily: 'Cairo')),
+        ),
+        ElevatedButton(
+          onPressed: _canConfirm ? () => Get.back(result: true) : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: widget.isEnabling ? AppTheme.accent : AppTheme.success,
+            disabledBackgroundColor: AppTheme.accent.withValues(alpha: 0.3),
+          ),
+          child: Text(
+            _canConfirm
+                ? (widget.isEnabling ? 'إيقاف' : 'تشغيل')
+                : '${widget.isEnabling ? 'إيقاف' : 'تشغيل'} ($_seconds)',
+            style: const TextStyle(fontFamily: 'Cairo', color: Colors.white),
+          ),
+        ),
+      ],
     );
   }
 }

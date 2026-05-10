@@ -163,13 +163,13 @@ Before coding, commit to a clear aesthetic: refined minimal, warm organic, bold 
 - `cycle_expenses` was NOT migrated — still uses `label`/`value`
 - `user_devices` table replaces `users.fcm_token` (supports multi-device)
 - `cycle_invitations` has `status` ENUM (pending/accepted/rejected/expired), `used_by_user_id`, `used_at`
-- `tools_usage_events` tracks tool usage analytics
+- `tools_usage` tracks daily aggregated tool usage counters
 - `main` table renamed to `product_categories`, `main_id` → `category_id`
 - All tables use `utf8mb4_unicode_ci` collation
 - See `backend_farkha/migrations/2026_05_08_full_overhaul.sql` for full migration
 
 ## Recent Changes
-- 006-database-overhaul: Full DB schema overhaul — EAV refactor (cycle_data), user_devices (multi-device FCM), tools_usage_events, product_categories rename, FK constraints, audit columns, performance indexes; PHP backend + Flutter app updated; 172 tests passing
+- 006-database-overhaul: Full DB schema overhaul — EAV refactor (cycle_data), user_devices (multi-device FCM), product_categories rename, FK constraints, audit columns, performance indexes; PHP backend + Flutter app updated; 172 tests passing
 - 005-ios-platform-parity: iOS support — Bundle ID unified, Firebase iOS app, Push Notifications with Time-Sensitive darkness alarms, Universal Links + custom scheme `farkha://`, privacy manifest, AdMob disabled on iOS, Arabic usage descriptions, notification sound `.caf`, TimeSensitiveHintSheet
 - 003-app-reviews: Added in-app review feature — AppReviewScreen (drawer entry), ReviewPromptController (auto-prompt after 30d + 10 unique days), offline retry, PHP backend endpoints, 29 tests
 - 001-testing-setup: Added test infrastructure — mocktail, integration_test SDK, test helpers, controller DI refactor, 52 tests (unit + widget + integration)

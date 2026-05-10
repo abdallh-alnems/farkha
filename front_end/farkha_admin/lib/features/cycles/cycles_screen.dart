@@ -12,7 +12,10 @@ class CyclesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الدورات'),
+        title: Obx(() => Text(
+              'الدورات (${controller.totalCount.value})',
+              style: const TextStyle(fontFamily: 'Cairo'),
+            )),
         actions: [
           IconButton(
             onPressed: () => controller.fetchCycles(),
@@ -69,7 +72,7 @@ class CyclesScreen extends StatelessWidget {
                       ),
                       title: Text(c['name'] ?? '-', style: const TextStyle(fontFamily: 'Cairo')),
                       subtitle: Text(
-                        '${c['owner_name'] ?? '-'} • ${c['chick_count'] ?? 0} فرخة\n${c['start_date_raw'] ?? '-'}',
+                        '${c['owner_name'] ?? '-'} • ${c['start_date_raw'] ?? '-'}',
                         style: const TextStyle(fontFamily: 'Cairo', fontSize: 12),
                       ),
                       trailing: PopupMenuButton(

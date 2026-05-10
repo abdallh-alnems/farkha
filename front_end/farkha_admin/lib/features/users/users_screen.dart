@@ -13,7 +13,7 @@ class UsersScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('المستخدمون (${controller.total})'),
+        title: Obx(() => Text('المستخدمون (${controller.total})')),
         actions: [
           IconButton(
             onPressed: () => controller.fetchUsers(),

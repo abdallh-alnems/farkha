@@ -28,13 +28,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeState();
 }
 
-class _HomeState extends State<HomeScreen> {
+class _HomeState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isTutorialActive = false;
   MyServices myServices = Get.find();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkPendingForceLogout();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final pending = myServices.getStorage.read<Map<dynamic, dynamic>>(
@@ -73,6 +75,23 @@ class _HomeState extends State<HomeScreen> {
         } catch (_) {}
       }
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkPendingForceLogout();
+    }
+  }
+
+  void _checkPendingForceLogout() {
+    NotificationService.consumePendingForceLogout();
   }
 
   void _showTutorialIfNeeded() {

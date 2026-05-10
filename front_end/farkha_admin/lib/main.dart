@@ -20,7 +20,7 @@ class FarkhaAdminApp extends StatelessWidget {
       title: 'فرخة أدمن',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      locale: const Locale('ar'),
+      locale: const Locale('ar'),  
       textDirection: TextDirection.rtl,
       initialRoute: '/',
       getPages: AppPages.pages,

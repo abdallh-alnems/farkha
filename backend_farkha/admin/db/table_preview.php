@@ -8,8 +8,8 @@ class DbTablePreviewApi extends AdminBaseApi {
     private const ALLOWED_TABLES = [
         'users', 'user_devices', 'cycles', 'cycle_users', 'cycle_data',
         'cycle_expenses', 'cycle_sales', 'cycle_inventory', 'cycle_invitations',
-        'cycle_notes', 'cycle_feedbacks', 'app_reviews', 'prices', 'types',
-        'product_categories', 'articles', 'tools_usage', 'tools_usage_events',
+        'cycle_notes', 'cycle_feedbacks', 'app_reviews', 'types',
+        'product_categories', 'articles',
         'phone_verifications', 'account_deletions', 'admin_users', 'admin_sessions', 'admin_audit_log',
     ];
 

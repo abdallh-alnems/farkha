@@ -10,13 +10,37 @@ class CycleFeedbacksListApi extends AdminBaseApi {
         $this->handleRequest(function () {
             $page = max(1, (int) ($this->getField('page') ?? 1));
             $pageSize = min(100, max(1, (int) ($this->getField('page_size') ?? 20)));
+            $starredOnly = $this->getField('starred_only');
+            $platform = $this->getField('platform');
+            $dateFrom = $this->getField('date_from');
+            $dateTo = $this->getField('date_to');
             $offset = ($page - 1) * $pageSize;
 
-            $total = (int) Database::fetchOne("SELECT COUNT(*) c FROM cycle_feedbacks")['c'];
+            $where = "1=1";
+            $params = [];
+
+            if ($starredOnly !== null && filter_var($starredOnly, FILTER_VALIDATE_BOOLEAN)) {
+                $where .= " AND cf.is_starred = 1";
+            }
+            if ($platform !== null && in_array($platform, ['android', 'ios'], true)) {
+                $where .= " AND cf.platform = ?";
+                $params[] = $platform;
+            }
+            if ($dateFrom !== null) {
+                $where .= " AND cf.created_at >= ?";
+                $params[] = $dateFrom . ' 00:00:00';
+            }
+            if ($dateTo !== null) {
+                $where .= " AND cf.created_at <= ?";
+                $params[] = $dateTo . ' 23:59:59';
+            }
+
+            $total = (int) Database::fetchOne("SELECT COUNT(*) c FROM cycle_feedbacks cf WHERE {$where}", $params)['c'];
 
             $items = Database::fetchAll(
                 "SELECT cf.*, u.name AS user_name FROM cycle_feedbacks cf LEFT JOIN users u ON u.id = cf.user_id
-                 ORDER BY cf.created_at DESC LIMIT {$pageSize} OFFSET {$offset}"
+                 WHERE {$where} ORDER BY cf.created_at DESC LIMIT {$pageSize} OFFSET {$offset}",
+                $params
             );
 
             $avg = (float) (Database::fetchOne("SELECT AVG(rating) a FROM cycle_feedbacks")['a'] ?? 0);

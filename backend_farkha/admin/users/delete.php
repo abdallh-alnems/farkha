@@ -16,46 +16,71 @@ class UserDeleteApi extends AdminBaseApi {
                 $this->error('User not found', 404);
             }
 
-            $cyclesOwned = (int) Database::fetchOne(
-                "SELECT COUNT(*) c FROM cycles WHERE owner_user_id = ? AND deleted_at IS NULL",
-                [$userId]
-            )['c'];
+            $con = Database::getInstance();
 
-            $cyclesMember = (int) Database::fetchOne(
-                "SELECT COUNT(*) c FROM cycle_users WHERE user_id = ?",
-                [$userId]
-            )['c'];
-
-            $accountAge = (int) ((time() - strtotime($user['created_at'])) / 86400);
-
-            $lastDevice = Database::fetchOne(
-                "SELECT platform FROM user_devices WHERE user_id = ? ORDER BY last_active DESC LIMIT 1",
-                [$userId]
-            );
-            $lastPlatform = $lastDevice ? $lastDevice['platform'] : null;
-
-            Database::execute(
-                "INSERT INTO account_deletions (account_age_days, cycles_owned_count, cycles_member_count, last_platform, reason)
-                 VALUES (?, ?, ?, ?, ?)",
-                [$accountAge, $cyclesOwned, $cyclesMember, $lastPlatform, $reason]
-            );
-
-            AdminAuth::logAction('user.delete', 'user', $userId, [
-                'name' => $user['name'],
-                'phone' => $user['phone'],
-                'reason' => $reason,
+            NotificationService::sendDataOnlyToUser($con, $userId, [
+                'type' => 'force_logout',
+                'title' => 'تم حذف حسابك',
+                'body' => 'تم حذف حسابك من قبل الإدارة',
             ]);
 
-            $firebaseUid = $user['firebase_uid'];
-            Database::execute("DELETE FROM users WHERE id = ?", [$userId]);
+            $con->beginTransaction();
 
             try {
-                Auth::deleteFirebaseUser($firebaseUid);
-            } catch (Exception $e) {
-                error_log("Failed to delete Firebase user: " . $e->getMessage());
-            }
+                $stmt = $con->prepare("SELECT cycle_id, role FROM cycle_users WHERE user_id = ?");
+                $stmt->execute([$userId]);
+                $userCycles = $stmt->fetchAll();
 
-            $this->success(null);
+                $cyclesOwned = 0;
+                $cyclesMember = 0;
+                foreach ($userCycles as $row) {
+                    if ($row['role'] === 'owner') {
+                        $cyclesOwned++;
+                        CycleModel::deleteFull($con, (int) $row['cycle_id']);
+                    } else {
+                        $cyclesMember++;
+                        $del = $con->prepare("DELETE FROM cycle_users WHERE cycle_id = ? AND user_id = ?");
+                        $del->execute([(int) $row['cycle_id'], $userId]);
+                    }
+                }
+
+                $accountAge = (int) ((time() - strtotime($user['created_at'])) / 86400);
+
+                $lastDevice = Database::fetchOne(
+                    "SELECT platform FROM user_devices WHERE user_id = ? ORDER BY last_active DESC LIMIT 1",
+                    [$userId]
+                );
+                $lastPlatform = $lastDevice ? $lastDevice['platform'] : null;
+
+                Database::execute(
+                    "INSERT INTO account_deletions (account_age_days, cycles_owned_count, cycles_member_count, last_platform, reason)
+                     VALUES (?, ?, ?, ?, ?)",
+                    [$accountAge, $cyclesOwned, $cyclesMember, $lastPlatform, $reason]
+                );
+
+                AdminAuth::logAction('user.delete', 'user', $userId, [
+                    'name' => $user['name'],
+                    'phone' => $user['phone'],
+                    'reason' => $reason,
+                ]);
+
+                $firebaseUid = $user['firebase_uid'];
+                Database::execute("DELETE FROM users WHERE id = ?", [$userId]);
+
+                $con->commit();
+
+                try {
+                    Auth::deleteFirebaseUser($firebaseUid);
+                } catch (Exception $e) {
+                    error_log("Failed to delete Firebase user: " . $e->getMessage());
+                }
+
+                $this->success(null);
+            } catch (Exception $e) {
+                if ($con->inTransaction()) $con->rollBack();
+                error_log('Admin user delete error: ' . $e->getMessage());
+                $this->error('فشل حذف المستخدم: ' . $e->getMessage(), 500);
+            }
         }, 'user_delete');
     }
 }

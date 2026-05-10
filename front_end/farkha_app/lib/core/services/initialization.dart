@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -14,6 +15,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import '../../view/widget/ad/interstitial.dart';
 import '../constant/firebase_options.dart';
+import '../constant/storage_keys.dart';
 import 'dark_light_service.dart';
 import 'deep_link_service.dart';
 import 'notification_service.dart';
@@ -29,6 +31,26 @@ class MyServices extends GetxService {
     Get.put<GetStorage>(getStorage, permanent: true);
     Get.put(DarkLightService(), permanent: true);
 
+    // If a force_logout FCM was received while the app was backgrounded/killed,
+    // tear down the session before any screen renders. Firebase isn't ready yet,
+    // so just clear the local session here; the auth middleware will route to
+    // login. Firebase signOut is performed once Firebase is initialized below.
+    final pendingForceLogout =
+        getStorage.read<bool>(kPendingForceLogoutKey) ?? false;
+    if (pendingForceLogout) {
+      getStorage.write(StorageKeys.isLoggedIn, false);
+      getStorage.remove(StorageKeys.userName);
+      getStorage.remove(StorageKeys.userPhone);
+      getStorage.remove(StorageKeys.cycles);
+      getStorage.remove(StorageKeys.deletedCycles);
+      getStorage.remove(StorageKeys.favoriteToolsOrder);
+      getStorage.remove(kPendingForceLogoutKey);
+    }
+
+    // If a maintenance_mode FCM was received while the app was backgrounded/killed,
+    // the flag is persisted in GetStorage under kPendingMaintenanceKey.
+    // MaintenanceGate reads and consumes it on first build.
+
     // Initialize Firebase - handle if already initialized by native plugin
     try {
       await Firebase.initializeApp(
@@ -42,14 +64,28 @@ class MyServices extends GetxService {
     // Initialize Crashlytics
     await _initCrashlytics();
 
+    // Now that Firebase is initialized, finish a pending force-logout by also
+    // signing out of Firebase Auth (the local session was cleared above).
+    if (pendingForceLogout) {
+      try {
+        await FirebaseAuth.instance.signOut();
+      } catch (_) {}
+    }
+
     await initializeDateFormatting('ar');
 
     await FirebaseRemoteConfig.instance.setDefaults(const {
       'min_required_version': '0.0.0',
+      'maintenance_enabled': false,
+      'maintenance_message': 'التطبيق تحت الصيانة حالياً، سنعود قريباً',
     });
 
     // Initialize notification service
     await Get.putAsync(() => NotificationService().init());
+    // Register FCM listeners on every cold start (must run before any FCM
+    // message can be received, otherwise data messages like `force_logout`
+    // are silently dropped).
+    await NotificationService.instance.attachMessagingListeners();
     // Initialize deep link service
     await Get.putAsync(() => DeepLinkService().init());
 

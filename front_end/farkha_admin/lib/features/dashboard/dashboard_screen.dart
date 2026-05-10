@@ -1,4 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/theme/app_theme.dart';
@@ -67,11 +66,11 @@ class DashboardScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              Obx(() {
+                if (!controller.isMaintenanceEnabled.value) return const SizedBox.shrink();
+                return _buildMaintenanceBanner();
+              }),
               _buildKpiGrid(data),
-              const SizedBox(height: 24),
-              _buildTimelineCharts(data),
-              const SizedBox(height: 24),
-              _buildTopTools(data),
             ],
           ),
         );
@@ -105,15 +104,16 @@ class DashboardScreen extends StatelessWidget {
               ),
               _drawerItem(Icons.dashboard, 'لوحة التحكم', AppRoutes.dashboard),
               _drawerItem(Icons.tune, 'إعدادات التطبيق', AppRoutes.remoteConfig),
-              _drawerItem(Icons.attach_money, 'الأسعار', AppRoutes.prices),
               _drawerItem(Icons.article, 'المقالات', AppRoutes.articles),
               _drawerItem(Icons.people, 'المستخدمون', AppRoutes.users),
+              _drawerItem(Icons.devices, 'الأجهزة', AppRoutes.devices),
               _drawerItem(Icons.agriculture, 'الدورات', AppRoutes.cycles),
               _drawerItem(Icons.category, 'الفئات والأنواع', AppRoutes.categories),
               _drawerItem(Icons.notifications, 'الإشعارات', AppRoutes.notifications),
               _drawerItem(Icons.star, 'التقييمات', AppRoutes.reviews),
-              _drawerItem(Icons.analytics, 'الإحصائيات', AppRoutes.analytics),
               _drawerItem(Icons.settings, 'النظام', AppRoutes.system),
+              _drawerItem(Icons.checklist_rounded, 'قائمة المهام', AppRoutes.todo),
+              _drawerItem(Icons.admin_panel_settings, 'إدارة الحسابات', AppRoutes.admins),
               const Divider(color: AppTheme.border),
               ListTile(
                 leading: const Icon(Icons.logout, color: AppTheme.accent),
@@ -143,13 +143,66 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildMaintenanceBanner() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppTheme.accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.accent.withValues(alpha: 0.5), width: 1.5),
+      ),
+      child: InkWell(
+        onTap: () => Get.toNamed(AppRoutes.remoteConfig),
+        borderRadius: BorderRadius.circular(12),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppTheme.accent.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.power_settings_new, color: AppTheme.accent, size: 22),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'التطبيق متوقف حالياً',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontFamily: 'Cairo',
+                      color: AppTheme.accent,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    'اضغط للانتقال إلى إعدادات التطبيق',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppTheme.textSecondary,
+                      fontFamily: 'Cairo',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, color: AppTheme.accent, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildKpiGrid(Map<String, dynamic> data) {
     final users = data['users'] as Map<String, dynamic>? ?? {};
     final cycles = data['cycles'] as Map<String, dynamic>? ?? {};
     final devices = data['devices'] as Map<String, dynamic>? ?? {};
-    final tools = data['tools'] as Map<String, dynamic>? ?? {};
     final reviews = data['reviews'] as Map<String, dynamic>? ?? {};
-    final prices = data['prices'] as Map<String, dynamic>? ?? {};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,6 +230,7 @@ class DashboardScreen extends StatelessWidget {
               value: _fmt(users['total']),
               icon: Icons.people,
               subtitle: '+${_fmt(users['new_7d'])} هذا الأسبوع',
+              onTap: () => Get.toNamed(AppRoutes.users),
             ),
             KpiCard(
               title: 'الدورات النشطة',
@@ -184,6 +238,7 @@ class DashboardScreen extends StatelessWidget {
               icon: Icons.agriculture,
               color: AppTheme.success,
               subtitle: '${_fmt(cycles['created_7d'])} جديدة',
+              onTap: () => Get.toNamed(AppRoutes.cycles),
             ),
             KpiCard(
               title: 'الأجهزة النشطة',
@@ -191,13 +246,7 @@ class DashboardScreen extends StatelessWidget {
               icon: Icons.devices,
               color: Colors.teal,
               subtitle: '${_fmt(devices['total'])} إجمالي',
-            ),
-            KpiCard(
-              title: 'استخدام الأدوات (اليوم)',
-              value: _fmt(tools['usage_today']),
-              icon: Icons.build,
-              color: Colors.orange,
-              subtitle: '${_fmt(tools['usage_7d'])} الأسبوع',
+              onTap: () => Get.toNamed(AppRoutes.devices),
             ),
             KpiCard(
               title: 'تقييم التطبيق',
@@ -205,182 +254,12 @@ class DashboardScreen extends StatelessWidget {
               icon: Icons.star,
               color: Colors.amber,
               subtitle: '${_fmt(reviews['app_total'])} تقييم',
-            ),
-            KpiCard(
-              title: 'سجلات الأسعار',
-              value: _fmt(prices['total_records']),
-              icon: Icons.attach_money,
-              subtitle: '${_fmt(prices['updated_today'])} اليوم',
+              onTap: () => Get.toNamed(AppRoutes.reviews),
             ),
           ],
         ),
       ],
     );
-  }
-
-  Widget _buildTimelineCharts(Map<String, dynamic> data) {
-    final timeline = data['timeline_30d'] as Map<String, dynamic>? ?? {};
-    final usersTimeline = (timeline['users'] as List<dynamic>? ?? [])
-        .map((e) => e as Map<String, dynamic>)
-        .toList();
-    final cyclesTimeline = (timeline['cycles'] as List<dynamic>? ?? [])
-        .map((e) => e as Map<String, dynamic>)
-        .toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'آخر 30 يوم',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
-            fontFamily: 'Cairo',
-          ),
-        ),
-        const SizedBox(height: 12),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: const BoxDecoration(color: AppTheme.primary, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 6),
-                    const Text('مستخدمون جدد', style: TextStyle(fontFamily: 'Cairo', fontSize: 13, color: AppTheme.textSecondary)),
-                    const SizedBox(width: 16),
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: const BoxDecoration(color: AppTheme.success, shape: BoxShape.circle),
-                    ),
-                    const SizedBox(width: 6),
-                    const Text('دورات جديدة', style: TextStyle(fontFamily: 'Cairo', fontSize: 13, color: AppTheme.textSecondary)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 180,
-                  child: LineChart(
-                    LineChartData(
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        getDrawingHorizontalLine: (v) => FlLine(color: AppTheme.border.withValues(alpha: 0.3), strokeWidth: 1),
-                      ),
-                      titlesData: FlTitlesData(
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 30,
-                            getTitlesWidget: (v, _) => Text(
-                              v.toInt().toString(),
-                              style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary, fontFamily: 'Cairo'),
-                            ),
-                          ),
-                        ),
-                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      ),
-                      borderData: FlBorderData(show: false),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: _toSpots(usersTimeline),
-                          isCurved: true,
-                          color: AppTheme.primary,
-                          barWidth: 2,
-                          dotData: const FlDotData(show: false),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            color: AppTheme.primary.withValues(alpha: 0.1),
-                          ),
-                        ),
-                        LineChartBarData(
-                          spots: _toSpots(cyclesTimeline),
-                          isCurved: true,
-                          color: AppTheme.success,
-                          barWidth: 2,
-                          dotData: const FlDotData(show: false),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            color: AppTheme.success.withValues(alpha: 0.1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTopTools(Map<String, dynamic> data) {
-    final tools = data['tools'] as Map<String, dynamic>? ?? {};
-    final topToday = tools['top_today'] as List<dynamic>? ?? [];
-
-    if (topToday.isEmpty) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'أكثر الأدوات استخداماً اليوم',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
-            fontFamily: 'Cairo',
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...topToday.map<Widget>((item) {
-          final tool = item as Map<String, dynamic>;
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: AppTheme.primary.withValues(alpha: 0.15),
-                child: Text(
-                  '${tool['tool_id']}',
-                  style: const TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-              ),
-              title: Text(
-                _toolName(tool['tool_id'] as int),
-                style: const TextStyle(fontFamily: 'Cairo'),
-              ),
-              trailing: Text(
-                _fmt(tool['usage_count']),
-                style: const TextStyle(
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primary,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
-  List<FlSpot> _toSpots(List<Map<String, dynamic>> data) {
-    return data.asMap().entries.map((e) {
-      return FlSpot(e.key.toDouble(), (e.value['c'] as num?)?.toDouble() ?? 0);
-    }).toList();
   }
 
   String _fmt(dynamic v) {
@@ -395,18 +274,5 @@ class DashboardScreen extends StatelessWidget {
   String _fmtDouble(dynamic v) {
     if (v == null) return '0.0';
     return (v as num).toStringAsFixed(1);
-  }
-
-  String _toolName(int id) {
-    const names = {
-      1: 'FCR', 2: 'ADG', 3: 'كثافة الفراخ', 4: 'استهلاك العلف اليومي',
-      5: 'استهلاك العلف الكلي', 6: 'الوزن حسب العمر', 7: 'الحرارة حسب العمر',
-      8: 'ساعات الإضاءة', 9: 'الشفاطات', 10: 'التحصينات', 11: 'المقالات',
-      12: 'الأمراض', 13: 'متطلبات التسمين', 14: 'دراسة جدوى', 15: 'تكلفة الإنتاج',
-      16: 'تكلفة العلف/طائر', 17: 'تكلفة العلف/كيلو', 18: 'ربح/طائر',
-      19: 'ROI', 20: 'النفوق', 21: 'الوزن الإجمالي', 22: 'الإيرادات',
-      23: 'استهلاك الماء', 24: 'الطقس',
-    };
-    return names[id] ?? 'أداة $id';
   }
 }

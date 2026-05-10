@@ -7,6 +7,7 @@ class KpiCard extends StatelessWidget {
   final IconData icon;
   final Color? color;
   final String? subtitle;
+  final VoidCallback? onTap;
 
   const KpiCard({
     super.key,
@@ -15,12 +16,16 @@ class KpiCard extends StatelessWidget {
     required this.icon,
     this.color,
     this.subtitle,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,6 +84,7 @@ class KpiCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

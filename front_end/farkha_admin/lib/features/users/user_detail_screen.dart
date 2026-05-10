@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../core/api/admin_api.dart';
 import '../../core/theme/app_theme.dart';
 import 'users_controller.dart';
@@ -87,7 +88,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> with SingleTickerPr
         _infoRow('الاسم', user['name']),
         _infoRow('الهاتف', user['phone'] ?? 'غير محدد'),
         _infoRow('Firebase UID', user['firebase_uid']),
-        _infoRow('تاريخ التسجيل', user['created_at']),
+        _infoRow('تاريخ التسجيل', _formatDate(user['created_at'])),
       ],
     );
   }
@@ -160,6 +161,17 @@ class _UserDetailScreenState extends State<UserDetailScreen> with SingleTickerPr
         );
       },
     );
+  }
+
+  String _formatDate(dynamic raw) {
+    if (raw == null) return '-';
+    try {
+      final utc = DateTime.parse(raw.toString()).toUtc();
+      final cairo = utc.add(const Duration(hours: 2));
+      return DateFormat('yyyy/MM/dd – hh:mm a', 'ar').format(cairo) + ' (توقيت مصر)';
+    } catch (_) {
+      return raw.toString();
+    }
   }
 
   Widget _infoRow(String label, dynamic value) {

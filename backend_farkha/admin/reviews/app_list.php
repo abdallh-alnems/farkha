@@ -12,21 +12,40 @@ class AppReviewsListApi extends AdminBaseApi {
             $pageSize = min(100, max(1, (int) ($this->getField('page_size') ?? 20)));
             $minRating = $this->getField('min_rating');
             $maxRating = $this->getField('max_rating');
+            $starredOnly = $this->getField('starred_only');
+            $platform = $this->getField('platform');
+            $dateFrom = $this->getField('date_from');
+            $dateTo = $this->getField('date_to');
             $offset = ($page - 1) * $pageSize;
 
             $where = "1=1";
             $params = [];
 
             if ($minRating !== null) {
-                $where .= " AND rating >= ?";
+                $where .= " AND ar.rating >= ?";
                 $params[] = (int) $minRating;
             }
             if ($maxRating !== null) {
-                $where .= " AND rating <= ?";
+                $where .= " AND ar.rating <= ?";
                 $params[] = (int) $maxRating;
             }
+            if ($starredOnly !== null && filter_var($starredOnly, FILTER_VALIDATE_BOOLEAN)) {
+                $where .= " AND ar.is_starred = 1";
+            }
+            if ($platform !== null && in_array($platform, ['android', 'ios'], true)) {
+                $where .= " AND ar.platform = ?";
+                $params[] = $platform;
+            }
+            if ($dateFrom !== null) {
+                $where .= " AND ar.created_at >= ?";
+                $params[] = $dateFrom . ' 00:00:00';
+            }
+            if ($dateTo !== null) {
+                $where .= " AND ar.created_at <= ?";
+                $params[] = $dateTo . ' 23:59:59';
+            }
 
-            $total = (int) Database::fetchOne("SELECT COUNT(*) c FROM app_reviews WHERE {$where}", $params)['c'];
+            $total = (int) Database::fetchOne("SELECT COUNT(*) c FROM app_reviews ar WHERE {$where}", $params)['c'];
 
             $items = Database::fetchAll(
                 "SELECT ar.*, u.name AS user_name FROM app_reviews ar LEFT JOIN users u ON u.id = ar.user_id

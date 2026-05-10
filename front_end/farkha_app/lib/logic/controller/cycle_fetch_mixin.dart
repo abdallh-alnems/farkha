@@ -13,8 +13,8 @@ import 'cycle_expenses_controller.dart';
 
 mixin CycleFetchMixin on CycleControllerBase {
   @override
-  Future<void> fetchCyclesFromServer() async {
-    if (isCycleOpen) {
+  Future<void> fetchCyclesFromServer({bool force = false}) async {
+    if (isCycleOpen && !force) {
       return;
     }
 

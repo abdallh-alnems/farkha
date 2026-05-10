@@ -61,6 +61,7 @@ import '../../../view/widget/ad/interstitial_ad_wrapper.dart';
 import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
 import '../../package/upgrade.dart';
+import '../../widget/maintenance_gate.dart';
 
 import 'route.dart';
 
@@ -68,7 +69,7 @@ List<GetPage<dynamic>> pages = [
   // ============================== root =======================================
   GetPage(
     name: '/',
-    page: () => const UpdateGate(child: HomeScreen()),
+    page: () => const MaintenanceGate(child: UpdateGate(child: HomeScreen())),
     middlewares: [OnboardingMiddleWare()],
     binding: HomeBindings(),
   ),

@@ -80,4 +80,7 @@ class StorageKeys {
 
   // ── Update ──
   static const String skippedUpdateVersion = 'skipped_update_version';
+
+  // ── Maintenance ──
+  static const String pendingMaintenance = 'pending_maintenance';
 }

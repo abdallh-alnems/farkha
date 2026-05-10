@@ -60,9 +60,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> with SingleTi
   }
 
   Widget _buildForm(VoidCallback onSend, {Widget? extraField}) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: titleCtrl,

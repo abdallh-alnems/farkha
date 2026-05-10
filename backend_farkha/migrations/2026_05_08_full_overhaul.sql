@@ -295,24 +295,7 @@ ALTER TABLE types
 
 COMMIT;
 
--- ============================================================================
--- GROUP I: tools_usage_events table (new)
--- ============================================================================
 
-START TRANSACTION;
-
-CREATE TABLE tools_usage_events (
-  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  tool_id INT NOT NULL,
-  used_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY idx_tue_user (user_id),
-  KEY idx_tue_tool (tool_id),
-  KEY idx_tue_used_at (used_at),
-  CONSTRAINT fk_tue_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-COMMIT;
 
 -- ============================================================================
 -- POST-CHECKS: Verify migration success

@@ -18,17 +18,23 @@ final class RemoteConfigService {
         return self::$rc;
     }
 
+    private static function extractValue($defaultValue): ?string {
+        if ($defaultValue === null) return null;
+        if (method_exists($defaultValue, 'value')) return $defaultValue->value();
+        $arr = $defaultValue->toArray();
+        return $arr['value'] ?? null;
+    }
+
     public static function getAll(): array {
         $tpl = self::client()->get();
         $out = ['parameters' => [], 'version' => null];
 
         foreach ($tpl->parameters() as $p) {
             $name = $p->name();
-            $defaultValue = $p->defaultValue();
             $out['parameters'][] = [
                 'name' => $name,
                 'description' => $p->description() ?? '',
-                'default_value' => $defaultValue ? $defaultValue->value() : null,
+                'default_value' => self::extractValue($p->defaultValue()),
             ];
         }
 
@@ -50,8 +56,7 @@ final class RemoteConfigService {
         $oldValue = null;
         foreach ($tpl->parameters() as $p) {
             if ($p->name() === $name) {
-                $dv = $p->defaultValue();
-                $oldValue = $dv ? $dv->value() : null;
+                $oldValue = self::extractValue($p->defaultValue());
                 break;
             }
         }

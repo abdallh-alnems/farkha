@@ -20,10 +20,33 @@ import '../../logic/controller/cycle_controller.dart';
 import 'notifications/cycle/cycle_notification_helpers.dart';
 import 'notifications/darkness_notification_helpers.dart';
 import 'notifications/price_notification_helpers.dart';
+import '../widget/maintenance_gate.dart';
+
+/// Storage key for force-logout signal received while app is backgrounded/killed.
+/// Consumed at next app launch by [NotificationService.consumePendingForceLogout].
+const String kPendingForceLogoutKey = 'pending_force_logout';
+
+/// Storage key for maintenance mode signal received while app is backgrounded/killed.
+const String kPendingMaintenanceKey = 'pending_maintenance';
 
 /// Background message handler — must be top-level function.
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  final data = message.data;
+  if (data['type'] == 'force_logout') {
+    await GetStorage.init();
+    final storage = GetStorage();
+    await storage.write(StorageKeys.isLoggedIn, false);
+    await storage.write(kPendingForceLogoutKey, true);
+    return;
+  }
+  if (data['type'] == 'maintenance_mode') {
+    await GetStorage.init();
+    final storage = GetStorage();
+    final enabled = data['enabled'] == '1' || data['enabled'] == 'true';
+    await storage.write(kPendingMaintenanceKey, enabled);
+    return;
+  }
   final storage = GetStorage();
   final enabled = storage.read<bool>(StorageKeys.notificationsEnabled) ?? true;
   if (enabled) {
@@ -141,10 +164,29 @@ class NotificationService extends GetxService
     return this;
   }
 
-  Future<void> configureMessaging() async {
+  bool _messagingListenersAttached = false;
+
+  /// Register FCM listeners (onMessage / onBackgroundMessage / onMessageOpenedApp)
+  /// and refresh the FCM token on the backend. Must run on every cold start —
+  /// without it, FCM data messages (including `force_logout`) are silently
+  /// dropped, and rotated tokens leave the backend pushing to a dead device.
+  /// Idempotent within a process.
+  Future<void> attachMessagingListeners() async {
+    if (_messagingListenersAttached) return;
+    _messagingListenersAttached = true;
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
     await _configureFirebaseMessaging();
     unawaited(syncToken());
+    unawaited(subscribeToTopic('users'));
+  }
+
+  Future<void> configureMessaging() async {
+    await attachMessagingListeners();
 
     unawaited(Future.microtask(() => restoreSubscriptions()));
   }
@@ -275,6 +317,39 @@ class NotificationService extends GetxService
           }
         }
       }
+
+      if (type == 'force_logout') {
+        _forceLogout();
+      }
+
+      if (type == 'maintenance_mode') {
+        final enabled = message.data['enabled'] == '1' || message.data['enabled'] == 'true';
+        MaintenanceGate.trigger(enabled);
+      }
+
+      if (type == 'cycle_force_closed' || type == 'cycle_deleted' || type == 'cycle_hard_deleted') {
+        if (Get.isRegistered<CycleController>()) {
+          final ctrl = Get.find<CycleController>();
+          final cycleIdRaw = message.data['cycle_id'];
+          final cycleId = cycleIdRaw != null ? int.tryParse(cycleIdRaw.toString()) : null;
+          if (cycleId != null) {
+            ctrl.cycles.removeWhere((c) {
+              final cId = c['cycle_id'];
+              final cIdInt = cId is int ? cId : int.tryParse(cId?.toString() ?? '');
+              return cIdInt == cycleId;
+            });
+            final currentId = ctrl.currentCycle['cycle_id'];
+            final currentIdInt = currentId is int ? currentId : int.tryParse(currentId?.toString() ?? '');
+            if (currentIdInt == cycleId) {
+              ctrl.currentCycle.clear();
+              if (ctrl.cycles.isNotEmpty) {
+                ctrl.currentCycle.assignAll(ctrl.cycles.first);
+              }
+            }
+          }
+          ctrl.fetchCyclesFromServer(force: true);
+        }
+      }
     });
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -308,8 +383,20 @@ class NotificationService extends GetxService
     if (message.data.isNotEmpty) _handlePayloadNavigation(message.data);
   }
 
-  void _handlePayloadNavigation(Map<String, dynamic> data) {
+  void _handlePayloadNavigation(Map<String, dynamic> data) async {
     final type = data['type'];
+
+    if (type == 'force_logout') {
+      _forceLogout();
+      return;
+    }
+
+    if (type == 'maintenance_mode') {
+      final enabled = data['enabled'] == '1' || data['enabled'] == 'true';
+      MaintenanceGate.trigger(enabled);
+      return;
+    }
+
     if (type == 'cycle_update') {
       final cycleIdRaw = data['cycle_id'];
       final cycleId = cycleIdRaw != null
@@ -357,7 +444,58 @@ class NotificationService extends GetxService
           ctrl.fetchCycleDetails(cycleId);
         }
       }
+    } else if (type == 'cycle_force_closed') {
+      if (Get.isRegistered<CycleController>()) {
+        final ctrl = Get.find<CycleController>();
+        ctrl.fetchCyclesFromServer();
+        final cycleIdRaw = data['cycle_id'];
+        final cycleId = cycleIdRaw != null
+            ? int.tryParse(cycleIdRaw.toString())
+            : null;
+        if (cycleId != null) {
+          Get.toNamed<void>(
+            AppRoute.cycle,
+            arguments: <String, dynamic>{'cycle_id': cycleId},
+          );
+          ctrl.fetchCycleDetails(cycleId);
+        }
+      }
+    } else if (type == 'cycle_deleted' || type == 'cycle_hard_deleted') {
+      if (Get.isRegistered<CycleController>()) {
+        Get.find<CycleController>().fetchCyclesFromServer();
+      }
+      Get.offAllNamed<void>(AppRoute.home);
     }
+  }
+
+  void _forceLogout() => forceLogout();
+
+  /// Sign user out everywhere: clear local session, sign out of Firebase Auth,
+  /// and navigate to the login route. Safe to call from any context.
+  static void forceLogout() {
+    final storage = GetStorage();
+    storage.write(StorageKeys.isLoggedIn, false);
+    storage.remove(StorageKeys.userName);
+    storage.remove(StorageKeys.userPhone);
+    storage.remove(StorageKeys.cycles);
+    storage.remove(StorageKeys.deletedCycles);
+    storage.remove(StorageKeys.favoriteToolsOrder);
+    storage.remove(kPendingForceLogoutKey);
+    FirebaseAuth.instance.signOut().catchError((_) => null);
+    if (Get.currentRoute != AppRoute.login) {
+      Get.offAllNamed<void>(AppRoute.login);
+    }
+  }
+
+  /// If a `force_logout` FCM was received while the app was backgrounded/killed,
+  /// finish the logout now (Firebase signOut + clear storage + navigate to login).
+  /// Returns true if a pending logout was consumed.
+  static bool consumePendingForceLogout() {
+    final storage = GetStorage();
+    final pending = storage.read<bool>(kPendingForceLogoutKey) ?? false;
+    if (!pending) return false;
+    forceLogout();
+    return true;
   }
 
   Map<String, dynamic>? _parseDarknessAlarmPayload(String payload) {

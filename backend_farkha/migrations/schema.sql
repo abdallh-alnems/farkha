@@ -356,25 +356,7 @@ CREATE TABLE `tools_usage` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tools_usage_events`
---
 
-DROP TABLE IF EXISTS `tools_usage_events`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tools_usage_events` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `tool_id` int NOT NULL,
-  `used_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_tue_user` (`user_id`),
-  KEY `idx_tue_tool` (`tool_id`),
-  KEY `idx_tue_used_at` (`used_at`),
-  CONSTRAINT `fk_tue_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `types`

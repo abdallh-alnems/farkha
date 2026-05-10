@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../config/bootstrap.php';
+require_once __DIR__ . '/../../core/NotificationService.php';
 
 class CycleForceCloseApi extends AdminBaseApi {
     protected ?string $minRole = 'admin';
@@ -28,6 +29,19 @@ class CycleForceCloseApi extends AdminBaseApi {
                 'name' => $cycle['name'],
                 'end_date' => $endDate,
             ]);
+
+            $members = Database::fetchAll(
+                "SELECT user_id FROM cycle_users WHERE cycle_id = ? AND status = 'accepted'",
+                [$cycleId]
+            );
+            $con = Database::getInstance();
+            foreach ($members as $m) {
+                NotificationService::sendToUser($con, (int) $m['user_id'],
+                    'تم إغلاق الدورة',
+                    "تم إغلاق دورة \"{$cycle['name']}\" من قبل الإدارة",
+                    ['type' => 'cycle_force_closed', 'cycle_id' => (string) $cycleId]
+                );
+            }
 
             $this->success(null);
         }, 'cycle_force_close');

@@ -44,7 +44,7 @@ abstract class CycleControllerBase extends GetxController {
   final RxInt cycleDataVersion = 0.obs;
 
   Future<void> fetchCycleDetails(int cycleId, {bool silent = false});
-  Future<void> fetchCyclesFromServer();
+  Future<void> fetchCyclesFromServer({bool force = false});
   void checkAndAutoEndCycles();
 
   Map<String, dynamic> convertCycleDetailsFromApi(

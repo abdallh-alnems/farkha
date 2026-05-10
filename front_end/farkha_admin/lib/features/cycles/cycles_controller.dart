@@ -7,6 +7,7 @@ class CyclesController extends GetxController {
   final errorMsg = ''.obs;
   final currentPage = 1.obs;
   final totalPages = 1.obs;
+  final totalCount = 0.obs;
   final statusFilter = 'all'.obs;
 
   @override
@@ -28,6 +29,7 @@ class CyclesController extends GetxController {
       cycles.value = (data['items'] as List).map((e) => e as Map<String, dynamic>).toList();
       currentPage.value = data['page'] as int;
       totalPages.value = data['total_pages'] as int;
+      totalCount.value = data['total'] as int;
     } on AdminApiException catch (e) {
       errorMsg.value = e.message;
     } catch (_) {

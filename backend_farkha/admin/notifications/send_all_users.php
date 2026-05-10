@@ -13,7 +13,12 @@ class NotificationSendAllApi extends AdminBaseApi {
 
             Validator::required($title, 'title');
 
-            NotificationService::broadcastToTopic($title, $body, 'users', '', '');
+            $result = NotificationService::broadcastToTopic($title, $body, 'users', '', '');
+
+            if ($result === null) {
+                $this->error('فشل إرسال الإشعار', 500);
+                return;
+            }
 
             AdminAuth::logAction('notification.send_all', 'broadcast', 'all', [
                 'title' => $title,

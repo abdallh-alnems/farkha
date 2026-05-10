@@ -29,32 +29,11 @@ class DashboardOverviewApi extends AdminBaseApi {
                     'ios' => (int) Database::fetchOne("SELECT COUNT(*) c FROM user_devices WHERE platform='ios'")['c'],
                     'active_7d' => (int) Database::fetchOne("SELECT COUNT(*) c FROM user_devices WHERE last_active >= NOW() - INTERVAL 7 DAY")['c'],
                 ],
-                'tools' => [
-                    'usage_today' => (int) Database::fetchOne("SELECT COALESCE(SUM(usage_count),0) c FROM tools_usage WHERE usage_date = CURDATE()")['c'],
-                    'usage_7d' => (int) Database::fetchOne("SELECT COALESCE(SUM(usage_count),0) c FROM tools_usage WHERE usage_date >= CURDATE() - INTERVAL 6 DAY")['c'],
-                    'top_today' => Database::fetchAll("SELECT tool_id, usage_count FROM tools_usage WHERE usage_date = CURDATE() ORDER BY usage_count DESC LIMIT 5"),
-                ],
                 'reviews' => [
                     'app_total' => (int) Database::fetchOne("SELECT COUNT(*) c FROM app_reviews")['c'],
                     'app_avg' => (float) (Database::fetchOne("SELECT AVG(rating) a FROM app_reviews WHERE rating IS NOT NULL")['a'] ?? 0),
                     'cycle_total' => (int) Database::fetchOne("SELECT COUNT(*) c FROM cycle_feedbacks")['c'],
                     'cycle_avg' => (float) (Database::fetchOne("SELECT AVG(rating) a FROM cycle_feedbacks")['a'] ?? 0),
-                ],
-                'prices' => [
-                    'total_records' => (int) Database::fetchOne("SELECT COUNT(*) c FROM prices")['c'],
-                    'updated_today' => (int) Database::fetchOne("SELECT COUNT(*) c FROM prices WHERE DATE(date) = CURDATE()")['c'],
-                ],
-                'timeline_30d' => [
-                    'users' => Database::fetchAll(
-                        "SELECT DATE(created_at) d, COUNT(*) c FROM users
-                         WHERE created_at >= CURDATE() - INTERVAL 29 DAY
-                         GROUP BY DATE(created_at) ORDER BY d"
-                    ),
-                    'cycles' => Database::fetchAll(
-                        "SELECT DATE(created_at) d, COUNT(*) c FROM cycles
-                         WHERE created_at >= CURDATE() - INTERVAL 29 DAY
-                         GROUP BY DATE(created_at) ORDER BY d"
-                    ),
                 ],
                 'generated_at' => date('c'),
             ];
