@@ -2,13 +2,11 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-class AddArticleApi extends BaseApi {
-    protected bool $requireAuth = true;
-    protected bool $requirePost = true;
+class AddArticleApi extends AdminBaseApi {
+    protected ?string $minRole = 'admin';
 
     public function __construct() {
         parent::__construct();
-        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $title = $this->getField('title');
             $content = $this->getField('content');
@@ -18,6 +16,7 @@ class AddArticleApi extends BaseApi {
             Validator::maxLength($title, 255, 'Title');
 
             $id = ArticleModel::create($title, $content);
+            AdminAuth::logAction('article.add', 'article', $id, ['title' => $title]);
             Cache::getInstance()->delete('articles_list');
             $this->success(['id' => $id]);
         }, 'add_article');

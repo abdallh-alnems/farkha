@@ -2,13 +2,11 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-class UpdateArticleApi extends BaseApi {
-    protected bool $requireAuth = true;
-    protected bool $requirePost = true;
+class UpdateArticleApi extends AdminBaseApi {
+    protected ?string $minRole = 'admin';
 
     public function __construct() {
         parent::__construct();
-        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $id = $this->requireNumeric('id', 1);
             $title = $this->getField('title');
@@ -20,6 +18,7 @@ class UpdateArticleApi extends BaseApi {
 
             $result = ArticleModel::update((int) $id, $title, $content);
             if ($result > 0) {
+                AdminAuth::logAction('article.update', 'article', (int) $id, ['title' => $title]);
                 Cache::getInstance()->delete('article_' . (int) $id);
                 Cache::getInstance()->delete('articles_list');
                 $this->success(null);

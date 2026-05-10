@@ -2,13 +2,11 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-class AddPricesApi extends BaseApi {
-    protected bool $requireAuth = true;
-    protected bool $requirePost = true;
+class AddPricesApi extends AdminBaseApi {
+    protected ?string $minRole = 'admin';
 
     public function __construct() {
         parent::__construct();
-        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $higher = $this->requireNumeric('higher', 0);
             $type = $this->requireNumeric('type', 1);
@@ -18,6 +16,7 @@ class AddPricesApi extends BaseApi {
             $result = PriceModel::insert($higher, $lowerValue, (int) $type);
 
             if ($result > 0) {
+                AdminAuth::logAction('price.add', 'price', $result, ['type' => (int) $type, 'higher' => $higher, 'lower' => $lowerValue]);
                 $this->sendNotification((int) $type);
                 $this->success(null);
             } else {

@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-class TodayPricesApi extends BaseApi {
-    protected bool $requirePost = false;
+class TodayPricesApi extends AdminBaseApi {
+    protected ?string $minRole = 'readonly';
 
     public function __construct() {
         parent::__construct();

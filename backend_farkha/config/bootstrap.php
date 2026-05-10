@@ -15,6 +15,8 @@ require_once __DIR__ . '/../core/WhatsAppService.php';
 require_once __DIR__ . '/../core/NotificationService.php';
 require_once __DIR__ . '/../core/TopicManager.php';
 require_once __DIR__ . '/../core/BaseApi.php';
+require_once __DIR__ . '/../core/AdminAuth.php';
+require_once __DIR__ . '/../core/AdminBaseApi.php';
 
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../models/CycleModel.php';

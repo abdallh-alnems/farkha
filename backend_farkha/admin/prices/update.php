@@ -2,13 +2,11 @@
 
 require_once __DIR__ . '/../../config/bootstrap.php';
 
-class UpdatePricesApi extends BaseApi {
-    protected bool $requireAuth = true;
-    protected bool $requirePost = true;
+class UpdatePricesApi extends AdminBaseApi {
+    protected ?string $minRole = 'admin';
 
     public function __construct() {
         parent::__construct();
-        RateLimiter::enforceIpLimit();
         $this->handleRequest(function () {
             $type = $this->requireNumeric('type', 1);
             $higher = $this->requireNumeric('higher', 0);
@@ -22,6 +20,7 @@ class UpdatePricesApi extends BaseApi {
 
             $result = PriceModel::updateLatest((int) $type, $higher, $lowerValue);
             if ($result > 0) {
+                AdminAuth::logAction('price.update', 'price', $type, ['higher' => $higher, 'lower' => $lowerValue]);
                 Cache::getInstance()->clear();
                 $this->success(null);
             } else {

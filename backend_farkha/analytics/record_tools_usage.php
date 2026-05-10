@@ -21,8 +21,8 @@ try {
     );
 
     Database::execute(
-        "INSERT INTO tools_usage_events (user_id, tool_name) VALUES (:uid, :tool)",
-        [':uid' => $userId, ':tool' => $toolName]
+        "INSERT INTO tools_usage_events (user_id, tool_id) VALUES (:uid, :tid)",
+        [':uid' => $userId, ':tid' => $toolId]
     );
 
     Response::success(null);
