@@ -5,13 +5,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/class/crud.dart';
+import '../../../core/class/status_request.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/services/excel/excel_export_service.dart';
 import '../../../core/services/pdf/pdf_export_service.dart';
+import '../../../data/data_source/remote/cycle_feedback_data.dart';
 import '../../../logic/controller/cycle_controller.dart';
+import '../../../logic/controller/cycle_feedback_controller.dart';
 import '../cycle/weekly_report_bottom_sheet.dart';
+import '../cycle_feedback/cycle_feedback_dialog.dart';
 import 'cycle_card_dialogs.dart';
 
 class CycleCardPopupMenu extends StatelessWidget {
@@ -84,6 +89,7 @@ class CycleCardPopupMenu extends StatelessWidget {
       _menuItem(context, 'share', Icons.share_outlined, 'مشاركة'),
       if (!isViewer)
         _menuItem(context, 'permissions', Icons.group_outlined, 'صلاحيات'),
+      _menuItem(context, 'rate', Icons.star_outline_rounded, 'تقييم الدورة'),
       _menuItem(
         context,
         'delete',
@@ -174,6 +180,8 @@ class CycleCardPopupMenu extends StatelessWidget {
       if (cycleId > 0) {
         showMemberManagementDialog(cycleId, isDark);
       }
+    } else if (value == 'rate') {
+      _showCycleFeedback();
     } else if (value == 'delete') {
       if (cycle['role'] == 'owner') {
         await showDeleteDialog(cycle, isDark);
@@ -181,6 +189,29 @@ class CycleCardPopupMenu extends StatelessWidget {
         await showLeaveDialog(cycle, isDark);
       }
     }
+  }
+
+  void _showCycleFeedback() {
+    _ensureFeedbackController();
+    unawaited(Get.dialog<void>(const CycleFeedbackDialog()));
+  }
+
+  static CycleFeedbackController _ensureFeedbackController() {
+    if (Get.isRegistered<CycleFeedbackController>()) {
+      final ctrl = Get.find<CycleFeedbackController>();
+      ctrl.rating = 0;
+      ctrl.issueController.clear();
+      ctrl.suggestionController.clear();
+      ctrl.statusRequest = StatusRequest.none;
+      ctrl.validationError = null;
+      ctrl.update();
+      return ctrl;
+    }
+    final crud = Get.find<Crud>();
+    final data = CycleFeedbackData(crud);
+    final ctrl = CycleFeedbackController(data);
+    Get.put(ctrl);
+    return ctrl;
   }
 }
 

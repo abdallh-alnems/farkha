@@ -30,11 +30,17 @@ class CycleSoftDeleteApi extends AdminBaseApi {
 
             $con = Database::getInstance();
             foreach ($members as $m) {
-                NotificationService::sendToUser($con, (int) $m['user_id'],
-                    'تم حذف الدورة',
-                    "تم حذف دورة \"{$cycle['name']}\" من قبل الإدارة",
-                    ['type' => 'cycle_deleted', 'cycle_id' => (string) $cycleId]
-                );
+                try {
+                    $uid = (int) $m['user_id'];
+                    $locale = I18n::userLocale($con, $uid);
+                    NotificationService::sendToUser($con, $uid,
+                        I18n::get('notif.cycle_deleted.title', [], $locale),
+                        I18n::get('notif.cycle_deleted.body', ['name' => $cycle['name']], $locale),
+                        ['type' => 'cycle_deleted', 'cycle_id' => (string) $cycleId]
+                    );
+                } catch (Exception $e) {
+                    error_log("Failed to notify user {$m['user_id']} of cycle soft delete: " . $e->getMessage());
+                }
             }
 
             $this->success(null);

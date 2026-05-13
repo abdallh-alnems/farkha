@@ -99,16 +99,16 @@ class _FeedCostPerBirdScreenState extends State<FeedCostPerBirdScreen>
           secondSuffix: 'جنيه',
           onFirstChanged: (value) {
             controller.totalFeedQuantity.value =
-                double.tryParse(value) ?? 0.0;
+                tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onSecondChanged: (value) {
             controller.feedPricePerTon.value =
-                double.tryParse(value) ?? 0.0;
+                tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onThirdChanged: (value) {
-            controller.numberOfBirds.value = int.tryParse(value) ?? 0;
+            controller.numberOfBirds.value = tryParseInt(value) ?? 0;
             _resetResult();
           },
         ),

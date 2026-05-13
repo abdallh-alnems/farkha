@@ -37,10 +37,18 @@ class AppReviewsListApi extends AdminBaseApi {
                 $params[] = $platform;
             }
             if ($dateFrom !== null) {
+                $d = DateTime::createFromFormat('Y-m-d', $dateFrom);
+                if (!$d || $d->format('Y-m-d') !== $dateFrom) {
+                    $this->error('صيغة date_from غير صالحة (متوقع Y-m-d)', 400);
+                }
                 $where .= " AND ar.created_at >= ?";
                 $params[] = $dateFrom . ' 00:00:00';
             }
             if ($dateTo !== null) {
+                $d = DateTime::createFromFormat('Y-m-d', $dateTo);
+                if (!$d || $d->format('Y-m-d') !== $dateTo) {
+                    $this->error('صيغة date_to غير صالحة (متوقع Y-m-d)', 400);
+                }
                 $where .= " AND ar.created_at <= ?";
                 $params[] = $dateTo . ' 23:59:59';
             }
@@ -49,13 +57,15 @@ class AppReviewsListApi extends AdminBaseApi {
 
             $items = Database::fetchAll(
                 "SELECT ar.*, u.name AS user_name FROM app_reviews ar LEFT JOIN users u ON u.id = ar.user_id
-                 WHERE {$where} ORDER BY ar.created_at DESC LIMIT {$pageSize} OFFSET {$offset}",
-                $params
+                 WHERE {$where} ORDER BY ar.created_at DESC LIMIT ? OFFSET ?",
+                array_merge($params, [$pageSize, $offset])
             );
 
-            $avg = (float) (Database::fetchOne("SELECT AVG(rating) a FROM app_reviews WHERE rating IS NOT NULL")['a'] ?? 0);
+            $avg = (float) (Database::fetchOne("SELECT AVG(rating) a FROM app_reviews ar WHERE {$where}", $params)['a'] ?? 0);
+            $distWhere = $where . " AND ar.rating IS NOT NULL";
             $distribution = Database::fetchAll(
-                "SELECT rating, COUNT(*) c FROM app_reviews WHERE rating IS NOT NULL GROUP BY rating ORDER BY rating DESC"
+                "SELECT rating, COUNT(*) c FROM app_reviews ar WHERE {$distWhere} GROUP BY rating ORDER BY rating DESC",
+                $params
             );
 
             $this->success([

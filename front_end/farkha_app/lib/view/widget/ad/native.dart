@@ -72,7 +72,6 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
           }
         },
         onAdFailedToLoad: (ad, error) {
-          debugPrint('Native failed: ${error.code} - ${error.message}');
           ad.dispose();
           _nativeAd = null;
           _scheduleRetry();

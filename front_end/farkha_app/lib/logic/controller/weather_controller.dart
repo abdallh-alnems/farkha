@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -113,10 +112,6 @@ class WeatherController extends GetxController {
             position.latitude,
             position.longitude,
           );
-          // طباعة استجابة الـ API الخام
-          debugPrint('═══════════════ استجابة API الطقس (خام) ═══════════════');
-          debugPrint(data.toString());
-          debugPrint('══════════════════════════════════════════════════════════');
           statusRequest.value = handlingData(data);
           if (statusRequest.value == StatusRequest.success) {
             final current = data['current'] as Map<String, dynamic>?;

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import '../../../core/constant/strings/app_strings.dart';
+import '../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
 import '../../../core/constant/theme/colors.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/services/initialization.dart';
@@ -384,6 +385,7 @@ class MemberListWidget extends StatelessWidget {
             TextField(
               controller: phoneController,
               keyboardType: TextInputType.phone,
+              inputFormatters: [ArabicToEnglishDigitsFormatter()],
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.phone),
                 hintText: 'رقم الهاتف',

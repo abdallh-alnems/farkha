@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/functions/number_format.dart';
+import '../../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
 import '../../../../data/model/cycle/feed_consumption_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
 import 'feed/feed_consumption_dialogs.dart';
@@ -292,6 +294,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                         keyboardType:
                             const TextInputType.numberWithOptions(
                                 decimal: true),
+                        inputFormatters: [ArabicToEnglishDigitsFormatter()],
                         decoration: InputDecoration(
                           hintText: 'أدخل استهلاك العلف',
                           hintStyle: TextStyle(
@@ -347,7 +350,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
                       child: InkWell(
                         onTap: () {
                           final value = _controller.text;
-                          final amount = double.tryParse(value) ?? 0.0;
+                          final amount = tryParseNum(value) ?? 0.0;
                           if (amount > 0) {
                             _save();
                           } else {
@@ -399,7 +402,7 @@ class _FeedConsumptionCardState extends State<FeedConsumptionCard> {
   Future<void> _save() async {
     final value = _controller.text.trim();
     if (value.isEmpty) return;
-    final amount = double.tryParse(value) ?? 0.0;
+    final amount = tryParseNum(value) ?? 0.0;
     if (amount <= 0) return;
     await cycleCtrl.addFeedConsumptionEntry(amount);
     _controller.clear();

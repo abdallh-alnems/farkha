@@ -129,7 +129,14 @@ final class NotificationService {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 10,
         ]);
-        $tokenResp = json_decode(curl_exec($ch), true);
+        $rawTokenResp = curl_exec($ch);
+        $curlError = curl_error($ch);
+        if ($rawTokenResp === false) {
+            error_log('cURL error during OAuth2 token request: ' . $curlError);
+            curl_close($ch);
+            return null;
+        }
+        $tokenResp = json_decode($rawTokenResp, true);
         $tokenHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         $accessToken = $tokenResp['access_token'] ?? null;
@@ -179,6 +186,11 @@ final class NotificationService {
         $curlError = curl_error($ch);
         curl_close($ch);
 
+        if ($result === false) {
+            error_log("FCM topic broadcast cURL error: {$curlError}");
+            return null;
+        }
+
         if ($httpCode >= 400) {
             error_log("FCM topic broadcast failed. HTTP {$httpCode}: {$result}. cURL error: {$curlError}");
             return null;
@@ -219,12 +231,20 @@ final class NotificationService {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 10,
         ]);
-        $tokenResp = json_decode(curl_exec($ch), true);
+        $rawTokenResp = curl_exec($ch);
+        $curlError = curl_error($ch);
+        if ($rawTokenResp === false) {
+            error_log('cURL error during OAuth2 token request for data broadcast: ' . $curlError);
+            curl_close($ch);
+            return null;
+        }
+        $tokenResp = json_decode($rawTokenResp, true);
+        $tokenHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         $accessToken = $tokenResp['access_token'] ?? null;
 
         if (!$accessToken) {
-            error_log('Failed to get OAuth2 access token for FCM data broadcast');
+            error_log('Failed to get OAuth2 access token for FCM data broadcast. HTTP ' . $tokenHttpCode . ': ' . json_encode($tokenResp));
             return null;
         }
 
@@ -256,7 +276,13 @@ final class NotificationService {
         ]);
         $result = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
+
+        if ($result === false) {
+            error_log("FCM data topic broadcast cURL error: {$curlError}");
+            return null;
+        }
 
         if ($httpCode >= 400) {
             error_log("FCM data topic broadcast failed. HTTP {$httpCode}: {$result}");

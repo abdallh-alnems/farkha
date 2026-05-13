@@ -50,9 +50,22 @@ class AdminUpdateApi extends AdminBaseApi {
                 $params[] = trim($displayName);
             }
 
-            if ($password !== null && strlen($password) >= 6) {
+            if ($password !== null) {
+                if (mb_strlen($password, 'UTF-8') < 6) {
+                    $this->error('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 400);
+                }
+                if (mb_strlen($password, 'UTF-8') > 128) {
+                    $this->error('كلمة المرور طويلة جداً (الحد الأقصى 128 حرف)', 400);
+                }
+                if (strlen($password) > 72) {
+                    $this->error('كلمة المرور طويلة جداً (الحد الأقصى 72 بايت)', 400);
+                }
+                $hash = password_hash($password, PASSWORD_BCRYPT);
+                if ($hash === false) {
+                    $this->error('فشل تشفير كلمة المرور', 500);
+                }
                 $updates[] = 'password_hash = ?';
-                $params[] = password_hash($password, PASSWORD_BCRYPT);
+                $params[] = $hash;
             }
 
             if (empty($updates)) {

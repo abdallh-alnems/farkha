@@ -74,19 +74,19 @@ class FanOperationController extends GetxController {
 
   // Helper methods for updating values
   void updateNumberOfBirds(String value) {
-    numberOfBirds.value = int.tryParse(value) ?? 0;
+    numberOfBirds.value = tryParseInt(value) ?? 0;
   }
 
   void updateAverageWeight(String value) {
-    averageWeight.value = double.tryParse(value) ?? 0.0;
+    averageWeight.value = tryParseNum(value) ?? 0.0;
   }
 
   void updateFanCapacityPerHour(String value) {
-    fanCapacityPerHour.value = double.tryParse(value) ?? 0.0;
+    fanCapacityPerHour.value = tryParseNum(value) ?? 0.0;
   }
 
   void updateTemperature(String value) {
-    temperature.value = double.tryParse(value) ?? 0.0;
+    temperature.value = tryParseNum(value) ?? 0.0;
   }
 
   Future<void> getWeatherData() async {

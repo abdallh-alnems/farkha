@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../../core/class/status_request.dart';
 import '../../core/constant/routes/route.dart';
 import '../../core/constant/storage_keys.dart';
+import '../../core/functions/number_format.dart';
 import '../../core/services/notification_service.dart';
 import 'cycle_controller_base.dart';
 
@@ -16,8 +17,8 @@ mixin CycleCrudMixin on CycleControllerBase {
     if (!formKey.currentState!.validate()) return;
 
     final name = nameController.text.trim();
-    final chickCount = int.tryParse(countController.text.trim()) ?? 0;
-    final space = double.tryParse(spaceController.text.trim()) ?? 0.0;
+    final chickCount = tryParseInt(countController.text.trim()) ?? 0;
+    final space = tryParseNum(spaceController.text.trim()) ?? 0.0;
     const breed = 'تسمين';
     const systemType = 'أرضي';
     final startDateRaw = dateRawController.text.trim();
@@ -146,13 +147,12 @@ mixin CycleCrudMixin on CycleControllerBase {
         isCreatingCycle.value = false;
 
         final newIndex = cycles.length - 1;
-        final shouldShowTutorial = cycles.length == 2;
 
         unawaited(
           Get.offNamedUntil(
             AppRoute.cycle,
             ModalRoute.withName('/'),
-            arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+            arguments: {'index': newIndex},
           ),
         );
         return;
@@ -229,13 +229,12 @@ mixin CycleCrudMixin on CycleControllerBase {
       });
 
       final newIndex = cycles.length - 1;
-      final shouldShowTutorial = cycles.length == 2;
 
       unawaited(
         Get.offNamedUntil<void>(
           AppRoute.cycle,
           ModalRoute.withName('/'),
-          arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+          arguments: {'index': newIndex},
         ),
       );
     } catch (e) {
@@ -246,13 +245,12 @@ mixin CycleCrudMixin on CycleControllerBase {
       clearFields();
 
       final newIndex = cycles.length - 1;
-      final shouldShowTutorial = cycles.length == 2;
 
       unawaited(
         Get.offNamedUntil<void>(
           AppRoute.cycle,
           ModalRoute.withName('/'),
-          arguments: {'index': newIndex, 'showTutorial': shouldShowTutorial},
+          arguments: {'index': newIndex},
         ),
       );
     } finally {
@@ -284,17 +282,10 @@ mixin CycleCrudMixin on CycleControllerBase {
           : (cycleId != null ? int.tryParse(cycleId.toString()) : null);
       final hasServerCycle = cycleIdInt != null && cycleIdInt > 0;
 
-      debugPrint(
-        '[deleteCycle] cycleName=$cycleName, cycleIdRaw=$cycleId, '
-        'cycleIdInt=$cycleIdInt, hasServerCycle=$hasServerCycle',
-      );
-
       if (hasServerCycle) {
         final isLoggedIn =
             myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
-        debugPrint('[deleteCycle] isLoggedIn=$isLoggedIn');
         if (!isLoggedIn) {
-          debugPrint('[deleteCycle] FAIL: not logged in');
           cycleDeleteStatus.value = StatusRequest.failure;
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (cycleDeleteStatus.value == StatusRequest.failure) {
@@ -305,9 +296,7 @@ mixin CycleCrudMixin on CycleControllerBase {
         }
 
         final user = auth.currentUser;
-        debugPrint('[deleteCycle] firebaseUser=${user?.uid}');
         if (user == null) {
-          debugPrint('[deleteCycle] FAIL: no firebase user');
           cycleDeleteStatus.value = StatusRequest.failure;
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (cycleDeleteStatus.value == StatusRequest.failure) {
@@ -318,11 +307,7 @@ mixin CycleCrudMixin on CycleControllerBase {
         }
 
         final token = await user.getIdToken();
-        debugPrint(
-          '[deleteCycle] tokenEmpty=${token == null || token.isEmpty}',
-        );
         if (token == null || token.isEmpty) {
-          debugPrint('[deleteCycle] FAIL: empty token');
           cycleDeleteStatus.value = StatusRequest.failure;
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (cycleDeleteStatus.value == StatusRequest.failure) {
@@ -332,7 +317,6 @@ mixin CycleCrudMixin on CycleControllerBase {
           return false;
         }
 
-        debugPrint('[deleteCycle] calling API with cycleId=$cycleIdInt');
         final result = await cycleData.deleteCycle(
           token: token,
           cycleId: cycleIdInt,
@@ -341,11 +325,9 @@ mixin CycleCrudMixin on CycleControllerBase {
         StatusRequest? failureStatus;
         result.fold(
           (failure) {
-            debugPrint('[deleteCycle] API LEFT failure=$failure');
             failureStatus = failure;
           },
           (response) {
-            debugPrint('[deleteCycle] API RIGHT response=$response');
             if (response['status'] != 'success') {
               failureStatus = StatusRequest.serverFailure;
             }
@@ -353,7 +335,6 @@ mixin CycleCrudMixin on CycleControllerBase {
         );
 
         if (failureStatus != null) {
-          debugPrint('[deleteCycle] FAIL: API failed -> $failureStatus');
           cycleDeleteStatus.value = failureStatus!;
           Future.delayed(const Duration(milliseconds: 2000), () {
             if (cycleDeleteStatus.value == failureStatus) {
@@ -362,7 +343,6 @@ mixin CycleCrudMixin on CycleControllerBase {
           });
           return false;
         }
-        debugPrint('[deleteCycle] API success, proceeding to local delete');
       }
 
       if (cycleName != null && cycleName.isNotEmpty) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/constant/storage_keys.dart';
+import '../../core/functions/number_format.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
 import 'cycle_controller.dart';
@@ -226,7 +227,7 @@ mixin CycleExpensesSyncMixin on GetxController {
       if (value is num) {
         amount = value.toDouble();
       } else if (value is String) {
-        amount = double.tryParse(value) ?? 0.0;
+        amount = tryParseNum(value) ?? 0.0;
       }
 
       if (amount <= 0) continue;

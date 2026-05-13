@@ -118,7 +118,8 @@ class _MemberListItemState extends State<MemberListItem> {
                 isError: !isSuccess,
               );
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(
+                foregroundColor: AppColors.errorColor),
             child: const Text('إزالة'),
           ),
         ],
@@ -134,22 +135,7 @@ class _MemberListItemState extends State<MemberListItem> {
     final bool canEdit =
         widget.isOwner && !widget.isCurrentUser && !isMemberOwner;
 
-    IconData avatarIcon;
-    Color avatarBg;
-    Color avatarIconColor;
-    if (isMemberOwner) {
-      avatarIcon = Icons.workspace_premium_rounded;
-      avatarBg = Colors.amber.withValues(alpha: 0.15);
-      avatarIconColor = Colors.amber.shade700;
-    } else if (isAdmin) {
-      avatarIcon = Icons.manage_accounts_rounded;
-      avatarBg = AppColors.primaryColor.withValues(alpha: 0.15);
-      avatarIconColor = AppColors.primaryColor;
-    } else {
-      avatarIcon = Icons.remove_red_eye_rounded;
-      avatarBg = Colors.blueGrey.withValues(alpha: 0.12);
-      avatarIconColor = Colors.blueGrey;
-    }
+    final Color mutedColor = colorScheme.onSurface.withValues(alpha: 0.35);
 
     return Container(
       padding: EdgeInsets.all(12.w),
@@ -158,19 +144,9 @@ class _MemberListItemState extends State<MemberListItem> {
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
           color: _isPending
-              ? Colors.orange.withValues(alpha: 0.4)
-              : isMemberOwner
-                  ? Colors.amber.withValues(alpha: 0.3)
-                  : colorScheme.onSurface.withValues(alpha: 0.1),
+              ? colorScheme.outline.withValues(alpha: 0.4)
+              : colorScheme.outline.withValues(alpha: 0.15),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black
-                .withValues(alpha: widget.isDark ? 0.15 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,9 +155,20 @@ class _MemberListItemState extends State<MemberListItem> {
             children: [
               CircleAvatar(
                 radius: 20.r,
-                backgroundColor: avatarBg,
-                child: Icon(avatarIcon,
-                    color: avatarIconColor, size: 20.sp),
+                backgroundColor: colorScheme.onSurface.withValues(alpha: 0.06),
+                child: Icon(
+                  isMemberOwner
+                      ? Icons.workspace_premium_rounded
+                      : isAdmin
+                          ? Icons.manage_accounts_rounded
+                          : Icons.person_rounded,
+                  color: isMemberOwner
+                      ? AppColors.accentColor
+                      : isAdmin
+                          ? AppColors.primaryColor
+                          : mutedColor,
+                  size: 20.sp,
+                ),
               ),
               SizedBox(width: 10.w),
               Expanded(
@@ -203,25 +190,12 @@ class _MemberListItemState extends State<MemberListItem> {
                         ),
                         if (widget.isCurrentUser) ...[
                           SizedBox(width: 5.w),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 6.w, vertical: 1.h),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryColor
-                                  .withValues(alpha: 0.12),
-                              borderRadius:
-                                  BorderRadius.circular(6.r),
-                              border: Border.all(
-                                  color: AppColors.primaryColor
-                                      .withValues(alpha: 0.4)),
-                            ),
-                            child: Text(
-                              'أنت',
-                              style: TextStyle(
-                                fontSize: 9.sp,
-                                color: AppColors.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            '(أنت)',
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              color: mutedColor,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
@@ -231,8 +205,7 @@ class _MemberListItemState extends State<MemberListItem> {
                       Text(
                         _memberPhone,
                         style: TextStyle(
-                          color: colorScheme.onSurface
-                              .withValues(alpha: 0.45),
+                          color: mutedColor,
                           fontSize: 11.sp,
                         ),
                         textDirection: ui.TextDirection.ltr,
@@ -240,7 +213,7 @@ class _MemberListItemState extends State<MemberListItem> {
                   ],
                 ),
               ),
-              _buildRoleBadge(
+              _buildRoleLabel(
                 colorScheme: colorScheme,
                 isPending: _isPending,
                 isMemberOwner: isMemberOwner,
@@ -271,8 +244,7 @@ class _MemberListItemState extends State<MemberListItem> {
                               role: 'admin',
                               currentRole: _memberRole,
                               isDark: widget.isDark,
-                              icon:
-                                  Icons.manage_accounts_rounded,
+                              icon: Icons.manage_accounts_rounded,
                               onTap: () => _changeRole('admin'),
                             ),
                             SizedBox(width: 6.w),
@@ -281,29 +253,20 @@ class _MemberListItemState extends State<MemberListItem> {
                               role: 'viewer',
                               currentRole: _memberRole,
                               isDark: widget.isDark,
-                              icon:
-                                  Icons.remove_red_eye_rounded,
+                              icon: Icons.remove_red_eye_rounded,
                               onTap: () => _changeRole('viewer'),
                             ),
                           ],
                         ),
                 ),
                 SizedBox(width: 8.w),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                        color: Colors.red.withValues(alpha: 0.2)),
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.person_remove_rounded,
-                        color: Colors.red, size: 18.sp),
-                    onPressed: _isRemoving ? null : _confirmRemove,
-                    tooltip: 'إزالة العضو',
-                    padding: EdgeInsets.all(6.w),
-                    constraints: const BoxConstraints(),
-                  ),
+                IconButton(
+                  icon: Icon(Icons.close_rounded,
+                      color: mutedColor, size: 18.sp),
+                  onPressed: _isRemoving ? null : _confirmRemove,
+                  tooltip: 'إزالة العضو',
+                  padding: EdgeInsets.all(6.w),
+                  constraints: const BoxConstraints(),
                 ),
               ],
             ),
@@ -313,79 +276,37 @@ class _MemberListItemState extends State<MemberListItem> {
     );
   }
 
-  Widget _buildRoleBadge({
+  Widget _buildRoleLabel({
     required ColorScheme colorScheme,
     required bool isPending,
     required bool isMemberOwner,
     required bool isAdmin,
   }) {
+    final String text;
+    final Color color;
+
     if (isPending) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-        decoration: BoxDecoration(
-          color: Colors.orange.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: Colors.orange.withValues(alpha: 0.5)),
-        ),
-        child: Text(
-          'في انتظار القبول',
-          style: TextStyle(
-              fontSize: 10.sp,
-              color: Colors.orange,
-              fontWeight: FontWeight.w600),
-        ),
-      );
+      text = 'في انتظار القبول';
+      color = colorScheme.onSurface.withValues(alpha: 0.45);
     } else if (isMemberOwner) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-        decoration: BoxDecoration(
-          color: Colors.amber.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: Colors.amber.withValues(alpha: 0.5)),
-        ),
-        child: Text(
-          'صاحب الدورة',
-          style: TextStyle(
-              fontSize: 10.sp,
-              color: Colors.amber.shade700,
-              fontWeight: FontWeight.w600),
-        ),
-      );
+      text = 'صاحب الدورة';
+      color = AppColors.accentColor;
     } else if (isAdmin) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-        decoration: BoxDecoration(
-          color: AppColors.primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(
-              color: AppColors.primaryColor.withValues(alpha: 0.5)),
-        ),
-        child: Text(
-          'مشرف',
-          style: TextStyle(
-              fontSize: 10.sp,
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.w600),
-        ),
-      );
+      text = 'مشرف';
+      color = AppColors.primaryColor;
     } else {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-        decoration: BoxDecoration(
-          color: Colors.blueGrey.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8.r),
-          border:
-              Border.all(color: Colors.blueGrey.withValues(alpha: 0.5)),
-        ),
-        child: Text(
-          'متابع',
-          style: TextStyle(
-              fontSize: 10.sp,
-              color: Colors.blueGrey,
-              fontWeight: FontWeight.w600),
-        ),
-      );
+      text = 'متابع';
+      color = colorScheme.onSurface.withValues(alpha: 0.4);
     }
+
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 10.sp,
+        color: color,
+        fontWeight: FontWeight.w600,
+      ),
+    );
   }
 }
 
@@ -418,14 +339,13 @@ class RoleChip extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primaryColor.withValues(alpha: 0.12)
-              : colorScheme.surface,
+              ? AppColors.primaryColor.withValues(alpha: 0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
             color: isSelected
-                ? AppColors.primaryColor
-                : colorScheme.outline.withValues(alpha: 0.3),
-            width: isSelected ? 1.5 : 1,
+                ? AppColors.primaryColor.withValues(alpha: 0.5)
+                : colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
         child: Row(
@@ -435,7 +355,7 @@ class RoleChip extends StatelessWidget {
                 size: 14.sp,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : colorScheme.onSurface.withValues(alpha: 0.4)),
+                    : colorScheme.onSurface.withValues(alpha: 0.35)),
             SizedBox(width: 4.w),
             Text(
               label,
@@ -445,7 +365,7 @@ class RoleChip extends StatelessWidget {
                     isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : colorScheme.onSurface.withValues(alpha: 0.5),
+                    : colorScheme.onSurface.withValues(alpha: 0.45),
               ),
             ),
           ],

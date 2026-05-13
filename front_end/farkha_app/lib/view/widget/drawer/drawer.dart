@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/package/rating_app.dart';
+import '../../../core/services/open_privacy_policy.dart';
+import '../../../logic/bindings/app_review_binding.dart';
+import '../app_review/app_review_dialog.dart';
 import 'drawer_about_app.dart';
 import 'drawer_account_settings.dart';
+import 'drawer_disclaimer.dart';
 import 'drawer_header.dart';
 import 'drawer_support_contact.dart';
 
@@ -59,6 +65,79 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           (expanded) => _handleExpansionChanged(2, expanded),
                     ),
                     const Divider(height: 1, thickness: 0.5),
+                    ListTile(
+                      leading: Icon(
+                        Icons.rate_review_rounded,
+                        size: 21.sp,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      title: Text(
+                        'شاركنا رأيك',
+                        style: TextStyle(fontSize: 15.sp),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        AppReviewBinding().dependencies();
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => const AppReviewDialog(),
+                        );
+                      },
+                      contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
+                    ListTile(
+                      leading: Icon(
+                        Icons.star_rounded,
+                        size: 21.sp,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      title: Text(
+                        'تقييم التطبيق',
+                        style: TextStyle(fontSize: 15.sp),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Get.find<RateMyAppController>().launchStore();
+                      },
+                      contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
+                    ListTile(
+                      leading: Icon(
+                        Icons.policy_rounded,
+                        size: 21.sp,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      title: Text(
+                        'سياسة الخصوصية',
+                        style: TextStyle(fontSize: 15.sp),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        openPrivacyPolicy();
+                      },
+                      contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
+                    ListTile(
+                      leading: Icon(
+                        Icons.shield_outlined,
+                        size: 21.sp,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      title: Text(
+                        'إخلاء المسؤولية',
+                        style: TextStyle(fontSize: 15.sp),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        DisclaimerDialog.show(context);
+                      },
+                      contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
+                    ),
+                    const Divider(height: 1, thickness: 0.5),
                   ],
                 ),
               ),
@@ -74,10 +153,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     'v${snapshot.data!.version}',
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.4),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.4),
                     ),
                   ),
                 );
@@ -103,6 +181,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
     return Column(
       children: [
+        SizedBox(height: 15.h),
+
         Text(
           'تابعنا',
           style: TextStyle(
@@ -138,7 +218,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
             ],
           ),
         ),
-        SizedBox(height: 40.h),
+        SizedBox(height: 21.h),
       ],
     );
   }

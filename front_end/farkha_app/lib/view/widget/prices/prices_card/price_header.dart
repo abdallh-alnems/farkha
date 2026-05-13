@@ -7,10 +7,7 @@ import '../../../../core/constant/routes/route.dart';
 import '../../../../core/constant/theme/images.dart';
 
 class PriceHeader extends StatelessWidget {
-  final GlobalKey? allPricesButtonKey;
-  final GlobalKey? settingsIconKey;
-
-  const PriceHeader({super.key, this.allPricesButtonKey, this.settingsIconKey});
+  const PriceHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +46,6 @@ class PriceHeader extends StatelessWidget {
             ),
             child: SvgPicture.asset(
               AppImages.settingCardPrices,
-              key: settingsIconKey,
               width: 16,
               height: 16,
               colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
@@ -60,7 +56,6 @@ class PriceHeader extends StatelessWidget {
         GestureDetector(
           onTap: () => Get.toNamed<void>(AppRoute.mainTypes),
           child: Container(
-            key: allPricesButtonKey,
             padding: EdgeInsetsDirectional.fromSTEB(10.w, 5.h, 10.w, 5.h),
             decoration: BoxDecoration(
               color: colorScheme.primary,

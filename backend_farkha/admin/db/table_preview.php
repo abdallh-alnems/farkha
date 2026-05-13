@@ -10,8 +10,26 @@ class DbTablePreviewApi extends AdminBaseApi {
         'cycle_expenses', 'cycle_sales', 'cycle_inventory', 'cycle_invitations',
         'cycle_notes', 'cycle_feedbacks', 'app_reviews', 'types',
         'product_categories', 'articles',
-        'phone_verifications', 'account_deletions', 'admin_users', 'admin_sessions', 'admin_audit_log',
+        'phone_verifications', 'admin_users', 'admin_sessions', 'admin_audit_log',
     ];
+
+    private const SENSITIVE_COLUMNS = [
+        'admin_users' => ['password_hash', 'last_login_ip'],
+        'admin_sessions' => ['token_hash', 'ip', 'user_agent'],
+        'users' => ['firebase_uid'],
+        'user_devices' => ['fcm_token'],
+    ];
+
+    private static function stripSensitive(string $table, array $rows): array {
+        $cols = self::SENSITIVE_COLUMNS[$table] ?? [];
+        if (empty($cols)) return $rows;
+        return array_map(function ($row) use ($cols) {
+            foreach ($cols as $c) {
+                unset($row[$c]);
+            }
+            return $row;
+        }, $rows);
+    }
 
     public function __construct() {
         parent::__construct();
@@ -27,6 +45,8 @@ class DbTablePreviewApi extends AdminBaseApi {
             $rows = Database::fetchAll(
                 "SELECT * FROM `{$table}` ORDER BY 1 DESC LIMIT {$limit} OFFSET {$offset}"
             );
+
+            $rows = self::stripSensitive($table, $rows);
 
             $total = (int) Database::fetchOne("SELECT COUNT(*) c FROM `{$table}`")['c'];
 

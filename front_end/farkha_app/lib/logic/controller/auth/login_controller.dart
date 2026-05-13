@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/constant/strings/app_strings.dart';
 import '../../../core/constant/storage_keys.dart';
+import '../../../core/services/deep_link_service.dart';
 import '../../../core/services/initialization.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../data/data_source/remote/auth_data/login_data.dart';
@@ -151,7 +152,7 @@ class LoginController extends GetxController {
         );
         _isInitialized = true;
       } catch (e) {
-        debugPrint('Google Sign In initialization error: $e');
+        // initialization failed silently
       }
     }
   }
@@ -203,17 +204,16 @@ class LoginController extends GetxController {
           unawaited(NotificationService.instance.syncToken());
         }
 
+        Get.back<void>();
+
         if (Get.isRegistered<CycleController>()) {
           final cycleController = Get.find<CycleController>();
           try {
             await cycleController.fetchCyclesFromServer();
-          } catch (e) {
-            debugPrint('Error fetching cycles after login: $e');
-          }
+          } catch (_) {}
         }
 
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-        Get.back<void>();
+        DeepLinkService.consumePendingJoinCode();
       } else {
         _showSnackbar('فشل الاتصال بالخادم', isError: true);
       }
@@ -252,9 +252,7 @@ class LoginController extends GetxController {
       UserCredential userCredential;
       try {
         userCredential = await _auth.signInWithProvider(appleProvider);
-      } on FirebaseAuthException catch (e) {
-        debugPrint('Apple FirebaseAuth error: code=${e.code}, message=${e.message}, plugin=${e.plugin}');
-        debugPrint('Apple FirebaseAuth details: ${e.toString()}');
+      } on FirebaseAuthException {
         rethrow;
       }
 
@@ -308,17 +306,16 @@ class LoginController extends GetxController {
           unawaited(NotificationService.instance.syncToken());
         }
 
+        Get.back<void>();
+
         if (Get.isRegistered<CycleController>()) {
           final cycleController = Get.find<CycleController>();
           try {
             await cycleController.fetchCyclesFromServer();
-          } catch (e) {
-            debugPrint('Error fetching cycles after login: $e');
-          }
+          } catch (_) {}
         }
 
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-        Get.back<void>();
+        DeepLinkService.consumePendingJoinCode();
       } else {
         _showSnackbar('فشل الاتصال بالخادم', isError: true);
       }
@@ -332,7 +329,6 @@ class LoginController extends GetxController {
     } catch (e) {
       isAppleLoading.value = false;
       isLoading.value = false;
-      debugPrint('Apple Sign In error: $e');
       _showSnackbar('حدث خطأ أثناء تسجيل الدخول', isError: true);
     }
   }
@@ -342,10 +338,8 @@ class LoginController extends GetxController {
       final response = await _loginData.login(token);
 
       return response.fold((failure) {
-        debugPrint('LoginController: backend returned failure: $failure');
         return false;
       }, (Map<String, dynamic> result) {
-        debugPrint('LoginController: backend response=$result');
         final isSuccess =
             result['success'] == true || result['status'] == 'success';
 
@@ -368,11 +362,9 @@ class LoginController extends GetxController {
           return true;
         }
 
-        debugPrint('LoginController: success=$isSuccess, userData=$userData');
         return false;
       });
     } catch (e) {
-      debugPrint('LoginController: _sendTokenToBackend exception=$e');
       return false;
     }
   }
@@ -423,15 +415,13 @@ class LoginController extends GetxController {
 
   Future<void> signOut() async {
     try {
-      // Sign out from Google and Firebase
       await _googleSignIn.signOut();
       await _auth.signOut();
 
-      // Clear all local data
-      await clearAllLocalData();
+      final myServices = Get.find<MyServices>();
+      unawaited(myServices.getStorage.write(StorageKeys.isLoggedIn, false));
       isLoggedIn.value = false;
 
-      // Show success message
       _showSnackbar('تم تسجيل الخروج بنجاح');
     } catch (e) {
       _showSnackbar('حدث خطأ أثناء تسجيل الخروج', isError: true);

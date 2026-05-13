@@ -93,7 +93,7 @@ abstract class CycleControllerBase extends GetxController {
 
         switch (metricType) {
           case 'mortality':
-            final count = (numericValue is num) ? numericValue.toInt() : (int.tryParse(numericValue?.toString() ?? '0') ?? 0);
+            final count = _parseIntFromDecimal(numericValue);
             if (count > 0) {
               mortalityEntries.add({'id': id, 'count': count, 'date': dateFormatted});
             }
@@ -115,7 +115,14 @@ abstract class CycleControllerBase extends GetxController {
           default:
             final displayValue = textValue.isNotEmpty ? textValue : (numericValue?.toString() ?? '');
             if (displayValue.isNotEmpty) {
-              customDataEntries.add({'id': id, 'element_type': 'note', 'label': metricType, 'value': displayValue, 'date': dateFormatted});
+              String customLabel = metricType;
+              String customValue = displayValue;
+              if (metricType == 'other' && displayValue.contains(': ')) {
+                final sepIndex = displayValue.indexOf(': ');
+                customLabel = displayValue.substring(0, sepIndex);
+                customValue = displayValue.substring(sepIndex + 2);
+              }
+              customDataEntries.add({'id': id, 'element_type': 'note', 'label': customLabel, 'value': customValue, 'date': dateFormatted});
             }
         }
       }
@@ -218,6 +225,14 @@ abstract class CycleControllerBase extends GetxController {
   List<FeedConsumptionEntry> getFeedConsumptionEntries() => parseFeedConsumptionEntries(currentCycle);
   List<MedicationEntry> getMedicationEntries() => parseMedicationEntries(currentCycle);
   List<MortalityEntry> getMortalityEntries() => parseMortalityEntries(currentCycle);
+
+  int _parseIntFromDecimal(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is num) return value.toInt();
+    final parsed = double.tryParse(value?.toString() ?? '0');
+    return parsed?.toInt() ?? 0;
+  }
 
   String parseDateToString(String dateStr) {
     if (dateStr.isEmpty) return '';

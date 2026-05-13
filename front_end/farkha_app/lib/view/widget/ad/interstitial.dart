@@ -29,12 +29,10 @@ class InterstitialAdService {
         onAdLoaded: (ad) {
           _ad = ad;
           _isAdLoaded = true;
-          debugPrint('✅ الإعلان البيني جاهز');
         },
         onAdFailedToLoad: (error) {
           _isAdLoaded = false;
           _ad = null;
-          debugPrint('❌ فشل تحميل الإعلان البيني: ${error.message}');
           // إعادة المحاولة بعد 30 ثانية
           Future.delayed(const Duration(seconds: 30), load);
         },
@@ -77,7 +75,6 @@ class InterstitialAdService {
         _isAdLoaded = false;
         onComplete?.call();
         load();
-        debugPrint('❌ فشل عرض الإعلان البيني: ${error.message}');
       },
     );
 

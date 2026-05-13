@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -392,7 +391,6 @@ class PdfExportService {
         filename: 'تقرير_دورة_$name.pdf',
       );
     } catch (e) {
-      debugPrint('PdfExportService error: $e');
       rethrow;
     }
   }

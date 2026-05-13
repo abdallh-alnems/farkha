@@ -53,7 +53,6 @@
 | `tools_usage` | — | عداد استخدام الأدوات يومياً (PK مركَّب: `usage_date`+`tool_id`) |
 | `tools_usage_events` | — | event-level لكل استخدام (`user_id`+`tool_id`+`used_at`) |
 | `phone_verifications` | AI=21 | OTP sessions |
-| `account_deletions` | — | إحصائيات حذف الحسابات |
 
 ### Remote Config — مفاتيح مُستخدَمة في التطبيق
 - `min_required_version` (يُقرأ في `lib/core/services/update_service.dart:52`) — لو الإصدار الحالي أقل منه → **force update**.
@@ -358,7 +357,6 @@ class DashboardOverviewApi extends AdminBaseApi {
                     'new_today' => Database::fetchOne("SELECT COUNT(*) c FROM users WHERE DATE(created_at) = CURDATE()")['c'],
                     'new_7d' => Database::fetchOne("SELECT COUNT(*) c FROM users WHERE created_at >= NOW() - INTERVAL 7 DAY")['c'],
                     'new_30d' => Database::fetchOne("SELECT COUNT(*) c FROM users WHERE created_at >= NOW() - INTERVAL 30 DAY")['c'],
-                    'deletions_30d' => Database::fetchOne("SELECT COUNT(*) c FROM account_deletions WHERE deleted_at >= NOW() - INTERVAL 30 DAY")['c'],
                 ],
                 'cycles' => [
                     'total_active' => Database::fetchOne("SELECT COUNT(*) c FROM cycles WHERE deleted_at IS NULL AND end_date_raw IS NULL")['c'],
@@ -571,7 +569,7 @@ class AdminApi {
   - Query: `SELECT id, name, phone, firebase_uid, created_at, updated_at FROM users WHERE (name LIKE ? OR phone LIKE ? OR firebase_uid LIKE ?) ORDER BY id DESC LIMIT ? OFFSET ?`.
   - أرجع أيضاً عداد الدورات للمستخدم (subquery).
 - `admin/users/detail.php` — POST { user_id } → كامل بيانات المستخدم + أجهزته + دوراته.
-- `admin/users/delete.php` — POST { user_id, reason } → ينده `UserModel::deleteByFirebaseUid` + يسجل في `account_deletions`. minRole: superadmin. Audit: `user.delete`.
+- `admin/users/delete.php` — POST { user_id, reason } → ينده `UserModel::deleteByFirebaseUid`. minRole: superadmin. Audit: `user.delete`.
 - `admin/users/send_notification.php` — POST { user_id, title, body, data? } → ينده `NotificationService::sendToUser`. Audit: `user.notify`.
 
 #### Frontend
@@ -670,7 +668,7 @@ class AdminApi {
 - `admin/audit/list.php` — POST { page, page_size, action?, admin_id?, date_from?, date_to? } → audit log entries.
 
 ### 7.5 Account Deletions Insights
-- `admin/account_deletions/stats.php` — توزيع reasons، متوسط `account_age_days`، platforms، timeline 90 يوم.
+- _Removed — `account_deletions` table no longer exists._
 
 ---
 

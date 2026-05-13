@@ -97,15 +97,15 @@ class _BirdNetProfitScreenState extends State<BirdNetProfitScreen>
           firstSuffix: 'جنيه',
           secondSuffix: 'جنيه',
           onFirstChanged: (value) {
-            controller.totalSale.value = double.tryParse(value) ?? 0.0;
+            controller.totalSale.value = tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onSecondChanged: (value) {
-            controller.totalCost.value = double.tryParse(value) ?? 0.0;
+            controller.totalCost.value = tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onThirdChanged: (value) {
-            controller.soldBirds.value = int.tryParse(value) ?? 0;
+            controller.soldBirds.value = tryParseInt(value) ?? 0;
             _resetResult();
           },
         ),

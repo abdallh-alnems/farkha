@@ -12,6 +12,7 @@ require_once __DIR__ . '/../core/Cache.php';
 require_once __DIR__ . '/../core/Validator.php';
 require_once __DIR__ . '/../core/OtpService.php';
 require_once __DIR__ . '/../core/WhatsAppService.php';
+require_once __DIR__ . '/../core/I18n.php';
 require_once __DIR__ . '/../core/NotificationService.php';
 require_once __DIR__ . '/../core/TopicManager.php';
 require_once __DIR__ . '/../core/BaseApi.php';

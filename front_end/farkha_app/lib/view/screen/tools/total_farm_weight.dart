@@ -105,9 +105,9 @@ class _TotalFarmWeightScreenState extends State<TotalFarmWeightScreen>
           final totalWeight = controller.totalWeight.value;
           if (totalWeight <= 0) return const SizedBox.shrink();
 
-          final birds = int.tryParse(controller.birdsCount.value) ?? 0;
+          final birds = tryParseInt(controller.birdsCount.value) ?? 0;
           final weight =
-              double.tryParse(controller.birdWeight.value) ?? 0.0;
+              tryParseNum(controller.birdWeight.value) ?? 0.0;
 
           return FadeTransition(
             opacity: _fadeAnim,

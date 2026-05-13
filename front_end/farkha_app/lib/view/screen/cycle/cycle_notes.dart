@@ -12,11 +12,17 @@ import '../../widget/ad/native.dart';
 import '../../widget/appbar/cycle_sub_screen_appbar.dart';
 import '../../widget/cycle/cycle_notes_widgets.dart';
 
-class CycleNotesScreen extends StatelessWidget {
+class CycleNotesScreen extends StatefulWidget {
   const CycleNotesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<CycleNotesScreen> createState() => _CycleNotesScreenState();
+}
+
+class _CycleNotesScreenState extends State<CycleNotesScreen> {
+  @override
+  void initState() {
+    super.initState();
     if (!Get.isRegistered<CycleController>()) {
       Get.put(CycleController());
     }
@@ -24,6 +30,15 @@ class CycleNotesScreen extends StatelessWidget {
       Get.put(CycleNotesController());
     }
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Get.find<CycleNotesController>().refreshNotes();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final noteCtrl = Get.find<CycleNotesController>();
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;

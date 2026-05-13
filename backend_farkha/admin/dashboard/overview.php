@@ -15,7 +15,6 @@ class DashboardOverviewApi extends AdminBaseApi {
                     'new_today' => (int) Database::fetchOne("SELECT COUNT(*) c FROM users WHERE DATE(created_at) = CURDATE()")['c'],
                     'new_7d' => (int) Database::fetchOne("SELECT COUNT(*) c FROM users WHERE created_at >= NOW() - INTERVAL 7 DAY")['c'],
                     'new_30d' => (int) Database::fetchOne("SELECT COUNT(*) c FROM users WHERE created_at >= NOW() - INTERVAL 30 DAY")['c'],
-                    'deletions_30d' => (int) Database::fetchOne("SELECT COUNT(*) c FROM account_deletions WHERE deleted_at >= NOW() - INTERVAL 30 DAY")['c'],
                 ],
                 'cycles' => [
                     'total_active' => (int) Database::fetchOne("SELECT COUNT(*) c FROM cycles WHERE deleted_at IS NULL AND end_date_raw IS NULL")['c'],

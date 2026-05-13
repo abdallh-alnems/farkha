@@ -19,7 +19,7 @@ class AsyncView<T> extends StatelessWidget {
     return Obx(() {
       switch (status.value) {
         case Status.loading:
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(color: AppTheme.primary),
           );
         case Status.error:
@@ -27,17 +27,17 @@ class AsyncView<T> extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, size: 48, color: AppTheme.accent),
-                SizedBox(height: 12),
+                const Icon(Icons.error_outline, size: 48, color: AppTheme.accent),
+                const SizedBox(height: 12),
                 Text(
                   errorMessage ?? 'حدث خطأ',
-                  style: TextStyle(color: AppTheme.textSecondary, fontFamily: 'Cairo'),
+                  style: const TextStyle(color: AppTheme.textSecondary, fontFamily: 'Cairo'),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: () => Get.forceAppUpdate(),
-                  child: Text('إعادة المحاولة'),
+                  child: const Text('إعادة المحاولة'),
                 ),
               ],
             ),

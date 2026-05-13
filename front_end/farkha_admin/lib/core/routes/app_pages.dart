@@ -17,6 +17,7 @@ import '../../features/system/system_screen.dart';
 import '../../features/todo/todo_screen.dart';
 import '../../features/admins/admins_screen.dart';
 import '../../features/devices/devices_screen.dart';
+import '../../features/prices/prices_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -36,5 +37,6 @@ class AppPages {
     GetPage(name: AppRoutes.todo, page: () => const TodoScreen()),
     GetPage(name: AppRoutes.admins, page: () => const AdminsScreen()),
     GetPage(name: AppRoutes.devices, page: () => const DevicesScreen()),
+    GetPage(name: AppRoutes.prices, page: () => const PricesScreen()),
   ];
 }

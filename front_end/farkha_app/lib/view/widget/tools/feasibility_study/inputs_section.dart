@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 
 import '../../../../core/constant/strings/app_strings.dart';
 import '../../../../core/constant/theme/theme.dart';
+import '../../../../core/functions/number_format.dart';
 import '../../../../logic/controller/tools_controller/feasibility_study_controller.dart';
-import '../../tutorial/feasibility_tutorial.dart';
 import '../tools_button.dart';
 import 'input_fields.dart';
 
@@ -44,7 +44,6 @@ class InputsSection extends StatelessWidget {
             context,
             title: 'الأسعار',
             icon: Icons.payments_outlined,
-            key: FeasibilityTutorial.chickenPriceKey,
             trailing: StockButton(controller: controller),
           ),
           SizedBox(height: 10.h),
@@ -61,7 +60,6 @@ class InputsSection extends StatelessWidget {
             context,
             title: 'المدخلات',
             icon: Icons.tune,
-            key: FeasibilityTutorial.defaultValuesTitleKey,
             trailing: DefaultValuesButton(
               onTap: () => _setDefaultValues(controller),
             ),
@@ -76,12 +74,9 @@ class InputsSection extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20.h),
-          Container(
-            key: FeasibilityTutorial.calculateButtonKey,
-            child: ToolsButton(
-              text: 'احسب دراسة الجدوى',
-              onPressed: () => _onCalculatePressed(context),
-            ),
+          ToolsButton(
+            text: 'احسب دراسة الجدوى',
+            onPressed: () => _onCalculatePressed(context),
           ),
           SizedBox(height: 12.h),
         ],
@@ -176,26 +171,23 @@ class InputsSection extends StatelessWidget {
       return;
     }
 
-    final chickenPrice =
-        int.tryParse(controller.chickenSalePriceController.text) ??
-            0;
     final chickPrice =
-        int.tryParse(controller.chickPriceController.text) ?? 0;
+        tryParseInt(controller.chickPriceController.text) ?? 0;
     final feedPrice =
         controller.isProfessionalMode.value
-            ? ((int.tryParse(controller.badiPriceController.text) ??
+            ? ((tryParseInt(controller.badiPriceController.text) ??
                         0) +
-                    (int.tryParse(controller.namiPriceController.text) ??
+                    (tryParseInt(controller.namiPriceController.text) ??
                         0) +
-                    (int.tryParse(controller.nahiPriceController.text) ??
+                    (tryParseInt(controller.nahiPriceController.text) ??
                         0)) /
                 3
-            : (int.tryParse(controller.averageFeedPriceController.text) ??
+            : (tryParseInt(controller.averageFeedPriceController.text) ??
                     0)
                 .toDouble();
 
     final hasZeroPrice =
-        chickenPrice == 0 || chickPrice == 0 || feedPrice.round() == 0;
+        chickPrice == 0 || feedPrice.round() == 0;
 
     if (hasZeroPrice) {
       _showZeroPricesDialog(context, controller, onAfterCalculate);

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../core/class/crud.dart';
 import '../../../core/class/status_request.dart';
+import '../../../core/functions/number_format.dart';
 import '../../../core/functions/handling_data_controller.dart';
 import '../../../data/data_source/remote/prices_data/broiler_price_data.dart';
 import '../../../data/data_source/static/chicken_data.dart';
@@ -34,7 +35,7 @@ class BroilerController extends GetxController {
   void validateInputs() {
     final chickensText = chickensCountController.text;
     final isValidChickens =
-        chickensText.isNotEmpty && int.tryParse(chickensText) != null;
+        chickensText.isNotEmpty && tryParseInt(chickensText) != null;
     if (isValidChickens && selectedChickenAge.value != null) {
       ageOfChickens();
       getTemperature();
@@ -105,16 +106,16 @@ class BroilerController extends GetxController {
   }
 
   void calculateFeedConsumption() {
-    final int? chickens = int.tryParse(chickensCountController.text);
+    final int chickens = tryParseInt(chickensCountController.text)!;
 
     final age = (selectedChickenAge.value as num).toInt();
     dailyFeedConsumption =
-        feedConsumptions[age - 1] * chickens!;
+        feedConsumptions[age - 1] * chickens;
     totalFeedConsumption = chickens * 3.5;
   }
 
   void calculateWaterConsumption() {
-    final int? chickens = int.tryParse(chickensCountController.text);
+    final int? chickens = tryParseInt(chickensCountController.text);
 
     final age = (selectedChickenAge.value as num).toInt();
     dailyWaterConsumption =
@@ -127,7 +128,7 @@ class BroilerController extends GetxController {
   }
 
   void calculateArea() {
-    final int? chickens = int.tryParse(chickensCountController.text);
+    final int? chickens = tryParseInt(chickensCountController.text);
 
     requiredArea.value = (chickens! / chickensPerSquareMeter).clamp(
       1,

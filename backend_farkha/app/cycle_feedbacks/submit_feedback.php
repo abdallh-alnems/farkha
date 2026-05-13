@@ -20,10 +20,6 @@ $issue = $input['issue'] ?? null;
 $suggestion = $input['suggestion'] ?? null;
 $appVersion = $input['app_version'] ?? null;
 $platform = $input['platform'] ?? null;
-$cycleId = $input['cycle_id'] ?? null;
-if ($cycleId !== null) {
-    $cycleId = (int) Validator::numeric($cycleId, 'cycle_id', 1);
-}
 
 $issueValue = (is_string($issue) && trim($issue) !== '') ? trim($issue) : null;
 if ($issueValue !== null) {
@@ -44,7 +40,7 @@ if ($platform !== null) {
 }
 
 try {
-    $feedbackId = FeedbackModel::insert($userId, $rating, $issueValue, $suggestionValue, $appVersion, $platform, $cycleId);
+    $feedbackId = FeedbackModel::insert($userId, $rating, $issueValue, $suggestionValue, $appVersion, $platform);
 
     Response::success([
         'feedback_id' => $feedbackId,

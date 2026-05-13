@@ -44,9 +44,14 @@ try {
 
     CycleModel::addMember($con, (int) $cycleId, (int) $targetUser['id'], $roleInput, 'pending');
 
-    $title = "لديك دعوة جديدة للانضمام لدورة";
+    $title = I18n::get('notif.cycle_invitation.title', [], I18n::userLocale($con, (int) $targetUser['id']));
     $requesterName = !empty($requester['name']) ? $requester['name'] : 'أحد أصحاب المزارع';
-    $body = "دعاك {$requesterName} للانضمام لدورته {$cycleName} بصلاحية " . ($roleInput === 'admin' ? 'مدير' : 'مشاهد') . ".";
+    $roleLabel = $roleInput === 'admin' ? 'مدير' : 'مشاهد';
+    $body = I18n::get('notif.cycle_invitation.body', [
+        'requester' => $requesterName,
+        'cycle' => $cycleName,
+        'role' => $roleLabel,
+    ], I18n::userLocale($con, (int) $targetUser['id']));
     try {
         NotificationService::sendToUser($con, (int) $targetUser['id'], $title, $body, [
             'type' => 'cycle_invitation',

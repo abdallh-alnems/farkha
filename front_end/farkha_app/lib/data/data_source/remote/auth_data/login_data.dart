@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/class/status_request.dart';
@@ -20,17 +19,11 @@ class LoginData {
       final Map<String, String> myHeaders = getMyHeaders();
       myHeaders['Content-Type'] = 'application/json';
 
-      debugPrint('LoginData: POST ${Api.login}');
-      debugPrint('LoginData: headers=$myHeaders');
-
       final response = await http.post(
         Uri.parse(Api.login),
         headers: myHeaders,
         body: jsonEncode({'token': token}),
       );
-
-      debugPrint('LoginData: statusCode=${response.statusCode}');
-      debugPrint('LoginData: body=${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
@@ -39,7 +32,6 @@ class LoginData {
         return const Left(StatusRequest.serverFailure);
       }
     } catch (e) {
-      debugPrint('LoginData: exception=$e');
       return const Left(StatusRequest.serverFailure);
     }
   }

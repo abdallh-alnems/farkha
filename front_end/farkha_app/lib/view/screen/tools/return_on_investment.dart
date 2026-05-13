@@ -106,11 +106,11 @@ class _ReturnOnInvestmentState extends State<ReturnOnInvestment>
           firstSuffix: 'جنيه',
           secondSuffix: 'جنيه',
           onFirstChanged: (value) {
-            controller.totalSale.value = double.tryParse(value) ?? 0.0;
+            controller.totalSale.value = tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onSecondChanged: (value) {
-            controller.investmentCost.value = double.tryParse(value) ?? 0.0;
+            controller.investmentCost.value = tryParseNum(value) ?? 0.0;
             _resetResult();
           },
         ),

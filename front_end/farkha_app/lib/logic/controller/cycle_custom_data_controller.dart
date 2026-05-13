@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
@@ -116,22 +115,18 @@ class CycleCustomDataController extends GetxController {
     CycleData? cycleData,
     FirebaseAuth? auth,
     MyServices? myServices,
-    GetStorage? storage,
   })  : _cycleDataOverride = cycleData,
         _authOverride = auth,
-        _myServicesOverride = myServices,
-        _storageOverride = storage;
+        _myServicesOverride = myServices;
 
   final CycleData? _cycleDataOverride;
   final FirebaseAuth? _authOverride;
   final MyServices? _myServicesOverride;
-  final GetStorage? _storageOverride;
 
   final RxList<CustomDataItem> customDataItems = <CustomDataItem>[].obs;
   late final CycleData _cycleData;
   late final FirebaseAuth _auth;
   late final MyServices myServices;
-  late final GetStorage _storage;
 
   String? _lastCycleId;
   String? _lastApiDataHash;
@@ -142,13 +137,10 @@ class CycleCustomDataController extends GetxController {
     _cycleData = _cycleDataOverride ?? CycleData();
     _auth = _authOverride ?? FirebaseAuth.instance;
     myServices = _myServicesOverride ?? Get.find<MyServices>();
-    _storage = _storageOverride ?? GetStorage();
-    _loadSavedCustomData();
     _updateLastCycleId();
 
     final cycleCtrl = Get.find<CycleController>();
 
-    // إذا كان currentCycle يحتوي بالفعل على بيانات من API (من fetchCycleDetails سابق)، حمّلها
     final existingApiData =
         cycleCtrl.currentCycle['customDataEntries'] as List<dynamic>?;
     if (existingApiData != null && existingApiData.isNotEmpty) {
@@ -201,7 +193,26 @@ class CycleCustomDataController extends GetxController {
 
   void _reloadCustomDataForCurrentCycle() {
     customDataItems.clear();
-    _loadSavedCustomData();
+    _fetchCustomDataFromApi();
+  }
+
+  Future<void> _fetchCustomDataFromApi() async {
+    final cycleCtrl = Get.find<CycleController>();
+    final cycleId = cycleCtrl.currentCycle['cycle_id'];
+    if (cycleId == null) return;
+
+    final cycleIdInt =
+        cycleId is int ? cycleId : int.tryParse(cycleId.toString());
+    if (cycleIdInt == null || cycleIdInt <= 0) return;
+
+    try {
+      await cycleCtrl.fetchCycleDetails(cycleIdInt);
+      final customDataEntries =
+          cycleCtrl.currentCycle['customDataEntries'] as List<dynamic>?;
+      if (customDataEntries != null && customDataEntries.isNotEmpty) {
+        loadCustomDataFromApi(customDataEntries);
+      }
+    } catch (_) {}
   }
 
   void loadCustomDataFromApi(List<dynamic> customDataEntries) {
@@ -211,7 +222,7 @@ class CycleCustomDataController extends GetxController {
     for (var entry in customDataEntries) {
       final label = entry['label']?.toString() ?? '';
       final value = entry['value']?.toString() ?? '';
-      final entryDateStr = entry['entry_date']?.toString() ?? '';
+      final entryDateStr = (entry['entry_date'] ?? entry['date'])?.toString() ?? '';
 
       if (label.isEmpty || value.isEmpty) continue;
 
@@ -284,44 +295,6 @@ class CycleCustomDataController extends GetxController {
         customDataItems.add(newItem);
       }
     }
-
-    _saveCustomData();
-  }
-
-  void _loadSavedCustomData() {
-    final cycleCtrl = Get.find<CycleController>();
-    final cycle = cycleCtrl.currentCycle;
-    final cycleId = cycle['name'] ?? 'default';
-    final storageKey = '${StorageKeys.customDataPrefix}$cycleId';
-
-    // التحقق من أن الدورة موجودة فعلاً في cycles (لم يتم حذفها)
-    final cycleExists = cycleCtrl.cycles.any((c) => c['name'] == cycleId);
-    if (!cycleExists) {
-      // إذا لم تكن الدورة موجودة، لا تحمل البيانات القديمة
-      customDataItems.clear();
-      return;
-    }
-
-    final saved = _storage.read<List<dynamic>>(storageKey);
-    if (saved != null && saved.isNotEmpty && cycleExists) {
-      final savedItems =
-          saved
-              .map((e) => CustomDataItem.fromJson(e as Map<String, dynamic>))
-              .toList();
-
-      customDataItems.clear();
-      customDataItems.addAll(savedItems);
-    }
-  }
-
-  void _saveCustomData() {
-    final cycleCtrl = Get.find<CycleController>();
-    final cycle = cycleCtrl.currentCycle;
-    final cycleId = cycle['name'] ?? 'default';
-    final storageKey = '${StorageKeys.customDataPrefix}$cycleId';
-
-    final itemsJson = customDataItems.map((e) => e.toJson()).toList();
-    _storage.write(storageKey, itemsJson);
   }
 
   Future<void> _sendCustomDataToServer({
@@ -351,7 +324,7 @@ class CycleCustomDataController extends GetxController {
         textValue: '$label: $value',
       );
     } catch (e) {
-      // في حالة الفشل، لا نفعل شيئاً - البيانات محفوظة محلياً
+      // في حالة الفشل، لا نفعل شيئاً
     }
   }
 
@@ -366,9 +339,7 @@ class CycleCustomDataController extends GetxController {
         date: now,
       );
       customDataItems[itemIndex].entries.add(entry);
-      _saveCustomData();
 
-      // إرسال البيانات إلى API
       await _sendCustomDataToServer(
         label: customDataItems[itemIndex].label,
         value: text,
@@ -384,7 +355,6 @@ class CycleCustomDataController extends GetxController {
       // الحذف المحلي فوراً
       final entry = customDataItems[itemIndex].entries[entryIndex];
       customDataItems[itemIndex].entries.removeAt(entryIndex);
-      _saveCustomData();
 
       // حذف من API في الخلفية
       final cycleCtrl = Get.find<CycleController>();
@@ -403,7 +373,6 @@ class CycleCustomDataController extends GetxController {
   void addCustomDataItem(String label, IconData icon) {
     final newId = 'custom_${DateTime.now().millisecondsSinceEpoch}';
     customDataItems.add(CustomDataItem(id: newId, label: label, icon: icon));
-    _saveCustomData();
   }
 
   Future<void> removeCustomDataItem(int index) async {
@@ -411,7 +380,6 @@ class CycleCustomDataController extends GetxController {
       // الحذف المحلي فوراً
       final item = customDataItems[index];
       customDataItems.removeAt(index);
-      _saveCustomData();
 
       // حذف من API في الخلفية
       final cycleCtrl = Get.find<CycleController>();

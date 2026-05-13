@@ -28,18 +28,21 @@ class CycleController extends CycleControllerBase
   CycleController({
     FirebaseAuth? auth,
     MyServices? myServices,
+    CycleData? cycleData,
   })  : _authOverride = auth,
-        _myServicesOverride = myServices;
+        _myServicesOverride = myServices,
+        _cycleDataOverride = cycleData;
 
   final FirebaseAuth? _authOverride;
   final MyServices? _myServicesOverride;
+  final CycleData? _cycleDataOverride;
 
   @override
   void onInit() {
     super.onInit();
     auth = _authOverride ?? FirebaseAuth.instance;
     myServices = _myServicesOverride ?? Get.find<MyServices>();
-    cycleData = CycleData();
+    cycleData = _cycleDataOverride ?? CycleData();
     _loadCycles();
     fetchCyclesFromServer();
     fetchInvitations();

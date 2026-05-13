@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../constant/headers.dart';
@@ -31,12 +32,14 @@ class Crud {
           final Map<String, dynamic> responseBody = jsonDecode(response.body) as Map<String, dynamic>;
           return Right(responseBody);
         } else {
+          debugPrint('Crud POST $linkUrl => ${response.statusCode}: ${response.body}');
           if (_isAccountGone(response)) {
             _triggerForceLogout();
           }
           return const Left(StatusRequest.serverFailure);
         }
       } catch (e) {
+        debugPrint('Crud POST $linkUrl EXCEPTION: $e');
         return const Left(StatusRequest.serverFailure);
       }
     } else {

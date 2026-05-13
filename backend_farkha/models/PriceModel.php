@@ -7,7 +7,7 @@ final class PriceModel {
                 CASE WHEN gp.lower IS NULL OR gp.lower = 0 THEN gp.higher
                      ELSE ROUND((gp.higher + gp.lower) / 2, 0) END AS price
             FROM prices gp
-            INNER JOIN (SELECT type, MAX(date) AS max_date FROM prices WHERE type IN (1,18,41,42,43) GROUP BY type) latest
+            INNER JOIN (SELECT type, MAX(date) AS max_date FROM prices WHERE type IN (18,41,42,43) GROUP BY type) latest
                 ON gp.type = latest.type AND gp.date = latest.max_date
             JOIN types t ON t.id = gp.type
             ORDER BY gp.type

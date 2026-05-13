@@ -41,8 +41,6 @@ class FeasibilityResult {
   final double totalFeedCost;
   final double totalOverheadCost;
   final double totalCost;
-  final int totalSales;
-  final double profit;
 
   const FeasibilityResult({
     required this.chickenCount,
@@ -52,8 +50,6 @@ class FeasibilityResult {
     required this.totalFeedCost,
     required this.totalOverheadCost,
     required this.totalCost,
-    required this.totalSales,
-    required this.profit,
   });
 }
 
@@ -64,14 +60,9 @@ class FeasibilityDisplayTexts {
   final String feedCostText;
   final String overheadCostText;
   final String totalCostText;
-  final String totalSalesText;
-  final String profitText;
   final String costPerChickenText;
-  final String profitPerChickenText;
-  final String profitMarginText;
   final String costPerKgText;
   final String totalKgProducedText;
-  final bool isProfitNegative;
   final double totalChickenCostRaw;
   final double totalFeedCostRaw;
   final double totalOverheadCostRaw;
@@ -83,14 +74,9 @@ class FeasibilityDisplayTexts {
     required this.feedCostText,
     required this.overheadCostText,
     required this.totalCostText,
-    required this.totalSalesText,
-    required this.profitText,
     required this.costPerChickenText,
-    required this.profitPerChickenText,
-    required this.profitMarginText,
     required this.costPerKgText,
     required this.totalKgProducedText,
-    required this.isProfitNegative,
     required this.totalChickenCostRaw,
     required this.totalFeedCostRaw,
     required this.totalOverheadCostRaw,
@@ -136,14 +122,6 @@ FeasibilityResult computeFeasibility(FeasibilityInput input) {
   final totalOverheadCost = input.chickenCount * input.overheadPerChicken;
   final totalCost = totalChickenCost + totalFeedCost + totalOverheadCost;
 
-  final remainingChickens = input.chickenCount - deadChickens;
-  final totalSales =
-      (remainingChickens *
-              input.defaultWeight *
-              input.model.chickenSalePrice)
-          .round();
-  final profit = totalSales - totalCost;
-
   final deadChickenChickCost = input.chickenCount > 0
       ? (deadChickens * totalChickenCost / input.chickenCount).round()
       : 0;
@@ -161,8 +139,6 @@ FeasibilityResult computeFeasibility(FeasibilityInput input) {
     totalFeedCost: totalFeedCost,
     totalOverheadCost: totalOverheadCost,
     totalCost: totalCost,
-    totalSales: totalSales,
-    profit: profit,
   );
 }
 
@@ -187,23 +163,16 @@ FeasibilityDisplayTexts formatResultTexts(
   final feedCostText = '${result.totalFeedCost.toStringAsFixed(0)} ج';
   final overheadCostText = '${result.totalOverheadCost.toStringAsFixed(0)} ج';
   final totalCostText = '${result.totalCost.toStringAsFixed(0)} ج';
-  final totalSalesText = '${result.totalSales.toStringAsFixed(0)} ج';
-  final profitText = '${result.profit.toStringAsFixed(0)} ج';
 
   final remainingChickens = result.chickenCount - result.deadChickens;
 
   String costPerChickenText;
-  String profitPerChickenText;
-  String profitMarginText;
   String costPerKgText;
   String totalKgProducedText;
 
   if (remainingChickens > 0) {
     final costPerChicken = result.totalCost / remainingChickens;
     costPerChickenText = '${costPerChicken.toStringAsFixed(0)} ج';
-
-    final profitPerChicken = result.profit / remainingChickens;
-    profitPerChickenText = '${profitPerChicken.toStringAsFixed(0)} ج';
 
     final totalKg = remainingChickens * defaultWeight;
     if (totalKg > 0) {
@@ -217,16 +186,8 @@ FeasibilityDisplayTexts formatResultTexts(
       totalKgProducedText = '-';
       costPerKgText = '-';
     }
-    if (result.totalSales > 0) {
-      final margin = (result.profit / result.totalSales) * 100;
-      profitMarginText = '${formatNoTrailingZero(margin, 1)}%';
-    } else {
-      profitMarginText = '-';
-    }
   } else {
     costPerChickenText = '-';
-    profitPerChickenText = '-';
-    profitMarginText = '-';
     costPerKgText = '-';
     totalKgProducedText = '-';
   }
@@ -238,14 +199,9 @@ FeasibilityDisplayTexts formatResultTexts(
     feedCostText: feedCostText,
     overheadCostText: overheadCostText,
     totalCostText: totalCostText,
-    totalSalesText: totalSalesText,
-    profitText: profitText,
     costPerChickenText: costPerChickenText,
-    profitPerChickenText: profitPerChickenText,
-    profitMarginText: profitMarginText,
     costPerKgText: costPerKgText,
     totalKgProducedText: totalKgProducedText,
-    isProfitNegative: result.profit < 0,
     totalChickenCostRaw: result.totalChickenCost.toDouble(),
     totalFeedCostRaw: result.totalFeedCost,
     totalOverheadCostRaw: result.totalOverheadCost,
@@ -273,24 +229,6 @@ String buildShareText(FeasibilityDisplayTexts texts) {
   }
   if (texts.costPerKgText.isNotEmpty && texts.costPerKgText != '-') {
     buffer.writeln('• تكلفة الكيلو: ${texts.costPerKgText}');
-  }
-  buffer.writeln();
-  buffer.writeln('المبيعات:');
-  if (texts.totalKgProducedText.isNotEmpty &&
-      texts.totalKgProducedText != '-') {
-    buffer.writeln('• الكيلوجرامات المنتجة: ${texts.totalKgProducedText}');
-  }
-  buffer.writeln('• إجمالي المبيعات: ${texts.totalSalesText}');
-  buffer.writeln();
-  buffer.writeln('الأرباح:');
-  final profitDisplay =
-      texts.profitMarginText.isNotEmpty && texts.profitMarginText != '-'
-          ? '${texts.profitText} (${texts.profitMarginText})'
-          : texts.profitText;
-  buffer.writeln('• صافي الأرباح: $profitDisplay');
-  if (texts.profitPerChickenText.isNotEmpty &&
-      texts.profitPerChickenText != '-') {
-    buffer.writeln('• الربح لكل فرخ: ${texts.profitPerChickenText}');
   }
   return buffer.toString();
 }
@@ -340,26 +278,6 @@ Future<pw.Document> buildFeasibilityPdf(
               _pdfRow('تكلفة الكيلو', texts.costPerKgText, regular, bold),
               _pdfRow(
                   'التكلفة الإجمالية', texts.totalCostText, regular, bold),
-            ]),
-            pw.SizedBox(height: 16),
-            _pdfSection('المبيعات', regular, bold, [
-              _pdfRow('الكيلوجرامات المنتجة', texts.totalKgProducedText,
-                  regular, bold),
-              _pdfRow('إجمالي المبيعات', texts.totalSalesText, regular, bold),
-            ]),
-            pw.SizedBox(height: 16),
-            _pdfSection('الأرباح', regular, bold, [
-              _pdfRow(
-                'صافي الأرباح',
-                texts.profitMarginText.isNotEmpty &&
-                        texts.profitMarginText != '-'
-                    ? '${texts.profitText} (${texts.profitMarginText})'
-                    : texts.profitText,
-                regular,
-                bold,
-              ),
-              _pdfRow(
-                  'الربح لكل فرخ', texts.profitPerChickenText, regular, bold),
             ]),
           ],
         ),
@@ -431,23 +349,6 @@ List<int> buildFeasibilityExcel(FeasibilityDisplayTexts texts) {
     ['تكلفة الفرخ الواحد', texts.costPerChickenText],
     ['تكلفة الكيلو', texts.costPerKgText],
     ['التكلفة الإجمالية', texts.totalCostText],
-  ], setCell);
-
-  row++;
-  row = _writeExcelSection(sheet, row, 'المبيعات', headerStyle, [
-    ['الكيلوجرامات المنتجة', texts.totalKgProducedText],
-    ['إجمالي المبيعات', texts.totalSalesText],
-  ], setCell);
-
-  row++;
-  row = _writeExcelSection(sheet, row, 'الأرباح', headerStyle, [
-    [
-      'صافي الأرباح',
-      texts.profitMarginText.isNotEmpty && texts.profitMarginText != '-'
-          ? '${texts.profitText} (${texts.profitMarginText})'
-          : texts.profitText,
-    ],
-    ['الربح لكل فرخ', texts.profitPerChickenText],
   ], setCell);
 
   sheet.setColumnWidth(1, 25);

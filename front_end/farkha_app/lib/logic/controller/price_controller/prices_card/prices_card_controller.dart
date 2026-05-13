@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/class/status_request.dart';
@@ -147,7 +146,6 @@ class PricesCardController extends GetxController {
       }
     } catch (e) {
       statusRequest = StatusRequest.failure;
-      debugPrint('PricesCardController.getDataPricesCard error: $e');
     } finally {
       _isLoading = false;
       _lastFetchTime = DateTime.now();
@@ -198,7 +196,7 @@ class PricesCardController extends GetxController {
       // تحديث الواجهة بدون تغيير حالة التحميل
       update();
     } catch (e) {
-      debugPrint('PricesCardController.refreshData error: $e');
+      // refresh error silently ignored
     } finally {
       _isLoading = false;
       _lastFetchTime = DateTime.now();

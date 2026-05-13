@@ -34,7 +34,7 @@ class ToolsCard extends StatelessWidget {
             ? AppColors.darkOutlineColor
             : AppColors.lightOutlineColor)
         .withValues(alpha: isDark ? 0.4 : 0.25);
-    final Color iconBgColor = colorScheme.primary.withValues(alpha: isDark ? 0.15 : 0.1);
+
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5.w),

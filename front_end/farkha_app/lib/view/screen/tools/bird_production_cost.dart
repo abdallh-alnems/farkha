@@ -193,7 +193,7 @@ class _InputSection extends StatelessWidget {
                   suffixText: 'جنيه',
                   onChanged: (value) =>
                       controller.totalCosts.value =
-                          double.tryParse(value) ?? 0.0,
+                          tryParseNum(value) ?? 0.0,
                 ),
               ),
               SizedBox(width: 12.w),
@@ -203,7 +203,7 @@ class _InputSection extends StatelessWidget {
                   suffixText: 'فرخ',
                   onChanged: (value) =>
                       controller.liveBirds.value =
-                          int.tryParse(value) ?? 0,
+                          tryParseInt(value) ?? 0,
                 ),
               ),
             ],

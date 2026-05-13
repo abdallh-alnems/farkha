@@ -36,10 +36,12 @@ try {
 
     CycleModel::leave($con, $cycleId, $targetUserId);
 
-    NotificationService::sendToUser($con, $targetUserId, 'تنبيه', "تم ازالتك من دورة $cycleName بواسطة $ownerName", [
-        'type' => 'member_removed',
-        'cycle_id' => (string) $cycleId,
-    ]);
+    $locale = I18n::userLocale($con, $targetUserId);
+    NotificationService::sendToUser($con, $targetUserId,
+        I18n::get('notif.member_removed.title', [], $locale),
+        I18n::get('notif.member_removed.body', ['cycle' => $cycleName, 'by' => $ownerName], $locale),
+        ['type' => 'member_removed', 'cycle_id' => (string) $cycleId]
+    );
 
     Response::success(['message' => 'تم حذف العضو من الدورة بنجاح']);
 } catch (PDOException $e) {

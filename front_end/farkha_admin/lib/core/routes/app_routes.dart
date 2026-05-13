@@ -16,4 +16,5 @@ abstract class AppRoutes {
   static const todo = '/todo';
   static const admins = '/admins';
   static const devices = '/devices';
+  static const prices = '/prices';
 }

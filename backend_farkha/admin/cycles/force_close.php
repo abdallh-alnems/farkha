@@ -35,12 +35,19 @@ class CycleForceCloseApi extends AdminBaseApi {
                 [$cycleId]
             );
             $con = Database::getInstance();
+            $cycleName = htmlspecialchars($cycle['name'], ENT_QUOTES, 'UTF-8');
             foreach ($members as $m) {
-                NotificationService::sendToUser($con, (int) $m['user_id'],
-                    'تم إغلاق الدورة',
-                    "تم إغلاق دورة \"{$cycle['name']}\" من قبل الإدارة",
-                    ['type' => 'cycle_force_closed', 'cycle_id' => (string) $cycleId]
-                );
+                try {
+                    $uid = (int) $m['user_id'];
+                    $locale = I18n::userLocale($con, $uid);
+                    NotificationService::sendToUser($con, $uid,
+                        I18n::get('notif.cycle_force_closed.title', [], $locale),
+                        I18n::get('notif.cycle_force_closed.body', ['name' => $cycleName], $locale),
+                        ['type' => 'cycle_force_closed', 'cycle_id' => (string) $cycleId]
+                    );
+                } catch (Exception $e) {
+                    error_log("Failed to notify user {$m['user_id']} of cycle force close: " . $e->getMessage());
+                }
             }
 
             $this->success(null);

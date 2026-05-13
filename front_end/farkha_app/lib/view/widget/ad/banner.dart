@@ -88,7 +88,6 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
           }
         },
         onAdFailedToLoad: (ad, error) {
-          debugPrint('Banner failed: ${error.code} - ${error.message}');
           ad.dispose();
           _bannerAd = null;
           _scheduleRetry();

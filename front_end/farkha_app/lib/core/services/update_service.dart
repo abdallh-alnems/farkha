@@ -122,13 +122,17 @@ class UpdateService extends GetxService {
       if (result == AppUpdateResult.success) {
         _showInstallSnackBar();
       }
-    } on PlatformException {}
+    } on PlatformException {
+      // update failed silently
+    }
   }
 
   Future<void> completeFlexibleUpdate() async {
     try {
       await InAppUpdate.completeFlexibleUpdate();
-    } on PlatformException {}
+    } on PlatformException {
+      // update failed silently
+    }
   }
 
   void skipOptional(int versionCode) {

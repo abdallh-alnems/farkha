@@ -4,8 +4,12 @@ import 'package:get/get.dart';
 Future<String?> requireAuthToken(FirebaseAuth auth) async {
   final user = auth.currentUser;
   if (user == null) return null;
-  final token = await user.getIdToken();
-  return (token == null || token.isEmpty) ? null : token;
+  try {
+    final token = await user.getIdToken();
+    return (token == null || token.isEmpty) ? null : token;
+  } catch (_) {
+    return null;
+  }
 }
 
 int? resolveCycleId(Map<String, dynamic> map) {

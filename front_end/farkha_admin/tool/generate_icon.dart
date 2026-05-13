@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:image/image.dart';
 
 void main() {
-  final size = 1024;
+  const size = 1024;
   final img = Image(width: size, height: size);
-  final center = size ~/ 2;
+  const center = size ~/ 2;
   final color = ColorRgba8(108, 99, 255, 255);
   final white = ColorRgba8(255, 255, 255, 255);
 
@@ -79,5 +79,5 @@ void main() {
   }
 
   File('assets/icon_foreground.png').writeAsBytesSync(encodePng(img));
-  print('Done: assets/icon_foreground.png');
+  stdout.writeln('Done: assets/icon_foreground.png');
 }

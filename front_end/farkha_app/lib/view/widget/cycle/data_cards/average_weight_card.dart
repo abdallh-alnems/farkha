@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../../core/functions/number_format.dart';
+import '../../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
 import '../../../../data/model/cycle/weight_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
 import 'average_weight_history.dart';
@@ -253,6 +255,7 @@ class _AverageWeightCardState extends State<AverageWeightCard> {
               controller: _controller,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [ArabicToEnglishDigitsFormatter()],
               decoration: InputDecoration(
                 hintText: 'أدخل متوسط وزن القطيع',
                 hintStyle: TextStyle(
@@ -308,7 +311,7 @@ class _AverageWeightCardState extends State<AverageWeightCard> {
             child: InkWell(
               onTap: () {
                 final value = _controller.text;
-                final weight = double.tryParse(value) ?? 0.0;
+                final weight = tryParseNum(value) ?? 0.0;
                 if (weight > 0) {
                   _save();
                 } else {
@@ -356,7 +359,7 @@ class _AverageWeightCardState extends State<AverageWeightCard> {
   Future<void> _save() async {
     final value = _controller.text.trim();
     if (value.isEmpty) return;
-    final weight = double.tryParse(value) ?? 0.0;
+    final weight = tryParseNum(value) ?? 0.0;
     if (weight <= 0) return;
     await cycleCtrl.addAverageWeightEntry(weight);
     _controller.clear();

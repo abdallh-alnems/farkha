@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
+
 class OtpInputField extends StatelessWidget {
   final int length;
   final ValueChanged<String> onCompleted;
@@ -23,6 +25,7 @@ class OtpInputField extends StatelessWidget {
         length: length,
         animationType: AnimationType.fade,
         keyboardType: TextInputType.number,
+        inputFormatters: [ArabicToEnglishDigitsFormatter()],
         pinTheme: PinTheme(
           shape: PinCodeFieldShape.box,
           borderRadius: BorderRadius.circular(8.r),

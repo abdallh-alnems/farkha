@@ -37,6 +37,12 @@ class _CycleSalesScreenState extends State<CycleSalesScreen>
     if (!Get.isRegistered<CycleSalesController>()) {
       Get.put(CycleSalesController());
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Get.find<CycleSalesController>().fetchSales();
+      }
+    });
   }
 
   @override

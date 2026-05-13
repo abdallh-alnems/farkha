@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lottie/lottie.dart';
 
+import '../constant/theme/images.dart';
 import '../services/notification_service.dart';
 
 class MaintenanceGate extends StatefulWidget {
@@ -51,7 +53,7 @@ class _MaintenanceGateState extends State<MaintenanceGate>
     final pending = storage.read<bool>(kPendingMaintenanceKey) ?? false;
     if (pending) {
       _isMaintenance = true;
-      storage.remove(kPendingMaintenanceKey);
+      unawaited(storage.remove(kPendingMaintenanceKey));
     }
 
     try {
@@ -99,7 +101,7 @@ class _MaintenanceGateState extends State<MaintenanceGate>
   Widget build(BuildContext context) {
     if (_isChecking) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: _SplashLoading()),
       );
     }
 
@@ -108,6 +110,15 @@ class _MaintenanceGateState extends State<MaintenanceGate>
     }
 
     return widget.child;
+  }
+}
+
+class _SplashLoading extends StatelessWidget {
+  const _SplashLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Lottie.asset(AppImages.loading, width: 200.w, height: 200.w);
   }
 }
 
@@ -131,8 +142,6 @@ class _MaintenanceScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 32.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     padding: EdgeInsets.all(24.w),

@@ -34,11 +34,17 @@ class CycleHardDeleteApi extends AdminBaseApi {
 
             $con = Database::getInstance();
             foreach ($members as $m) {
-                NotificationService::sendToUser($con, (int) $m['user_id'],
-                    'تم حذف الدورة نهائياً',
-                    "تم حذف دورة \"{$cycle['name']}\" نهائياً من قبل الإدارة",
-                    ['type' => 'cycle_hard_deleted', 'cycle_id' => (string) $cycleId]
-                );
+                try {
+                    $uid = (int) $m['user_id'];
+                    $locale = I18n::userLocale($con, $uid);
+                    NotificationService::sendToUser($con, $uid,
+                        I18n::get('notif.cycle_hard_deleted.title', [], $locale),
+                        I18n::get('notif.cycle_hard_deleted.body', ['name' => $cycle['name']], $locale),
+                        ['type' => 'cycle_hard_deleted', 'cycle_id' => (string) $cycleId]
+                    );
+                } catch (Exception $e) {
+                    error_log("Failed to notify user {$m['user_id']} of cycle hard delete: " . $e->getMessage());
+                }
             }
 
             $this->success(null);

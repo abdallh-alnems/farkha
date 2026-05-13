@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/functions/number_format.dart';
+
 class TotalRevenueController extends GetxController {
   RxDouble birdsCount = 0.0.obs;
   RxDouble averageWeight = 0.0.obs;
@@ -20,15 +22,15 @@ class TotalRevenueController extends GetxController {
   }
 
   void updateBirdsCount(String value) {
-    birdsCount.value = double.tryParse(value) ?? 0.0;
+    birdsCount.value = tryParseNum(value) ?? 0.0;
   }
 
   void updateAverageWeight(String value) {
-    averageWeight.value = double.tryParse(value) ?? 0.0;
+    averageWeight.value = tryParseNum(value) ?? 0.0;
   }
 
   void updatePricePerKg(String value) {
-    pricePerKg.value = double.tryParse(value) ?? 0.0;
+    pricePerKg.value = tryParseNum(value) ?? 0.0;
   }
 
   void calculate() {

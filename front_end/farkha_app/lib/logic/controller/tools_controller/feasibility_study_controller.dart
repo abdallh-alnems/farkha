@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/class/status_request.dart';
 import '../../../core/functions/handling_data_controller.dart';
+import '../../../core/functions/number_format.dart';
 import '../../../data/data_source/remote/tools/feasibility_study_data.dart';
 import '../../../data/model/feasibility_model.dart';
 import 'feasibility_calculations.dart';
@@ -26,8 +27,6 @@ class FeasibilityController extends GetxController {
   final TextEditingController mortalityRateController = TextEditingController();
   final TextEditingController overheadController = TextEditingController();
 
-  final TextEditingController chickenSalePriceController =
-      TextEditingController();
   final TextEditingController chickPriceController = TextEditingController();
   final TextEditingController badiPriceController = TextEditingController();
   final TextEditingController namiPriceController = TextEditingController();
@@ -46,15 +45,10 @@ class FeasibilityController extends GetxController {
   RxString feedCostText = ''.obs;
   RxString overheadCostText = ''.obs;
   RxString totalCostText = ''.obs;
-  RxString totalSalesText = ''.obs;
-  RxString profitText = ''.obs;
   RxString chickenCountText = ''.obs;
   RxString costPerChickenText = ''.obs;
-  RxString profitPerChickenText = ''.obs;
-  RxString profitMarginText = ''.obs;
   RxString costPerKgText = ''.obs;
   RxString totalKgProducedText = ''.obs;
-  RxBool isProfitNegative = false.obs;
 
   RxDouble totalChickenCostRaw = 0.0.obs;
   RxDouble totalFeedCostRaw = 0.0.obs;
@@ -96,8 +90,6 @@ class FeasibilityController extends GetxController {
   }
 
   void _updatePriceControllers() {
-    chickenSalePriceController.text =
-        feasibilityModel.chickenSalePrice.toString();
     chickPriceController.text = feasibilityModel.chickPrice.toString();
     badiPriceController.text = feasibilityModel.badiPrice.toString();
     namiPriceController.text = feasibilityModel.namiPrice.toString();
@@ -117,20 +109,18 @@ class FeasibilityController extends GetxController {
   }
 
   void updatePrices() {
-    feasibilityModel.chickenSalePrice =
-        int.tryParse(chickenSalePriceController.text) ?? 0;
     feasibilityModel.chickPrice =
-        int.tryParse(chickPriceController.text) ?? 0;
+        tryParseInt(chickPriceController.text) ?? 0;
 
     if (isProfessionalMode.value) {
       feasibilityModel.badiPrice =
-          int.tryParse(badiPriceController.text) ?? 0;
+          tryParseInt(badiPriceController.text) ?? 0;
       feasibilityModel.namiPrice =
-          int.tryParse(namiPriceController.text) ?? 0;
+          tryParseInt(namiPriceController.text) ?? 0;
       feasibilityModel.nahiPrice =
-          int.tryParse(nahiPriceController.text) ?? 0;
+          tryParseInt(nahiPriceController.text) ?? 0;
     } else {
-      final avgPrice = int.tryParse(averageFeedPriceController.text) ?? 0;
+      final avgPrice = tryParseInt(averageFeedPriceController.text) ?? 0;
       feasibilityModel.badiPrice = avgPrice;
       feasibilityModel.namiPrice = avgPrice;
       feasibilityModel.nahiPrice = avgPrice;
@@ -139,22 +129,22 @@ class FeasibilityController extends GetxController {
 
   void updateDefaultValues() {
     defaultWeight.value =
-        double.tryParse(defaultWeightController.text) ?? 2.1;
+        tryParseNum(defaultWeightController.text) ?? 2.1;
     mortalityRate.value =
-        double.tryParse(mortalityRateController.text) ?? 5.0;
+        tryParseNum(mortalityRateController.text) ?? 5.0;
     overheadPerChicken.value =
-        double.tryParse(overheadController.text) ?? 10.0;
+        tryParseNum(overheadController.text) ?? 10.0;
 
     if (isProfessionalMode.value) {
       badiFeedRatio.value =
-          double.tryParse(badiRatioController.text) ?? 0.5;
+          tryParseNum(badiRatioController.text) ?? 0.5;
       namiFeedRatio.value =
-          double.tryParse(namiRatioController.text) ?? 1.2;
+          tryParseNum(namiRatioController.text) ?? 1.2;
       nahiFeedRatio.value =
-          double.tryParse(nahiRatioController.text) ?? 1.8;
+          tryParseNum(nahiRatioController.text) ?? 1.8;
     } else {
       final avgRatio =
-          double.tryParse(averageFeedRatioController.text) ?? 3.5;
+          tryParseNum(averageFeedRatioController.text) ?? 3.5;
       badiFeedRatio.value = avgRatio;
       namiFeedRatio.value = avgRatio;
       nahiFeedRatio.value = avgRatio;
@@ -179,15 +169,10 @@ class FeasibilityController extends GetxController {
     feedCostText.value = '';
     overheadCostText.value = '';
     totalCostText.value = '';
-    totalSalesText.value = '';
-    profitText.value = '';
     chickenCountText.value = '';
     costPerChickenText.value = '';
-    profitPerChickenText.value = '';
-    profitMarginText.value = '';
     costPerKgText.value = '';
     totalKgProducedText.value = '';
-    isProfitNegative.value = false;
     totalChickenCostRaw.value = 0.0;
     totalFeedCostRaw.value = 0.0;
     totalOverheadCostRaw.value = 0.0;
@@ -213,9 +198,9 @@ class FeasibilityController extends GetxController {
       namiFeedRatio: namiFeedRatio.value,
       nahiFeedRatio: nahiFeedRatio.value,
       averageFeedRatio:
-          double.tryParse(averageFeedRatioController.text) ?? 3.5,
+          tryParseNum(averageFeedRatioController.text) ?? 3.5,
       averageFeedPrice:
-          (int.tryParse(averageFeedPriceController.text) ?? 0).toDouble(),
+          (tryParseInt(averageFeedPriceController.text) ?? 0).toDouble(),
     );
   }
 
@@ -226,7 +211,6 @@ class FeasibilityController extends GetxController {
     try {
       if (statusRequest != StatusRequest.success) {
         feasibilityModel = FeasibilityModel(
-          chickenSalePrice: 0,
           chickPrice: 0,
           badiPrice: 0,
           namiPrice: 0,
@@ -256,8 +240,7 @@ class FeasibilityController extends GetxController {
       _applyDisplayTexts(texts);
 
       update();
-    } catch (e, stackTrace) {
-      debugPrint('Feasibility calculation error: $e\n$stackTrace');
+    } catch (e) {
       statusRequest = StatusRequest.failure;
       update();
       Get.snackbar(
@@ -279,12 +262,7 @@ class FeasibilityController extends GetxController {
     feedCostText.value = texts.feedCostText;
     overheadCostText.value = texts.overheadCostText;
     totalCostText.value = texts.totalCostText;
-    totalSalesText.value = texts.totalSalesText;
-    profitText.value = texts.profitText;
-    isProfitNegative.value = texts.isProfitNegative;
     costPerChickenText.value = texts.costPerChickenText;
-    profitPerChickenText.value = texts.profitPerChickenText;
-    profitMarginText.value = texts.profitMarginText;
     costPerKgText.value = texts.costPerKgText;
     totalKgProducedText.value = texts.totalKgProducedText;
   }
@@ -350,7 +328,6 @@ class FeasibilityController extends GetxController {
     averageFeedRatioController.dispose();
     mortalityRateController.dispose();
     overheadController.dispose();
-    chickenSalePriceController.dispose();
     chickPriceController.dispose();
     badiPriceController.dispose();
     namiPriceController.dispose();

@@ -120,7 +120,7 @@ class AdminsScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 Obx(() => _RoleSelector(
                       selectedRole: controller.selectedRole.value,
-                      onChanged: controller.selectedRole,
+                      onChanged: controller.selectedRole.call,
                     )),
                 const SizedBox(height: 24),
                 Row(
@@ -251,7 +251,7 @@ class _AdminCard extends StatelessWidget {
                             const SizedBox(width: 8),
                             Switch.adaptive(
                               value: isActive,
-                              activeColor: AppTheme.success,
+                              activeThumbColor: AppTheme.success,
                               onChanged: (v) => controller.toggleActive(admin, v),
                             ),
                           ],
@@ -312,8 +312,10 @@ class _AdminCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     leading: Radio<String>(
                       value: r,
+                      // ignore: deprecated_member_use
                       groupValue: admin['role'],
                       activeColor: AppTheme.primary,
+                      // ignore: deprecated_member_use
                       onChanged: (v) {
                         Get.back();
                         if (v != null && v != admin['role']) {
@@ -510,7 +512,9 @@ class _RoleSelector extends StatelessWidget {
               ),
               child: RadioListTile<String>(
                 value: opt.$1,
+                // ignore: deprecated_member_use
                 groupValue: selectedRole,
+                // ignore: deprecated_member_use
                 onChanged: (v) {
                   if (v != null) onChanged(v);
                 },

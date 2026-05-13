@@ -35,11 +35,6 @@ class CycleFeedbackController extends GetxController {
 
   String? _appVersion;
   final String _platform = kIsWeb ? 'web' : (Platform.isAndroid ? 'android' : 'ios');
-  int? _currentCycleId;
-
-  void setCurrentCycleId(int? cycleId) {
-    _currentCycleId = cycleId;
-  }
 
   @override
   void onInit() {
@@ -138,7 +133,6 @@ class CycleFeedbackController extends GetxController {
       final result = await cycleFeedbackData.submit(
         token: token,
         rating: rating,
-        cycleId: _currentCycleId,
         issue: issue.isEmpty ? null : issue,
         suggestion: suggestion.isEmpty ? null : suggestion,
         appVersion: _appVersion,
@@ -147,6 +141,7 @@ class CycleFeedbackController extends GetxController {
 
       result.fold(
         (failure) {
+          debugPrint(' CycleFeedback submit FAILURE: $failure, rating=$rating');
           statusRequest = failure;
           update();
         },
@@ -170,6 +165,7 @@ class CycleFeedbackController extends GetxController {
         },
       );
     } catch (e, stack) {
+      debugPrint(' CycleFeedback submit ERROR: $e\n$stack');
       try {
         unawaited(FirebaseCrashlytics.instance.recordError(e, stack));
       } catch (_) {}

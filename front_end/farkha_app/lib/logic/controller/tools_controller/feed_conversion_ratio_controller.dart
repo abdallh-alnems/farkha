@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/functions/number_format.dart';
+
 class FcrController extends GetxController {
   final double initialWeight =
       0.045; // الوزن الابتدائي الثابت بالكيلوغرام (45 جرام = 0.045 كجم)
@@ -11,8 +13,8 @@ class FcrController extends GetxController {
   RxDouble fcr = 0.0.obs;
 
   void calculateFCR() {
-    final feedConsumed = double.tryParse(feedConsumedController.text) ?? 0;
-    final currentWeight = double.tryParse(currentWeightController.text) ?? 0;
+    final feedConsumed = tryParseNum(feedConsumedController.text) ?? 0;
+    final currentWeight = tryParseNum(currentWeightController.text) ?? 0;
     final weightGain = currentWeight - initialWeight;
     if (weightGain > 0) {
       fcr.value = feedConsumed / weightGain;

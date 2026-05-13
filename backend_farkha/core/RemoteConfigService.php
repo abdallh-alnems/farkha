@@ -20,9 +20,13 @@ final class RemoteConfigService {
 
     private static function extractValue($defaultValue): ?string {
         if ($defaultValue === null) return null;
-        if (method_exists($defaultValue, 'value')) return $defaultValue->value();
-        $arr = $defaultValue->toArray();
-        return $arr['value'] ?? null;
+        if (method_exists($defaultValue, 'value')) return (string) $defaultValue->value();
+        if (method_exists($defaultValue, 'toArray')) {
+            $arr = $defaultValue->toArray();
+            if (!is_array($arr) || !isset($arr['value'])) return null;
+            return is_string($arr['value']) ? $arr['value'] : (string) $arr['value'];
+        }
+        return null;
     }
 
     public static function getAll(): array {

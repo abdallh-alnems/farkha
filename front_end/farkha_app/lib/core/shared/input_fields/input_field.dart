@@ -60,6 +60,8 @@ void _showHelpPopup(BuildContext anchorContext, String title, String helpText) {
   );
 }
 
+typedef ArabicToEnglishDigitsFormatter = _ArabicToEnglishDigitsFormatter;
+
 class _ArabicToEnglishDigitsFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

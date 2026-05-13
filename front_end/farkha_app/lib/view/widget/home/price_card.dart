@@ -7,16 +7,7 @@ import '../prices/prices_card/price_content/price_content.dart';
 import '../prices/prices_card/price_header.dart';
 
 class PriceCard extends StatefulWidget {
-  final GlobalKey? priceCardKey;
-  final GlobalKey? allPricesButtonKey;
-  final GlobalKey? settingsIconKey;
-
-  const PriceCard({
-    super.key,
-    this.priceCardKey,
-    this.allPricesButtonKey,
-    this.settingsIconKey,
-  });
+  const PriceCard({super.key});
 
   @override
   State<PriceCard> createState() => _PriceCardState();
@@ -56,12 +47,8 @@ class _PriceCardState extends State<PriceCard> with WidgetsBindingObserver {
         width: double.infinity,
         child: GetBuilder<PricesCardController>(
           builder: (controller) => Column(
-            key: widget.priceCardKey,
             children: [
-              PriceHeader(
-                allPricesButtonKey: widget.allPricesButtonKey,
-                settingsIconKey: widget.settingsIconKey,
-              ),
+              const PriceHeader(),
               SizedBox(height: 10.h),
               PriceContent(controller: controller),
               SizedBox(height: 4.h),

@@ -7,6 +7,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:lottie/lottie.dart';
+
+import '../../core/constant/theme/images.dart';
 import '../../core/constant/strings/update_strings.dart';
 import '../../core/services/update_service.dart';
 import '../../data/data_source/static/messages/upgrade_messages.dart';
@@ -47,7 +50,9 @@ class _UpdateGateState extends State<UpdateGate> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: _SplashLoading(),
+            ),
           );
         }
 
@@ -236,5 +241,14 @@ class OptionalUpdateDialog extends StatelessWidget {
       const OptionalUpdateDialog(),
       barrierDismissible: false,
     );
+  }
+}
+
+class _SplashLoading extends StatelessWidget {
+  const _SplashLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return Lottie.asset(AppImages.loading, width: 200.w, height: 200.w);
   }
 }

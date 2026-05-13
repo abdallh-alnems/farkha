@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
+
 class _StripLeadingZeroFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -42,6 +44,7 @@ class PhoneInputField extends StatelessWidget {
       textDirection: TextDirection.ltr,
       maxLength: 10,
       inputFormatters: [
+        ArabicToEnglishDigitsFormatter(),
         FilteringTextInputFormatter.digitsOnly,
         _StripLeadingZeroFormatter(),
       ],

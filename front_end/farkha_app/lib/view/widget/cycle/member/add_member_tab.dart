@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/constant/theme/colors.dart';
+import '../../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
 
 class AddMemberTab extends StatelessWidget {
   final bool isDark;
@@ -50,6 +51,8 @@ class AddMemberTab extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     if (!isOwner) return const SizedBox.shrink();
 
+    final Color muted = colorScheme.onSurface.withValues(alpha: 0.35);
+
     return Padding(
       padding: EdgeInsets.all(16.w),
       child: Column(
@@ -58,7 +61,7 @@ class AddMemberTab extends StatelessWidget {
           Text(
             'أدخل رقم هاتف المستخدم المسجل في التطبيق',
             style: TextStyle(
-              color: colorScheme.onSurface.withValues(alpha: 0.55),
+              color: muted,
               fontSize: 12.sp,
             ),
           ),
@@ -70,6 +73,7 @@ class AddMemberTab extends StatelessWidget {
                   controller: phoneController,
                   keyboardType: TextInputType.phone,
                   maxLength: 11,
+                  inputFormatters: [ArabicToEnglishDigitsFormatter()],
                   style: TextStyle(
                     color: colorScheme.onSurface,
                     fontSize: 15.sp,
@@ -79,18 +83,21 @@ class AddMemberTab extends StatelessWidget {
                     hintText: '01xxxxxxxxx',
                     counterText: '',
                     prefixIcon: Icon(Icons.phone_android_rounded,
-                        color: AppColors.primaryColor, size: 20.sp),
+                        color: muted, size: 20.sp),
                     filled: true,
                     fillColor: colorScheme.surfaceContainerHighest,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide(
-                          color: AppColors.primaryColor.withValues(alpha: 0.3)),
+                      borderSide: BorderSide.none,
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide(
-                          color: AppColors.primaryColor.withValues(alpha: 0.1)),
+                          color: AppColors.primaryColor.withValues(alpha: 0.5)),
                     ),
                   ),
                   onChanged: (val) {
@@ -99,15 +106,14 @@ class AddMemberTab extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8.w),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: IconButton(
-                  icon: Icon(Icons.contacts_rounded,
-                      color: AppColors.primaryColor, size: 22.sp),
-                  onPressed: onPickContact,
+              IconButton(
+                icon: Icon(Icons.contacts_rounded,
+                    color: muted, size: 22.sp),
+                onPressed: onPickContact,
+                style: IconButton.styleFrom(
+                  backgroundColor: colorScheme.surfaceContainerHighest,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r)),
                 ),
               ),
             ],
@@ -118,62 +124,56 @@ class AddMemberTab extends StatelessWidget {
               padding: EdgeInsets.all(20.h),
               child: const Center(
                   child: CircularProgressIndicator(
-                      color: AppColors.primaryColor)),
+                      color: AppColors.primaryColor, strokeWidth: 2)),
             ),
 
           if (resultMessage != null) ...[
             SizedBox(height: 12.h),
-            Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: isResultError
-                    ? Colors.red.withValues(alpha: 0.1)
-                    : Colors.green.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    isResultError
-                        ? Icons.error_outline
-                        : Icons.check_circle_outline,
-                    color: isResultError ? Colors.red : Colors.green,
-                    size: 18.sp,
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: Text(
-                      resultMessage!,
-                      style: TextStyle(
-                        color: isResultError ? Colors.red : Colors.green,
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+            Row(
+              children: [
+                Icon(
+                  isResultError
+                      ? Icons.error_outline_rounded
+                      : Icons.check_circle_outline_rounded,
+                  color: isResultError
+                      ? AppColors.errorColor
+                      : AppColors.primaryColor,
+                  size: 16.sp,
+                ),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: Text(
+                    resultMessage!,
+                    style: TextStyle(
+                      color: isResultError
+                          ? AppColors.errorColor
+                          : AppColors.primaryColor,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
 
           if (selectedUser != null && !isSearching) ...[
-            SizedBox(height: 20.h),
+            SizedBox(height: 16.h),
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: colorScheme.surface,
+                color: colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                    color: AppColors.primaryColor.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
-                    radius: 22.r,
-                    backgroundColor: AppColors.primaryColor,
+                    radius: 20.r,
+                    backgroundColor: colorScheme.onSurface
+                        .withValues(alpha: 0.06),
                     child: Icon(Icons.person,
-                        color: Colors.white, size: 24.sp),
+                        color: muted, size: 22.sp),
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
@@ -183,16 +183,16 @@ class AddMemberTab extends StatelessWidget {
                         Text(
                           selectedUser!['name']?.toString() ?? 'بدون اسم',
                           style: TextStyle(
-                            color: isDark ? Colors.white : Colors.black87,
-                            fontSize: 14.sp,
+                            color: colorScheme.onSurface,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           selectedUser!['phone']?.toString() ?? '',
                           style: TextStyle(
-                            color: colorScheme.onSurface.withValues(alpha: 0.55),
-                            fontSize: 12.sp,
+                            color: muted,
+                            fontSize: 11.sp,
                           ),
                           textDirection: ui.TextDirection.ltr,
                         ),
@@ -204,9 +204,9 @@ class AddMemberTab extends StatelessWidget {
             ),
             SizedBox(height: 16.h),
             Text(
-              'اختر الصلاحية للمستخدم',
+              'اختر الصلاحية',
               style: TextStyle(
-                color: colorScheme.onSurface,
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -219,7 +219,6 @@ class AddMemberTab extends StatelessWidget {
                     label: 'مشرف',
                     role: 'admin',
                     selectedRole: selectedRole,
-                    isDark: isDark,
                     icon: Icons.manage_accounts_rounded,
                     onTap: () => onRoleChanged('admin'),
                   ),
@@ -230,7 +229,6 @@ class AddMemberTab extends StatelessWidget {
                     label: 'متابع',
                     role: 'viewer',
                     selectedRole: selectedRole,
-                    isDark: isDark,
                     icon: Icons.remove_red_eye_rounded,
                     onTap: () => onRoleChanged('viewer'),
                   ),
@@ -260,7 +258,7 @@ class AddMemberTab extends StatelessWidget {
                 ),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
-                      color: AppColors.primaryColor.withValues(alpha: 0.5)),
+                      color: AppColors.primaryColor.withValues(alpha: 0.4)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r)),
                   padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -268,39 +266,67 @@ class AddMemberTab extends StatelessWidget {
               )
             else
               Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 14.w, vertical: 10.h),
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: Colors.green.withValues(alpha: 0.08),
+                  color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3)),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(Icons.check_circle_rounded,
-                        color: Colors.green, size: 18.sp),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: Text(
-                        'تم إنشاء رابط الدعوة',
-                        style: TextStyle(
-                            color: Colors.green.shade700,
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600),
-                      ),
+                    Row(
+                      children: [
+                        Icon(Icons.check_circle_rounded,
+                            color: AppColors.primaryColor, size: 18.sp),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            'تم إنشاء الرابط ونسخه للحافظة',
+                            style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
                     ),
-                    TextButton.icon(
-                      onPressed: onCopyLink,
-                      icon: Icon(Icons.copy_rounded,
-                          size: 15.sp, color: Colors.green.shade600),
-                      label: Text(
-                        'نسخ',
-                        style: TextStyle(
-                            color: Colors.green.shade600, fontSize: 11.sp),
-                      ),
-                      style: TextButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 6.w)),
+                    SizedBox(height: 10.h),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10.w, vertical: 8.h),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surface,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: Text(
+                              invitationLink ?? invitationCode ?? '',
+                              style: TextStyle(
+                                  color: colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
+                                  fontSize: 11.sp),
+                              overflow: TextOverflow.ellipsis,
+                              textDirection: ui.TextDirection.ltr,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        IconButton(
+                          onPressed: onCopyLink,
+                          icon: Icon(Icons.copy_rounded,
+                              color: AppColors.primaryColor, size: 20.sp),
+                          padding: EdgeInsets.all(6.w),
+                          constraints: const BoxConstraints(),
+                          style: IconButton.styleFrom(
+                            backgroundColor:
+                                AppColors.primaryColor.withValues(alpha: 0.08),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.r)),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -316,7 +342,6 @@ class _RoleButton extends StatelessWidget {
   final String label;
   final String role;
   final String selectedRole;
-  final bool isDark;
   final IconData icon;
   final VoidCallback onTap;
 
@@ -324,7 +349,6 @@ class _RoleButton extends StatelessWidget {
     required this.label,
     required this.role,
     required this.selectedRole,
-    required this.isDark,
     required this.icon,
     required this.onTap,
   });
@@ -340,14 +364,13 @@ class _RoleButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 12.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primaryColor.withValues(alpha: 0.1)
-              : colorScheme.surface,
+              ? AppColors.primaryColor.withValues(alpha: 0.08)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             color: isSelected
-                ? AppColors.primaryColor
-                : colorScheme.outline.withValues(alpha: 0.3),
-            width: isSelected ? 1.5 : 1,
+                ? AppColors.primaryColor.withValues(alpha: 0.5)
+                : colorScheme.outline.withValues(alpha: 0.15),
           ),
         ),
         child: Row(
@@ -357,7 +380,7 @@ class _RoleButton extends StatelessWidget {
                 size: 18.sp,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : colorScheme.onSurface.withValues(alpha: 0.45)),
+                    : colorScheme.onSurface.withValues(alpha: 0.35)),
             SizedBox(width: 6.w),
             Text(
               label,
@@ -366,7 +389,7 @@ class _RoleButton extends StatelessWidget {
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? AppColors.primaryColor
-                    : colorScheme.onSurface.withValues(alpha: 0.6),
+                    : colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             )
           ],

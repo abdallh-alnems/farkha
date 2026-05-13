@@ -318,6 +318,17 @@ class NotificationService extends GetxService
         }
       }
 
+      if (type == 'member_left') {
+        if (Get.isRegistered<CycleController>()) {
+          final ctrl = Get.find<CycleController>();
+          final cycleIdRaw = message.data['cycle_id'];
+          final cycleId = cycleIdRaw != null ? int.tryParse(cycleIdRaw.toString()) : null;
+          if (cycleId != null) {
+            ctrl.fetchCycleDetails(cycleId);
+          }
+        }
+      }
+
       if (type == 'force_logout') {
         _forceLogout();
       }
@@ -375,7 +386,7 @@ class NotificationService extends GetxService
       final data = jsonDecode(payload) as Map<String, dynamic>;
       _handlePayloadNavigation(data);
     } catch (e) {
-      if (kDebugMode) debugPrint('Error parsing notification payload: $e');
+      // payload parse error silently ignored
     }
   }
 
@@ -383,7 +394,7 @@ class NotificationService extends GetxService
     if (message.data.isNotEmpty) _handlePayloadNavigation(message.data);
   }
 
-  void _handlePayloadNavigation(Map<String, dynamic> data) async {
+  Future<void> _handlePayloadNavigation(Map<String, dynamic> data) async {
     final type = data['type'];
 
     if (type == 'force_logout') {
@@ -402,69 +413,85 @@ class NotificationService extends GetxService
       final cycleId = cycleIdRaw != null
           ? int.tryParse(cycleIdRaw.toString())
           : null;
-      Get.toNamed<void>(
+      unawaited(Get.toNamed<void>(
         AppRoute.cycle,
         arguments: <String, dynamic>{'cycle_id': cycleId},
-      );
+      ));
     } else if (type == 'darkness_config') {
       final cycleIdRaw = data['cycle_id'];
       final cycleId = cycleIdRaw != null
           ? int.tryParse(cycleIdRaw.toString())
           : null;
-      Get.toNamed<void>(
+      unawaited(Get.toNamed<void>(
         AppRoute.cycle,
         arguments: <String, dynamic>{
           'action': 'open_darkness_settings',
           'cycle_id': cycleId,
         },
-      );
+      ));
     } else if (type == 'cycle_invitation' || type == 'invitation_response') {
-      Get.offAllNamed<void>(AppRoute.home);
+      unawaited(Get.offAllNamed<void>(AppRoute.home));
       if (Get.isRegistered<CycleController>()) {
-        Get.find<CycleController>().fetchInvitations();
+        unawaited(Get.find<CycleController>().fetchInvitations());
       }
     } else if (type == 'member_removed') {
       if (Get.isRegistered<CycleController>()) {
-        Get.find<CycleController>().fetchCyclesFromServer();
+        unawaited(Get.find<CycleController>().fetchCyclesFromServer());
       }
-      Get.offAllNamed<void>(AppRoute.home);
-    } else if (type == 'role_changed') {
+      unawaited(Get.offAllNamed<void>(AppRoute.home));
+    } else if (type == 'member_left') {
       if (Get.isRegistered<CycleController>()) {
         final ctrl = Get.find<CycleController>();
-        ctrl.fetchCyclesFromServer();
+        unawaited(ctrl.fetchCyclesFromServer());
         final cycleIdRaw = data['cycle_id'];
         final cycleId = cycleIdRaw != null
             ? int.tryParse(cycleIdRaw.toString())
             : null;
         if (cycleId != null) {
-          Get.toNamed<void>(
+          unawaited(ctrl.fetchCycleDetails(cycleId));
+          unawaited(Get.toNamed<void>(
             AppRoute.cycle,
             arguments: <String, dynamic>{'cycle_id': cycleId},
-          );
-          ctrl.fetchCycleDetails(cycleId);
+          ));
+        }
+      }
+    } else if (type == 'role_changed') {
+      if (Get.isRegistered<CycleController>()) {
+        final ctrl = Get.find<CycleController>();
+        unawaited(ctrl.fetchCyclesFromServer());
+        final cycleIdRaw = data['cycle_id'];
+        final cycleId = cycleIdRaw != null
+            ? int.tryParse(cycleIdRaw.toString())
+            : null;
+        if (cycleId != null) {
+          unawaited(Get.toNamed<void>(
+            AppRoute.cycle,
+            arguments: <String, dynamic>{'cycle_id': cycleId},
+          ));
+          unawaited(ctrl.fetchCycleDetails(cycleId));
         }
       }
     } else if (type == 'cycle_force_closed') {
       if (Get.isRegistered<CycleController>()) {
         final ctrl = Get.find<CycleController>();
-        ctrl.fetchCyclesFromServer();
+        unawaited(ctrl.fetchCyclesFromServer());
         final cycleIdRaw = data['cycle_id'];
         final cycleId = cycleIdRaw != null
             ? int.tryParse(cycleIdRaw.toString())
             : null;
         if (cycleId != null) {
-          Get.toNamed<void>(
+          unawaited(Get.toNamed<void>(
             AppRoute.cycle,
             arguments: <String, dynamic>{'cycle_id': cycleId},
-          );
-          ctrl.fetchCycleDetails(cycleId);
+          ));
+          unawaited(ctrl.fetchCycleDetails(cycleId));
         }
       }
     } else if (type == 'cycle_deleted' || type == 'cycle_hard_deleted') {
       if (Get.isRegistered<CycleController>()) {
-        Get.find<CycleController>().fetchCyclesFromServer();
+        unawaited(Get.find<CycleController>().fetchCyclesFromServer());
       }
-      Get.offAllNamed<void>(AppRoute.home);
+      unawaited(Get.offAllNamed<void>(AppRoute.home));
     }
   }
 
@@ -482,9 +509,6 @@ class NotificationService extends GetxService
     storage.remove(StorageKeys.favoriteToolsOrder);
     storage.remove(kPendingForceLogoutKey);
     FirebaseAuth.instance.signOut().catchError((_) => null);
-    if (Get.currentRoute != AppRoute.login) {
-      Get.offAllNamed<void>(AppRoute.login);
-    }
   }
 
   /// If a `force_logout` FCM was received while the app was backgrounded/killed,

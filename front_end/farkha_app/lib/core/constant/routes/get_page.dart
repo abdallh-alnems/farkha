@@ -109,7 +109,7 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(
     name: AppRoute.cycle,
-    page: () => const CycleScreen(),
+    page: () => const InterstitialAdWrapper(child: CycleScreen()),
     binding: BindingsBuilder<void>(() {
       if (!Get.isRegistered<CycleController>()) {
         Get.put(CycleController(), permanent: true);
@@ -154,7 +154,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.history,
-    page: () => const CycleHistoryScreen(),
+    page: () => const InterstitialAdWrapper(child: CycleHistoryScreen()),
     middlewares: [AuthMiddleware()],
   ),
   GetPage(
@@ -187,16 +187,16 @@ List<GetPage<dynamic>> pages = [
   // ! disease
   GetPage(name: AppRoute.diseases, page: () => const InterstitialAdWrapper(child: DiseasesScreen())),
 
-  GetPage(name: AppRoute.diseaseDetails, page: () => const InterstitialAdWrapper(child: DiseaseDetails())),
+  GetPage(name: AppRoute.diseaseDetails, page: () => const DiseaseDetails()),
 
   // ! diagnosis diseases
-  GetPage(name: AppRoute.questionDisease, page: () => InterstitialAdWrapper(child: DiagnosisDiseases())),
+  GetPage(name: AppRoute.questionDisease, page: () => DiagnosisDiseases()),
 
   // ================================= tools ===================================
 
   // ! articles
   GetPage(name: AppRoute.articlesList, page: () => const InterstitialAdWrapper(child: ArticlesList())),
-  GetPage(name: AppRoute.articleDetail, page: () => const InterstitialAdWrapper(child: ArticleDetail())),
+  GetPage(name: AppRoute.articleDetail, page: () => const ArticleDetail()),
 
   // ! feasibility study
   GetPage(

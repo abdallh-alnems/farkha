@@ -103,21 +103,6 @@ class ResultsSection extends StatelessWidget {
                       icon: Icons.calculate_outlined,
                       color: colorScheme.primary,
                     ),
-                    FeasibilityWidgets.buildCostDistributionBar(
-                      context: context,
-                      chickenCost: controller.totalChickenCostRaw.value,
-                      feedCost: controller.totalFeedCostRaw.value,
-                      overheadCost: controller.totalOverheadCostRaw.value,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                FeasibilityWidgets.buildModernSection(
-                  context,
-                  'المبيعات',
-                  Icons.trending_up,
-                  AppColors.primaryColor,
-                  [
                     FeasibilityWidgets.buildResultCard(
                       context,
                       title: 'الكيلوجرامات المنتجة',
@@ -125,48 +110,11 @@ class ResultsSection extends StatelessWidget {
                       icon: Icons.scale_outlined,
                       color: colorScheme.primary,
                     ),
-                    FeasibilityWidgets.buildResultCard(
-                      context,
-                      title: 'إجمالي المبيعات',
-                      value: controller.totalSalesText.value,
-                      icon: Icons.attach_money,
-                      color: colorScheme.primary,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16.h),
-                FeasibilityWidgets.buildModernSection(
-                  context,
-                  'الأرباح',
-                  Icons.monetization_on_outlined,
-                  AppColors.secondaryColor,
-                  [
-                    FeasibilityWidgets.buildResultCard(
-                      context,
-                      title: 'صافي الأرباح',
-                      value:
-                          controller.profitMarginText.value.isNotEmpty &&
-                                  controller.profitMarginText.value != '-'
-                              ? '${controller.profitText.value} (${controller.profitMarginText.value})'
-                              : controller.profitText.value,
-                      icon: Icons.emoji_events_outlined,
-                      color: colorScheme.primary,
-                      valueColor: controller.isProfitNegative.value
-                          ? AppColors.errorColor
-                          : null,
-                      subtitle: controller.isProfitNegative.value
-                          ? 'المشروع غير مجدٍ بالأسعار الحالية'
-                          : null,
-                    ),
-                    FeasibilityWidgets.buildResultCard(
-                      context,
-                      title: 'الربح لكل فرخ',
-                      value: controller.profitPerChickenText.value,
-                      icon: Icons.trending_up,
-                      color: colorScheme.primary,
-                      valueColor: controller.isProfitNegative.value
-                          ? AppColors.errorColor
-                          : null,
+                    FeasibilityWidgets.buildCostDistributionBar(
+                      context: context,
+                      chickenCost: controller.totalChickenCostRaw.value,
+                      feedCost: controller.totalFeedCostRaw.value,
+                      overheadCost: controller.totalOverheadCostRaw.value,
                     ),
                   ],
                 ),

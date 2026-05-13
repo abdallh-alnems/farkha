@@ -46,7 +46,7 @@ class DevicesListApi extends AdminBaseApi {
             )['c'];
 
             $items = Database::fetchAll(
-                "SELECT ud.id, ud.fcm_token, ud.platform, ud.device_id,
+                "SELECT ud.id, ud.platform, ud.device_id,
                         ud.last_active, ud.created_at,
                         ud.user_id, u.name AS user_name, u.phone AS user_phone
                  FROM user_devices ud

@@ -172,23 +172,28 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
 
     if (!mounted) return;
 
-    if (result != null) {
-      if (result['status'] == 'success') {
-        final link = result['link']?.toString();
-        setState(() {
-          _invitationCode = result['code']?.toString();
-          _invitationLink = link;
-        });
-        if (link != null) {
-          await Clipboard.setData(ClipboardData(text: link));
-          showOverlayToast('تم إنشاء رابط الدعوة');
+    if (result != null && result['status'] == 'success') {
+      final payload = result['data'] as Map<String, dynamic>? ?? result;
+      final code = payload['code']?.toString();
+      final link = payload['link']?.toString();
+      setState(() {
+        _invitationCode = code;
+        _invitationLink = link ?? 'farkha://join/$code';
+      });
+      final textToCopy = _invitationLink ?? '';
+      if (textToCopy.isNotEmpty) {
+        try {
+          await Clipboard.setData(ClipboardData(text: textToCopy));
+          showOverlayToast('تم إنشاء الرابط ونسخه للحافظة');
+        } catch (_) {
+          showOverlayToast('تم إنشاء الرابط');
         }
-      } else {
-        showOverlayToast(
-          result['message']?.toString() ?? 'فشل إنشاء الرابط',
-          isError: true,
-        );
       }
+    } else {
+      showOverlayToast(
+        result?['message']?.toString() ?? 'فشل إنشاء الرابط',
+        isError: true,
+      );
     }
     setState(() => _isLoadingInvitation = false);
   }
@@ -197,6 +202,7 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final bool showAddButton = _selectedUser != null && !_isSearching;
+    final Color muted = colorScheme.onSurface.withValues(alpha: 0.35);
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -210,58 +216,35 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(20.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 20,
-              spreadRadius: 5,
-              offset: const Offset(0, 8),
-            )
-          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 12.h),
-              child: Stack(
-                alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0),
+              child: Row(
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.group_rounded,
-                          color: AppColors.primaryColor, size: 22.sp),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'إدارة الأعضاء',
-                        style: TextStyle(
-                          color: colorScheme.onSurface,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  IconButton(
+                    icon: Icon(Icons.close, color: muted, size: 20.sp),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
-                  Positioned(
-                    left: 0,
-                    child: IconButton(
-                      icon: Icon(Icons.close,
-                          color: colorScheme.onSurface.withValues(alpha: 0.55),
-                          size: 20.sp),
-                      onPressed: () => Navigator.of(context).pop(),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
+                  Expanded(
+                    child: Text(
+                      'إدارة الأعضاء',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: colorScheme.onSurface,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
+                  SizedBox(width: 20.sp),
                 ],
               ),
-            ),
-
-            Divider(
-              height: 1,
-              color: colorScheme.onSurface.withValues(alpha: 0.1),
             ),
 
             Flexible(
@@ -305,44 +288,20 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 4.h),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Divider(
-                                    color: colorScheme.onSurface.withValues(alpha: 0.05),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 12.w),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.person_add_alt_1_rounded,
-                                          size: 14.sp,
-                                          color: AppColors.primaryColor),
-                                      SizedBox(width: 4.w),
-                                      Text(
-                                        'إضافة عضو',
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.primaryColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Divider(
-                                    color: widget.isDark
-                                        ? Colors.white12
-                                        : Colors.black12,
-                                  ),
-                                ),
-                              ],
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Divider(
+                                color: colorScheme.outline.withValues(alpha: 0.15)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                            child: Text(
+                              'إضافة عضو',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.6),
+                              ),
                             ),
                           ),
                           AddMemberTab(
@@ -381,20 +340,8 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
             ),
 
             if (showAddButton)
-              Container(
+              Padding(
                 padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(20.r)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
                 child: ElevatedButton(
                   onPressed: _isAddingMember ? null : _addSelectedUser,
                   style: ElevatedButton.styleFrom(
@@ -410,17 +357,9 @@ class _AddMemberDialogState extends State<AddMemberDialog> {
                           height: 20.w,
                           child: const CircularProgressIndicator(
                               strokeWidth: 2.5, color: Colors.white))
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.person_add_alt_1_rounded, size: 20.sp),
-                            SizedBox(width: 8.w),
-                            Text('تأكيد إضافة العضو',
-                                style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
+                      : Text('تأكيد إضافة العضو',
+                          style: TextStyle(
+                              fontSize: 14.sp, fontWeight: FontWeight.bold)),
                 ),
               ),
           ],

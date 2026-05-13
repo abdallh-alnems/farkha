@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/class/status_request.dart';
-import '../../core/constant/storage_keys.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
 import 'cycle_controller.dart';
@@ -309,9 +308,6 @@ class CycleExpensesController extends GetxController
         if (cycleCtrl.currentCycle['total_expenses'] != totalStr) {
           cycleCtrl.currentCycle['total_expenses'] = totalStr;
         }
-
-        myServices.getStorage
-            .write(StorageKeys.cycles, cycleCtrl.cycles.toList());
 
         cycleCtrl.cycles.refresh();
       }

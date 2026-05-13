@@ -168,7 +168,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> with SingleTickerPr
     try {
       final utc = DateTime.parse(raw.toString()).toUtc();
       final cairo = utc.add(const Duration(hours: 2));
-      return DateFormat('yyyy/MM/dd – hh:mm a', 'ar').format(cairo) + ' (توقيت مصر)';
+      return '${DateFormat('yyyy/MM/dd – hh:mm a', 'ar').format(cairo)} (توقيت مصر)';
     } catch (_) {
       return raw.toString();
     }

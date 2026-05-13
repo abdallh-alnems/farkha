@@ -24,7 +24,7 @@ class ChickenDensityController extends GetxController {
 
   void calculateAreas() {
     if (chickenCountTextController.text.isEmpty ||
-        int.tryParse(chickenCountTextController.text) == null) {
+        tryParseInt(chickenCountTextController.text) == null) {
       shouldDisplayResults.value = false;
       return;
     }
@@ -35,7 +35,7 @@ class ChickenDensityController extends GetxController {
     }
 
     shouldDisplayResults.value = true;
-    final chickenCount = int.tryParse(chickenCountTextController.text) ?? 0;
+    final chickenCount = tryParseInt(chickenCountTextController.text) ?? 0;
     final recommendedDensity = _getRecommendedDensity(
       selectedAgeCategory.value!,
     );

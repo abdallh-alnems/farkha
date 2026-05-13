@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/functions/number_format.dart';
+
 class TotalFeedConsumptionController extends GetxController {
   final TextEditingController textController = TextEditingController();
 
@@ -11,7 +13,7 @@ class TotalFeedConsumptionController extends GetxController {
   final RxInt chickenCount = 0.obs;
 
   bool calculateTotalFeedConsumption() {
-    final count = int.tryParse(textController.text.trim());
+    final count = tryParseInt(textController.text.trim());
     if (count == null || count <= 0) return false;
 
     chickenCount.value = count;

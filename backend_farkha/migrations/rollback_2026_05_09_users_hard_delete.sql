@@ -12,6 +12,4 @@ ALTER TABLE `users`
 ALTER TABLE `users`
   ADD INDEX `idx_users_deleted_at` (`deleted_at`);
 
-DROP TABLE IF EXISTS `account_deletions`;
-
 COMMIT;

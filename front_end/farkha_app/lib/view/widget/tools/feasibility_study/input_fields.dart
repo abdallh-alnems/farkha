@@ -6,7 +6,6 @@ import '../../../../core/constant/theme/theme.dart';
 import '../../../../logic/controller/tools_controller/feasibility_study_controller.dart';
 import '../../../../core/shared/input_fields/input_field.dart';
 import '../../../../core/shared/input_fields/three_input_fields.dart';
-import '../../tutorial/feasibility_tutorial.dart';
 
 class ModeToggleCard extends StatelessWidget {
   final FeasibilityController controller;
@@ -45,11 +44,10 @@ class ModeToggleCard extends StatelessWidget {
                 ),
               ],
       ),
-      child: Row(
+      child: Obx(() => Row(
         children: [
           Expanded(
             child: TogglePill(
-              containerKey: FeasibilityTutorial.toggleModeKey,
               isDark: isDark,
               colorScheme: colorScheme,
               optionLeft: 'عادي',
@@ -62,7 +60,6 @@ class ModeToggleCard extends StatelessWidget {
           SizedBox(width: 12.w),
           Expanded(
             child: TogglePill(
-              containerKey: FeasibilityTutorial.defaultValuesKey,
               isDark: isDark,
               colorScheme: colorScheme,
               optionLeft: 'عدد الفراخ',
@@ -74,13 +71,12 @@ class ModeToggleCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      )),
     );
   }
 }
 
 class TogglePill extends StatelessWidget {
-  final Key? containerKey;
   final bool isDark;
   final ColorScheme colorScheme;
   final String optionLeft;
@@ -90,7 +86,6 @@ class TogglePill extends StatelessWidget {
 
   const TogglePill({
     super.key,
-    this.containerKey,
     required this.isDark,
     required this.colorScheme,
     required this.optionLeft,
@@ -102,7 +97,6 @@ class TogglePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: containerKey,
       padding:
           EdgeInsets.symmetric(vertical: 3.h, horizontal: 3.w),
       decoration: BoxDecoration(
@@ -188,25 +182,12 @@ class PricesInputFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: InputField(
-                label: 'اللحم الأبيض',
-                controller: controller.chickenSalePriceController,
-                suffixText: 'ج',
-              ),
-            ),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: InputField(
-                label: 'كتكوت الأبيض',
-                controller: controller.chickPriceController,
-                suffixText: 'ج',
-              ),
-            ),
-          ],
+        InputField(
+          label: 'كتكوت الأبيض',
+          controller: controller.chickPriceController,
+          suffixText: 'ج',
         ),
+        SizedBox(height: 10.h),
         SizedBox(height: 10.h),
         Obx(
           () => controller.isProfessionalMode.value
@@ -250,7 +231,6 @@ class StockButton extends StatelessWidget {
       return Material(
         color: Colors.transparent,
         child: InkWell(
-          key: FeasibilityTutorial.stockButtonKey,
           onTap: isLoading
               ? null
               : () => controller.fetchFeasibilityData(),
@@ -314,7 +294,6 @@ class DefaultValuesButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        key: FeasibilityTutorial.defaultValuesButtonKey,
         onTap: onTap,
         borderRadius:
             BorderRadius.circular(AppDimens.radiusSm),
@@ -385,7 +364,7 @@ class ParamsInputFields extends StatelessWidget {
             SizedBox(width: 10.w),
             Expanded(
               child: InputField(
-                label: 'وزن الفرخ الواحد',
+                label: 'وزن الفرخ المتوقع',
                 controller:
                     controller.defaultWeightController,
                 suffixText: 'كجم',

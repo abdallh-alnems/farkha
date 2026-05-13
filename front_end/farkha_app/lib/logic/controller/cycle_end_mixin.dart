@@ -92,7 +92,7 @@ mixin CycleEndMixin on CycleControllerBase {
               unawaited(closeCycleAndProceed());
             },
             child: const Text(
-              'إغلاق بدون مبيعات',
+              'إغلاق',
               style: TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ),

@@ -47,11 +47,12 @@ try {
 
     $roleLabel = $newRole === 'admin' ? 'مشرف' : 'متابع';
 
-    NotificationService::sendToUser($con, $targetUserId, 'تنبيه', "تم تغيير دورك في دورة $cycleName إلى \"$roleLabel\" بواسطة $ownerName", [
-        'type' => 'role_changed',
-        'cycle_id' => (string) $cycleId,
-        'new_role' => $newRole,
-    ]);
+    $locale = I18n::userLocale($con, $targetUserId);
+    NotificationService::sendToUser($con, $targetUserId,
+        I18n::get('notif.role_changed.title', [], $locale),
+        I18n::get('notif.role_changed.body', ['cycle' => $cycleName, 'role' => $roleLabel, 'by' => $ownerName], $locale),
+        ['type' => 'role_changed', 'cycle_id' => (string) $cycleId, 'new_role' => $newRole]
+    );
 
     Response::success([
         'message' => 'تم تغيير صلاحية العضو بنجاح',

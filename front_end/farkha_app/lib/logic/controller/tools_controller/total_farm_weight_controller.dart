@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../../../core/functions/number_format.dart';
+
 class TotalFarmWeightController extends GetxController {
   final RxString birdsCount = ''.obs;
   final RxString birdWeight = ''.obs;
@@ -7,8 +9,8 @@ class TotalFarmWeightController extends GetxController {
 
 
   void calculate() {
-    final int? birds = int.tryParse(birdsCount.value);
-    final double? weight = double.tryParse(birdWeight.value);
+    final int? birds = tryParseInt(birdsCount.value);
+    final double? weight = tryParseNum(birdWeight.value);
     if (birds != null && weight != null) {
       totalWeight.value = birds * weight;
     } else {

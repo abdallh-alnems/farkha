@@ -84,7 +84,8 @@ class _MembersTabState extends State<MembersTab> {
       return Center(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 40.h),
-          child: const CircularProgressIndicator(color: AppColors.primaryColor),
+          child: const CircularProgressIndicator(
+              color: AppColors.primaryColor, strokeWidth: 2),
         ),
       );
     }
@@ -98,37 +99,26 @@ class _MembersTabState extends State<MembersTab> {
       final cycle = _findCycle(cycleCtrl);
       final List<dynamic> members =
           (cycle?['members'] as List?) ?? [];
-      final bool isOwner = cycle?['is_owner'] == true;
 
       final header = Padding(
         padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
         child: Row(
           children: [
-            Icon(Icons.people_rounded,
-                size: 16.sp, color: AppColors.primaryColor),
-            SizedBox(width: 6.w),
             Text(
-              'الأعضاء الحاليون',
+              'الأعضاء',
               style: TextStyle(
-                fontSize: 13.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface.withValues(alpha: 0.7),
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
             SizedBox(width: 6.w),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Text(
-                '${members.length}',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
-                ),
+            Text(
+              '${members.length}',
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface.withValues(alpha: 0.35),
               ),
             ),
           ],
@@ -146,13 +136,13 @@ class _MembersTabState extends State<MembersTab> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.group_off_rounded,
-                      size: 40.sp,
-                      color: colorScheme.onSurface.withValues(alpha: 0.2)),
+                      size: 36.sp,
+                      color: colorScheme.onSurface.withValues(alpha: 0.15)),
                   SizedBox(height: 8.h),
                   Text(
                     'لا يوجد أعضاء في الدورة',
                     style: TextStyle(
-                      color: colorScheme.onSurface.withValues(alpha: 0.4),
+                      color: colorScheme.onSurface.withValues(alpha: 0.35),
                       fontSize: 13.sp,
                     ),
                   ),
@@ -181,7 +171,7 @@ class _MembersTabState extends State<MembersTab> {
             member: member,
             isDark: widget.isDark,
             cycleCtrl: cycleCtrl,
-            isOwner: isOwner,
+            isOwner: cycle?['is_owner'] == true,
             isCurrentUser: isCurrentUser,
           );
         },

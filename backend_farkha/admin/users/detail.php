@@ -20,7 +20,7 @@ class UserDetailApi extends AdminBaseApi {
             }
 
             $devices = Database::fetchAll(
-                "SELECT id, fcm_token, platform, device_id, last_active, created_at FROM user_devices WHERE user_id = ? ORDER BY last_active DESC",
+                "SELECT id, platform, device_id, last_active, created_at FROM user_devices WHERE user_id = ? ORDER BY last_active DESC",
                 [$userId]
             );
 

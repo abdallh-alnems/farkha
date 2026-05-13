@@ -54,11 +54,6 @@ class StorageKeys {
   static const String permissionsIntroNotificationShown = 'permissions_intro_notification_shown';
   static const String permissionsIntroThemeShown = 'permissions_intro_theme_shown';
 
-  // ── Tutorials ──
-  static const String homeTutorialSeen = 'home_tutorial_seen';
-  static const String feasibilityTutorialSeen = 'feasibility_tutorial_seen';
-  static const String customizePricesTutorialSeen = 'customize_prices_tutorial_seen';
-
   // ── Usage Tips ──
   static const String feasibilityStudyDialog = 'feasibilityStudyDialog';
   static const String chickenDensityDialog = 'chickenDensityDialog';
@@ -80,6 +75,9 @@ class StorageKeys {
 
   // ── Update ──
   static const String skippedUpdateVersion = 'skipped_update_version';
+
+  // ── Deep Link ──
+  static const String pendingJoinCode = 'pending_join_code';
 
   // ── Maintenance ──
   static const String pendingMaintenance = 'pending_maintenance';

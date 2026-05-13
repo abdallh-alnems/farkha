@@ -43,9 +43,6 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (!Get.isRegistered<LoginController>()) {
-      Get.put(LoginController(), permanent: true);
-    }
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;

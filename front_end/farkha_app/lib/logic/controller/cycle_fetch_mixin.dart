@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -29,7 +28,7 @@ mixin CycleFetchMixin on CycleControllerBase {
 
       (await response).fold(
         (failure) {
-          debugPrint('CycleFetchMixin: fetchCyclesFromServer failed: $failure');
+          // fetch failed silently
         },
         (result) {
           final data = result['data'];
@@ -245,7 +244,7 @@ mixin CycleFetchMixin on CycleControllerBase {
         },
       );
     } catch (e) {
-      debugPrint('CycleFetchMixin: fetchCyclesFromServer exception: $e');
+      // fetch exception silently ignored
     } finally {
       checkAndAutoEndCycles();
     }

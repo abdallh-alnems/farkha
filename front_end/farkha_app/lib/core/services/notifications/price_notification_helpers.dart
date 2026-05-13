@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -81,16 +80,11 @@ mixin PriceNotificationHelpers {
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () {
-              if (kDebugMode) {
-                debugPrint('Timeout subscribing to topic: $topic');
-              }
               throw TimeoutException('Subscription timeout for topic: $topic');
             },
           );
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error subscribing to topic $topic: $e');
-      }
+      // subscription error silently ignored
     }
   }
 
@@ -101,18 +95,13 @@ mixin PriceNotificationHelpers {
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () {
-              if (kDebugMode) {
-                debugPrint('Timeout unsubscribing from topic: $topic');
-              }
               throw TimeoutException(
                 'Unsubscription timeout for topic: $topic',
               );
             },
           );
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error unsubscribing from topic $topic: $e');
-      }
+      // unsubscription error silently ignored
     }
   }
 
@@ -136,11 +125,7 @@ mixin PriceNotificationHelpers {
     if (savedNotifications == null || savedNotifications.isEmpty) {
       // الاشتراك في لحم أبيض افتراضياً بدون انتظار
       unawaited(
-        subscribeToTopic('lhm_abyad').catchError((Object error) {
-          if (kDebugMode) {
-            debugPrint('Error subscribing to lhm_abyad: $error');
-          }
-        }),
+        subscribeToTopic('lhm_abyad').catchError((_) {})
       );
       // حفظ الإعداد الافتراضي
       unawaited(storage.write(notificationTypesKey, ['lhm_abyad']));
@@ -148,11 +133,7 @@ mixin PriceNotificationHelpers {
       // الاشتراك في جميع الـ topics المحفوظة بدون انتظار
       for (var topic in savedNotifications) {
         unawaited(
-          subscribeToTopic(topic.toString()).catchError((Object error) {
-            if (kDebugMode) {
-              debugPrint('Error subscribing to $topic: $error');
-            }
-          }),
+          subscribeToTopic(topic.toString()).catchError((_) {}),
         );
       }
     }

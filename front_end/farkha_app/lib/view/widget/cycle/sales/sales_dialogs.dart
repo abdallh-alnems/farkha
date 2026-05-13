@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../../core/class/status_request.dart';
 import '../../../../core/constant/strings/app_strings.dart';
 import '../../../../core/constant/theme/theme.dart';
+import '../../../../core/functions/number_format.dart';
 import '../../../../core/shared/buttons/app_button.dart';
 import '../../../../core/shared/input_fields/input_field.dart';
 import '../../../../logic/controller/cycle_sales_controller.dart';
@@ -100,15 +101,15 @@ void showAddSaleDialog(
                         onPressed: isLoading
                             ? null
                             : () {
-                                final count = int.tryParse(
+                                final count = tryParseInt(
                                         birdsCountController
                                             .text) ??
                                     0;
                                 final weight =
-                                    double.tryParse(
+                                    tryParseNum(
                                             weightController.text) ??
                                         0.0;
-                                final price = double.tryParse(
+                                final price = tryParseNum(
                                         priceController.text) ??
                                     0.0;
                                 if (count > 0 &&

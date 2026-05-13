@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/functions/number_format.dart';
+
 class AdgController extends GetxController {
   static const double initialWeight = 45; // جرام
 
@@ -11,8 +13,8 @@ class AdgController extends GetxController {
   RxDouble adg = 0.0.obs;
 
   void calculateADG() {
-    final days = double.tryParse(daysController.text) ?? 0;
-    final kg = double.tryParse(currentWeightKgController.text) ?? 0;
+    final days = tryParseNum(daysController.text) ?? 0;
+    final kg = tryParseNum(currentWeightKgController.text) ?? 0;
     final currentWeightG = kg * 1000;
 
     if (days > 0 && currentWeightG > initialWeight) {

@@ -102,17 +102,17 @@ class _FeedCostPerKiloScreenState extends State<FeedCostPerKiloScreen>
           thirdSuffix: 'جنيه',
           onFirstChanged: (value) {
             controller.totalFeedConsumed.value =
-                double.tryParse(value) ?? 0.0;
+                tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onSecondChanged: (value) {
             controller.totalWeightSold.value =
-                double.tryParse(value) ?? 0.0;
+                tryParseNum(value) ?? 0.0;
             _resetResult();
           },
           onThirdChanged: (value) {
             controller.feedPricePerTon.value =
-                double.tryParse(value) ?? 0.0;
+                tryParseNum(value) ?? 0.0;
             _resetResult();
           },
         ),

@@ -3,15 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../core/class/handling_data.dart';
-import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/theme.dart';
-import '../../../core/services/initialization.dart';
-import '../../../core/services/test_mode_manager.dart';
 import '../../../logic/controller/price_controller/prices_card/customize_prices_controller.dart';
 import '../../widget/ad/banner.dart';
 import '../../widget/ad/native.dart';
 import '../../widget/appbar/custom_appbar.dart';
-import '../../widget/tutorial/customize_prices_tutorial.dart';
 
 class CustomizePricesScreen extends StatefulWidget {
   const CustomizePricesScreen({super.key});
@@ -22,8 +18,6 @@ class CustomizePricesScreen extends StatefulWidget {
 
 class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
   late CustomizePricesController controller;
-  bool _isTutorialActive = false;
-  MyServices myServices = Get.find();
 
   @override
   void initState() {
@@ -32,100 +26,48 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
       Get.put(CustomizePricesController());
     }
     controller = Get.find<CustomizePricesController>();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showTutorialIfNeeded();
-    });
-  }
-
-  void _showTutorialIfNeeded() {
-    final hasSeenTutorial =
-        myServices.getStorage.read<bool>(StorageKeys.customizePricesTutorialSeen) ??
-        false;
-    final shouldShowTutorial =
-        !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
-
-    if (shouldShowTutorial) {
-      setState(() {
-        _isTutorialActive = true;
-      });
-
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        if (mounted) {
-          CustomizePricesTutorial.showTutorial(
-            context,
-            onTutorialComplete: () {
-              if (mounted) {
-                setState(() {
-                  _isTutorialActive = false;
-                });
-              }
-            },
-          );
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    if (_isTutorialActive) {
-      CustomizePricesTutorial.cancelTutorial();
-    }
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
-        if (_isTutorialActive) {
-          CustomizePricesTutorial.cancelTutorial();
-          setState(() {
-            _isTutorialActive = false;
-          });
-        }
-      },
-      child: Scaffold(
-        appBar: const CustomAppBar(text: 'تخصيص الأسعار'),
-        body: Obx(
-          () => HandlingDataView(
-            statusRequest: controller.statusRequest.value,
-            widget: CustomScrollView(
-              slivers: [
-                if (!_isTutorialActive)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSpacing.screenH,
-                        vertical: AppSpacing.sm,
-                      ),
-                      child: const AdNativeWidget(),
-                    ),
-                  ),
-                SliverPadding(
+    return Scaffold(
+      appBar: const CustomAppBar(text: 'تخصيص الأسعار'),
+      body: Obx(
+        () => HandlingDataView(
+          statusRequest: controller.statusRequest.value,
+          widget: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: AppSpacing.screenH,
-                  ).copyWith(
-                    top: AppSpacing.sm,
-                    bottom: AppSpacing.xxl,
+                    vertical: AppSpacing.sm,
                   ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final String category = controller.categorizedTypes.keys
-                          .elementAt(index);
-                      final List<Map<String, dynamic>> types =
-                          controller.categorizedTypes[category]!;
-                      return _buildCategorySection(category, types);
-                    }, childCount: controller.categorizedTypes.length),
-                  ),
+                  child: const AdNativeWidget(),
                 ),
-              ],
-            ),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.screenH,
+                ).copyWith(
+                  top: AppSpacing.sm,
+                  bottom: AppSpacing.xxl,
+                ),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final String category = controller.categorizedTypes.keys
+                        .elementAt(index);
+                    final List<Map<String, dynamic>> types =
+                        controller.categorizedTypes[category]!;
+                    return _buildCategorySection(category, types);
+                  }, childCount: controller.categorizedTypes.length),
+                ),
+              ),
+            ],
           ),
         ),
-        bottomNavigationBar: _isTutorialActive ? null : const AdBannerWidget(),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 
@@ -227,10 +169,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
                     },
               child: Text(
                 (item['name'] ?? '').toString(),
-                key:
-                    item['id'] == 2
-                        ? CustomizePricesTutorial.typeNameKey
-                        : null,
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight:
@@ -253,10 +191,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
             isLocked: isLocked,
             item: item,
             onTap: isLocked ? null : () => controller.toggleNotification(item),
-            tutorialKey:
-                item['id'] == 2
-                    ? CustomizePricesTutorial.notificationIconKey
-                    : null,
           ),
 
           SizedBox(width: 4.w),
@@ -265,10 +199,6 @@ class _CustomizePricesScreenState extends State<CustomizePricesScreen> {
             isSelected: isSelected,
             isLocked: isLocked,
             onTap: isLocked ? null : () => controller.toggleItemSelection(item),
-            tutorialKey:
-                item['id'] == 2
-                    ? CustomizePricesTutorial.selectionIndicatorKey
-                    : null,
           ),
         ],
       ),
@@ -281,14 +211,12 @@ class _NotificationToggle extends StatelessWidget {
   final bool isLocked;
   final Map<String, dynamic> item;
   final VoidCallback? onTap;
-  final Key? tutorialKey;
 
   const _NotificationToggle({
     required this.isActive,
     required this.isLocked,
     required this.item,
     this.onTap,
-    this.tutorialKey,
   });
 
   @override
@@ -298,7 +226,6 @@ class _NotificationToggle extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        key: tutorialKey,
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutQuart,
         padding: EdgeInsets.all(5.r),
@@ -328,13 +255,11 @@ class _SelectionToggle extends StatelessWidget {
   final bool isSelected;
   final bool isLocked;
   final VoidCallback? onTap;
-  final Key? tutorialKey;
 
   const _SelectionToggle({
     required this.isSelected,
     required this.isLocked,
     this.onTap,
-    this.tutorialKey,
   });
 
   @override
@@ -345,7 +270,6 @@ class _SelectionToggle extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        key: tutorialKey,
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutQuart,
         width: 22.w,

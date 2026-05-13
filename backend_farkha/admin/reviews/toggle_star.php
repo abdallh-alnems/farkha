@@ -11,21 +11,36 @@ class ToggleReviewStarApi extends AdminBaseApi {
             $type = $this->getField('type');
             $id = (int) $this->getField('id');
 
+            if ($id < 1) {
+                $this->error('معرّف التقييم غير صالح', 400);
+            }
+
             if (!in_array($type, ['app', 'cycle'], true)) {
                 $this->error('type يجب أن يكون app أو cycle');
             }
 
             $table = $type === 'app' ? 'app_reviews' : 'cycle_feedbacks';
 
-            $row = Database::fetchOne("SELECT is_starred FROM {$table} WHERE id = ?", [$id]);
-            if (!$row) {
-                $this->error('التقييم غير موجود', 404);
+            $con = Database::getInstance();
+            $con->beginTransaction();
+
+            try {
+                $row = Database::fetchOne("SELECT id, is_starred FROM {$table} WHERE id = ? FOR UPDATE", [$id]);
+                if (!$row) {
+                    $con->rollBack();
+                    $this->error('التقييم غير موجود', 404);
+                }
+
+                $newStarred = $row['is_starred'] ? 0 : 1;
+                Database::query("UPDATE {$table} SET is_starred = ? WHERE id = ?", [$newStarred, $id]);
+
+                $con->commit();
+
+                $this->success(['is_starred' => $newStarred]);
+            } catch (Exception $e) {
+                if ($con->inTransaction()) $con->rollBack();
+                throw $e;
             }
-
-            $newVal = $row['is_starred'] ? 0 : 1;
-            Database::query("UPDATE {$table} SET is_starred = ? WHERE id = ?", [$newVal, $id]);
-
-            $this->success(['is_starred' => $newVal]);
         }, 'toggle_review_star');
     }
 }

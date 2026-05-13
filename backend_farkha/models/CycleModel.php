@@ -106,7 +106,7 @@ final class CycleModel {
         $con->prepare("DELETE FROM cycle_inventory WHERE cycle_id = ?")->execute([$cycleId]);
         $con->prepare("DELETE FROM cycle_sales WHERE cycle_id = ?")->execute([$cycleId]);
         $con->prepare("DELETE FROM cycle_users WHERE cycle_id = ?")->execute([$cycleId]);
-        $con->prepare("UPDATE cycles SET deleted_at = NOW() WHERE id = ?")->execute([$cycleId]);
+        $con->prepare("DELETE FROM cycles WHERE id = ?")->execute([$cycleId]);
     }
 
     public static function update(PDO $con, int $cycleId, array $data): void {

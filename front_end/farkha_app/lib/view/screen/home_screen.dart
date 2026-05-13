@@ -9,7 +9,6 @@ import '../../core/package/alert_exit_app.dart';
 import '../../core/services/initialization.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/services/permission.dart';
-import '../../core/services/test_mode_manager.dart';
 import '../../logic/controller/review_prompt_controller.dart';
 import '../widget/ad/banner.dart';
 import '../widget/ad/native.dart';
@@ -19,7 +18,6 @@ import '../widget/drawer/drawer.dart';
 import '../widget/home/price_card.dart';
 import '../widget/home/tools_section.dart';
 import '../widget/home/invitation_card.dart';
-import '../widget/tutorial/home_tutorial.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,7 +27,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeScreen> with WidgetsBindingObserver {
-  bool _isTutorialActive = false;
   MyServices myServices = Get.find();
 
   @override
@@ -61,7 +58,6 @@ class _HomeState extends State<HomeScreen> with WidgetsBindingObserver {
       if (!mounted) return;
       await permissionController.showPermissionsIntroIfNeeded(context);
       if (!mounted) return;
-      _showTutorialIfNeeded();
       _maybeShowReviewPrompt();
     });
   }
@@ -94,37 +90,10 @@ class _HomeState extends State<HomeScreen> with WidgetsBindingObserver {
     NotificationService.consumePendingForceLogout();
   }
 
-  void _showTutorialIfNeeded() {
-    final hasSeenTutorial =
-        myServices.getStorage.read<bool>(StorageKeys.homeTutorialSeen) ?? false;
-
-    final shouldShowTutorial =
-        !hasSeenTutorial || TestModeManager.shouldShowTutorialEveryTime;
-
-    if (shouldShowTutorial) {
-      setState(() {
-        _isTutorialActive = true;
-      });
-
-      if (mounted) {
-        HomeTutorial.showTutorial(
-          context,
-          onTutorialComplete: () {
-            if (mounted) {
-              setState(() {
-                _isTutorialActive = false;
-              });
-            }
-          },
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarHome(drawerKey: HomeTutorial.drawerKey),
+      appBar: const AppBarHome(),
       drawer: const HomeDrawer(),
       body: SingleChildScrollView(
         child: Column(
@@ -132,33 +101,22 @@ class _HomeState extends State<HomeScreen> with WidgetsBindingObserver {
           children: [
             const TapToExit(child: SizedBox.shrink()),
 
-            PriceCard(
-              priceCardKey: HomeTutorial.priceCardKey,
-              allPricesButtonKey: HomeTutorial.allPricesButtonKey,
-              settingsIconKey: HomeTutorial.settingsIconKey,
-            ),
+            const PriceCard(),
             SizedBox(height: 8.h),
             const InvitationCard(),
             const CardCycle(),
             SizedBox(height: 14.h),
-            if (!_isTutorialActive) ...[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 17.w),
-                child: const AdNativeWidget(),
-              ),
-              SizedBox(height: 7.h),
-            ],
-            ToolsSection(
-              toolsSectionKey: HomeTutorial.toolsSectionKey,
-              toolsTitleKey: HomeTutorial.toolsTitleKey,
-              viewAllKey: HomeTutorial.viewAllKey,
-              toolsScrollViewKey: HomeTutorial.toolsScrollViewKey,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 17.w),
+              child: const AdNativeWidget(),
             ),
+            SizedBox(height: 7.h),
+            const ToolsSection(),
             SizedBox(height: 60.h),
           ],
         ),
       ),
-      bottomNavigationBar: _isTutorialActive ? null : const AdBannerWidget(),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 }

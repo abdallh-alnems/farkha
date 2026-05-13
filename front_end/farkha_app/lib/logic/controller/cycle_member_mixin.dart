@@ -5,7 +5,9 @@ import 'package:get/get.dart';
 
 import '../../core/class/status_request.dart';
 import '../../core/constant/routes/route.dart';
+import '../../core/constant/storage_keys.dart';
 import '../../core/constant/strings/app_strings.dart';
+import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_member_data.dart';
 import 'cycle_controller_base.dart';
 import 'cycle_member_helpers.dart';
@@ -227,7 +229,12 @@ mixin CycleMemberMixin on CycleControllerBase {
     try {
       final token = await requireAuthToken(auth);
       if (token == null) {
-        Get.snackbar(AppStrings.error, 'يجب تسجيل الدخول أولاً');
+        final myServices = Get.find<MyServices>();
+        await myServices.getStorage.write(StorageKeys.pendingJoinCode, code);
+        Get.snackbar('تنبيه', 'يجب تسجيل الدخول أولاً للانضمام للدورة',
+            snackPosition: SnackPosition.BOTTOM);
+        await Future<void>.delayed(const Duration(seconds: 1));
+        await Get.toNamed<void>(AppRoute.login);
         return;
       }
 

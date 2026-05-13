@@ -240,8 +240,9 @@ class _DrawerAccountSettingsState extends State<DrawerAccountSettings> {
     );
 
     if (confirmed == true) {
-      // LoginController is registered in AppBindings
-      final loginController = Get.find<LoginController>();
+      final loginController = Get.isRegistered<LoginController>()
+          ? Get.find<LoginController>()
+          : Get.put(LoginController(), permanent: true);
       await loginController.signOut();
       if (mounted) {
         setState(() {});

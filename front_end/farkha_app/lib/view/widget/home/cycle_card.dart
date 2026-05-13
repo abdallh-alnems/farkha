@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 import '../../../core/constant/routes/route.dart';
 import '../../../core/constant/storage_keys.dart';
 import '../../../core/constant/theme/theme.dart';
-import '../../../core/services/initialization.dart';
-import '../../../logic/controller/auth/login_controller.dart';
 import '../../../logic/controller/cycle_controller.dart';
 import 'cycle_card_actions.dart';
 import 'cycle_card_info.dart';
@@ -77,36 +75,9 @@ class _CardCycleState extends State<CardCycle> {
     final cycleCtrl = Get.isRegistered<CycleController>()
         ? Get.find<CycleController>()
         : Get.put(CycleController());
-    final loginCtrl = Get.isRegistered<LoginController>()
-        ? Get.find<LoginController>()
-        : Get.put(LoginController(), permanent: true);
 
     return Obx(() {
-      if (Get.isRegistered<MyServices>()) {
-        final myServices = Get.find<MyServices>();
-        final storedValue =
-            myServices.getStorage.read<bool>(StorageKeys.isLoggedIn) ?? false;
-        if (loginCtrl.isLoggedIn.value != storedValue) {
-          loginCtrl.isLoggedIn.value = storedValue;
-        }
-      }
-
       final allCycles = cycleCtrl.cycles;
-      final isLoggedIn = loginCtrl.isLoggedIn.value;
-
-      if (!isLoggedIn) {
-        final hasEverLoggedIn =
-            Get.isRegistered<MyServices>()
-                ? Get.find<MyServices>()
-                        .getStorage
-                        .read<bool>(StorageKeys.hasEverLoggedIn) ??
-                    false
-                : false;
-        if (hasEverLoggedIn) {
-          return CycleCardLockedState(colorScheme: colorScheme);
-        }
-        return CycleCardEmptyState(colorScheme: colorScheme);
-      }
 
       final cycles = allCycles.where((cycle) {
         final status = cycle['status']?.toString();

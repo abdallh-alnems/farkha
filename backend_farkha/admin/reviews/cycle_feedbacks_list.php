@@ -27,10 +27,18 @@ class CycleFeedbacksListApi extends AdminBaseApi {
                 $params[] = $platform;
             }
             if ($dateFrom !== null) {
+                $d = DateTime::createFromFormat('Y-m-d', $dateFrom);
+                if (!$d || $d->format('Y-m-d') !== $dateFrom) {
+                    $this->error('صيغة date_from غير صالحة (متوقع Y-m-d)', 400);
+                }
                 $where .= " AND cf.created_at >= ?";
                 $params[] = $dateFrom . ' 00:00:00';
             }
             if ($dateTo !== null) {
+                $d = DateTime::createFromFormat('Y-m-d', $dateTo);
+                if (!$d || $d->format('Y-m-d') !== $dateTo) {
+                    $this->error('صيغة date_to غير صالحة (متوقع Y-m-d)', 400);
+                }
                 $where .= " AND cf.created_at <= ?";
                 $params[] = $dateTo . ' 23:59:59';
             }
@@ -43,7 +51,7 @@ class CycleFeedbacksListApi extends AdminBaseApi {
                 $params
             );
 
-            $avg = (float) (Database::fetchOne("SELECT AVG(rating) a FROM cycle_feedbacks")['a'] ?? 0);
+            $avg = (float) (Database::fetchOne("SELECT AVG(rating) a FROM cycle_feedbacks cf WHERE {$where}", $params)['a'] ?? 0);
 
             $this->success([
                 'items' => $items,

@@ -7,9 +7,7 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/package/rating_app.dart';
 import '../../../core/services/dark_light_service.dart';
-import '../../../core/services/open_privacy_policy.dart';
 
 class DrawerAboutApp extends StatefulWidget {
   final bool isExpanded;
@@ -63,11 +61,6 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
     }
   }
 
-  Future<void> _handlePrivacyPolicy() async {
-    Navigator.pop(context);
-    unawaited(openPrivacyPolicy());
-  }
-
   Future<void> _handleShareApp() async {
     Navigator.pop(context);
     final String storeLink = defaultTargetPlatform == TargetPlatform.iOS
@@ -80,12 +73,6 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
         ),
       ),
     );
-  }
-
-  Future<void> _handleRateApp() async {
-    Navigator.pop(context);
-    final rateController = Get.find<RateMyAppController>();
-    rateController.launchStore();
   }
 
   Future<void> _handleThemeToggle() async {
@@ -192,20 +179,8 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
               contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
             ),
             ListTile(
-              onTap: _handleRateApp,
-              title: Text('تقييم التطبيق', style: TextStyle(fontSize: 15.sp)),
-              shape: const Border(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-            ),
-            ListTile(
               onTap: _handleShareApp,
               title: Text('مشاركة التطبيق', style: TextStyle(fontSize: 15.sp)),
-              shape: const Border(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
-            ),
-            ListTile(
-              onTap: _handlePrivacyPolicy,
-              title: Text('سياسة الخصوصية', style: TextStyle(fontSize: 15.sp)),
               shape: const Border(),
               contentPadding: EdgeInsets.symmetric(horizontal: 13.w),
             ),

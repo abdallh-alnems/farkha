@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/functions/number_format.dart';
+import '../../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
 import '../../../../data/model/cycle/mortality_entry.dart';
 import '../../../../logic/controller/cycle_controller.dart';
 import 'mortality_dialogs.dart';
@@ -272,6 +274,7 @@ class _MortalityCardState extends State<MortalityCard> {
                       child: TextField(
                         controller: _controller,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [ArabicToEnglishDigitsFormatter()],
                         decoration: InputDecoration(
                           hintText: 'أدخل العدد',
                           hintStyle: TextStyle(
@@ -331,7 +334,7 @@ class _MortalityCardState extends State<MortalityCard> {
                       child: InkWell(
                         onTap: () {
                           final value = _controller.text;
-                          final count = int.tryParse(value) ?? 0;
+                          final count = tryParseInt(value) ?? 0;
                           if (count > 0) {
                             _save();
                           } else {
@@ -383,7 +386,7 @@ class _MortalityCardState extends State<MortalityCard> {
   Future<void> _save() async {
     final value = _controller.text.trim();
     if (value.isEmpty) return;
-    final count = int.tryParse(value) ?? 0;
+    final count = tryParseInt(value) ?? 0;
     if (count <= 0) return;
     await cycleCtrl.addMortalityEntry(count);
     _controller.clear();

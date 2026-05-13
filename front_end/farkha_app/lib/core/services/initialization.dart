@@ -38,13 +38,13 @@ class MyServices extends GetxService {
     final pendingForceLogout =
         getStorage.read<bool>(kPendingForceLogoutKey) ?? false;
     if (pendingForceLogout) {
-      getStorage.write(StorageKeys.isLoggedIn, false);
-      getStorage.remove(StorageKeys.userName);
-      getStorage.remove(StorageKeys.userPhone);
-      getStorage.remove(StorageKeys.cycles);
-      getStorage.remove(StorageKeys.deletedCycles);
-      getStorage.remove(StorageKeys.favoriteToolsOrder);
-      getStorage.remove(kPendingForceLogoutKey);
+      unawaited(getStorage.write(StorageKeys.isLoggedIn, false));
+      unawaited(getStorage.remove(StorageKeys.userName));
+      unawaited(getStorage.remove(StorageKeys.userPhone));
+      unawaited(getStorage.remove(StorageKeys.cycles));
+      unawaited(getStorage.remove(StorageKeys.deletedCycles));
+      unawaited(getStorage.remove(StorageKeys.favoriteToolsOrder));
+      unawaited(getStorage.remove(kPendingForceLogoutKey));
     }
 
     // If a maintenance_mode FCM was received while the app was backgrounded/killed,
@@ -58,7 +58,7 @@ class MyServices extends GetxService {
       );
     } catch (e) {
       // Firebase already initialized by google-services plugin, ignore
-      debugPrint('Firebase already initialized: $e');
+      // Firebase already initialized
     }
 
     // Initialize Crashlytics
@@ -113,7 +113,6 @@ class MyServices extends GetxService {
       return true;
     };
 
-    debugPrint('✅ Firebase Crashlytics initialized');
   }
 }
 

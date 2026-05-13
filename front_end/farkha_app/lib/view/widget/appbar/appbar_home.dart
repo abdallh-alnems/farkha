@@ -4,9 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constant/theme/images.dart';
 
 class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarHome({super.key, this.drawerKey});
-
-  final GlobalKey? drawerKey;
+  const AppBarHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,20 +12,19 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
     final colorScheme = theme.colorScheme;
 
     return AppBar(
-      leading: drawerKey != null
-          ? IconButton(
-              key: drawerKey,
-              icon: Container(
-                padding: EdgeInsets.all(4.r),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Icon(Icons.menu, color: colorScheme.primary, size: 20.sp),
-              ),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            )
-          : null,
+      leading: Builder(
+        builder: (innerContext) => IconButton(
+          icon: Container(
+            padding: EdgeInsets.all(4.r),
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(Icons.menu, color: colorScheme.primary, size: 20.sp),
+          ),
+          onPressed: () => Scaffold.of(innerContext).openDrawer(),
+        ),
+      ),
       title: Text(
         'فرخة',
         style: TextStyle(

@@ -8,18 +8,7 @@ import '../../../logic/controller/tools_controller/favorite_tools_controller.dar
 import '../tools/tools_card.dart';
 
 class ToolsSection extends StatelessWidget {
-  final GlobalKey? toolsSectionKey;
-  final GlobalKey? toolsTitleKey;
-  final GlobalKey? viewAllKey;
-  final GlobalKey? toolsScrollViewKey;
-
-  const ToolsSection({
-    super.key,
-    this.toolsSectionKey,
-    this.toolsTitleKey,
-    this.viewAllKey,
-    this.toolsScrollViewKey,
-  });
+  const ToolsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +36,6 @@ class ToolsSection extends StatelessWidget {
       });
 
       return Column(
-        key: toolsSectionKey,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -68,7 +56,6 @@ class ToolsSection extends StatelessWidget {
                     SizedBox(width: 8.w),
                     Text(
                       'ادوات مساعدة',
-                      key: toolsTitleKey,
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
@@ -80,7 +67,6 @@ class ToolsSection extends StatelessWidget {
                 GestureDetector(
                   onTap: () => Get.toNamed<void>(AppRoute.allTools),
                   child: Container(
-                    key: viewAllKey,
                     padding: EdgeInsetsDirectional.fromSTEB(10.w, 5.h, 10.w, 5.h),
                     decoration: BoxDecoration(
                       color: colorScheme.primary.withValues(alpha: 0.08),
@@ -112,7 +98,6 @@ class ToolsSection extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           SingleChildScrollView(
-            key: toolsScrollViewKey,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             padding: EdgeInsetsDirectional.only(start: 12.w),

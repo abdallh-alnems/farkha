@@ -30,9 +30,9 @@ class AdminsController extends GetxController {
     errorMsg.value = '';
     try {
       final res = await AdminApi.post('/admin/admins/list.php');
-      admins.value = (res['data'] as List<dynamic>)
-          .map((e) => e as Map<String, dynamic>)
-          .toList();
+      final data = res['data'];
+      final List<dynamic> list = data is List ? data : (data['items'] as List<dynamic>);
+      admins.value = list.map((e) => e as Map<String, dynamic>).toList();
     } on AdminApiException catch (e) {
       errorMsg.value = e.message;
     } catch (e) {

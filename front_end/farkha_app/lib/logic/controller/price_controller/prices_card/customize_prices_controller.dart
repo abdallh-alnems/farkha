@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/class/status_request.dart';
@@ -186,20 +185,14 @@ class CustomizePricesController extends GetxController {
           if (newNotificationState) {
             unawaited(
               NotificationService.instance.subscribeToTopic(topicName).catchError(
-                (Object error) {
-                  // Log error but don't block UI
-                  debugPrint('Error subscribing to $topicName: $error');
-                },
+                (_) {},
               ),
             );
           } else {
             unawaited(
               NotificationService.instance
                   .unsubscribeFromTopic(topicName)
-                  .catchError((Object error) {
-                    // Log error but don't block UI
-                    debugPrint('Error unsubscribing from $topicName: $error');
-                  }),
+                  .catchError((_) {})
             );
           }
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../core/functions/number_format.dart';
+import '../../../core/shared/formatters/arabic_to_english_digits_formatter.dart';
 import '../../../logic/controller/cycle_expenses_controller.dart';
 import 'expense/expense_dialogs.dart';
 import 'expense/expense_history_list.dart';
@@ -334,6 +336,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
               controller: _textController,
               focusNode: _focusNode,
               keyboardType: TextInputType.number,
+              inputFormatters: [ArabicToEnglishDigitsFormatter()],
               decoration: InputDecoration(
                 hintText: 'أدخل مبلغ جديد',
                 hintStyle: TextStyle(
@@ -378,7 +381,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
                 color: colorScheme.onSurface,
               ),
               onSubmitted: (value) {
-                final amount = double.tryParse(value) ?? 0.0;
+                final amount = tryParseNum(value) ?? 0.0;
                 if (amount > 0) {
                   controller.addPayment(widget.index, amount);
                   _textController.clear();
@@ -396,7 +399,7 @@ class _ExpenseCardState extends State<ExpenseCard> {
             child: InkWell(
               onTap: () {
                 final value = _textController.text;
-                final amount = double.tryParse(value) ?? 0.0;
+                final amount = tryParseNum(value) ?? 0.0;
                 if (amount > 0) {
                   controller.addPayment(widget.index, amount);
                   _textController.clear();

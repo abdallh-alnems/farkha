@@ -132,7 +132,7 @@ class FavoriteToolsController extends GetxController {
         );
       }
     } catch (e) {
-      debugPrint('Snackbar error (ignored): $e');
+      // snackbar error silently ignored
     }
   }
 }
