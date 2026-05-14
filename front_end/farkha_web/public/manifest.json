@@ -1,0 +1,49 @@
+{
+  "name": "فرخة",
+  "short_name": "فرخة",
+  "description": "تطبيق إدارة مزارع الدواجن",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F2EA",
+  "theme_color": "#4E7A3E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/pwa-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "أسعار اليوم",
+      "url": "/prices",
+      "icons": [{ "src": "/icons/tools/feed_cost_per_kilo.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "أدوات",
+      "url": "/tools",
+      "icons": [{ "src": "/icons/tools/feed_conversion_ratio.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "دوراتي",
+      "url": "/cycles",
+      "icons": [{ "src": "/icons/tools/chicken_density.svg", "sizes": "96x96" }]
+    }
+  ]
+}

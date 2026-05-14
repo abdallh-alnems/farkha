@@ -2,7 +2,7 @@
 
 تطبيق Flutter لإدارة مزارع الدواجن، بواجهة عربية RTL ودعم Android و iOS.
 
-> **Version:** 6.1.8+37 · **Flutter:** 3.7.2+ · **Dart:** 3.7.2+
+> **Version:** 6.4.1+40 · **Flutter:** 3.7.2+ · **Dart:** 3.7.2+
 
 ---
 
@@ -26,7 +26,7 @@ Farkha يساعد مربّي الدواجن على متابعة دورات ال�
 - جدول التحصينات والأمراض
 
 ### المصادقة والحساب
-- Firebase Auth + Google Sign-In
+- Firebase Auth + Google Sign-In + Sign in with Apple
 - التحقق برقم الهاتف عبر OTP (Spec 002)
 - حذف الحساب وتحديث البيانات
 
@@ -61,7 +61,7 @@ Farkha يساعد مربّي الدواجن على متابعة دورات ال�
 | HTTP | `http: ^1.3.0` (مغلّفة في `core/class/crud.dart`) |
 | Env | `flutter_dotenv: ^6.0.0` |
 | Firebase Core | `firebase_core: ^4.2.1` |
-| Auth | `firebase_auth: ^6.1.2` + `google_sign_in: ^7.2.0` |
+| Auth | `firebase_auth: ^6.1.2` + `google_sign_in: ^7.2.0` + `sign_in_with_apple: ^8.0.0` |
 | Messaging | `firebase_messaging: ^16.0.2` |
 | Crashlytics | `firebase_crashlytics: ^5.0.5` |
 | Remote Config | `firebase_remote_config: ^6.1.3` |
@@ -210,6 +210,7 @@ flutter test test/path/to_test.dart   # اختبار محدد
 | 002-phone-verification | تحقق برقم الهاتف عبر OTP |
 | 004-cycle-rating | تقييم الدورات (`cycle_feedbacks` table) |
 | 005-ios-platform-parity | دعم iOS (FCM, deep links, Google Sign-In). الإعلانات معطّلة على iOS |
+| 006-database-overhaul | إعادة هيكلة قاعدة البيانات + إضافة `user_devices` |
 
 ---
 
