@@ -1,55 +1,119 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '../../../core/functions/number_format.dart';
 import '../weather_controller.dart';
 
+class FanProgram {
+  final String name;
+  final int runMinutes;
+  final int offMinutes;
+  final String description;
+
+  const FanProgram({
+    required this.name,
+    required this.runMinutes,
+    required this.offMinutes,
+    required this.description,
+  });
+
+  int get cycleDurationMinutes => runMinutes + offMinutes;
+}
+
 class FanOperationController extends GetxController {
-  // Weather controller
   WeatherController weatherController = Get.put(WeatherController());
 
-  // Input variables
-  RxInt numberOfBirds = 0.obs; // عدد الطيور
-  RxDouble averageWeight = 0.0.obs; // متوسط الوزن بالكيلو
-  RxDouble fanCapacityPerHour = 0.0.obs; // سعة المروحة بالمتر المكعب/ساعة
-  RxDouble temperature = 0.0.obs; // درجة الحرارة
+  static const List<FanProgram> presetPrograms = [
+    FanProgram(
+      name: '1 د',
+      runMinutes: 1,
+      offMinutes: 9,
+      description: '1 تشغيل / 9 إيقاف',
+    ),
+    FanProgram(
+      name: '3 د',
+      runMinutes: 3,
+      offMinutes: 7,
+      description: '3 تشغيل / 7 إيقاف',
+    ),
+    FanProgram(
+      name: '5 د',
+      runMinutes: 5,
+      offMinutes: 5,
+      description: '5 تشغيل / 5 إيقاف',
+    ),
+    FanProgram(
+      name: '10 د',
+      runMinutes: 10,
+      offMinutes: 5,
+      description: '10 تشغيل / 5 إيقاف',
+    ),
+    FanProgram(
+      name: 'مستمر',
+      runMinutes: 60,
+      offMinutes: 0,
+      description: 'تشغيل مستمر بدون إيقاف',
+    ),
+  ];
 
-  // Calculated results
-  RxDouble totalWeight = 0.0.obs; // الوزن الكلي للطيور بالكيلو
-  RxDouble airFlowPerKg = 0.0.obs; // كمية الهواء المطلوبة لكل كجم
-  RxDouble requiredAirFlowPerHour = 0.0.obs; // كمية الهواء المطلوبة في الساعة
-  RxDouble fanCapacityPerMinute = 0.0.obs; // قدرة الشفاط في الدقيقة
-  RxDouble operationDuration = 0.0.obs; // مدة التشغيل بالدقائق
-  RxString operationStatus = ''.obs; // حالة التشغيل
+  RxInt numberOfBirds = 0.obs;
+  RxDouble averageWeight = 0.0.obs;
+  RxDouble fanCapacityPerHour = 0.0.obs;
+  RxDouble temperature = 0.0.obs;
+
+  RxDouble airFlowPerKg = 0.0.obs;
+  RxDouble requiredAirFlowPerHour = 0.0.obs;
+  RxDouble fanCapacityPerMinute = 0.0.obs;
+  RxDouble operationDuration = 0.0.obs;
+  RxString operationStatus = ''.obs;
+
+  Rx<FanProgram?> selectedProgram = Rx<FanProgram?>(null);
+  RxInt recommendedProgramIndex = (-1).obs;
+  RxBool hasCalculated = false.obs;
+
+  Rx<Duration> timerRemaining = Duration.zero.obs;
+  RxBool isTimerRunning = false.obs;
+  RxBool isTimerInRunPhase = true.obs;
+  RxInt timerCycleCount = 0.obs;
+
+  Timer? _timer;
+  int _timerTotalSeconds = 0;
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
+  }
+
+  bool get canCalculate =>
+      numberOfBirds.value > 0 &&
+      averageWeight.value > 0 &&
+      fanCapacityPerHour.value > 0 &&
+      temperature.value > 0;
 
   void calculateFanOperation() {
-    // 1. حساب الوزن الكلي للطيور
-    totalWeight.value = numberOfBirds.value * averageWeight.value;
+    final totalWeight = numberOfBirds.value * averageWeight.value;
 
-    // 2. تحديد كمية الهواء المطلوبة لكل كجم حسب درجة الحرارة
     final currentTemp =
         temperature.value > 0
             ? temperature.value
             : weatherController.currentTemperature.value;
     if (currentTemp < 10) {
-      airFlowPerKg.value = 0.4; // م³/ساعة لكل كجم
-    } else if (currentTemp >= 10 && currentTemp <= 20) {
-      airFlowPerKg.value = 1.4; // م³/ساعة لكل كجم
-    } else if (currentTemp >= 25 && currentTemp <= 35) {
-      airFlowPerKg.value = 4.3; // م³/ساعة لكل كجم
-    } else if (currentTemp > 35) {
-      airFlowPerKg.value = 7.5; // متوسط 7-8 م³/ساعة لكل كجم
+      airFlowPerKg.value = 0.4;
+    } else if (currentTemp <= 20) {
+      airFlowPerKg.value = 1.4;
+    } else if (currentTemp <= 25) {
+      airFlowPerKg.value = 2.5;
+    } else if (currentTemp <= 35) {
+      airFlowPerKg.value = 4.3;
     } else {
-      // للحرارة بين 20-25 درجة
-      airFlowPerKg.value = 2.5; // قيمة متوسطة
+      airFlowPerKg.value = 7.5;
     }
 
-    // 3. حساب كمية الهواء المطلوبة في الساعة
-    requiredAirFlowPerHour.value = totalWeight.value * airFlowPerKg.value;
-
-    // 4. حساب قدرة الشفاط في الدقيقة
+    requiredAirFlowPerHour.value = totalWeight * airFlowPerKg.value;
     fanCapacityPerMinute.value = fanCapacityPerHour.value / 60;
 
-    // 5. حساب مدة التشغيل
     if (fanCapacityPerMinute.value > 0) {
       operationDuration.value =
           requiredAirFlowPerHour.value / fanCapacityPerMinute.value;
@@ -57,7 +121,6 @@ class FanOperationController extends GetxController {
       operationDuration.value = 0;
     }
 
-    // 6. تحديد حالة التشغيل
     if (operationDuration.value <= 60) {
       operationStatus.value =
           'تشغيل مستمر (${formatDecimal(operationDuration.value)} دقيقة)';
@@ -69,10 +132,130 @@ class FanOperationController extends GetxController {
           'تشغيل خفيف (${formatDecimal(operationDuration.value)} دقيقة)';
     }
 
-    // تم إلغاء رسالة النجاح بناءً على طلب المستخدم
+    _recommendProgram();
+    hasCalculated.value = true;
   }
 
-  // Helper methods for updating values
+  void _recommendProgram() {
+    final duration = operationDuration.value;
+    if (duration <= 0) {
+      recommendedProgramIndex.value = -1;
+      return;
+    }
+
+    if (duration <= 60) {
+      recommendedProgramIndex.value = 4;
+    } else if (duration <= 90) {
+      recommendedProgramIndex.value = 3;
+    } else if (duration <= 150) {
+      recommendedProgramIndex.value = 2;
+    } else if (duration <= 240) {
+      recommendedProgramIndex.value = 1;
+    } else {
+      recommendedProgramIndex.value = 0;
+    }
+  }
+
+  void selectProgram(FanProgram program) {
+    final current = selectedProgram.value;
+    selectedProgram.value = current == program ? null : program;
+    stopTimer();
+  }
+
+  int get totalCycles {
+    final program = selectedProgram.value;
+    if (program == null || program.offMinutes == 0) return 1;
+    return (operationDuration.value / program.runMinutes).ceil();
+  }
+
+  double get totalMinutes {
+    final program = selectedProgram.value;
+    if (program == null || program.offMinutes == 0) {
+      return operationDuration.value;
+    }
+    final cycles = (operationDuration.value / program.runMinutes).ceil();
+    return cycles * program.cycleDurationMinutes.toDouble();
+  }
+
+  void startTimer() {
+    final program = selectedProgram.value;
+    if (program == null) return;
+
+    _timer?.cancel();
+    isTimerRunning.value = true;
+    isTimerInRunPhase.value = true;
+    timerCycleCount.value = 1;
+    _timerTotalSeconds = program.runMinutes * 60;
+    timerRemaining.value = Duration(seconds: _timerTotalSeconds);
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final remaining = timerRemaining.value.inSeconds - 1;
+      if (remaining <= 0) {
+        _switchPhase();
+      } else {
+        timerRemaining.value = Duration(seconds: remaining);
+      }
+    });
+  }
+
+  void _switchPhase() {
+    final program = selectedProgram.value;
+    if (program == null) return;
+
+    if (isTimerInRunPhase.value) {
+      if (program.offMinutes == 0) {
+        stopTimer();
+        return;
+      }
+      isTimerInRunPhase.value = false;
+      _timerTotalSeconds = program.offMinutes * 60;
+      timerRemaining.value = Duration(seconds: _timerTotalSeconds);
+    } else {
+      timerCycleCount.value++;
+      isTimerInRunPhase.value = true;
+      _timerTotalSeconds = program.runMinutes * 60;
+      timerRemaining.value = Duration(seconds: _timerTotalSeconds);
+    }
+  }
+
+  void pauseTimer() {
+    _timer?.cancel();
+    isTimerRunning.value = false;
+  }
+
+  void resumeTimer() {
+    if (selectedProgram.value == null) return;
+    isTimerRunning.value = true;
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      final remaining = timerRemaining.value.inSeconds - 1;
+      if (remaining <= 0) {
+        _switchPhase();
+      } else {
+        timerRemaining.value = Duration(seconds: remaining);
+      }
+    });
+  }
+
+  void stopTimer() {
+    _timer?.cancel();
+    isTimerRunning.value = false;
+    timerRemaining.value = Duration.zero;
+    timerCycleCount.value = 0;
+    isTimerInRunPhase.value = true;
+  }
+
+  String formatTimerDuration(Duration d) {
+    final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
+  double get timerProgress {
+    if (_timerTotalSeconds <= 0) return 0;
+    return timerRemaining.value.inSeconds / _timerTotalSeconds;
+  }
+
   void updateNumberOfBirds(String value) {
     numberOfBirds.value = tryParseInt(value) ?? 0;
   }
@@ -91,26 +274,19 @@ class FanOperationController extends GetxController {
 
   Future<void> getWeatherData() async {
     await weatherController.getWeatherData();
-    // تحديث قيمة درجة الحرارة في الحقل
     if (weatherController.hasWeatherData && currentTemperature > 0) {
       temperature.value = currentTemperature;
-      update(); // تحديث الواجهة
+      update();
     }
   }
 
-  // Getter for current temperature from weather controller
   double get currentTemperature => weatherController.currentTemperature.value;
 
-  // Getter for weather loading status
   bool get isWeatherLoading => weatherController.isLoading;
 
-  // Getter for weather error status
   bool get hasWeatherError => weatherController.hasError;
 
-  // Getter for location message
   String get locationMessage => weatherController.locationMessage;
 
-  // Getter for weather data status
   bool get hasWeatherData => weatherController.hasWeatherData;
-
 }

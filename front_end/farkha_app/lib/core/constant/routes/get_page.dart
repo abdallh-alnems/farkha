@@ -201,57 +201,57 @@ List<GetPage<dynamic>> pages = [
   // ! feasibility study
   GetPage(
     name: AppRoute.feasibilityStudy,
-    page: () => const InterstitialAdWrapper(child: FeasibilityStudyScreen()),
+    page: () => const FeasibilityStudyScreen(),
   ),
 
-  GetPage(name: AppRoute.chickenDensity, page: () => const InterstitialAdWrapper(child: ChickenDensity())),
+  GetPage(name: AppRoute.chickenDensity, page: () => const ChickenDensity()),
 
   GetPage(
     name: AppRoute.dailyFeedConsumption,
-    page: () => const InterstitialAdWrapper(child: DailyFeedConsumption()),
+    page: () => const DailyFeedConsumption(),
   ),
 
   GetPage(
     name: AppRoute.waterConsumption,
-    page: () => const InterstitialAdWrapper(child: WaterConsumption()),
+    page: () => const WaterConsumption(),
   ),
 
   GetPage(
     name: AppRoute.totalFeedConsumption,
-    page: () => InterstitialAdWrapper(child: TotalFeedConsumption()),
+    page: () => TotalFeedConsumption(),
   ),
 
-  GetPage(name: AppRoute.fcr, page: () => InterstitialAdWrapper(child: FeedConversionRatio())),
-  GetPage(name: AppRoute.adg, page: () => InterstitialAdWrapper(child: AverageDailyGain())),
-  GetPage(name: AppRoute.roi, page: () => const InterstitialAdWrapper(child: ReturnOnInvestment())),
-  GetPage(name: AppRoute.mortalityRate, page: () => InterstitialAdWrapper(child: MortalityRateScreen())),
+  GetPage(name: AppRoute.fcr, page: () => FeedConversionRatio()),
+  GetPage(name: AppRoute.adg, page: () => AverageDailyGain()),
+  GetPage(name: AppRoute.roi, page: () => const ReturnOnInvestment()),
+  GetPage(name: AppRoute.mortalityRate, page: () => MortalityRateScreen()),
   GetPage(
     name: AppRoute.birdProductionCost,
     page: () => BirdProductionCostScreen(),
   ),
   GetPage(
     name: AppRoute.birdNetProfit,
-    page: () => const InterstitialAdWrapper(child: BirdNetProfitScreen()),
+    page: () => const BirdNetProfitScreen(),
   ),
-  GetPage(name: AppRoute.weightByAge, page: () => const InterstitialAdWrapper(child: WeightByAgeScreen())),
+  GetPage(name: AppRoute.weightByAge, page: () => const WeightByAgeScreen()),
   GetPage(
     name: AppRoute.temperatureByAge,
-    page: () => const InterstitialAdWrapper(child: TemperatureByAgeScreen()),
+    page: () => const TemperatureByAgeScreen(),
   ),
   GetPage(
     name: AppRoute.darknessLevels,
-    page: () => const InterstitialAdWrapper(child: DarknessLevelsScreen()),
+    page: () => const DarknessLevelsScreen(),
   ),
-  GetPage(name: AppRoute.totalFarmWeight, page: () => const InterstitialAdWrapper(child: TotalFarmWeightScreen())),
-  GetPage(name: AppRoute.totalRevenue, page: () => const InterstitialAdWrapper(child: TotalRevenueScreen())),
-  GetPage(name: AppRoute.feedCostPerBird, page: () => const InterstitialAdWrapper(child: FeedCostPerBirdScreen())),
-  GetPage(name: AppRoute.feedCostPerKilo, page: () => const InterstitialAdWrapper(child: FeedCostPerKiloScreen())),
+  GetPage(name: AppRoute.totalFarmWeight, page: () => const TotalFarmWeightScreen()),
+  GetPage(name: AppRoute.totalRevenue, page: () => const TotalRevenueScreen()),
+  GetPage(name: AppRoute.feedCostPerBird, page: () => const FeedCostPerBirdScreen()),
+  GetPage(name: AppRoute.feedCostPerKilo, page: () => const FeedCostPerKiloScreen()),
   GetPage(
     name: AppRoute.vaccinationSchedule,
-    page: () => const InterstitialAdWrapper(child: VaccinationSchedule()),
+    page: () => const VaccinationSchedule(),
   ),
   GetPage(name: AppRoute.allTools, page: () => const AllTools()),
-  GetPage(name: AppRoute.fanOperation, page: () => const InterstitialAdWrapper(child: FanOperationScreen())),
+  GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
   GetPage(name: AppRoute.weather, page: () => const InterstitialAdWrapper(child: WeatherScreen())),
 
   GetPage(

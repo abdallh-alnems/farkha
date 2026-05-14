@@ -64,7 +64,7 @@ class _DrawerAboutAppState extends State<DrawerAboutApp>
   Future<void> _handleShareApp() async {
     Navigator.pop(context);
     final String storeLink = defaultTargetPlatform == TargetPlatform.iOS
-        ? 'https://apps.apple.com/app/idYOUR_APPLE_ID'
+        ? 'https://apps.apple.com/eg/app/%D9%81%D8%B1%D8%AE%D8%A9/id6768438675?l=ar'
         : 'https://play.google.com/store/apps/details?id=ni.nims.frkha';
     unawaited(
       SharePlus.instance.share(
