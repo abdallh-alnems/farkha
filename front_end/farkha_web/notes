@@ -1,0 +1,8 @@
+
+=== run web in chrome ===
+export PATH="$HOME/.bun/bin:$PATH"
+bun run dev
+
+
+=== link in chrome ===
+http://localhost:3000/

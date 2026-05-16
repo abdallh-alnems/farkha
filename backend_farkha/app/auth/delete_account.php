@@ -31,6 +31,14 @@ try {
 
     $con->prepare("DELETE FROM cycle_users WHERE user_id = :uid")->execute([':uid' => $user['id']]);
 
+    try {
+        NotificationService::sendDataOnlyToUser($con, (int) $user['id'], [
+            'type' => 'force_logout',
+        ]);
+    } catch (Exception $ne) {
+        error_log('Force logout notification error: ' . $ne->getMessage());
+    }
+
     UserModel::deleteByFirebaseUid($uid);
 
     $con->commit();

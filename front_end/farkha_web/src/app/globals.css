@@ -248,4 +248,11 @@
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

@@ -3,6 +3,8 @@ import { Cairo } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/lib/providers/theme-provider";
 import { QueryProvider } from "@/lib/providers/query-provider";
+import { PwaProvider } from "@/lib/providers/pwa-provider";
+import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 
 const cairo = Cairo({
@@ -23,13 +25,48 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "فرخة — إدارة مزارع الدواجن",
-  description: "تطبيق إدارة مزارع الدواجن — أسعار، أدوات، دورات تسمين",
+  title: {
+    default: "فرخة — أسعار الدواجن والكتاكيت والأعلاف في مصر",
+    template: "%s | فرخة",
+  },
+  description:
+    "تابع أسعار الدواجن والكتاكيت والبيض والأعلاف لحظياً في مصر. أدوات حاسبات مزارع الدواجن، إدارة دورات التسمين، ومتابعة التكاليف والأرباح.",
+  keywords: [
+    "أسعار الدواجن",
+    "أسعار الكتاكيت",
+    "أسعار البيض",
+    "أسعار الأعلاف",
+    "أسعار البط",
+    "إدارة مزارع الدواجن",
+    "دورات التسمين",
+    "حاسبة تكلفة التسمين",
+    "حاسبة أعلاف",
+    "أسعار الفراخ اليوم",
+    "بادي نامي ناهي",
+    "كتاكيت أبيض",
+    "كتاكيت ساسو",
+    "كتاكيت بلدي",
+    "مزارع دواجن مصر",
+    "بورصة الدواجن",
+    "اسعار الفراخ البيضا",
+    "اسعار الفراخ البيضاء",
+    "اسعار الكتكوت الابيض",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "فرخة",
+  },
+  twitter: {
+    card: "summary",
+    title: "فرخة — أسعار الدواجن والكتاكيت والأعلاف في مصر",
+    description:
+      "تابع أسعار الدواجن والكتاكيت والبيض والأعلاف لحظياً. أدوات حاسبات مزارع الدواجن وإدارة دورات التسمين.",
   },
 };
 
@@ -45,7 +82,7 @@ export default function RootLayout({
       className={`${cairo.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-cairo">
+      <body className="min-h-full flex flex-col font-cairo" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -53,7 +90,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            {children}
+            <PwaProvider>
+              <AppShell>{children}</AppShell>
+            </PwaProvider>
             <Toaster
               position="bottom-center"
               dir="rtl"
@@ -62,6 +101,13 @@ export default function RootLayout({
             />
           </QueryProvider>
         </ThemeProvider>
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        )}
       </body>
     </html>
   );
