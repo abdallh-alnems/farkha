@@ -7,7 +7,11 @@ class TestModeManager {
 
   static const bool _alwaysShowCycleFeedback = false;
 
+  static const bool _adsDisabled = true;
+
   static const bool _alwaysShowStoreRatePrompt = false;
+
+  static bool get shouldDisableAds => _adsDisabled;
 
   static bool get shouldUseTestAds => _isAppInDevelopment || _isAdsInTestMode;
 

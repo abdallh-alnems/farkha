@@ -63,8 +63,10 @@ class OverviewTab extends StatelessWidget {
       final mortalityPct =
           chickCount > 0 ? (mortality / chickCount * 100) : 0.0;
 
-      final isWeatherLoading =
-          weatherCtrl.statusRequest.value != StatusRequest.success;
+      final weatherStatus = weatherCtrl.statusRequest.value;
+      final isWeatherLoading = weatherStatus == StatusRequest.loading;
+      final isLocationDenied = weatherCtrl.locationPermissionDenied.value;
+      final hasWeather = weatherStatus == StatusRequest.success;
       final currTemp = weatherCtrl.currentTemperature.value;
       final currHum = weatherCtrl.currentHumidity.value.toDouble();
       final currPrecip = weatherCtrl.currentPrecipitation.value;
@@ -173,53 +175,92 @@ class OverviewTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(color: dimColor),
               ),
-              child: isWeatherLoading
+              child: isLocationDenied
                   ? SizedBox(
                       height: 72.h,
                       child: Center(
-                        child: SizedBox(
-                          width: 22.w,
-                          height: 22.w,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: accentColor.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ),
-                    )
-                  : Row(
-                      children: [
-                        _envCompact(WeatherIcons.thermometer, 'الحرارة',
-                            '${currTemp.toStringAsFixed(0)}°',
-                            '${targTemp.toStringAsFixed(0)}°',
-                            isDark, accentColor, dimColor),
-                        Container(width: 1.w, height: 48.h, color: dimColor),
-                        _envCompact(WeatherIcons.humidity, 'الرطوبة',
-                            '${currHum.toStringAsFixed(0)}%',
-                            '${targHum.toStringAsFixed(0)}%',
-                            isDark, accentColor, dimColor),
-                        Container(width: 1.w, height: 48.h, color: dimColor),
-                        Expanded(
+                        child: GestureDetector(
+                          onTap: () => weatherCtrl.refreshWeather(),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              BoxedIcon(WeatherIcons.rain, color: accentColor, size: 18),
-                              SizedBox(height: 4.h),
-                              Text('الأمطار',
-                                  style: TextStyle(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: isDark ? Colors.grey[400] : Colors.grey[600])),
-                              SizedBox(height: 6.h),
+                              Icon(Icons.location_off_rounded, size: 24.sp, color: accentColor),
+                              SizedBox(height: 8.h),
                               Text(
-                                _getPrecipitationDescription(currPrecip),
-                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w800, color: accentColor, height: 1.1),
+                                'فعّل صلاحية الموقع لعرض بيانات الطقس',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark ? Colors.grey[300] : Colors.grey[700],
+                                ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    )
+                  : isWeatherLoading
+                      ? SizedBox(
+                          height: 72.h,
+                          child: Center(
+                            child: SizedBox(
+                              width: 22.w,
+                              height: 22.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: accentColor.withValues(alpha: 0.5),
+                              ),
+                            ),
+                          ),
+                        )
+                      : hasWeather
+                          ? Row(
+                              children: [
+                                _envCompact(WeatherIcons.thermometer, 'الحرارة',
+                                    '${currTemp.toStringAsFixed(0)}°',
+                                    '${targTemp.toStringAsFixed(0)}°',
+                                    isDark, accentColor, dimColor),
+                                Container(width: 1.w, height: 48.h, color: dimColor),
+                                _envCompact(WeatherIcons.humidity, 'الرطوبة',
+                                    '${currHum.toStringAsFixed(0)}%',
+                                    '${targHum.toStringAsFixed(0)}%',
+                                    isDark, accentColor, dimColor),
+                                Container(width: 1.w, height: 48.h, color: dimColor),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      BoxedIcon(WeatherIcons.rain, color: accentColor, size: 18),
+                                      SizedBox(height: 4.h),
+                                      Text('الأمطار',
+                                          style: TextStyle(
+                                              fontSize: 10.sp,
+                                              fontWeight: FontWeight.w700,
+                                              color: isDark ? Colors.grey[400] : Colors.grey[600])),
+                                      SizedBox(height: 6.h),
+                                      Text(
+                                        _getPrecipitationDescription(currPrecip),
+                                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w800, color: accentColor, height: 1.1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SizedBox(
+                              height: 72.h,
+                              child: Center(
+                                child: SizedBox(
+                                  width: 22.w,
+                                  height: 22.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: accentColor.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                              ),
+                            ),
             ),
           ],
         ),

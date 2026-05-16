@@ -223,9 +223,9 @@ class FeasibilityController extends GetxController {
 
       int chickenCount;
       if (isChickenCountMode.value) {
-        chickenCount = int.parse(countController.text);
+        chickenCount = tryParseInt(countController.text) ?? 0;
       } else {
-        final budget = double.parse(budgetController.text);
+        final budget = tryParseNum(budgetController.text) ?? 0.0;
         chickenCount =
             calculateChickenCountFromBudget(budget, _buildInput(1));
       }

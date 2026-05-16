@@ -57,7 +57,6 @@ import '../../../view/screen/tools/vaccination_schedule.dart';
 import '../../../view/screen/tools/water_consumption.dart';
 import '../../../view/screen/tools/weather_screen.dart';
 import '../../../view/screen/tools/weight_by_age.dart';
-import '../../../view/widget/ad/interstitial_ad_wrapper.dart';
 import '../../middleware/auth_middleware.dart';
 import '../../middleware/onboarding_middleware.dart';
 import '../../package/upgrade.dart';
@@ -109,7 +108,7 @@ List<GetPage<dynamic>> pages = [
 
   GetPage(
     name: AppRoute.cycle,
-    page: () => const InterstitialAdWrapper(child: CycleScreen()),
+    page: () => const CycleScreen(),
     binding: BindingsBuilder<void>(() {
       if (!Get.isRegistered<CycleController>()) {
         Get.put(CycleController(), permanent: true);
@@ -154,7 +153,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(
     name: AppRoute.history,
-    page: () => const InterstitialAdWrapper(child: CycleHistoryScreen()),
+    page: () => const CycleHistoryScreen(),
     middlewares: [AuthMiddleware()],
   ),
   GetPage(
@@ -181,11 +180,11 @@ List<GetPage<dynamic>> pages = [
   // ========================== view follow up tools ===========================
   GetPage(
     name: AppRoute.broilerChickenRequirements,
-    page: () => InterstitialAdWrapper(child: BroilerChickenRequirementsScreen()),
+    page: () => BroilerChickenRequirementsScreen(),
   ),
 
   // ! disease
-  GetPage(name: AppRoute.diseases, page: () => const InterstitialAdWrapper(child: DiseasesScreen())),
+  GetPage(name: AppRoute.diseases, page: () => const DiseasesScreen()),
 
   GetPage(name: AppRoute.diseaseDetails, page: () => const DiseaseDetails()),
 
@@ -195,7 +194,7 @@ List<GetPage<dynamic>> pages = [
   // ================================= tools ===================================
 
   // ! articles
-  GetPage(name: AppRoute.articlesList, page: () => const InterstitialAdWrapper(child: ArticlesList())),
+  GetPage(name: AppRoute.articlesList, page: () => const ArticlesList()),
   GetPage(name: AppRoute.articleDetail, page: () => const ArticleDetail()),
 
   // ! feasibility study
@@ -252,7 +251,7 @@ List<GetPage<dynamic>> pages = [
   ),
   GetPage(name: AppRoute.allTools, page: () => const AllTools()),
   GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
-  GetPage(name: AppRoute.weather, page: () => const InterstitialAdWrapper(child: WeatherScreen())),
+  GetPage(name: AppRoute.weather, page: () => const WeatherScreen()),
 
   GetPage(
     name: AppRoute.darknessAlarm,

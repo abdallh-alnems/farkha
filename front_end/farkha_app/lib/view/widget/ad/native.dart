@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../core/constant/id/ad_id.dart';
+import '../../../core/services/test_mode_manager.dart';
 
 class AdNativeWidget extends StatefulWidget {
   const AdNativeWidget({super.key});
@@ -33,6 +34,7 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (TestModeManager.shouldDisableAds) return const SizedBox.shrink();
     if (defaultTargetPlatform != TargetPlatform.android &&
         defaultTargetPlatform != TargetPlatform.iOS) {
       return const SizedBox.shrink();
@@ -52,6 +54,7 @@ class _AdNativeWidgetState extends State<AdNativeWidget> {
   }
 
   void _loadAd() {
+    if (TestModeManager.shouldDisableAds) return;
     if (!mounted) return;
     if (defaultTargetPlatform != TargetPlatform.android &&
         defaultTargetPlatform != TargetPlatform.iOS) {

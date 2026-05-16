@@ -9,8 +9,6 @@ class AdManager {
       'ca-app-pub-8595701567488603/1751748833';
   static const String _productionNative =
       'ca-app-pub-8595701567488603/4494984718';
-  static const String _productionInterstitial =
-      'ca-app-pub-8595701567488603/5421039211';
 
   // ============================== iOS production ==============================
 
@@ -18,15 +16,11 @@ class AdManager {
       'ca-app-pub-8595701567488603/5318059838';
   static const String _productionNativeIOS =
       'ca-app-pub-8595701567488603/4012717023';
-  static const String _productionInterstitialIOS =
-      'ca-app-pub-8595701567488603/1387003391';
 
   // ================================ Test IDs =================================
 
   static const String _testBanner = 'ca-app-pub-3940256099942544/6300978111';
   static const String _testNative = 'ca-app-pub-3940256099942544/2247696110';
-  static const String _testInterstitial =
-      'ca-app-pub-3940256099942544/1033173712';
 
   // ================================== banner =================================
 
@@ -40,12 +34,5 @@ class AdManager {
   static String get idNative {
     if (TestModeManager.shouldUseTestAds) return _testNative;
     return Platform.isIOS ? _productionNativeIOS : _productionNative;
-  }
-
-  // =============================== interstitial ==============================
-
-  static String get idInterstitial {
-    if (TestModeManager.shouldUseTestAds) return _testInterstitial;
-    return Platform.isIOS ? _productionInterstitialIOS : _productionInterstitial;
   }
 }

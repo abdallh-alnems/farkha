@@ -13,7 +13,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import '../../view/widget/ad/interstitial.dart';
 import '../constant/firebase_options.dart';
 import '../constant/storage_keys.dart';
 import 'dark_light_service.dart';
@@ -90,9 +89,7 @@ class MyServices extends GetxService {
     await Get.putAsync(() => DeepLinkService().init());
 
     // Initialize Google Mobile Ads SDK
-    unawaited(MobileAds.instance.initialize().then((_) {
-      InterstitialAdService.instance.load();
-    }));
+    unawaited(MobileAds.instance.initialize());
 
     return this;
   }

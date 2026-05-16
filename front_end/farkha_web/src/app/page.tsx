@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getAllPrices } from "@/lib/api/prices";
 import type { PriceGroup, PriceItem } from "@/lib/api/prices";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdSlot } from "@/components/shared/ad-slot";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 function formatPrice(val: string | number | undefined): string {
@@ -147,8 +148,11 @@ export default function HomePage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {groups.map((group) => (
-            <PriceGroupSection key={group.id} group={group} />
+          {groups.map((group, idx) => (
+            <div key={group.id}>
+              <PriceGroupSection group={group} />
+              {idx === 0 && <AdSlot />}
+            </div>
           ))}
         </div>
       )}

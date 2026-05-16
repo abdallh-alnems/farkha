@@ -40,6 +40,7 @@ class WeatherController extends GetxController {
   final RxInt currentWindDegree = 0.obs;
   final RxString currentWindDir = ''.obs;
   final RxDouble currentPrecipitation = 0.0.obs;
+  final RxBool locationPermissionDenied = false.obs;
   final RxString currentConditionText = ''.obs;
   final RxDouble feelsLikeC = 0.0.obs;
 
@@ -68,6 +69,7 @@ class WeatherController extends GetxController {
 
     // إذا كانت الموقع معطلة محلياً، لا نستخدم الموقع
     if (!isLocationEnabledLocally) {
+      locationPermissionDenied.value = true;
       statusRequest.value = StatusRequest.failure;
       update();
       return;
@@ -76,9 +78,10 @@ class WeatherController extends GetxController {
     final hasPermission = await permission.checkAndRequestLocationPermission();
 
     if (hasPermission) {
+      locationPermissionDenied.value = false;
       await _fetchWeatherData();
     } else {
-      // تحديث الحالة عند عدم وجود صلاحية
+      locationPermissionDenied.value = true;
       statusRequest.value = StatusRequest.failure;
       update();
     }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/constant/theme/theme.dart';
-import '../ad/interstitial.dart';
 
 class ToolsButton extends StatelessWidget {
   final String text;
@@ -20,7 +19,7 @@ class ToolsButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           FocusScope.of(context).unfocus();
-          InterstitialAdService.instance.show(onComplete: onPressed);
+          onPressed();
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 15.h),
