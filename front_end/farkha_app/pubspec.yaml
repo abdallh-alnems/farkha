@@ -1,7 +1,7 @@
 name: farkha_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 6.4.2+41
+version: 6.4.2+42
 
 environment:
   sdk: ^3.7.2

@@ -1,13 +1,13 @@
 class TestModeManager {
   static const bool _isAppInDevelopment = false;
 
-  static const bool _isAdsInTestMode = true;
+  static const bool _isAdsInTestMode = false;
 
   static const bool _alwaysShowReviewPrompt = false;
 
   static const bool _alwaysShowCycleFeedback = false;
 
-  static const bool _adsDisabled = true;
+  static const bool _adsDisabled = false;
 
   static const bool _alwaysShowStoreRatePrompt = false;
 
