@@ -417,7 +417,7 @@ mixin CycleCrudMixin on CycleControllerBase {
 
   Future<void> pickDate(BuildContext context) async {
     final now = DateTime.now();
-    final firstAllowedDate = now.subtract(const Duration(days: 39));
+    final firstAllowedDate = now.subtract(const Duration(days: 44));
     final picked = await showDatePicker(
       context: context,
       initialDate: now,

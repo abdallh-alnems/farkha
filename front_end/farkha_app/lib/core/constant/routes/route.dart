@@ -66,6 +66,9 @@ class AppRoute {
   static const String feedCostPerKilo = '/feed-cost-per-kilo';
   static const String vaccinationSchedule = '/vaccination-schedule';
   static const String weather = '/weather';
+  static const String notesTool = '/notes-tool';
+  static const String noteDetail = '/note-detail';
+  static const String noteEditor = '/note-editor';
   static const String allTools = '/all-tools';
   static const String darknessAlarm = '/darkness-alarm';
 }

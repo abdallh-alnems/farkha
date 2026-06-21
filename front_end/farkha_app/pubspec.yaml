@@ -1,7 +1,7 @@
 name: farkha_app
 description: "A new Flutter project."
 publish_to: "none"
-version: 6.4.2+42
+version: 6.5.5+43
 
 environment:
   sdk: ^3.7.2
@@ -17,7 +17,6 @@ dependencies:
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.10+1
   lottie: ^3.3.0
-  weather_icons: ^3.0.0
   flutter_markdown: ^0.7.7+1
   markdown: ^7.3.0
   pin_code_fields: ^8.0.1
@@ -66,7 +65,7 @@ dependencies:
   upgrader: ^12.3.0
   package_info_plus: ^9.0.0
   firebase_remote_config: ^6.1.3
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   fl_chart: ^0.69.0
   app_links: ^7.0.0
   flutter_contacts: ^2.0.2
@@ -104,6 +103,7 @@ flutter:
     - assets/icons/tools/
     - assets/lottie/
     - assets/fonts/
+    - assets/fonts/Cairo/
 
   fonts:
     - family: Cairo

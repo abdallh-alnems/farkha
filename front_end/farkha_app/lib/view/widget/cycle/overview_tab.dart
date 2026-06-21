@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 import '../../../core/class/status_request.dart';
 import '../../../core/constant/theme/colors.dart';
@@ -217,12 +216,12 @@ class OverviewTab extends StatelessWidget {
                       : hasWeather
                           ? Row(
                               children: [
-                                _envCompact(WeatherIcons.thermometer, 'الحرارة',
+                                _envCompact(Icons.thermostat, 'الحرارة',
                                     '${currTemp.toStringAsFixed(0)}°',
                                     '${targTemp.toStringAsFixed(0)}°',
                                     isDark, accentColor, dimColor),
                                 Container(width: 1.w, height: 48.h, color: dimColor),
-                                _envCompact(WeatherIcons.humidity, 'الرطوبة',
+                                _envCompact(Icons.water_drop_outlined, 'الرطوبة',
                                     '${currHum.toStringAsFixed(0)}%',
                                     '${targHum.toStringAsFixed(0)}%',
                                     isDark, accentColor, dimColor),
@@ -231,7 +230,7 @@ class OverviewTab extends StatelessWidget {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      BoxedIcon(WeatherIcons.rain, color: accentColor, size: 18),
+                                      Icon(Icons.umbrella_outlined, color: accentColor, size: 18.sp),
                                       SizedBox(height: 4.h),
                                       Text('الأمطار',
                                           style: TextStyle(
@@ -349,7 +348,7 @@ class OverviewTab extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          BoxedIcon(icon, color: accentColor, size: 18),
+          Icon(icon, color: accentColor, size: 18.sp),
           SizedBox(height: 4.h),
           Text(label,
               style: TextStyle(

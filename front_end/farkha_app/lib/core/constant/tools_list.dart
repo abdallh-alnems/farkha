@@ -101,6 +101,12 @@ final List<ToolEntry> allToolsList = [
     route: AppRoute.weather,
   ),
   const ToolEntry(
+    toolId: 25,
+    text: 'الملاحظات',
+    image: AppImages.notes,
+    route: AppRoute.notesTool,
+  ),
+  const ToolEntry(
     toolId: 10,
     text: 'جدول التحصينات',
     image: AppImages.vaccination,

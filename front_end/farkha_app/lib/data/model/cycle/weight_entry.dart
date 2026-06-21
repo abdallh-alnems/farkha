@@ -1,3 +1,5 @@
+import 'package:farkha_app/core/functions/parse_entry_date.dart';
+
 class WeightEntry {
   final String id;
   final double weight;
@@ -13,8 +15,7 @@ class WeightEntry {
     return WeightEntry(
       id: (json['id'] ?? '').toString(),
       weight: ((json['weight'] ?? 0.0) as num).toDouble(),
-      date:
-          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date: parseEntryDate(json['date']),
     );
   }
 }

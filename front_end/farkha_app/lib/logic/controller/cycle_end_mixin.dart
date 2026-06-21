@@ -29,9 +29,9 @@ mixin CycleEndMixin on CycleControllerBase {
         final now = DateTime.now();
         final age = now.difference(startD).inDays + 1;
 
-        if (age >= 40) {
-          final day40 = startD.add(const Duration(days: 39));
-          final autoEndDate = DateFormat('yyyy-MM-dd').format(day40);
+        if (age >= 45) {
+          final day45 = startD.add(const Duration(days: 44));
+          final autoEndDate = DateFormat('yyyy-MM-dd').format(day45);
           cyclesToEnd.add((cycle: cycle, autoEndDate: autoEndDate));
         }
       } catch (_) {}
@@ -81,7 +81,7 @@ mixin CycleEndMixin on CycleControllerBase {
           ],
         ),
         content: const Text(
-          'وصلت الدورة إلى عمر 40 يوماً وستُغلق تلقائياً.\n\nيُنصح بإدخال بيانات المبيعات أولاً لضمان دقة التقارير المالية.',
+          'وصلت الدورة إلى عمر 45 يوماً وستُغلق تلقائياً.\n\nيُنصح بإدخال بيانات المبيعات أولاً لضمان دقة التقارير المالية.',
           textAlign: TextAlign.right,
           style: TextStyle(fontSize: 15, height: 1.5),
         ),

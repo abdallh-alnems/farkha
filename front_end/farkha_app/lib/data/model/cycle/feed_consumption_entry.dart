@@ -1,3 +1,5 @@
+import 'package:farkha_app/core/functions/parse_entry_date.dart';
+
 class FeedConsumptionEntry {
   final String id;
   final double amount;
@@ -17,8 +19,7 @@ class FeedConsumptionEntry {
     return FeedConsumptionEntry(
       id: (json['id'] ?? '').toString(),
       amount: ((json['amount'] ?? 0.0) as num).toDouble(),
-      date:
-          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date: parseEntryDate(json['date']),
     );
   }
 }

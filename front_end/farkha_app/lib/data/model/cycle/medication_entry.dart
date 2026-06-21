@@ -1,3 +1,5 @@
+import 'package:farkha_app/core/functions/parse_entry_date.dart';
+
 class MedicationEntry {
   final String id;
   final String text;
@@ -13,8 +15,7 @@ class MedicationEntry {
     return MedicationEntry(
       id: (json['id'] ?? '').toString(),
       text: (json['text'] ?? '').toString(),
-      date:
-          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date: parseEntryDate(json['date']),
     );
   }
 }

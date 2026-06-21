@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../core/class/status_request.dart';
 import '../../core/constant/storage_keys.dart';
+import '../../core/functions/parse_entry_date.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_note_data.dart';
 import 'cycle_controller.dart';
@@ -24,11 +25,7 @@ class NoteItem {
     return NoteItem(
       id: (json['id'] ?? '').toString(),
       content: (json['content'] ?? '').toString(),
-      date:
-          DateTime.tryParse(
-            (json['date'] ?? json['entry_date'] ?? '').toString(),
-          ) ??
-          DateTime.now(),
+      date: parseEntryDate(json['date'] ?? json['entry_date']),
     );
   }
 }

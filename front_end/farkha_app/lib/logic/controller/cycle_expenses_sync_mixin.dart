@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../core/constant/storage_keys.dart';
 import '../../core/functions/number_format.dart';
+import '../../core/functions/parse_entry_date.dart';
 import '../../core/services/initialization.dart';
 import '../../data/data_source/remote/cycle_data/cycle_data.dart';
 import 'cycle_controller.dart';
@@ -23,7 +24,7 @@ class ExpensePayment {
     return ExpensePayment(
       id: (json['id'] ?? '').toString(),
       amount: ((json['amount'] ?? 0.0) as num).toDouble(),
-      date: DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date: parseEntryDate(json['date']),
     );
   }
 }
@@ -214,14 +215,7 @@ mixin CycleExpensesSyncMixin on GetxController {
 
       if (label.isEmpty) continue;
 
-      DateTime entryDate = DateTime.now();
-      if (entryDateStr.isNotEmpty) {
-        try {
-          entryDate = DateTime.tryParse(entryDateStr) ?? DateTime.now();
-        } catch (e) {
-          entryDate = DateTime.now();
-        }
-      }
+      final entryDate = parseEntryDate(entryDateStr);
 
       double amount = 0.0;
       if (value is num) {

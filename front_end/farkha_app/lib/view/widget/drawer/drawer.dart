@@ -225,7 +225,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
 }
 
 class _SocialIcon extends StatelessWidget {
-  final IconData icon;
+  final FaIconData icon;
   final Color color;
   final VoidCallback onTap;
 

@@ -48,6 +48,9 @@ import '../../../view/screen/tools/feed_conversion_ratio.dart';
 import '../../../view/screen/tools/feed_cost_per_bird.dart';
 import '../../../view/screen/tools/feed_cost_per_kilo.dart';
 import '../../../view/screen/tools/mortality_rate.dart';
+import '../../../view/screen/tools/note_detail.dart';
+import '../../../view/screen/tools/note_editor.dart';
+import '../../../view/screen/tools/notes_tool.dart';
 import '../../../view/screen/tools/return_on_investment.dart';
 import '../../../view/screen/tools/temperature_by_age.dart';
 import '../../../view/screen/tools/total_farm_weight.dart';
@@ -252,6 +255,9 @@ List<GetPage<dynamic>> pages = [
   GetPage(name: AppRoute.allTools, page: () => const AllTools()),
   GetPage(name: AppRoute.fanOperation, page: () => const FanOperationScreen()),
   GetPage(name: AppRoute.weather, page: () => const WeatherScreen()),
+  GetPage(name: AppRoute.notesTool, page: () => NotesToolScreen()),
+  GetPage(name: AppRoute.noteDetail, page: () => NoteDetailScreen()),
+  GetPage(name: AppRoute.noteEditor, page: () => const NoteEditorScreen()),
 
   GetPage(
     name: AppRoute.darknessAlarm,

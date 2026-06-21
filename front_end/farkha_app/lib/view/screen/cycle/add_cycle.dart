@@ -391,11 +391,11 @@ class _AddCycleScreenState extends State<AddCycleScreen>
         if (dateRawText.isEmpty) return 'تاريخ غير صحيح';
         final selectedDate = DateTime.tryParse(dateRawText);
         if (selectedDate == null) return 'تاريخ غير صحيح';
-        final thirtyNineDaysAgo = DateTime.now().subtract(
-          const Duration(days: 39),
+        final fortyFourDaysAgo = DateTime.now().subtract(
+          const Duration(days: 44),
         );
-        if (selectedDate.isBefore(thirtyNineDaysAgo)) {
-          return 'يجب أن يكون التاريخ ضمن آخر 39 يوم';
+        if (selectedDate.isBefore(fortyFourDaysAgo)) {
+          return 'يجب أن يكون التاريخ ضمن آخر 44 يوم';
         }
         return null;
       },

@@ -49,6 +49,7 @@ class AppImages {
       '$_rootTools/feed_conversion_ratio.svg';
   static const String averageDailyGain = '$_rootTools/adg.svg';
   static const String weather = '$_rootTools/weather.svg';
+  static const String notes = '$_rootTools/notes.svg';
 
   // ! prices_card
   static const String settingCardPrices = '$_rootIcons/setting_card_prices.svg';

@@ -104,13 +104,40 @@ class MyServices extends GetxService {
     // Capture Flutter framework errors
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-    // Capture async errors not caught by Flutter
+    // Capture async errors not caught by Flutter. Transient connectivity
+    // errors (e.g. Remote Config / Auth "unable to connect") are recorded as
+    // NON-fatal so they don't inflate the crash-free rate — the app keeps
+    // working after them.
     PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stack,
+        fatal: !_isTransientNetworkError(error),
+      );
       return true;
     };
 
   }
+}
+
+/// Transient connectivity errors that shouldn't be counted as fatal crashes
+/// (they're recoverable and the app continues to run after them).
+bool _isTransientNetworkError(Object error) {
+  if (error is PlatformException) {
+    final code = error.code.toLowerCase();
+    final message = (error.message ?? '').toLowerCase();
+    if (code.contains('firebase_remote_config') ||
+        code.contains('network') ||
+        message.contains('unable to connect') ||
+        message.contains('network error') ||
+        message.contains('timeout')) {
+      return true;
+    }
+  }
+  final text = error.toString().toLowerCase();
+  return text.contains('network-request-failed') ||
+      text.contains('unable to connect to the server') ||
+      text.contains('network error');
 }
 
 Future<void> initialServices() async {

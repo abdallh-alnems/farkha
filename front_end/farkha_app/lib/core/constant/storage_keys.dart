@@ -49,6 +49,9 @@ class StorageKeys {
   // ── Tools ──
   static const String favoriteToolsOrder = 'favorite_tools_order';
 
+  // ── Notes Tool (local, independent of cycles) ──
+  static const String notesTool = 'notes_tool';
+
   // ── Permissions Intro ──
   static const String permissionsIntroLocationShown = 'permissions_intro_location_shown';
   static const String permissionsIntroNotificationShown = 'permissions_intro_notification_shown';

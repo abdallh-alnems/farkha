@@ -1,3 +1,5 @@
+import 'package:farkha_app/core/functions/parse_entry_date.dart';
+
 class MortalityEntry {
   final String id;
   final int count;
@@ -13,8 +15,7 @@ class MortalityEntry {
     return MortalityEntry(
       id: (json['id'] ?? '').toString(),
       count: ((json['count'] ?? 0) as num).toInt(),
-      date:
-          DateTime.tryParse((json['date'] ?? '').toString()) ?? DateTime.now(),
+      date: parseEntryDate(json['date']),
     );
   }
 }
