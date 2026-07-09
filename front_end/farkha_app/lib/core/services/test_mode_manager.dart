@@ -21,7 +21,7 @@ class TestModeManager {
   static bool get shouldShowAds => !kDebugMode || _adsEnabled;
 
   /// متروك للتوافق مع الكود القديم — عكس [shouldShowAds].
-  static bool get shouldDisableAds => !_adsEnabled;
+  static bool get shouldDisableAds => !shouldShowAds;
 
   /// الإعلانات تكون تجريبية تلقائياً أثناء التطوير (debug) فقط،
   /// وتصبح حقيقية دائماً في النسخة النهائية (release/profile).
